@@ -147,7 +147,7 @@ class CairoPainter(PdPainter):
 
 
     def draw_subpatch(self, subpatch):
-        txt = "pd " + subpatch.name
+        txt = "pd " + subpatch.name()
         (x, y, width, height, dx, dy) = self.cr.text_extents(txt)
         x = subpatch.x
         y = subpatch.y
@@ -264,9 +264,15 @@ class CairoPainter(PdPainter):
         for key, c in canvas.connections.items():
             src_obj = c[0]
             src_outl = c[1]
+            if not src_obj.outlets():
+                continue
+
             src_outl_type = src_obj.outlets()[src_outl]
             dest_obj = c[2]
             dest_inl = c[3]
+            if not dest_obj.inlets():
+                continue
+
             dest_inl_type = dest_obj.inlets()[dest_inl]
 
             sx, sy = self.outlet_connection_coords(src_obj, src_outl)

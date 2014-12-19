@@ -27,7 +27,7 @@ class PdBaseObject(object):
     XLET_SOUND = 1
     XLET_GUI = 2
 
-    def __init__(self, x, y, h, w):
+    def __init__(self, x, y, w, h):
         self.x = int(x)
         self.y = int(y)
         self.height = int(h)

@@ -1,5 +1,5 @@
 #N canvas 152 115 677 467 10;
-#X msg -46 54 test message \, list;
+#X msg 65 54 test message \, list;
 #N canvas 624 248 450 300 subpatch 0;
 #X msg 58 28 sub message \$1;
 #X obj 58 66 s test-\$0;
@@ -12,44 +12,44 @@
 #X obj 132 183 outlet~;
 #X obj 226 176 outlet;
 #X connect 0 0 1 0;
-#X restore 158 53 pd subpatch;
-#X obj -46 89 pipe 10;
-#X text -46 25 Sample comment;
-#X floatatom -47 162 5 0 0 0 - #0-nbx-r #0-nbx-s;
-#X floatatom 8 162 10 0 0 0 - - -;
-#X obj 123 131 osc~ 440;
-#X obj 123 162 +~ 1;
-#X symbolatom -47 202 10 0 0 0 - - -;
+#X restore 269 53 pd subpatch;
+#X obj 65 89 pipe 10;
+#X text 65 25 Sample comment;
+#X floatatom 64 162 5 0 0 0 - #0-nbx-r #0-nbx-s;
+#X floatatom 119 162 10 0 0 0 - - -;
+#X obj 234 131 osc~ 440;
+#X obj 234 162 +~ 1;
+#X symbolatom 64 202 10 0 0 0 - - -;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array array1 10 float 3;
 #A 0 0 0.314288 0.471431 0.457146 0.257144 0.257144 0.400002 0.428574
 -0.071429 -0.44286;
 #X coords 0 1 9 -1 200 140 1;
-#X restore 279 55 graph;
-#X obj -47 257 cnv 15 100 60 empty empty test 20 12 0 14 -4034 -258113
+#X restore 390 55 graph;
+#X obj 64 257 cnv 15 100 60 empty empty test 20 12 0 14 -4034 -258113
 0;
-#X obj 151 271 bng 15 250 50 0 empty empty bang 17 7 0 10 -262144 -1
+#X obj 262 271 bng 15 250 50 0 empty empty bang 17 7 0 10 -262144 -1
 -1;
-#X text 152 226 GUI elements:;
-#X obj 151 296 tgl 15 0 empty empty toggle 17 7 0 10 -262144 -1 -1
+#X text 263 226 GUI elements:;
+#X obj 262 296 tgl 15 0 empty empty toggle 17 7 0 10 -262144 -1 -1
 0 1;
-#X obj 152 324 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
+#X obj 263 324 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
 -262144 -1 -1 0 256;
-#X obj 223 272 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
+#X obj 334 272 vsl 15 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 0 1;
-#X obj 154 247 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
+#X obj 265 247 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
-#X obj 253 271 vradio 15 1 0 8 empty empty empty 0 -8 0 10 -262144
+#X obj 364 271 vradio 15 1 0 8 empty empty empty 0 -8 0 10 -262144
 -1 -1 0;
-#X obj 253 403 hradio 15 1 0 8 empty empty empty 0 -8 0 10 -262144
+#X obj 364 403 hradio 15 1 0 8 empty empty empty 0 -8 0 10 -262144
 -1 -1 0;
-#X obj 390 296 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
-#X msg 83 26 \; another message;
-#X obj 206 126 s;
-#X obj 206 148 s \$0-test;
-#X obj 206 105 send;
-#X obj 206 173 s~;
-#X obj 206 199 send~;
+#X obj 501 296 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
+#X msg 194 26 \; another message;
+#X obj 317 126 s;
+#X obj 317 148 s \$0-test;
+#X obj 317 105 send;
+#X obj 317 173 s~;
+#X obj 317 199 send~;
 #X connect 0 0 2 0;
 #X connect 2 0 5 0;
 #X connect 6 0 7 0;

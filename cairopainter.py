@@ -44,8 +44,11 @@ class CairoPainter(PdPainter):
 
     st_xlet_width = 7
     st_xlet_height = 2
+    st_xlet_height_gui = 1
     st_xlet_msg_color = (0, 0, 0)
     st_xlet_snd_color = (0.3, 0.2, 0.4)
+
+    st_gui_border_color = (0, 0, 0)
 
 
     def __init__(self, width, height, output, format="png"):
@@ -112,22 +115,24 @@ class CairoPainter(PdPainter):
         if len(xlets) > 1:
             inlet_space = (obj_width - len(xlets) * self.st_xlet_width) / (len(xlets) - 1)
 
+
         for num in xrange(0, len(xlets)):
             inx = x + num * inlet_space
             if num != 0:
                 inx += (num) * self.st_xlet_width
-                # inx = int(inx) + 0.5
 
-            if xlets[num] == PdBaseObject.XLET_MESSAGE:
+            xlet = xlets[num]
+
+            if xlet in (PdBaseObject.XLET_MESSAGE, PdBaseObject.XLET_GUI):
                 self.set_src_color(self.st_xlet_msg_color)
             else:
                 self.set_src_color(self.st_xlet_snd_color)
 
             iny = y
-            self.cr.rectangle(inx + 0.5, iny + 0.5, self.st_xlet_width, self.st_xlet_height)
+            self.cr.rectangle(inx + 0.5, iny + 0.5, self.st_xlet_width, self.xlet_height(xlet))
             self.cr.stroke_preserve()
 
-            if xlets[num] == PdBaseObject.XLET_SOUND:
+            if xlet == PdBaseObject.XLET_SOUND:
                 self.cr.fill()
                 self.cr.stroke()
             else:
@@ -197,5 +202,30 @@ class CairoPainter(PdPainter):
         self.draw_xlets(message.inlets(), x, y, w)
         self.draw_xlets(message.outlets(), x, y + h - self.st_xlet_height, w)
 
+    def draw_core_gui(self, gui):
+        if gui.name == "tgl":
+            # print gui.argg
+            if not gui.props["bg_color"].is_black():
+                self.set_src_color(gui.props["bg_color"].to_float())
+            else:
+                self.set_src_color((1, 1, 1))
+
+            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.props["size"], gui.props["size"])
+            self.cr.fill()
+            self.set_src_color(self.st_gui_border_color)
+            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.props["size"], gui.props["size"])
+            self.cr.stroke()
+
+            # print gui.inlets()
+            self.draw_xlets(gui.inlets(), gui.x, gui.y, gui.props["size"])
+            self.draw_xlets(gui.outlets(), gui.x, gui.y + gui.props["size"] - self.st_xlet_height_gui,
+                            gui.props["size"])
+        pass
+
+    def xlet_height(self, t):
+        if t == PdBaseObject.XLET_GUI:
+            return self.st_xlet_height_gui
+        else:
+            return self.st_xlet_height
 
 pass

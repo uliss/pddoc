@@ -25,6 +25,7 @@ __author__ = 'Serge Poltavski'
 class PdBaseObject(object):
     XLET_MESSAGE = 0
     XLET_SOUND = 1
+    XLET_GUI = 2
 
     def __init__(self, x, y, h, w):
         self.x = int(x)

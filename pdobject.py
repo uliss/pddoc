@@ -103,6 +103,8 @@ class PdObject(PdBaseObject):
             return [self.XLET_SOUND, self.XLET_MESSAGE]
 
         # 1 inlets
+        if self.name() in ("change", "makefilename", "print"):
+            return [self.XLET_MESSAGE]
 
         # 2 inlets
         if self.name() in ("pipe"):
@@ -131,5 +133,5 @@ class PdObject(PdBaseObject):
             return [self.XLET_SOUND]
 
         # 1 outlet
-        if self.name() in ("pipe"):
+        if self.name() in ("change", "makefilename", "pipe"):
             return [self.XLET_MESSAGE]

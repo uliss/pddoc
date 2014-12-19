@@ -1,0 +1,54 @@
+# /usr/bin/env python
+
+#   Copyright (C) 2014 by Serge Poltavski                                 #
+#   serge.poltavski@gmail.com                                             #
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 3 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+#   This program is distributed in the hope that it will be useful,       #
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+#   GNU General Public License for more details.                          #
+#                                                                         #
+#   You should have received a copy of the GNU General Public License     #
+#   along with this program. If not, see <http://www.gnu.org/licenses/>   #
+
+
+# -*- coding: utf-8 -*-
+
+__author__ = 'Serge Poltavski'
+
+from pdbaseobject import *
+
+class PdObject(PdBaseObject):
+    def __init__(self, x, y, w, h, args):
+        super(PdObject, self).__init__(x, y, w, h)
+        self.id = -1
+        self.args = args
+        self.connected_objects = []
+
+    def is_connected(self, obj):
+        assert issubclass(obj.__class__, self.__class__)
+
+        if obj in self.connected_objects:
+            return True
+        return False
+
+    def connect_to(self, obj):
+        assert issubclass(obj.__class__, self.__class__)
+
+        if not self.is_connected(obj):
+            self.connect_to(obj)
+
+        if not obj.is_connected(self):
+            obj.connect_to(self)
+
+    def __str__(self):
+        res = "[%-40s {x:%i,y:%i,id:%i}" %(" ".join(self.args) + "]", self.x, self.y, self.id)
+        return res
+
+    def draw(self, painter):
+        painter.draw_object(self)

@@ -124,6 +124,10 @@ class PdParser:
 
         self.current_canvas().append_object(obj)
 
+    def parse_connect(self, atoms):
+        c = self.current_canvas()
+        c.connect(atoms)
+
 
     def parse_objects(self, atoms):
         name = atoms[0]
@@ -134,7 +138,8 @@ class PdParser:
             atoms.pop(0)
             self.parse_obj(atoms)
         elif name == "connect":
-            pass
+            atoms.pop(0)
+            self.parse_connect(atoms)
         elif name == "text":
             atoms.pop(0)
             self.parse_comments(atoms)

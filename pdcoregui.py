@@ -82,7 +82,6 @@ class PdColor:
 class PdCoreGui(pdobject.PdObject):
     def __init__(self, x, y, args):
         super(PdCoreGui, self).__init__(x, y, -1, -1, args)
-        self.name = args[0]
         self.size = int(args[1])
         self.width = self.size
         self.height = self.size
@@ -94,6 +93,8 @@ class PdCoreGui(pdobject.PdObject):
         self.props = {}
         self.parse_props(args)
 
+    def name(self):
+        return args[0]
 
     def __str__(self):
         return "[GUI:%-36s {x:%i,y:%i,id:%i}" % (self.args[0] + "]", self.x, self.y, self.id)
@@ -105,6 +106,8 @@ class PdCoreGui(pdobject.PdObject):
         if self.name == "tgl":
             # square size of the gui element
             self.props["size"] = int(args[1])
+            self.width = self.props["size"]
+            self.height = self.props["size"]
             # set on load
             self.props["init"] = int(args[2])
             self.props["send"] = args[3]
@@ -129,14 +132,14 @@ class PdCoreGui(pdobject.PdObject):
             pass
 
     def inlets(self):
-        if self.name in ("tgl", "bng", "hsl", "vsl"):
+        if self.name in ("tgl", "bng", "hsl", "vsl", "nbx"):
             if not self.props.has_key("receive") or self.props["receive"] == "empty":
                 return [self.XLET_GUI]
             else:
                 return []
 
     def outlets(self):
-        if self.name in ("tgl", "bng", "hsl", "vsl"):
+        if self.name in ("tgl", "bng", "hsl", "vsl", "nbx"):
             if not self.props.has_key("receive") or self.props["receive"] == "empty":
                 return [self.XLET_GUI]
             else:

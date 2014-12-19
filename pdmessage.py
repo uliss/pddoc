@@ -26,7 +26,6 @@ from pdobject import *
 class PdMessage(PdObject):
     def __init__(self, x, y, atoms):
         super(PdMessage, self).__init__(x, y, -1, -1, atoms)
-        self.has_id = True
 
     def __str__(self):
         res = "[%-40s {x:%i,y:%i,id:%i}" % (self.to_string() + "(", self.x, self.y, self.id)

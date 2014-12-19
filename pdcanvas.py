@@ -30,16 +30,20 @@ class PdCanvas(PdBaseObject):
         super(PdCanvas, self).__init__(x, y, w, h)
         self.objects = []
         self.id_counter = 0
-        self.name = ""
+        self._name = ""
         self.type = self.TYPE_NONE
         self.graphs = []
         self.subpatches = []
+        self.connections = {}
 
         if kwargs.has_key('name'):
-            self.name = kwargs['name']
+            self._name = kwargs['name']
 
         if kwargs.has_key('open_on_load'):
             self.open_on_load = kwargs['open_on_load']
+
+    def name(self):
+        return self._name
 
     def append_graph(self, obj):
         assert isinstance(obj, PdCanvas)
@@ -54,6 +58,37 @@ class PdCanvas(PdBaseObject):
             self.id_counter += 1
 
         self.objects.append(obj)
+
+    def find_object_by_id(self, oid):
+        for obj in self.objects:
+            if issubclass(obj.__class__, PdObject):
+                if obj.id == oid:
+                    return obj
+
+        return None
+
+    def make_connection_key(self, sid, soutl, did, dinl):
+        return "%i %i %i %i" % (sid, soutl, did, dinl)
+
+    def add_connection(self, sid, soutl, did, dinl):
+        src_obj = self.find_object_by_id(sid)
+        dest_obj = self.find_object_by_id(did)
+        if src_obj and dest_obj:
+            ckey = self.make_connection_key(sid, soutl, did, dinl)
+            self.connections[ckey] = (src_obj, soutl, dest_obj, dinl)
+
+    def remove_connection(self, sid, soutl, did, dinl):
+        ckey = self.make_connection_key(sid, soutl, did, dinl)
+        del self.connections[ckey]
+
+    def connect(self, args):
+        assert len(args) == 4
+        src_id = int(args[0])
+        src_outl = int(args[1])
+        dest_id = int(args[2])
+        dest_inl = int(args[3])
+
+        self.add_connection(src_id, src_outl, dest_id, dest_inl)
 
     def append_subpatch(self, obj):
         assert isinstance(obj, PdCanvas)
@@ -123,6 +158,8 @@ class PdCanvas(PdBaseObject):
 
             for sp in self.subpatches:
                 sp.draw(painter)
+
+            painter.draw_connections(self)
 
     def inlets(self):
         res = []

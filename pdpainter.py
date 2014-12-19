@@ -46,3 +46,6 @@ class PdPainter(object):
     def draw_graph(self, graph):
         print "Draw graph "
 
+    def draw_connections(self, canvas):
+        print "Draw connections "
+

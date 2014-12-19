@@ -50,6 +50,11 @@ class CairoPainter(PdPainter):
 
     st_gui_border_color = (0, 0, 0)
 
+    st_connection_sndline_width = 2
+    st_connection_sndline_color = (0.2, 0.2, 0.2)
+    st_connection_line_color = (0, 0, 0)
+    st_connection_line_width = 1
+
 
     def __init__(self, width, height, output, format="png"):
         super(CairoPainter, self).__init__()
@@ -162,6 +167,8 @@ class CairoPainter(PdPainter):
         y = object.y
         w = max(width + self.st_object_xpad * 2, self.st_object_min_width)
         h = self.st_object_height
+        object.width = w
+        object.height = h
 
         self.draw_box(x, y, w, h)
         self.draw_txt(x, y, txt)
@@ -175,6 +182,8 @@ class CairoPainter(PdPainter):
         y = message.y
         w = width + self.st_object_xpad * 4
         h = self.st_object_height
+        message.height = h
+        message.width = w
 
         # draw message box
         cr = self.cr
@@ -210,15 +219,15 @@ class CairoPainter(PdPainter):
             else:
                 self.set_src_color((1, 1, 1))
 
-            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.props["size"], gui.props["size"])
+            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width, gui.height)
             self.cr.fill()
             self.set_src_color(self.st_gui_border_color)
-            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.props["size"], gui.props["size"])
+            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width, gui.height)
             self.cr.stroke()
 
             # print gui.inlets()
-            self.draw_xlets(gui.inlets(), gui.x, gui.y, gui.props["size"])
-            self.draw_xlets(gui.outlets(), gui.x, gui.y + gui.props["size"] - self.st_xlet_height_gui,
+            self.draw_xlets(gui.inlets(), gui.x, gui.y, gui.width)
+            self.draw_xlets(gui.outlets(), gui.x, gui.y + gui.height - self.st_xlet_height_gui,
                             gui.props["size"])
         pass
 
@@ -227,5 +236,71 @@ class CairoPainter(PdPainter):
             return self.st_xlet_height_gui
         else:
             return self.st_xlet_height
+
+    def inlet_connection_coords(self, obj, inlet_no):
+        inlets = obj.inlets()
+
+        xlet_space = 0;
+        if len(inlets) > 1:
+            xlet_space = (obj.width - len(inlets) * self.st_xlet_width) / float(len(inlets) - 1)
+
+        x = obj.x + xlet_space * inlet_no + self.st_xlet_width / 2.0
+        y = obj.y
+
+        return (x, y)
+
+    def outlet_connection_coords(self, obj, outlet_no):
+        outlets = obj.outlets()
+
+        xlet_space = 0;
+        if len(outlets) > 1:
+            xlet_space = (obj.width - len(outlets) * self.st_xlet_width) / float(len(outlets) - 1)
+
+        x = obj.x + xlet_space * outlet_no + self.st_xlet_width / 2.0
+        y = obj.y + obj.height
+        return (x, y)
+
+    def draw_connections(self, canvas):
+        for key, c in canvas.connections.items():
+            src_obj = c[0]
+            src_outl = c[1]
+            src_outl_type = src_obj.outlets()[src_outl]
+            dest_obj = c[2]
+            dest_inl = c[3]
+            dest_inl_type = dest_obj.inlets()[dest_inl]
+
+            sx, sy = self.outlet_connection_coords(src_obj, src_outl)
+            dx, dy = self.inlet_connection_coords(dest_obj, dest_inl)
+
+            self.cr.save()
+            if dest_inl_type == PdBaseObject.XLET_SOUND and src_outl_type == PdBaseObject.XLET_SOUND:
+                self.cr.set_line_width(self.st_connection_sndline_width)
+                self.set_src_color(self.st_connection_sndline_color)
+                # pixel correction
+                if self.st_connection_sndline_width % 2 == 0:
+                    sx += 0.5
+                    dx += 0.5
+
+                self.cr.move_to(sx, sy)
+                self.cr.line_to(dx, dy)
+                self.cr.stroke()
+                self.cr.set_dash([4, 8])
+                self.cr.set_source_rgb(0.5, 0.5, 0)
+            else:
+                self.cr.set_line_width(self.st_connection_line_width)
+                self.set_src_color(self.st_connection_line_color)
+                # pixel correction
+                if self.st_connection_line_width % 2 == 0:
+                    sx += 0.5
+                    dx += 0.5
+
+                sy += self.st_connection_line_width
+
+            self.cr.move_to(sx, sy)
+            self.cr.line_to(dx, dy)
+            self.cr.stroke()
+            self.cr.restore()
+
+        pass
 
 pass

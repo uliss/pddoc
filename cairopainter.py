@@ -38,13 +38,15 @@ class CairoPainter(PdPainter):
     st_line_join = cairo.LINE_JOIN_ROUND
 
     st_object_xpad = 2.5
-    st_object_ypad = 2.5
-    st_object_height = 16
-    st_object_min_width = 20
+    st_object_ypad = 1
+    st_object_height = 17
+    st_object_min_width = 22
 
-    st_xlet_width = 8
+    st_xlet_width = 7
     st_xlet_height = 2
-    st_xlet_color = (0, 0, 0)
+    st_xlet_msg_color = (0, 0, 0)
+    st_xlet_snd_color = (0.3, 0.2, 0.4)
+
 
     def __init__(self, width, height, output, format="png"):
         super(CairoPainter, self).__init__()
@@ -91,7 +93,7 @@ class CairoPainter(PdPainter):
 
     def draw_box(self, x, y, w, h):
         self.set_src_color(self.st_object_border_color)
-        self.cr.rectangle(x + 0.5, y + 0.5, max(w, self.st_object_min_width), h)
+        self.cr.rectangle(x + 0.5, y + 0.5, w, h)
         self.cr.stroke_preserve()
         self.set_src_color(self.st_object_fill_color)
         self.cr.fill()
@@ -99,12 +101,10 @@ class CairoPainter(PdPainter):
     def draw_txt(self, x, y, txt):
         (tx, ty, width, height, dx, dy) = self.cr.text_extents(txt)
         self.set_src_color(self.st_text_color)
-        self.cr.move_to(x + self.st_object_xpad, y + height)
+        self.cr.move_to(x + self.st_object_xpad, y + height + self.st_object_ypad)
         self.cr.show_text(txt)
 
     def draw_xlets(self, xlets, x, y, obj_width):
-        self.set_src_color(self.st_xlet_color)
-
         if not xlets:
             return
 
@@ -117,6 +117,11 @@ class CairoPainter(PdPainter):
             if num != 0:
                 inx += (num) * self.st_xlet_width
                 # inx = int(inx) + 0.5
+
+            if xlets[num] == PdBaseObject.XLET_MESSAGE:
+                self.set_src_color(self.st_xlet_msg_color)
+            else:
+                self.set_src_color(self.st_xlet_snd_color)
 
             iny = y
             self.cr.rectangle(inx + 0.5, iny + 0.5, self.st_xlet_width, self.st_xlet_height)
@@ -150,7 +155,7 @@ class CairoPainter(PdPainter):
         (x, y, width, height, dx, dy) = self.cr.text_extents(txt)
         x = object.x
         y = object.y
-        w = width + self.st_object_xpad * 2
+        w = max(width + self.st_object_xpad * 2, self.st_object_min_width)
         h = self.st_object_height
 
         self.draw_box(x, y, w, h)
@@ -165,8 +170,6 @@ class CairoPainter(PdPainter):
         y = message.y
         w = width + self.st_object_xpad * 4
         h = self.st_object_height
-
-
 
         # draw message box
         cr = self.cr

@@ -76,13 +76,51 @@ class PdObject(PdBaseObject):
         return self.args[0]
 
     def inlets(self):
-        # [s]
-        if self.name() == "s":
+        # [b] or [bang]
+        if self.name() in ("bang", "b"):
+            return [self.XLET_MESSAGE]
+
+        # [f] or [float]
+        if self.name() in ("float", "f"):
+            return [self.XLET_MESSAGE, self.XLET_MESSAGE]
+
+        # [s] or [send]
+        if self.name() in ("s", "send"):
             if len(self.args) > 1:
-                return [self.XLET_MESSAGE, self.XLET_MESSAGE]
-            else:
                 return [self.XLET_MESSAGE]
+            else:
+                return [self.XLET_MESSAGE, self.XLET_MESSAGE]
+
+        # [s~] or [send~]
+        if self.name() in ("s~", "send~"):
+            return [self.XLET_SOUND]
+
+        # [r~] or [receive~]
+        if self.name() in ("r~", "receive~"):
+            return [self.XLET_MESSAGE]
+
+        # [osc~]
+        if self.name() in ("osc~"):
+            return [self.XLET_SOUND, self.XLET_MESSAGE]
+
+
+    def outlets(self):
+        # [b] or [bang]
+        if self.name() in ("bang", "b"):
+            return [self.XLET_MESSAGE]
+
+        # [f] or [float]
+        if self.name() in ("float", "f"):
+            return [self.XLET_MESSAGE]
 
         # [r]
-        if self.name() == "r":
+        if self.name() in ("r", "receive"):
             return [self.XLET_MESSAGE]
+
+        # [r~] or [receive~]
+        if self.name() in ("r~", "receive~"):
+            return [self.XLET_SOUND]
+
+        # [osc~]
+        if self.name() == "osc~":
+            return [self.XLET_SOUND]

@@ -8,6 +8,9 @@
 #X restore 165 112 pd subpatch2;
 #X obj 60 176 outlet;
 #X obj 184 27 inlet;
+#X obj 253 26 inlet~;
+#X obj 132 183 outlet~;
+#X obj 226 176 outlet;
 #X connect 0 0 1 0;
 #X restore 158 53 pd subpatch;
 #X obj -46 89 pipe 10;

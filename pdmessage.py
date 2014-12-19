@@ -30,10 +30,11 @@ class PdMessage(PdObject):
 
     def to_string(self):
         res = ""
+
         for a in self.args:
             if a == "\\,":
                 res += ", "
-            if a == "\\;":
+            elif a == "\\;":
                 res += ";"
             else:
                 res += " " + a
@@ -47,3 +48,9 @@ class PdMessage(PdObject):
 
     def draw(self, painter):
         painter.draw_message(self)
+
+    def inlets(self):
+        return [self.XLET_MESSAGE]
+
+    def outlets(self):
+        return [self.XLET_MESSAGE]

@@ -52,3 +52,6 @@ class PdObject(PdBaseObject):
 
     def draw(self, painter):
         painter.draw_object(self)
+
+    def name(self):
+        return self.args[0]

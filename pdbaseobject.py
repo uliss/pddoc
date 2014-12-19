@@ -21,7 +21,11 @@
 
 __author__ = 'Serge Poltavski'
 
+
 class PdBaseObject(object):
+    XLET_MESSAGE = 0
+    XLET_SOUND = 1
+
     def __init__(self, x, y, h, w):
         self.x = int(x)
         self.y = int(y)
@@ -31,8 +35,8 @@ class PdBaseObject(object):
     def draw(self, painter):
         pass
 
-    def num_inlets(self):
-        return 0
+    def inlets(self):
+        return ()
 
-    def num_outlets(self):
-        return 0
+    def outlets(self):
+        return ()

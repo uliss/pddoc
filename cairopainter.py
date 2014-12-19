@@ -2,7 +2,7 @@
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 # serge.poltavski@gmail.com                                             #
-#                                                                         #
+# #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
 #   the Free Software Foundation; either version 3 of the License, or     #
@@ -41,9 +41,9 @@ class CairoPainter(PdPainter):
     st_object_ypad = 2.5
     st_object_height = 16
 
-    st_inlet_width = 8
-    st_inlet_height = 2
-    st_inlet_color = (0, 0, 0)
+    st_xlet_width = 8
+    st_xlet_height = 2
+    st_xlet_color = (0, 0, 0)
 
     def __init__(self, width, height, output, format="png"):
         super(CairoPainter, self).__init__()
@@ -101,8 +101,31 @@ class CairoPainter(PdPainter):
         self.cr.move_to(x + self.st_object_xpad, y + height)
         self.cr.show_text(txt)
 
-    def draw_inlets(self, num, x, width):
-        pass
+    def draw_xlets(self, xlets, x, y, obj_width):
+        self.set_src_color(self.st_xlet_color)
+
+        inlet_space = 0
+        if len(xlets) > 1:
+            inlet_space = (obj_width - len(xlets) * self.st_xlet_width) / (len(xlets) - 1)
+
+        for num in xrange(0, len(xlets)):
+            inx = x + num * inlet_space
+            if num != 0:
+                inx += (num) * self.st_xlet_width
+                # inx = int(inx) + 0.5
+
+            iny = y
+            self.cr.rectangle(inx + 0.5, iny + 0.5, self.st_xlet_width, self.st_xlet_height)
+            self.cr.stroke_preserve()
+
+            if xlets[num] == PdBaseObject.XLET_SOUND:
+                self.cr.fill()
+                self.cr.stroke()
+            else:
+                self.cr.stroke()
+
+            num += 1
+
 
     def draw_subpatch(self, subpatch):
         txt = "pd " + subpatch.name
@@ -115,7 +138,8 @@ class CairoPainter(PdPainter):
         self.draw_box(x, y, w, h)
         self.draw_txt(x, y, txt)
 
-        self.draw_inlets(subpatch.num_inlets(), x, w)
+        self.draw_xlets(subpatch.inlets(), x, y, w)
+        self.draw_xlets(subpatch.outlets(), x, y + h - self.st_xlet_height, w)
 
     def draw_object(self, object):
         txt = " ".join(object.args)
@@ -127,4 +151,43 @@ class CairoPainter(PdPainter):
 
         self.draw_box(x, y, w, h)
         self.draw_txt(x, y, txt)
-        self.draw_inlets(object.num_inlets(), x, w)
+        # self.draw_inlets(object.num_inlets(), x, w)
+
+    def draw_message(self, message):
+        txt = message.to_string()
+        (x, y, width, height, dx, dy) = self.cr.text_extents(txt)
+        x = message.x
+        y = message.y
+        w = width + self.st_object_xpad * 4
+        h = self.st_object_height
+
+
+
+        # draw message box
+        cr = self.cr
+        self.set_src_color(self.st_object_border_color)
+        edge_w = 8
+        edge_h = 10
+
+        cr.save()
+        tx = x + 0.5
+        ty = y + 0.5
+        cr.move_to(tx, ty)
+        cr.line_to(tx, ty + h)
+        cr.line_to(tx + w, ty + h)
+        cr.line_to(tx + w - edge_w / 2.0, ty + (h + edge_h) / 2.0)
+        cr.line_to(tx + w - edge_w / 2.0, ty + (h - edge_h) / 2.0)
+        cr.line_to(tx + w, ty)
+        cr.line_to(tx, ty)
+        cr.stroke_preserve()
+        cr.set_source_rgb(0.95, 0.95, 0.95)
+        cr.fill()
+        cr.stroke()
+        cr.restore()
+
+        self.draw_txt(x, y, txt)
+        self.draw_xlets(message.inlets(), x, y, w)
+        self.draw_xlets(message.outlets(), x, y + h - self.st_xlet_height, w)
+
+
+pass

@@ -124,3 +124,26 @@ class PdCanvas(PdBaseObject):
             for sp in self.subpatches:
                 sp.draw(painter)
 
+    def inlets(self):
+        res = []
+
+        for o in self.objects:
+            if issubclass(o.__class__, PdObject):
+                if o.name() == "inlet":
+                    res.append(self.XLET_MESSAGE)
+                elif o.name() == "inlet~":
+                    res.append(self.XLET_SOUND)
+
+        return res
+
+    def outlets(self):
+        res = []
+
+        for o in self.objects:
+            if issubclass(o.__class__, PdObject):
+                if o.name() == "outlet":
+                    res.append(self.XLET_MESSAGE)
+                elif o.name() == "outlet~":
+                    res.append(self.XLET_SOUND)
+
+        return res

@@ -120,7 +120,7 @@ class PdCanvas(PdBaseObject):
         elif self.type == self.TYPE_SUBPATCH:
             name = "Subpatch "
 
-        name += "\"%s\"" % (self.name)
+        name += "\"%s\"" % (self.name())
 
         res = "%-30s (%i,%i %ix%i)\n" %(name, self.x, self.y, self.width, self.height)
         for obj in self.objects:

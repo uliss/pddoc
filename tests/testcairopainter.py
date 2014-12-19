@@ -33,8 +33,10 @@ from pddrawer import *
 if __name__ == '__main__':
     parser = PdParser()
     parser.parse(package_directory + "/simple.pd")
+    # parser.parse("/Applications/Pd-extended.app/Contents/Resources/doc/5.reference/intro-help.pd")
 
     canvas = parser.canvas
+    # canvas.height = 10000
 
     cp = CairoPainter(canvas.width, canvas.height, "output_cairo.png")
     drawer = PdDrawer()

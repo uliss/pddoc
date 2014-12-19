@@ -1,6 +1,6 @@
 # /usr/bin/env python
 
-#   Copyright (C) 2014 by Serge Poltavski                                 #
+# Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -23,6 +23,7 @@ __author__ = 'Serge Poltavski'
 
 import re
 from pdbaseobject import *
+
 
 class PdObject(PdBaseObject):
     def __init__(self, x, y, w, h, args):
@@ -65,7 +66,7 @@ class PdObject(PdBaseObject):
         return res
 
     def __str__(self):
-        res = "[%-40s {x:%i,y:%i,id:%i}" %(" ".join(self.args) + "]", self.x, self.y, self.id)
+        res = "[%-40s {x:%i,y:%i,id:%i}" % (" ".join(self.args) + "]", self.x, self.y, self.id)
         return res
 
     def draw(self, painter):
@@ -103,12 +104,30 @@ class PdObject(PdBaseObject):
             return [self.XLET_SOUND, self.XLET_MESSAGE]
 
         # 1 inlets
-        if self.name() in ("change", "makefilename", "print"):
+        if self.name() in (
+                "change", "makefilename", "print",
+                "mtof", "ftom", "powtodb", "dbtopow", "rmstodb", "dbtorms",
+                "sin", "cos", "tan", "atan", "atan2", "sqrt", "log", "exp", "abs",
+                "random",
+                "loadbang", "bang~"
+        ):
             return [self.XLET_MESSAGE]
 
         # 2 inlets
-        if self.name() in ("pipe"):
-            return [self.XLET_MESSAGE, self.XLET_MESSAGE]
+        if self.name() in (
+                "pipe",
+                "+", "-", "*", "/", "pow",
+                "==", "!=", "<", ">", ">=", "<=",
+                "&", "&&", "|", "||", "mod", "div", "min", "max"
+        ):
+            return [self.XLET_MESSAGE] * 2
+
+        # 3 inlets
+        if self.name() in (
+                "clip"
+
+        ):
+            return [self.XLET_MESSAGE] * 3
 
 
     def outlets(self):
@@ -133,5 +152,14 @@ class PdObject(PdBaseObject):
             return [self.XLET_SOUND]
 
         # 1 outlet
-        if self.name() in ("change", "makefilename", "pipe"):
+        if self.name() in (
+                "change", "makefilename", "pipe",
+                "+", "-", "*", "/", "pow",
+                "==", "!=", "<", ">", ">=", "<=",
+                "&", "&&", "|", "||",
+                "mtof", "ftom", "powtodb", "dbtopow", "rmstodb", "dbtorms",
+                "sin", "cos", "tan", "atan", "atan2", "sqrt", "log", "exp", "abs",
+                "random", "mod", "div", "min", "max", "clip",
+                "loadbang", "bang~"
+        ):
             return [self.XLET_MESSAGE]

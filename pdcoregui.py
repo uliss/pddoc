@@ -94,7 +94,7 @@ class PdCoreGui(pdobject.PdObject):
         self.parse_props(args)
 
     def name(self):
-        return args[0]
+        return self.args[0]
 
     def __str__(self):
         return "[GUI:%-36s {x:%i,y:%i,id:%i}" % (self.args[0] + "]", self.x, self.y, self.id)

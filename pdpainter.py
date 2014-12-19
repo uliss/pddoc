@@ -29,7 +29,7 @@ class PdPainter(object):
         pass
 
     def draw_comment(self, comment):
-        print "Draw comment: #", comment.text
+        print "Draw comment: #", comment.text()
 
     def draw_message(self, message):
         print "Draw message [id:%i]: %s" % (message.id, message.to_string())
@@ -38,10 +38,10 @@ class PdPainter(object):
         print "Draw object: [id:%i] [%s]" % (object.id, " ".join(object.args))
 
     def draw_core_gui(self, gui):
-        print "Draw core GUI: [id:%i] [%s]" % (gui.id, gui.name)
+        print "Draw core GUI: [id:%i] [%s]" % (gui.id, gui.name())
 
     def draw_subpatch(self, subpatch):
-        print "Draw subpatch: [pd %s]" % (subpatch.name)
+        print "Draw subpatch: [pd %s]" % (subpatch.name())
 
     def draw_graph(self, graph):
         print "Draw graph "

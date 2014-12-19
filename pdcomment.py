@@ -28,21 +28,34 @@ class PdComment(PdBaseObject):
     def __init__(self, x, y, args):
         super(PdComment, self).__init__(x, y, -1, -1)
         self.args = args
-        self.text = ""
-        self.set_text(" ".join(args))
 
-    def set_text(self, text):
-        """
-        ASCII return codes 13 and 10 are not stored,
-        a semicolon character is preceded with the escape character backslash.
-        :param text:
-        """
-        self.text = text.replace(chr(13), "")\
-            .replace(chr(10), "")\
-            .replace(";", "\\;")
+    def unescape(self, str):
+        return str.strip() \
+            .replace(chr(13), "") \
+            .replace(chr(10), "") \
+            .replace("\\;", ";") \
+            .replace("\\,", ",")
+
+    def text(self):
+        res = ""
+
+        for a in self.args:
+            a = self.unescape(a)
+
+            if a == ",":
+                res += ","
+            elif a == ";":
+                res += ";"
+            else:
+                res += " " + a
+
+        res = res.strip()
+
+        return res
+
 
     def __str__(self):
-        res = "# %-39s {x:%i,y:%i}" % (self.text, self.x, self.y)
+        res = "# %-39s {x:%i,y:%i}" % (self.text(), self.x, self.y)
         return res
 
     def draw(self, painter):

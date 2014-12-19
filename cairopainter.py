@@ -23,7 +23,7 @@ __author__ = 'Serge Poltavski'
 
 from pdpainter import *
 import cairo
-
+import textwrap
 
 class CairoPainter(PdPainter):
     st_bg_color = (1, 1, 1)
@@ -36,6 +36,8 @@ class CairoPainter(PdPainter):
     st_font_weight = cairo.FONT_WEIGHT_NORMAL
     st_line_width = 1
     st_line_join = cairo.LINE_JOIN_ROUND
+
+    st_message_fill_color = (0.94)
 
     st_object_xpad = 2.5
     st_object_ypad = 1
@@ -52,8 +54,12 @@ class CairoPainter(PdPainter):
 
     st_connection_sndline_width = 2
     st_connection_sndline_color = (0.2, 0.2, 0.2)
+    st_connection_sndline_color2 = (0.6, 0.6, 0)
     st_connection_line_color = (0, 0, 0)
     st_connection_line_width = 1
+    st_connection_dash = [4, 8]
+
+    st_comment_color = (0.5, 0.5, 0.5)
 
 
     def __init__(self, width, height, output, format="png"):
@@ -93,7 +99,11 @@ class CairoPainter(PdPainter):
         self.cr.set_line_join(self.st_line_join)
 
     def set_src_color(self, rgb):
-        self.cr.set_source_rgb(rgb[0], rgb[1], rgb[2])
+        if isinstance(rgb, float):
+            self.cr.set_source_rgb(rgb, rgb, rgb)
+        elif len(rgb) == 3:
+            self.cr.set_source_rgb(rgb[0], rgb[1], rgb[2])
+
 
     def __del__(self):
         if self.format == 'png':
@@ -202,7 +212,7 @@ class CairoPainter(PdPainter):
         cr.line_to(tx + w, ty)
         cr.line_to(tx, ty)
         cr.stroke_preserve()
-        cr.set_source_rgb(0.95, 0.95, 0.95)
+        self.set_src_color(self.st_message_fill_color)
         cr.fill()
         cr.stroke()
         cr.restore()
@@ -213,6 +223,7 @@ class CairoPainter(PdPainter):
 
     def draw_core_gui(self, gui):
         if gui.name == "tgl":
+            print "TOGGLE"
             # print gui.argg
             if not gui.props["bg_color"].is_black():
                 self.set_src_color(gui.props["bg_color"].to_float())
@@ -290,8 +301,8 @@ class CairoPainter(PdPainter):
                 self.cr.move_to(sx, sy)
                 self.cr.line_to(dx, dy)
                 self.cr.stroke()
-                self.cr.set_dash([4, 8])
-                self.cr.set_source_rgb(0.5, 0.5, 0)
+                self.cr.set_dash(self.st_connection_dash)
+                self.set_src_color(self.st_connection_sndline_color2)
             else:
                 self.cr.set_line_width(self.st_connection_line_width)
                 self.set_src_color(self.st_connection_line_color)
@@ -308,5 +319,18 @@ class CairoPainter(PdPainter):
             self.cr.restore()
 
         pass
+
+    def draw_comment(self, comment):
+        txt = comment.text()
+        lines = textwrap.wrap(txt, 59)
+
+        self.set_src_color(self.st_comment_color)
+        lnum = 0
+        for line in lines:
+            line = ";\n".join(line.split(";")).split("\n")
+            for subl in line:
+                subl = subl.strip()
+                self.draw_txt(comment.x, comment.y + lnum * self.st_font_size, subl)
+                lnum += 1
 
 pass

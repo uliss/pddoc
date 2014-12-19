@@ -118,6 +118,7 @@ class PdParser:
         obj = None
 
         if name in ("bng", "cnv", "hradio", "hsl", "nbx", "tgl", "vradio", "vsl", "vu"):
+            # print name
             obj = PdCoreGui(x, y, atoms[2:])
         else:
             obj = PdObject(x, y, -1, -1, atoms[2:])

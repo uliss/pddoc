@@ -45,6 +45,8 @@
 -1 -1 0;
 #X obj 390 296 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
 #X msg 83 26 \; another message;
+#X obj 206 132 s;
+#X obj 207 170 s \$0-test;
 #X connect 0 0 2 0;
 #X connect 2 0 5 0;
 #X connect 6 0 7 0;

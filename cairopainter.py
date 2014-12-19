@@ -40,6 +40,7 @@ class CairoPainter(PdPainter):
     st_object_xpad = 2.5
     st_object_ypad = 2.5
     st_object_height = 16
+    st_object_min_width = 20
 
     st_xlet_width = 8
     st_xlet_height = 2
@@ -90,7 +91,7 @@ class CairoPainter(PdPainter):
 
     def draw_box(self, x, y, w, h):
         self.set_src_color(self.st_object_border_color)
-        self.cr.rectangle(x + 0.5, y + 0.5, w, h)
+        self.cr.rectangle(x + 0.5, y + 0.5, max(w, self.st_object_min_width), h)
         self.cr.stroke_preserve()
         self.set_src_color(self.st_object_fill_color)
         self.cr.fill()
@@ -103,6 +104,9 @@ class CairoPainter(PdPainter):
 
     def draw_xlets(self, xlets, x, y, obj_width):
         self.set_src_color(self.st_xlet_color)
+
+        if not xlets:
+            return
 
         inlet_space = 0
         if len(xlets) > 1:
@@ -142,7 +146,7 @@ class CairoPainter(PdPainter):
         self.draw_xlets(subpatch.outlets(), x, y + h - self.st_xlet_height, w)
 
     def draw_object(self, object):
-        txt = " ".join(object.args)
+        txt = object.to_string()
         (x, y, width, height, dx, dy) = self.cr.text_extents(txt)
         x = object.x
         y = object.y
@@ -151,7 +155,8 @@ class CairoPainter(PdPainter):
 
         self.draw_box(x, y, w, h)
         self.draw_txt(x, y, txt)
-        # self.draw_inlets(object.num_inlets(), x, w)
+        self.draw_xlets(object.inlets(), x, y, w)
+        self.draw_xlets(object.outlets(), x, y + h - self.st_xlet_height, w)
 
     def draw_message(self, message):
         txt = message.to_string()

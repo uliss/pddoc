@@ -28,20 +28,6 @@ class PdMessage(PdObject):
         super(PdMessage, self).__init__(x, y, -1, -1, atoms)
         self.has_id = True
 
-    def to_string(self):
-        res = ""
-
-        for a in self.args:
-            if a == "\\,":
-                res += ", "
-            elif a == "\\;":
-                res += ";"
-            else:
-                res += " " + a
-
-        res = res.strip()
-        return res
-
     def __str__(self):
         res = "[%-40s {x:%i,y:%i,id:%i}" % (self.to_string() + "(", self.x, self.y, self.id)
         return res

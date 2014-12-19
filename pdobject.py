@@ -21,6 +21,7 @@
 
 __author__ = 'Serge Poltavski'
 
+import re
 from pdbaseobject import *
 
 class PdObject(PdBaseObject):
@@ -46,6 +47,24 @@ class PdObject(PdBaseObject):
         if not obj.is_connected(self):
             obj.connect_to(self)
 
+    def to_string(self):
+        res = ""
+
+        esc_args = []
+        for arg in self.args:
+            esc_args.append(re.sub(r'\\(.)', r'\1', arg))
+
+        for arg in esc_args:
+            if arg == ",":
+                res += ", "
+            elif arg == ";":
+                res += ";"
+            else:
+                res += " " + arg
+
+        res = " ".join(res.strip().split())
+        return res
+
     def __str__(self):
         res = "[%-40s {x:%i,y:%i,id:%i}" %(" ".join(self.args) + "]", self.x, self.y, self.id)
         return res
@@ -55,3 +74,15 @@ class PdObject(PdBaseObject):
 
     def name(self):
         return self.args[0]
+
+    def inlets(self):
+        # [s]
+        if self.name() == "s":
+            if len(self.args) > 1:
+                return [self.XLET_MESSAGE, self.XLET_MESSAGE]
+            else:
+                return [self.XLET_MESSAGE]
+
+        # [r]
+        if self.name() == "r":
+            return [self.XLET_MESSAGE]

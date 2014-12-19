@@ -80,8 +80,8 @@ class PdObject(PdBaseObject):
         if self.name() in ("bang", "b"):
             return [self.XLET_MESSAGE]
 
-        # [f] or [float]
-        if self.name() in ("float", "f"):
+        # [f], [float], [i], [int]
+        if self.name() in ("float", "f", "int", "i"):
             return [self.XLET_MESSAGE, self.XLET_MESSAGE]
 
         # [s] or [send]
@@ -109,8 +109,8 @@ class PdObject(PdBaseObject):
         if self.name() in ("bang", "b"):
             return [self.XLET_MESSAGE]
 
-        # [f] or [float]
-        if self.name() in ("float", "f"):
+        # [f], [float], [i], [int]
+        if self.name() in ("float", "f", "int", "i"):
             return [self.XLET_MESSAGE]
 
         # [r]

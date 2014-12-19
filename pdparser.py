@@ -144,7 +144,6 @@ class PdParser:
             self.parse_restore(atoms)
         else:
             pass
-            # print atoms
 
 
     def parse_atoms(self, atoms):
@@ -156,7 +155,6 @@ class PdParser:
             self.parse_frameset(atoms)
         else:
             pass
-            # print atoms
 
     def parse(self, file_name):
         self.file_name = file_name

@@ -108,14 +108,19 @@ class PdCanvas(PdBaseObject):
         if self.type == self.TYPE_NONE:
             return
 
-        painter.draw_canvas(self)
+        if self.type == self.TYPE_SUBPATCH:
+            painter.draw_subpatch(self)
+        elif self.type == self.TYPE_GRAPH:
+            painter.draw_graph(self)
+        elif self.type == self.TYPE_WINDOW:
+            painter.draw_canvas(self)
 
-        for obj in self.objects:
-            obj.draw(painter)
+            for obj in self.objects:
+                obj.draw(painter)
 
-        for graph in self.graphs:
-            graph.draw(painter)
+            for graph in self.graphs:
+                graph.draw(painter)
 
-        for sp in self.subpatches:
-            sp.draw(painter)
+            for sp in self.subpatches:
+                sp.draw(painter)
 

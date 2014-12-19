@@ -101,7 +101,13 @@ class PdParser:
         elif cnv_type == "pd":
             self.current_canvas().type = PdCanvas.TYPE_SUBPATCH
             c = self.canvas_stack.pop()
-            self.canvas.append_subpatch(c)
+            c.x = int(atoms[0])
+            c.y = int(atoms[1])
+
+            if len(self.canvas_stack) > 1:
+                self.current_canvas().append_subpatch(c)
+            else:
+                self.canvas.append_subpatch(c)
         else:
             common.warning("unknown canvas type: %s" % (cnv_type))
 

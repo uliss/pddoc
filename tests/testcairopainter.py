@@ -1,7 +1,7 @@
 # /usr/bin/env python
 
-#   Copyright (C) 2014 by Serge Poltavski                                 #
-#   serge.poltavski@gmail.com                                             #
+# Copyright (C) 2014 by Serge Poltavski                                 #
+#   serge.poltavski@gmail.com                                            #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -21,28 +21,23 @@
 
 __author__ = 'Serge Poltavski'
 
-from pdcomment import *
+import sys
+import os
 
-class PdPainter(object):
+package_directory = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(package_directory + "/..")
+from cairopainter import *
+from pddrawer import *
 
-    def draw_canvas(self, canvas):
-        pass
 
-    def draw_comment(self, comment):
-        print "Draw comment: #", comment.text
+if __name__ == '__main__':
+    parser = PdParser()
+    parser.parse(package_directory + "/simple.pd")
 
-    def draw_message(self, message):
-        print "Draw message [id:%i]: %s" % (message.id, message.to_string())
+    canvas = parser.canvas
 
-    def draw_object(self, object):
-        print "Draw object: [id:%i] [%s]" % (object.id, " ".join(object.args))
+    cp = CairoPainter(canvas.width, canvas.height, "output_cairo.png")
+    drawer = PdDrawer()
+    drawer.draw(canvas, cp)
 
-    def draw_core_gui(self, gui):
-        print "Draw core GUI: [id:%i] [%s]" % (gui.id, gui.name)
-
-    def draw_subpatch(self, subpatch):
-        print "Draw subpatch: [pd %s]" % (subpatch.name)
-
-    def draw_graph(self, graph):
-        print "Draw graph "
 

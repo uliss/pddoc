@@ -30,4 +30,9 @@ class PdBaseObject(object):
 
     def draw(self, painter):
         pass
-pass
+
+    def num_inlets(self):
+        return 0
+
+    def num_outlets(self):
+        return 0

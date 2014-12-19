@@ -241,6 +241,26 @@ class CairoPainter(PdPainter):
             return
 
         if gui.name() == "cnv":
+            self.cr.save()
+            x = gui.x
+            y = gui.y
+            w = gui.width
+            h = gui.height
+            self.set_src_color(gui.props["bg_color"].to_float())
+            self.cr.rectangle(x, y, w, h)
+            self.cr.fill()
+
+            fonts = ("Monaco Bold", "Helvetica", "Times")
+            fontsize = gui.props["fontsize"]
+            fontidx = int(gui.props["font"])
+            self.cr.select_font_face(fonts[fontidx])
+            self.cr.set_font_size(fontsize)
+            self.set_src_color(gui.props["label_color"].to_float())
+            txt = gui.props["label"]
+            tx, ty, tw, th, tdx, tdy = self.cr.text_extents(txt)
+            self.cr.move_to(x + gui.props["label_xoff"], y + gui.props["label_yoff"] + th)
+            self.cr.show_text(txt)
+            self.cr.restore()
             return
 
 

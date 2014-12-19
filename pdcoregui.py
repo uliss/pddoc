@@ -120,16 +120,43 @@ class PdCoreGui(pdobject.PdObject):
             self.props["font"] = args[8]
             self.props["font_size"] = args[9]
 
-            c = PdColor()
-            c.parse(args[10])
-            self.props["bg_color"] = c
-            self.props["fg_color"] = args[11]
-            self.props["label_color"] = args[12]
+            bgc = PdColor()
+            bgc.parse(args[10])
+            self.props["bg_color"] = bgc
+            fgc = PdColor()
+            fgc.parse(args[11])
+            self.props["fg_color"] = fgc
+            lc = PdColor()
+            lc.parse(args[12])
+            self.props["label_color"] = lc
             # value sent when the [init] attribute is set
             self.props["init_value"] = int(args[13])
             # default_value when the [init]? attribute is not set
             self.props["default_value"] = int(args[14])
-            pass
+            return
+
+        if self.name() == "cnv":
+            self.props["size"] = int(args[1])  # size of selectable square
+            self.props["width"] = int(args[2])  # horizontal size of the GUI-element
+            self.width = self.props["width"]
+            self.props["height"] = int(args[3])  # vertical size of the GUI-element
+            self.height = self.props["height"]
+            self.props["send"] = args[4]  # send symbol name
+            self.props["receive"] = args[5]  # receive symbol name
+            self.props["label"] = args[6]
+            # horizontal position of the label text relative to the upperleft corner of the object
+            self.props["label_xoff"] = int(args[7])
+            # vertical position of the label text relative to the upperleft corner of the object
+            self.props["label_yoff"] = int(args[8])
+            self.props["font"] = args[9]
+            self.props["fontsize"] = int(args[10])
+            bgc = PdColor()
+            bgc.parse(args[11])
+            self.props["bg_color"] = bgc
+            lc = PdColor()
+            lc.parse(args[12])
+            self.props["label_color"] = lc
+            return
 
     def inlets(self):
         if self.name in ("tgl", "bng", "hsl", "vsl", "nbx"):

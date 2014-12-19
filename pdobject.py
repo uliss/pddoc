@@ -102,6 +102,12 @@ class PdObject(PdBaseObject):
         if self.name() in ("osc~"):
             return [self.XLET_SOUND, self.XLET_MESSAGE]
 
+        # 1 inlets
+
+        # 2 inlets
+        if self.name() in ("pipe"):
+            return [self.XLET_MESSAGE, self.XLET_MESSAGE]
+
 
     def outlets(self):
         # [b] or [bang]
@@ -123,3 +129,7 @@ class PdObject(PdBaseObject):
         # [osc~]
         if self.name() == "osc~":
             return [self.XLET_SOUND]
+
+        # 1 outlet
+        if self.name() in ("pipe"):
+            return [self.XLET_MESSAGE]

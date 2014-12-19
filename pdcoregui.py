@@ -103,7 +103,7 @@ class PdCoreGui(pdobject.PdObject):
         painter.draw_core_gui(self)
 
     def parse_props(self, args):
-        if self.name == "tgl":
+        if self.name() == "tgl":
             # square size of the gui element
             self.props["size"] = int(args[1])
             self.width = self.props["size"]

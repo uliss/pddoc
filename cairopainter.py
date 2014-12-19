@@ -222,9 +222,7 @@ class CairoPainter(PdPainter):
         self.draw_xlets(message.outlets(), x, y + h - self.st_xlet_height, w)
 
     def draw_core_gui(self, gui):
-        if gui.name == "tgl":
-            print "TOGGLE"
-            # print gui.argg
+        if gui.name() == "tgl":
             if not gui.props["bg_color"].is_black():
                 self.set_src_color(gui.props["bg_color"].to_float())
             else:
@@ -240,7 +238,12 @@ class CairoPainter(PdPainter):
             self.draw_xlets(gui.inlets(), gui.x, gui.y, gui.width)
             self.draw_xlets(gui.outlets(), gui.x, gui.y + gui.height - self.st_xlet_height_gui,
                             gui.props["size"])
-        pass
+            return
+
+        if gui.name() == "cnv":
+            return
+
+
 
     def xlet_height(self, t):
         if t == PdBaseObject.XLET_GUI:

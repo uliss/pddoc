@@ -29,7 +29,6 @@ class PdObject(PdBaseObject):
         super(PdObject, self).__init__(x, y, w, h)
         self.id = -1
         self.args = args
-        self.connected_objects = []
 
     def is_connected(self, obj):
         assert issubclass(obj.__class__, self.__class__)

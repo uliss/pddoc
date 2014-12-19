@@ -32,7 +32,7 @@ from pddrawer import *
 
 if __name__ == '__main__':
     parser = PdParser()
-    parser.parse(package_directory + "/comments.pd")
+    parser.parse(package_directory + "/simple.pd")
 
     canvas = parser.canvas
 

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pddoc version="1.0">
+    <object name="float">
+        <title>float</title>
+        <meta>
+            <description>store a number</description>
+            <!-- list of authors -->
+            <authors>
+                <author>Miller Puckette</author>
+            </authors>
+            <!-- license information -->
+            <license url="http://www.gnu.org/copyleft/gpl.html">GPL v3</license>
+            <contacts>serj@poltavski.ru</contacts>
+            <!-- object version -->
+            <version>0.1</version>
+            <!-- website -->
+            <website>http://github.com</website>
+            <keywords>float math</keywords>
+            <!-- object library -->
+            <library>core library</library>
+            <!-- list of aliases -->
+            <aliases>
+                <alias>f</alias>
+            </aliases>
+        </meta>
+        <example>
+            <pdexample width="200" height="100">
+                <row>
+                    <pdmessage id="msg1" text="440" comment="440 Hz"/>
+                    <pdmessage id="msg2" text="442" comment="442 Hz"/>
+                </row>
+                <row>
+                    <col>
+                        <pdobject id="osc~" name="osc~" params="415" comment="oscillator">
+                            <pdinlet type="audio"/>
+                            <pdinlet type="control"/>
+                            <pdoutlet type="audio"/>
+                        </pdobject>
+                        <pdobject id="*~" name="*~" param="0.5" comment="gain">
+                            <pdinlet type="audio"/>
+                            <pdinlet type="control"/>
+                            <pdoutlet type="audio"/>
+                        </pdobject>
+                        <pdobject id="dac~" name="dac~">
+                            <pdinlet type="audio"/>
+                            <pdinlet type="audio"/>
+                        </pdobject>
+                    </col>
+                </row>
+                <pdconnect src="msg1" src_out="0" dest="osc~" dest_in="0"/>
+                <pdconnect src="msg2" src_out="0" dest="osc~" dest_in="0"/>
+                <pdconnect src="osc~" src_out="0" dest="*~" dest_in="0"/>
+                <pdconnect src="*~" src_out="0" dest="dac~" dest_in="0"/>
+                <pdconnect src="*~" src_out="0" dest="dac~" dest_in="1"/>
+            </pdexample>
+            <pdexample>
+                <pdinclude file="objects.pd"/>
+            </pdexample>
+        </example>
+        <!-- inlets documentation -->
+        <inlets>
+            <inlet number="0" type="bang">outputs the currently stored value.</inlet>
+            <inlet number="0" type="float" min_range="0.0" max_range="1.0">outputs the currently stored value.</inlet>
+            <inlet number="1" type="symbol">range parameter.</inlet>
+        </inlets>
+        <!-- outlets documentation -->
+        <outlets>
+            <outlet number="0" type="bang">outputs bang all the time</outlet>
+        </outlets>
+        <!-- arguments documentation -->
+        <arguments>
+            <argument number="0" type="float">test</argument>
+        </arguments>
+        <!-- additional info -->
+        <info>
+            <itemize>
+                <item>item no.1</item>
+                <item>
+                    <a href="http://github.com">github.com</a>
+                </item>
+                <item>
+                    <a href="pddp://symbol.pd">symbol</a>
+                </item>
+                <item>
+                    <a href="pddoc://symbol.pd">symbol</a>
+                </item>
+            </itemize>
+            <pdobject id="f1" name="float" params="1 2 3" comment="float">
+                <pdinlet type="control"/>
+                <pdinlet type="control"/>
+                <pdoutlet type="control"/>
+            </pdobject>
+            <pdsubpatch id="s1" name="subpatch" comment="">
+                <pdoutlet type="control"/>
+            </pdsubpatch>
+        </info>
+    </object>
+</pddoc>

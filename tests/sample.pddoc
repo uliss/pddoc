@@ -1,23 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pddoc version="1.0">
-    <meta>
-        <title>PDDOC</title>
-        <desciption>Documentation system for PureData</desciption>
-        <authors>
-            <author>Serj Poltavski</author>
-        </authors>
-        <date></date>
-        <license></license>
-        <contacs></contacs>
-    </meta>
+    <object name="float">
+        <title>osc~</title>
+        <meta>
+            <description>Documentation system for PureData</description>
+            <authors>
+                <author>Serj Poltavski</author>
+            </authors>
+            <date>01.01.2011</date>
+            <license url="http://www.gnu.org/copyleft/gpl.html">GPL v3</license>
+            <contacts>serj@poltavski.ru</contacts>
+            <version>0.1</version>
+            <website>http://github.com</website>
+            <keywords>doc puredata python pddp</keywords>
+            <library>pddoc</library>
+            <aliases>
+                <alias>pddoc</alias>
+            </aliases>
+        </meta>
+        <inlets>
+            <inlet number="0" type="bang">outputs the currently stored value.</inlet>
+            <inlet number="0" type="float" min_range="0.0" max_range="1.0">outputs the currently stored value.</inlet>
+            <inlet number="1" type="symbol">range parameter.</inlet>
+        </inlets>
+        <outlets>
+            <outlet number="0" type="bang">outputs bang all the time</outlet>
+        </outlets>
+        <arguments>
+            <argument number="0" type="float">test</argument>
+        </arguments>
+    </section>
     <section>
+
         <caution>
             <para>Caution text</para>
         </caution>
 
-        <para>
-            Paragraph text
-        </para>
+        <para></para>
+
+        <table>
+            <row>
+                <col>
+                    <para>column 1</para>
+                </col>
+                <col>
+                    <para>column 2</para>
+                </col>
+            </row>
+        </table>
 
         <pdexample width="200" height="100">
             <row>
@@ -55,4 +85,5 @@
         </pdexample>
 
     </section>
+</object>
 </pddoc>

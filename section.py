@@ -21,7 +21,81 @@
 
 __author__ = 'Serge Poltavski'
 
+import common
 
-class Section(object):
+
+class Container(object):
+    allowed_tags = ()
     def __init__(self):
-        self._element = []
+        self._xml = None
+        self._elements = []
+        self._text = ""
+
+    def add_child(self, child):
+        self._elements.append(child)
+
+    def from_xml(self, element):
+        pass
+
+    def clear(self):
+        self._elements = []
+
+
+class Para(Container):
+    def from_xml(self, para):
+        self._xml = para
+        self._text = para.text
+
+
+class Inlets(Container):
+    pass
+
+
+class Outlets(Container):
+    pass
+
+
+class Arguments(Container):
+    pass
+
+
+class Inlet(Container):
+    pass
+
+
+class Caution(Container):
+    pass
+
+
+class Table(Container):
+    pass
+
+
+class Pdexample(Container):
+    pass
+
+
+class Section(Container):
+    allowed_tags = ("para", "table", "pdexample", "caution", "inlet")
+
+    def __init__(self):
+        self._title = ""
+        self._elements = []
+        self._xml = None
+
+    def from_xml(self, element):
+        self._xml = element
+
+        if element.attrib.has_key("title"):
+            self._title = element.attrib["title"]
+
+        for child in element:
+            if child.tag not in self.allowed_tags:
+                common.warning("tag not allowed in %s: %s" % (element.tag, child.tag))
+
+            klass = globals()[child.tag.capitalize()]
+            obj = klass()
+            obj.from_xml(child)
+            self.add_child(obj)
+
+

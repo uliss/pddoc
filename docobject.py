@@ -210,8 +210,8 @@ class DocInlet(DocItem):
     def __init__(self, *args):
         super(self.__class__, self).__init__()
         self._type = ""
-        self._min_range = ""
-        self._max_range = ""
+        self._maxvalue = ""
+        self._minvalue = ""
         self._number = ""
 
     def is_valid_type(self, t):
@@ -219,13 +219,17 @@ class DocInlet(DocItem):
 
     def from_xml(self, xmlobj):
         self._type = xmlobj.attrib.get("type", "")
-        self._min_range = xmlobj.attrib.get("min_range", "")
-        self._max_range = xmlobj.attrib.get("max_range", "")
+        self._maxvalue = xmlobj.attrib.get("maxvalue", "")
+        self._minvalue = xmlobj.attrib.get("minvalue", "")
         self._number = xmlobj.attrib["number"]
         super(self.__class__, self).from_xml(xmlobj)
 
     def range(self):
-        return (self._min_range, self._max_range)
+        if not self._minvalue and not self._maxvalue:
+            return ()
+
+        return (float(self._minvalue), float(self._maxvalue))
+
 
     def type(self):
         return self._type
@@ -238,10 +242,24 @@ class DocOutlets(DocItem):
     def is_valid_tag(self, tag_name):
         return tag_name == "outlet"
 
+    def outlet_dict(self):
+        res = {}
+        for outl in self._elements:
+            n = outl._number
+            if not res.has_key(n):
+                res[n] = []
+
+            res[n].append(outl)
+
+        return res
+
 
 class DocOutlet(DocItem):
     def __init__(self, *args):
         super(self.__class__, self).__init__()
+        self._number = "0"
+
+
 
 
 class DocArguments(DocItem):

@@ -68,13 +68,22 @@ class HtmlDocVisitor(object):
     def example_end(self, ex):
         self._body += '</div>\n'
 
+    def has_inlets(self, obj):
+        return len(obj.inlet_dict()) > 1
+
+    def has_outlets(self, obj):
+        return len(obj.outlet_dict()) > 1
+
+    def core_type_help(self, t):
+        assert t in ("bang", "float", "list", "symbol", "any", "pointer")
+        return '<a href="http://puredata.info/wiki/%s.html">%s</a>' % (t, t)
+
     def inlets_begin(self, inlets):
-        inld = inlets.inlet_dict()
-        if len(inld) < 1:
+        if not self.has_inlets(inlets):
             return
 
-        self._body += '<div class="inlets">\n<div class="caption">Inlets:</div><table>\n'
-
+        self._body += '<div class="inlets">\n<h2>Inlets:</h2><table>\n'
+        inld = inlets.inlet_dict()
         for num in sorted(inld):
             row = inld[num]
             cs = len(row)
@@ -82,9 +91,11 @@ class HtmlDocVisitor(object):
             for inlc in row:
                 self._body += "<tr>\n"
                 if cs == lr:
-                    self._body += "<td rowspan=\"%s\" class=\"number\"><span>%s<span></td>\n" % (cs, num)
+                    self._body += "<td rowspan=\"%s\" class=\"number\"><span>%s</span></td>\n" % (cs, num)
 
-                self._body += "<td class=\"type\">%s</td>\n" % (inlc.type())
+                self._body += "<td class=\"type\">%s</td>\n" % (self.core_type_help(inlc.type()))
+                range_str = lambda x: ("&ndash;".join(map(str, x))) if (len(x) > 1) else ""
+                self._body += "<td class=\"range\">%s</td>\n" % (range_str(inlc.range()))
                 self._body += "<td class=\"description\">%s</td>\n" % (inlc.text())
                 self._body += "</tr>\n"
                 cs -= 1
@@ -93,16 +104,21 @@ class HtmlDocVisitor(object):
 
 
     def inlets_end(self, inlets):
-        inld = inlets.inlet_dict()
-        if len(inld) < 1:
+        if not self.has_inlets(inlets):
             return
 
         self._body += '</div>\n'
 
-    def outlets_begin(self, inl):
-        self._body += '<div class="outlets">\n<div class="caption">Outlets:</div>\n'
+    def outlets_begin(self, outlets):
+        if not self.has_outlets(outlets):
+            return
 
-    def outlets_end(self, inl):
+        self._body += '<div class="outlets">\n<h2>Outlets:</h2></div>\n'
+
+    def outlets_end(self, outlets):
+        if not self.has_outlets(outlets):
+            return
+
         self._body += '</div>\n'
 
     def header(self):

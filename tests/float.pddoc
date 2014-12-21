@@ -60,7 +60,7 @@
         <!-- inlets documentation -->
         <inlets>
             <inlet number="0" type="bang">outputs the currently stored value.</inlet>
-            <inlet number="0" type="float" min_range="0.0" max_range="1.0">outputs the currently stored value.</inlet>
+            <inlet number="0" type="float" minvalue="0.0" maxvalue="1.0">outputs the currently stored value.</inlet>
             <inlet number="1" type="symbol">range parameter.</inlet>
         </inlets>
         <!-- outlets documentation -->

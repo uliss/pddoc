@@ -99,6 +99,14 @@ class PdObject(PdBaseObject):
         if self.name() in ("r~", "receive~"):
             return [self.XLET_MESSAGE]
 
+        if self.name() == "dac~":
+            l = len(self.args)
+            if l == 0:
+                return [self.XLET_SOUND] * 2
+            else:
+                return [self.XLET_SOUND] * l
+
+
         # [osc~]
         if self.name() in ("osc~"):
             return [self.XLET_SOUND, self.XLET_MESSAGE]
@@ -125,9 +133,17 @@ class PdObject(PdBaseObject):
         # 3 inlets
         if self.name() in (
                 "clip"
-
         ):
             return [self.XLET_MESSAGE] * 3
+
+        # 2 sound
+        if self.name() in (
+                "*~", "-~", "+~", "/~"
+        ):
+            if len(self.args) == 0:
+                return [self.XLET_SOUND] * 2
+            else:
+                return [self.XLET_SOUND, self.XLET_MESSAGE]
 
 
     def outlets(self):
@@ -163,3 +179,9 @@ class PdObject(PdBaseObject):
                 "loadbang", "bang~"
         ):
             return [self.XLET_MESSAGE]
+
+        # 1 sound outlet
+        if self.name() in (
+                "+~", "*~", "-~", "/~"
+        ):
+            return [self.XLET_SOUND]

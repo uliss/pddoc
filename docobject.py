@@ -220,6 +220,17 @@ class DocCol(DocItem):
 class DocPdconnect(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self)
+        self._src_id = ""
+        self._dest_id = ""
+        self._src_out = None
+        self._dest_in = None
+
+    def from_xml(self, xmlobj):
+        self._src_out = int(xmlobj.attrib["src_out"])
+        self._dest_in = int(xmlobj.attrib["dest_in"])
+        self._dest_id = xmlobj.attrib["dest"]
+        self._src_id = xmlobj.attrib["src"]
+        DocItem.from_xml(self, xmlobj)
 
 class DocPdexample(DocItem):
     def __init__(self, *args):

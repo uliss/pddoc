@@ -44,6 +44,7 @@ class HtmlDocVisitor(object):
         self._image_counter = 0
         self._cur_layout = []
         self._example_brect = ()
+        self._pdobj_id_map = {}
 
     def title_begin(self, t):
         self._title = t.text()
@@ -140,6 +141,7 @@ class HtmlDocVisitor(object):
         self._cur_layout[-1].add_item(litem)
         setattr(pdm, "layout", litem)
         cnv.append_object(pdm)
+        self._pdobj_id_map[obj._id] = pdm.id
 
 
     def pdobject_begin(self, obj):
@@ -148,12 +150,15 @@ class HtmlDocVisitor(object):
         args.append(obj.name())
         args.append(obj._args)
 
+
         pdo = pdobject.PdObject(10, 10, -1, -1, args)
+        pdo._id = obj._id
         litem = LayoutItem(0, 0, 50, 20)
         self._cur_layout[-1].add_item(litem)
         setattr(pdo, "layout", litem)
 
         cnv.append_object(pdo)
+        self._pdobj_id_map[obj._id] = pdo.id
 
     def pdobject_end(self, obj):
         pdobj = self._cur_canvas.objects[-1]
@@ -174,6 +179,14 @@ class HtmlDocVisitor(object):
         walker.draw(self._cur_canvas, painter)
 
         self._body += '<img src="%s"/>\n' % (fname)
+
+    def pdconnect_begin(self, c):
+        src_id = self._pdobj_id_map[c._src_id]
+        dest_id = self._pdobj_id_map[c._dest_id]
+        src_out = c._src_out
+        dest_in = c._dest_in
+
+        self._cur_canvas.add_connection(src_id, src_out, dest_id, dest_in)
 
     def inlets_begin(self, inlets):
         if not self.has_inlets(inlets):

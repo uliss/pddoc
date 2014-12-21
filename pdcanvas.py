@@ -82,6 +82,8 @@ class PdCanvas(PdBaseObject):
         if src_obj and dest_obj:
             ckey = self.make_connection_key(sid, soutl, did, dinl)
             self.connections[ckey] = (src_obj, soutl, dest_obj, dinl)
+        else:
+            common.warning("connection not found: %s:%d => %s:%d" % (sid, soutl, did, dinl))
 
     def remove_connection(self, sid, soutl, did, dinl):
         ckey = self.make_connection_key(sid, soutl, did, dinl)

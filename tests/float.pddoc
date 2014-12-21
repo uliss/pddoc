@@ -24,19 +24,17 @@
             </aliases>
         </meta>
         <example>
-            <pdexample width="200" height="100">
+            <pdexample width="200" height="200">
                 <row>
                     <pdmessage id="msg1" text="440" comment="440 Hz"/>
                     <pdmessage id="msg2" text="442" comment="442 Hz"/>
-                </row>
-                <row>
                     <col>
-                        <pdobject id="osc~" name="osc~" params="415" comment="oscillator">
+                        <pdobject id="osc~" name="osc~" args="415" comment="oscillator">
                             <pdinlet type="audio"/>
                             <pdinlet type="control"/>
                             <pdoutlet type="audio"/>
                         </pdobject>
-                        <pdobject id="*~" name="*~" param="0.5" comment="gain">
+                        <pdobject id="*~" name="*~" args="0.5" comment="gain">
                             <pdinlet type="audio"/>
                             <pdinlet type="control"/>
                             <pdoutlet type="audio"/>
@@ -53,9 +51,9 @@
                 <pdconnect src="*~" src_out="0" dest="dac~" dest_in="0"/>
                 <pdconnect src="*~" src_out="0" dest="dac~" dest_in="1"/>
             </pdexample>
-            <pdexample>
-                <pdinclude file="objects.pd"/>
-            </pdexample>
+            <!--<pdexample width="10" height="10">-->
+            <!--<pdinclude file="objects.pd"/>-->
+            <!--</pdexample>-->
         </example>
         <!-- inlets documentation -->
         <inlets>
@@ -85,7 +83,7 @@
                     <a href="pddoc://symbol.pd">symbol</a>
                 </item>
             </itemize>
-            <pdobject id="f1" name="float" params="1 2 3" comment="float">
+            <pdobject id="f1" name="float" args="1 2 3" comment="float">
                 <pdinlet type="control"/>
                 <pdinlet type="control"/>
                 <pdoutlet type="control"/>

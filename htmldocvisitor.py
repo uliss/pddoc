@@ -122,7 +122,7 @@ class HtmlDocVisitor(object):
 
 
     def col_begin(self, col):
-        lv = Layout(Layout.VERTICAL, 10)
+        lv = Layout(Layout.VERTICAL, 15)
         self._cur_layout.append(lv)
 
     def col_end(self, col):
@@ -136,7 +136,7 @@ class HtmlDocVisitor(object):
         cnv = self._cur_canvas
         pdm = pdmessage.PdMessage(10, 10, [obj._msg])
 
-        litem = LayoutItem(0, 0, 50, 10)
+        litem = LayoutItem(0, 0, 50, 20)
         self._cur_layout[-1].add_item(litem)
         setattr(pdm, "layout", litem)
         cnv.append_object(pdm)

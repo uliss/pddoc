@@ -22,12 +22,14 @@
 __author__ = 'Serge Poltavski'
 
 from pdobject import *
+import common
+
 
 class PdCanvas(PdBaseObject):
     TYPE_NONE, TYPE_WINDOW, TYPE_SUBPATCH, TYPE_GRAPH = range(0, 4)
 
     def __init__(self, x, y, w, h, **kwargs):
-        super(PdCanvas, self).__init__(x, y, w, h)
+        PdBaseObject.__init__(self, x, y, w, h)
         self.objects = []
         self.id_counter = 0
         self._name = ""
@@ -51,6 +53,10 @@ class PdCanvas(PdBaseObject):
         self.graphs.append(obj)
 
     def append_object(self, obj):
+        if self == obj:
+            common.warning("Self assignment %s" % (common.error_place()))
+            return
+
         assert issubclass(obj.__class__, PdBaseObject)
 
         if issubclass(obj.__class__, PdObject):

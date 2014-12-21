@@ -23,13 +23,20 @@ from __future__ import print_function
 __author__ = 'Serge Poltavski'
 
 import sys
+import os.path as path
 from termcolor import colored
 from colorama import init
+import inspect
 
 # use Colorama to make Termcolor work on Windows too
 init()
 
 def warning(*objs):
     print(colored("WARNING: ", "red"), *objs, file=sys.stderr)
+
+
+def error_place():
+    info = inspect.getframeinfo(inspect.currentframe().f_back)[0:3]
+    return '[file: %s, method: %s, line:%d]' % (path.basename(info[0]), info[2], info[1])
 
 

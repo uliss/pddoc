@@ -21,7 +21,12 @@
 
 __author__ = 'Serge Poltavski'
 
-
+import pdcanvas
+import pddrawer
+import pdobject
+import pdmessage
+import cairopainter
+from layout import *
 
 class HtmlDocVisitor(object):
     def __init__(self, tmpl="default.tmpl"):
@@ -35,6 +40,10 @@ class HtmlDocVisitor(object):
         self._website = ""
         self._version = ""
         self._inlet_counter = 0
+        self._cur_canvas = None
+        self._image_counter = 0
+        self._cur_layout = []
+        self._example_brect = ()
 
     def title_begin(self, t):
         self._title = t.text()
@@ -95,6 +104,76 @@ class HtmlDocVisitor(object):
                 self._body += "<td class=\"description\">%s</td>\n" % (xl.text())
                 self._body += "</tr>\n"
                 col_span -= 1
+
+    def pdexample_begin(self, pd):
+        self._cur_canvas = pdcanvas.PdCanvas(0, 0, pd.width(), pd.height(), name="10")
+        self._cur_canvas.type = pdcanvas.PdCanvas.TYPE_WINDOW
+
+    def row_begin(self, row):
+        lh = Layout(Layout.HORIZONTAL, 10)
+        self._cur_layout.append(lh)
+
+    def row_end(self, row):
+        lh = self._cur_layout.pop()
+        if self._cur_layout:
+            self._cur_layout[-1].add_layout(lh)
+
+        self._example_brect = lh.brect()
+
+
+    def col_begin(self, col):
+        lv = Layout(Layout.VERTICAL, 10)
+        self._cur_layout.append(lv)
+
+    def col_end(self, col):
+        lv = self._cur_layout.pop()
+        if len(self._cur_layout) > 0:
+            self._cur_layout[-1].add_layout(lv)
+
+        self._example_brect = lv.brect()
+
+    def pdmessage_begin(self, obj):
+        cnv = self._cur_canvas
+        pdm = pdmessage.PdMessage(10, 10, [obj._msg])
+
+        litem = LayoutItem(0, 0, 50, 10)
+        self._cur_layout[-1].add_item(litem)
+        setattr(pdm, "layout", litem)
+        cnv.append_object(pdm)
+
+
+    def pdobject_begin(self, obj):
+        cnv = self._cur_canvas
+        args = []
+        args.append(obj.name())
+        args.append(obj._args)
+
+        pdo = pdobject.PdObject(10, 10, -1, -1, args)
+        litem = LayoutItem(0, 0, 50, 20)
+        self._cur_layout[-1].add_item(litem)
+        setattr(pdo, "layout", litem)
+
+        cnv.append_object(pdo)
+
+    def pdobject_end(self, obj):
+        pdobj = self._cur_canvas.objects[-1]
+
+    def pdexample_end(self, pd):
+        for pdo in self._cur_canvas.objects:
+            litem = getattr(pdo, "layout")
+            pdo.x = litem.x()
+            pdo.y = litem.y()
+
+        self._image_counter += 1
+        fname = "image_%02d.png" % (self._image_counter)
+
+        img_width = self._example_brect[2]
+        img_height = self._example_brect[3]
+        painter = cairopainter.CairoPainter(img_width, img_height, fname)
+        walker = pddrawer.PdDrawer()
+        walker.draw(self._cur_canvas, painter)
+
+        self._body += '<img src="%s"/>\n' % (fname)
 
     def inlets_begin(self, inlets):
         if not self.has_inlets(inlets):

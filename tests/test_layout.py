@@ -89,6 +89,23 @@ class TestLayout(unittest.TestCase):
         self.assertEqual(lv.item(0).brect(), (10, 10, 10, 10))
         self.assertEqual(lv.item(1).brect(), (10, 20, 10, 10))
 
+    def test_move_by2(self):
+        lv = Layout(Layout.VERTICAL)
+        iv = LayoutItem(0, 0, 10, 10)
+        lv.add_item(iv)
+
+        lv2 = Layout(Layout.VERTICAL)
+        iv2 = LayoutItem(0, 0, 10, 10)
+        lv2.add_item(iv2)
+        lv2.add_item(iv2)
+
+        lv.add_layout(lv2)
+
+        self.assertEqual(iv.brect(), (0, 0, 10, 10))
+        self.assertEqual(lv.item(1).brect(), (0, 10, 10, 20))
+        self.assertEqual(lv.item(1).item(0).brect(), (0, 10, 10, 10))
+        self.assertEqual(lv.item(1).item(1).brect(), (0, 20, 10, 10))
+
 
     def test_brect(self):
         lv = Layout(Layout.VERTICAL)

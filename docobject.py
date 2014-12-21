@@ -151,9 +151,95 @@ class DocExample(DocItem):
         return tag_name in ("pdexample")
 
 
+class DocPdmessage(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self)
+        self._id = ""
+        self._comment = ""
+
+    def from_xml(self, xmlobj):
+        try:
+            self._id = xmlobj.attrib["id"]
+            self._msg = xmlobj.attrib["text"]
+            self._common = xmlobj.attrib.get("comment", "")
+            DocItem.from_xml(self, xmlobj)
+        except KeyError, e:
+            common.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
+
+
+class DocPdobject(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self)
+        self._id = ""
+        self._name = ""
+        self._args = ""
+        self._comment = ""
+
+    def is_valid_tag(self, tag_name):
+        return tag_name in ("pdinlet", "pdoutlet")
+
+    def name(self):
+        return self._name
+
+    def from_xml(self, xmlobj):
+        try:
+            self._id = xmlobj.attrib["id"]
+            self._name = xmlobj.attrib["name"]
+            self._args = xmlobj.attrib.get("args", "")
+            DocItem.from_xml(self, xmlobj)
+        except KeyError, e:
+            common.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
+
+
+class DocPdinlet(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self)
+
+
+class DocPdoutlet(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self)
+
+
+class DocRow(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self)
+
+    def is_valid_tag(self, tag_name):
+        return tag_name in ("col", "pdmessage", "pdobject")
+
+
+class DocCol(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self)
+
+    def is_valid_tag(self, tag_name):
+        return tag_name in ("row", "pdmessage", "pdobject")
+
+
+class DocPdconnect(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self)
+
 class DocPdexample(DocItem):
     def __init__(self, *args):
         super(self.__class__, self).__init__()
+        self._width = 0
+        self._height = 0
+
+    def is_valid_tag(self, tag_name):
+        return tag_name in ("row", "col", "pdconnect")
+
+    def from_xml(self, xmlobj):
+        self._width = int(xmlobj.attrib["width"])
+        self._height = int(xmlobj.attrib["height"])
+        DocItem.from_xml(self, xmlobj)
+
+    def width(self):
+        return int(self._width)
+
+    def height(self):
+        return int(self._height)
 
 
 class DocWebsite(DocItem):

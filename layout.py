@@ -124,9 +124,9 @@ class Layout(object):
             prev_item = self._elements[-1]
 
             if self._dir == self.HORIZONTAL:
-                layout.move_by(prev_item.right(), 0)
+                layout.move_by(prev_item.right() + self._distance, 0)
             elif self._dir == self.VERTICAL:
-                layout.move_by(0, prev_item.bottom())
+                layout.move_by(0, prev_item.bottom() + self._distance)
             else:
                 assert False
 
@@ -159,6 +159,24 @@ class Layout(object):
         x1 = max(right)
         y1 = max(bottom)
         return (x0, y0, x1 - x0, y1 - y0)
+
+    def x(self):
+        return self.brect()[0]
+
+    def y(self):
+        return self.brect()[1]
+
+    def width(self):
+        return self.brect()[2]
+
+    def height(self):
+        return self.brect()[3]
+
+    def top(self):
+        return self.y()
+
+    def left(self):
+        return self.x()
 
     def bottom(self):
         br = self.brect()

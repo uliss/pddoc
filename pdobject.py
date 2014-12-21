@@ -27,7 +27,7 @@ from pdbaseobject import *
 
 class PdObject(PdBaseObject):
     def __init__(self, x, y, w, h, args):
-        super(PdObject, self).__init__(x, y, w, h)
+        PdBaseObject.__init__(self, x, y, w, h)
         self.id = -1
         self.args = args
 

@@ -63,7 +63,7 @@ class CairoPainter(PdPainter):
 
 
     def __init__(self, width, height, output, format="png"):
-        super(CairoPainter, self).__init__()
+        PdPainter.__init__(self)
 
         assert width > 0
         assert height > 0

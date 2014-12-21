@@ -189,8 +189,57 @@ class DocInlets(DocItem):
     def __init__(self, *args):
         super(self.__class__, self).__init__()
 
+    def is_valid_tag(self, tag_name):
+        return tag_name == "inlet"
+
+    def inlet_dict(self):
+        res = {}
+        for inl in self._elements:
+            n = inl._number
+            if not res.has_key(n):
+                res[n] = []
+
+            res[n].append(inl)
+
+        return res
+
+
+class DocInlet(DocItem):
+    allowed_types = ("bang", "float", "list", "symbol", "pointer", "any")
+
+    def __init__(self, *args):
+        super(self.__class__, self).__init__()
+        self._type = ""
+        self._min_range = ""
+        self._max_range = ""
+        self._number = ""
+
+    def is_valid_type(self, t):
+        return t in self.allowed_types
+
+    def from_xml(self, xmlobj):
+        self._type = xmlobj.attrib.get("type", "")
+        self._min_range = xmlobj.attrib.get("min_range", "")
+        self._max_range = xmlobj.attrib.get("max_range", "")
+        self._number = xmlobj.attrib["number"]
+        super(self.__class__, self).from_xml(xmlobj)
+
+    def range(self):
+        return (self._min_range, self._max_range)
+
+    def type(self):
+        return self._type
+
 
 class DocOutlets(DocItem):
+    def __init__(self, *args):
+        super(self.__class__, self).__init__()
+
+    def is_valid_tag(self, tag_name):
+        return tag_name == "outlet"
+
+
+class DocOutlet(DocItem):
     def __init__(self, *args):
         super(self.__class__, self).__init__()
 
@@ -232,7 +281,10 @@ if __name__ == '__main__':
             v = htmldocvisitor.HtmlDocVisitor()
             dobj.traverse(v)
 
-            print v
+            s = str(v)
+            f = open("test.html", "w")
+            f.write(s)
+            f.close()
             break
 
 

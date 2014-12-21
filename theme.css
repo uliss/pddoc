@@ -37,28 +37,27 @@ div.header .description {
    margin-left: 20px;
 }
 
-div.inlets, div.outlets {
+div.inlets, div.outlets, div.arguments {
    margin-top: 20px;
    margin-left: 10px;
    border-bottom: 1px dotted #ADE;
    padding-bottom: 10px;
 }
 
-div.inlets h2,  div.outlets h2 {
+div.inlets h2,  div.outlets h2, div.arguments h2{
    font-weight: bold;
    font-family: "Verdana";
    font-size: 15px;
    color: #777;
-   float: left;
+   //float: left;
    padding: 0 40px 0 0;
    margin: 0;
-   width: 100px;
+   width: 180px;
 }
 
 div.inlets table, div.outlets table {
-   clear: right;
-   margin-left: 20px;
-   border-spacing: 6px;
+   border-spacing: 10px;
+   margin-left: 150px;
 }
 
 div.inlets td, div.outlets td {
@@ -67,11 +66,12 @@ div.inlets td, div.outlets td {
 
 div.inlets td.number, div.outlets td.number {
    border-right:3px solid #AAA;
+   padding: 0;
 }
 
 div.inlets td.number span, div.outlets td.number span {
    background-color: #EEE;
-   padding: 1px;
+   padding: 0px;
 }
 
 div.inlets .type, div.outlets .type {
@@ -80,6 +80,17 @@ div.inlets .type, div.outlets .type {
 
 div.inlets .range, div.outlets .range {
    width: 100px;
+}
+
+div.arguments ol {
+   margin-left: 150px;
+   padding: 0px;
+   list-style-position: inside;
+}
+
+div.arguments li {
+   margin: 0;
+   padding: 0 0 0 10px;
 }
 
 

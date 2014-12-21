@@ -212,35 +212,42 @@ class DocInlets(DocXlets):
         return self.xlet_dict()
 
 
-class DocXlet(DocItem):
+class DoxTypeElement(DocItem):
     allowed_types = ("bang", "float", "list", "symbol", "pointer", "any")
 
     def __init__(self, *args):
         DocItem.__init__(self)
         self._type = ""
-        self._maxvalue = ""
-        self._minvalue = ""
-        self._number = ""
 
     def is_valid_type(self, t):
         return t in self.allowed_types
 
+    def type(self):
+        return self._type
+
     def from_xml(self, xmlobj):
-        self._type = xmlobj.attrib.get("type", "")
+        self._type = xmlobj.attrib["type"]
+        DocItem.from_xml(self, xmlobj)
+
+
+class DocXlet(DoxTypeElement):
+    def __init__(self, *args):
+        DoxTypeElement.__init__(self, args)
+        self._maxvalue = ""
+        self._minvalue = ""
+        self._number = ""
+
+    def from_xml(self, xmlobj):
         self._maxvalue = xmlobj.attrib.get("maxvalue", "")
         self._minvalue = xmlobj.attrib.get("minvalue", "")
         self._number = xmlobj.attrib["number"]
-        DocItem.from_xml(self, xmlobj)
+        DoxTypeElement.from_xml(self, xmlobj)
 
     def range(self):
         if not self._minvalue and not self._maxvalue:
             return ()
 
         return (float(self._minvalue), float(self._maxvalue))
-
-
-    def type(self):
-        return self._type
 
 
 class DocInlet(DocXlet):
@@ -264,9 +271,20 @@ class DocOutlet(DocXlet):
         DocXlet.__init__(self, args)
 
 
+class DocArgument(DoxTypeElement):
+    def __init__(self, *args):
+        DoxTypeElement.__init__(self, args)
+
+
 class DocArguments(DocItem):
     def __init__(self, *args):
         super(self.__class__, self).__init__()
+
+    def is_valid_tag(self, tag_name):
+        return tag_name == "argument"
+
+    def argument_count(self):
+        return len(self._elements)
 
 
 class DocInfo(DocItem):

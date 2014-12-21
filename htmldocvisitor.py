@@ -116,6 +116,19 @@ class HtmlDocVisitor(object):
         self._body += "</table>\n"
         self._body += '</div>\n'
 
+    def arguments_begin(self, args):
+        if args.argument_count() < 1:
+            return
+
+        self._body += '<div class="arguments">\n<h2>Arguments:</h2>\n'
+        self._body += '<ol>\n'
+
+        for arg in args._elements:
+            self._body += '<li>%s</li>' % (arg.text())
+
+        self._body += '</ol>\n'
+        self._body += "</div>\n"
+
     def header(self):
         res = '<div class="header">\n' \
               '<h1>[%s]</h1>\n' \

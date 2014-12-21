@@ -1,0 +1,89 @@
+html, body, table, td, tr, thead, tbody {
+   font-family: "Verdana";
+   margin:0;
+   padding:0;
+   font-size:12px;
+}
+
+a:link, a:visited, a:active {
+   text-decoration:none;
+   color:#555;
+}
+
+a:hover {
+   color: #22A;
+   text-decoration:underline;
+}
+
+td.number {
+   vertical-align:top;
+}
+
+div.header {
+   background-color: #EED;
+   padding: 10px;
+}
+
+div.header h1 {
+   font-family: "Verdana";
+   font-size: 22px;
+   margin: 0 0 0 0;
+}
+
+div.header .description {
+   color: #000;
+   font-family: "Monaco";
+   font-size: 12px;
+   margin-left: 20px;
+}
+
+div.inlets, div.outlets {
+   margin-top: 20px;
+   margin-left: 10px;
+   border-bottom: 1px dotted #ADE;
+   padding-bottom: 10px;
+}
+
+div.inlets h2,  div.outlets h2 {
+   font-weight: bold;
+   font-family: "Verdana";
+   font-size: 15px;
+   color: #777;
+   float: left;
+   padding: 0 40px 0 0;
+   margin: 0;
+   width: 100px;
+}
+
+div.inlets table, div.outlets table {
+   clear: right;
+   margin-left: 20px;
+   border-spacing: 6px;
+}
+
+div.inlets td, div.outlets td {
+   padding: 1px;
+}
+
+div.inlets td.number, div.outlets td.number {
+   border-right:3px solid #AAA;
+}
+
+div.inlets td.number span, div.outlets td.number span {
+   background-color: #EEE;
+   padding: 1px;
+}
+
+div.inlets .type, div.outlets .type {
+   width: 50px;
+}
+
+div.inlets .range, div.outlets .range {
+   width: 100px;
+}
+
+
+div.footer {
+   margin-top: 20px;
+}
+

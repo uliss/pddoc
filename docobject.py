@@ -185,14 +185,11 @@ class DocAliases(DocItem):
                 self._aliases.append(child.text)
 
 
-class DocInlets(DocItem):
+class DocXlets(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self)
 
-    def is_valid_tag(self, tag_name):
-        return tag_name == "inlet"
-
-    def inlet_dict(self):
+    def xlet_dict(self):
         res = {}
         for inl in self._elements:
             n = inl._number
@@ -204,11 +201,22 @@ class DocInlets(DocItem):
         return res
 
 
-class DocInlet(DocItem):
+class DocInlets(DocXlets):
+    def __init__(self, *args):
+        super(self.__class__, self).__init__()
+
+    def is_valid_tag(self, tag_name):
+        return tag_name == "inlet"
+
+    def inlet_dict(self):
+        return self.xlet_dict()
+
+
+class DocXlet(DocItem):
     allowed_types = ("bang", "float", "list", "symbol", "pointer", "any")
 
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self)
         self._type = ""
         self._maxvalue = ""
         self._minvalue = ""
@@ -222,7 +230,7 @@ class DocInlet(DocItem):
         self._maxvalue = xmlobj.attrib.get("maxvalue", "")
         self._minvalue = xmlobj.attrib.get("minvalue", "")
         self._number = xmlobj.attrib["number"]
-        super(self.__class__, self).from_xml(xmlobj)
+        DocItem.from_xml(self, xmlobj)
 
     def range(self):
         if not self._minvalue and not self._maxvalue:
@@ -235,31 +243,25 @@ class DocInlet(DocItem):
         return self._type
 
 
-class DocOutlets(DocItem):
+class DocInlet(DocXlet):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocXlet.__init__(self, args)
+
+
+class DocOutlets(DocXlets):
+    def __init__(self, *args):
+        DocXlets.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
         return tag_name == "outlet"
 
     def outlet_dict(self):
-        res = {}
-        for outl in self._elements:
-            n = outl._number
-            if not res.has_key(n):
-                res[n] = []
-
-            res[n].append(outl)
-
-        return res
+        return self.xlet_dict()
 
 
-class DocOutlet(DocItem):
+class DocOutlet(DocXlet):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
-        self._number = "0"
-
-
+        DocXlet.__init__(self, args)
 
 
 class DocArguments(DocItem):
@@ -282,7 +284,7 @@ class DocObject(DocItem):
 
     def from_xml(self, xobj):
         self._name = xobj.attrib["name"]
-        super(self.__class__, self).from_xml(xobj)
+        DocItem.from_xml(self, xobj)
 
 
 if __name__ == '__main__':

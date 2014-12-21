@@ -69,56 +69,51 @@ class HtmlDocVisitor(object):
         self._body += '</div>\n'
 
     def has_inlets(self, obj):
-        return len(obj.inlet_dict()) > 1
+        return len(obj.inlet_dict()) > 0
 
     def has_outlets(self, obj):
-        return len(obj.outlet_dict()) > 1
+        return len(obj.outlet_dict()) > 0
 
     def core_type_help(self, t):
         assert t in ("bang", "float", "list", "symbol", "any", "pointer")
         return '<a href="http://puredata.info/wiki/%s.html">%s</a>' % (t, t)
 
+    def process_xlets(self, xlets):
+        for xlet_number in sorted(xlets):
+            xlet_list = xlets[xlet_number]
+            col_span = len(xlet_list)
+            xlet_list_count = col_span
+
+            for xl in xlet_list:
+                self._body += "<tr>\n"
+                if col_span == xlet_list_count:
+                    self._body += "<td rowspan=\"%s\" class=\"number\"><span>%s</span></td>\n" % (col_span, xlet_number)
+
+                self._body += "<td class=\"type\">%s</td>\n" % (self.core_type_help(xl.type()))
+                range_str = lambda x: ("&ndash;".join(map(str, x))) if (len(x) > 1) else "&nbsp;"
+                self._body += "<td class=\"range\">%s</td>\n" % (range_str(xl.range()))
+                self._body += "<td class=\"description\">%s</td>\n" % (xl.text())
+                self._body += "</tr>\n"
+                col_span -= 1
+
     def inlets_begin(self, inlets):
         if not self.has_inlets(inlets):
             return
 
-        self._body += '<div class="inlets">\n<h2>Inlets:</h2><table>\n'
-        inld = inlets.inlet_dict()
-        for num in sorted(inld):
-            row = inld[num]
-            cs = len(row)
-            lr = cs
-            for inlc in row:
-                self._body += "<tr>\n"
-                if cs == lr:
-                    self._body += "<td rowspan=\"%s\" class=\"number\"><span>%s</span></td>\n" % (cs, num)
-
-                self._body += "<td class=\"type\">%s</td>\n" % (self.core_type_help(inlc.type()))
-                range_str = lambda x: ("&ndash;".join(map(str, x))) if (len(x) > 1) else ""
-                self._body += "<td class=\"range\">%s</td>\n" % (range_str(inlc.range()))
-                self._body += "<td class=\"description\">%s</td>\n" % (inlc.text())
-                self._body += "</tr>\n"
-                cs -= 1
-
+        self._body += '<div class="inlets">\n<h2>Inlets:</h2>\n'
+        self._body += "<table>\n"
+        self.process_xlets(inlets.inlet_dict())
         self._body += "</table>\n"
-
-
-    def inlets_end(self, inlets):
-        if not self.has_inlets(inlets):
-            return
-
         self._body += '</div>\n'
 
     def outlets_begin(self, outlets):
         if not self.has_outlets(outlets):
             return
 
-        self._body += '<div class="outlets">\n<h2>Outlets:</h2></div>\n'
-
-    def outlets_end(self, outlets):
-        if not self.has_outlets(outlets):
-            return
-
+        self._body += '<div class="outlets">\n<h2>Outlets:</h2>\n'
+        self._body += "<table>\n"
+        self.process_xlets(outlets.outlet_dict())
+        self._body += "</table>\n"
         self._body += '</div>\n'
 
     def header(self):

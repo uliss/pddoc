@@ -26,6 +26,7 @@ import pddrawer
 import pdobject
 import pdmessage
 import cairopainter
+import pdparser
 from layout import *
 
 class HtmlDocVisitor(object):
@@ -45,6 +46,7 @@ class HtmlDocVisitor(object):
         self._cur_layout = []
         self._example_brect = ()
         self._pdobj_id_map = {}
+        self._include = None
 
     def title_begin(self, t):
         self._title = t.text()
@@ -163,22 +165,42 @@ class HtmlDocVisitor(object):
     def pdobject_end(self, obj):
         pdobj = self._cur_canvas.objects[-1]
 
+    def pdinclude_begin(self, inc):
+        fname = inc._file
+        parser = pdparser.PdParser()
+        parser.parse(fname)
+
+        self._cur_canvas = parser.canvas
+        self._include = True
+
+
     def pdexample_end(self, pd):
-        for pdo in self._cur_canvas.objects:
-            litem = getattr(pdo, "layout")
-            pdo.x = litem.x()
-            pdo.y = litem.y()
+        img_width = pd.width()
+        img_height = pd.height()
+
+        if self._include:
+            img_height = self._cur_canvas.width
+            img_width = self._cur_canvas.height
+        else:
+            for pdo in self._cur_canvas.objects:
+                litem = getattr(pdo, "layout")
+                pdo.x = litem.x()
+                pdo.y = litem.y()
+
+            img_width = self._example_brect[2]
+            img_height = self._example_brect[3]
+
 
         self._image_counter += 1
         fname = "image_%02d.png" % (self._image_counter)
 
-        img_width = self._example_brect[2]
-        img_height = self._example_brect[3]
         painter = cairopainter.CairoPainter(img_width, img_height, fname)
         walker = pddrawer.PdDrawer()
         walker.draw(self._cur_canvas, painter)
 
         self._body += '<img src="%s"/>\n' % (fname)
+
+        self._include = False
 
     def pdconnect_begin(self, c):
         src_id = self._pdobj_id_map[c._src_id]

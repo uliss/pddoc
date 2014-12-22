@@ -217,6 +217,15 @@ class DocCol(DocItem):
         return tag_name in ("row", "pdmessage", "pdobject")
 
 
+class DocPdinclude(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self)
+        self._file = ""
+
+    def from_xml(self, xmlobj):
+        self._file = xmlobj.attrib["file"]
+        DocItem.from_xml(self, xmlobj)
+
 class DocPdconnect(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self)
@@ -239,7 +248,7 @@ class DocPdexample(DocItem):
         self._height = 0
 
     def is_valid_tag(self, tag_name):
-        return tag_name in ("row", "col", "pdconnect")
+        return tag_name in ("row", "col", "pdconnect", "pdinclude")
 
     def from_xml(self, xmlobj):
         self._width = int(xmlobj.attrib["width"])
@@ -329,7 +338,7 @@ class DoxTypeElement(DocItem):
 
 class DocXlet(DoxTypeElement):
     def __init__(self, *args):
-        DoxTypeElement.__init__(self, args)
+        DoxTypeElement.__init__(self, *args)
         self._maxvalue = ""
         self._minvalue = ""
         self._number = ""

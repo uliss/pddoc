@@ -1,6 +1,6 @@
 # /usr/bin/env python
 
-# Copyright (C) 2014 by Serge Poltavski                                 #
+#   Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -18,46 +18,20 @@
 
 
 # -*- coding: utf-8 -*-
+from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pdbaseobject import *
+from pdcomment import *
 
 
-class PdComment(PdBaseObject):
-    def __init__(self, x, y, args):
-        super(PdComment, self).__init__(x, y, -1, -1)
-        self.args = args
-
-    @staticmethod
-    def unescape(str):
-        return str.strip() \
-            .replace(chr(13), "") \
-            .replace(chr(10), "") \
-            .replace("\\;", ";") \
-            .replace("\\,", ",")
-
-    def text(self):
-        res = ""
-
-        for a in self.args:
-            a = self.unescape(a)
-
-            if a == ",":
-                res += ","
-            elif a == ";":
-                res += ";"
-            else:
-                res += " " + a
-
-        res = res.strip()
-
-        return res
+class TestPdComment(TestCase):
+    def test_unescape(self):
+        self.assertEqual(PdComment.unescape("a\n\rb"), "ab")
+        self.assertEqual(PdComment.unescape('\\,'), ',')
+        self.assertEqual(PdComment.unescape("\\;"), ";")
 
 
-    def __str__(self):
-        res = "# %-39s {x:%i,y:%i}" % (self.text(), self.x, self.y)
-        return res
-
-    def draw(self, painter):
-        painter.draw_comment(self)
+    def test_text(self):
+        c = PdComment(0, 0, ['test', 'message', 'with', '\\,', '\\;', ' special', 'chars'])
+        self.assertEqual(c.text(), 'test message with,; special chars')

@@ -21,7 +21,6 @@
 
 __author__ = 'Serge Poltavski'
 
-import docitem
 
 
 class DocTitle(docitem.DocItem):

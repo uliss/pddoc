@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2014 by Serge Poltavski                                 #
+# Copyright (C) 2014 by Serge Poltavski                                   #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -23,36 +23,65 @@ __author__ = 'Serge Poltavski'
 
 import re
 from pdbaseobject import *
-
+from xletcalcdatabase import *
+import six
 
 class PdObject(PdBaseObject):
-    def __init__(self, x, y, w, h, args):
+    xlet_calculator = XletCalcDatabase()
+    # calculates xlets number
+    XMETHOD_CALCULATE = 0
+    # no calculation, xlets should be defined manually by calling set_inlets
+    XMETHOD_EXPLICIT = 1
+
+    def __init__(self, name, x=0, y=0, w=0, h=0, args=[]):
         PdBaseObject.__init__(self, x, y, w, h)
-        self.id = -1
-        self.args = args
+        self._id = -1
+        assert isinstance(name, six.string_types)
+        assert len(name) > 0
 
-    def is_connected(self, obj):
-        assert issubclass(obj.__class__, self.__class__)
+        self._name = name
 
-        if obj in self.connected_objects:
-            return True
-        return False
+        assert isinstance(args, list)
+        self._args = args
 
-    def connect_to(self, obj):
-        assert issubclass(obj.__class__, self.__class__)
+        self._inlets = []
+        self._outlets = []
+        self._xlets_method = self.XMETHOD_CALCULATE
 
-        if not self.is_connected(obj):
-            self.connect_to(obj)
+    @property
+    def id(self):
+        return self._id
 
-        if not obj.is_connected(self):
-            obj.connect_to(self)
+    @id.setter
+    def id(self, id):
+        self._id = int(id)
 
-    def to_string(self):
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, n):
+        assert isinstance(n, six.string_types)
+        assert len(n) > 0
+        self._name = n
+
+    @property
+    def args(self):
+        return self._args
+
+    def append_arg(self, a):
+        self._args.append(a)
+
+    def num_args(self):
+        return len(self._args)
+
+    def args_to_string(self):
         res = ""
 
         esc_args = []
         for arg in self.args:
-            esc_args.append(re.sub(r'\\(.)', r'\1', arg))
+            esc_args.append(PdObject.unescape(arg))
 
         for arg in esc_args:
             if arg == ",":
@@ -65,126 +94,32 @@ class PdObject(PdBaseObject):
         res = " ".join(res.strip().split())
         return res
 
+    def to_string(self):
+        res = PdObject.unescape(self.name) + ' ' + self.args_to_string()
+        return res.strip()
+
     def __str__(self):
-        res = "[%-40s {x:%i,y:%i,id:%i}" % (" ".join(self.args) + "]", self.x, self.y, self.id)
+        res = "[%-40s {x:%i,y:%i,id:%i}" % (self.to_string() + "]", self.x, self.y, self.id)
         return res
 
     def draw(self, painter):
         painter.draw_object(self)
 
-    def name(self):
-        return self.args[0]
-
     def inlets(self):
-        # [b] or [bang]
-        if self.name() in ("bang", "b"):
-            return [self.XLET_MESSAGE]
-
-        # [f], [float], [i], [int], [symbol]
-        if self.name() in ("float", "f", "int", "i", "symbol"):
-            return [self.XLET_MESSAGE, self.XLET_MESSAGE]
-
-        # [s] or [send]
-        if self.name() in ("s", "send"):
-            if len(self.args) > 1:
-                return [self.XLET_MESSAGE]
-            else:
-                return [self.XLET_MESSAGE, self.XLET_MESSAGE]
-
-        # [s~] or [send~]
-        if self.name() in ("s~", "send~"):
-            return [self.XLET_SOUND]
-
-        # [r~] or [receive~]
-        if self.name() in ("r~", "receive~"):
-            return [self.XLET_MESSAGE]
-
-        if self.name() == "dac~":
-            l = len(self.args)
-            if l == 0:
-                return [self.XLET_SOUND] * 2
-            else:
-                return [self.XLET_SOUND] * l
-
-
-        # [osc~]
-        if self.name() in ("osc~"):
-            return [self.XLET_SOUND, self.XLET_MESSAGE]
-
-        # 1 inlets
-        if self.name() in (
-                "change", "makefilename", "print",
-                "mtof", "ftom", "powtodb", "dbtopow", "rmstodb", "dbtorms",
-                "sin", "cos", "tan", "atan", "atan2", "sqrt", "log", "exp", "abs",
-                "random",
-                "loadbang", "bang~"
-        ):
-            return [self.XLET_MESSAGE]
-
-        # 2 inlets
-        if self.name() in (
-                "pipe",
-                "+", "-", "*", "/", "pow",
-                "==", "!=", "<", ">", ">=", "<=",
-                "&", "&&", "|", "||", "mod", "div", "min", "max"
-        ):
-            return [self.XLET_MESSAGE] * 2
-
-        # 3 inlets
-        if self.name() in (
-                "clip"
-        ):
-            return [self.XLET_MESSAGE] * 3
-
-        # 2 sound
-        if self.name() in (
-                "*~", "-~", "+~", "/~"
-        ):
-            if len(self.args) == 0:
-                return [self.XLET_SOUND] * 2
-            else:
-                return [self.XLET_SOUND, self.XLET_MESSAGE]
-
+        if self._xlets_method == self.XMETHOD_EXPLICIT:
+            return self._inlets
+        elif self._xlets_method == self.XMETHOD_CALCULATE:
+            return PdObject.xlet_calculator.inlets(self)
+        else:
+            return []
 
     def outlets(self):
-        # [b] or [bang]
-        if self.name() in ("bang", "b"):
-            return [self.XLET_MESSAGE]
-
-        # [f], [float], [i], [int], [symbol]
-        if self.name() in ("float", "f", "int", "i", "symbol"):
-            return [self.XLET_MESSAGE]
-
-        # [r]
-        if self.name() in ("r", "receive"):
-            return [self.XLET_MESSAGE]
-
-        # [r~] or [receive~]
-        if self.name() in ("r~", "receive~"):
-            return [self.XLET_SOUND]
-
-        # [osc~]
-        if self.name() == "osc~":
-            return [self.XLET_SOUND]
-
-        # 1 outlet
-        if self.name() in (
-                "change", "makefilename", "pipe",
-                "+", "-", "*", "/", "pow",
-                "==", "!=", "<", ">", ">=", "<=",
-                "&", "&&", "|", "||",
-                "mtof", "ftom", "powtodb", "dbtopow", "rmstodb", "dbtorms",
-                "sin", "cos", "tan", "atan", "atan2", "sqrt", "log", "exp", "abs",
-                "random", "mod", "div", "min", "max", "clip",
-                "loadbang", "bang~"
-        ):
-            return [self.XLET_MESSAGE]
-
-        # 1 sound outlet
-        if self.name() in (
-                "+~", "*~", "-~", "/~"
-        ):
-            return [self.XLET_SOUND]
+        if self._xlets_method == self.XMETHOD_EXPLICIT:
+            return self._outlets
+        elif self._xlets_method == self.XMETHOD_CALCULATE:
+            return PdObject.xlet_calculator.outlets(self)
+        else:
+            return []
 
     def traverse(self, visitor):
         visitor.visit_object(self)

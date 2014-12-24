@@ -25,10 +25,11 @@ from pdobject import *
 
 class PdMessage(PdObject):
     def __init__(self, x, y, atoms):
-        super(PdMessage, self).__init__(x, y, -1, -1, atoms)
+        super(PdMessage, self).__init__("msg", x, y, 0, 0, atoms)
+
 
     def __str__(self):
-        res = "[%-40s {x:%i,y:%i,id:%i}" % (self.to_string() + "(", self.x, self.y, self.id)
+        res = "[%-40s {x:%i,y:%i,id:%i}" % (self.args_to_string() + "(", self._x, self._y, self._id)
         return res
 
     def draw(self, painter):

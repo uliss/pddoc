@@ -16,14 +16,15 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
 # -*- coding: utf-8 -*-
+
 
 __author__ = 'Serge Poltavski'
 
 from pdpainter import *
 import cairo
 import textwrap
+
 
 class CairoPainter(PdPainter):
     st_bg_color = (1, 1, 1)
@@ -37,7 +38,7 @@ class CairoPainter(PdPainter):
     st_line_width = 1
     st_line_join = cairo.LINE_JOIN_ROUND
 
-    st_message_fill_color = (0.94)
+    st_message_fill_color = (0.94, )
 
     st_object_xpad = 2.5
     st_object_ypad = 1
@@ -61,8 +62,7 @@ class CairoPainter(PdPainter):
 
     st_comment_color = (0.5, 0.5, 0.5)
 
-
-    def __init__(self, width, height, output, format="png"):
+    def __init__(self, width, height, output, fmt="png"):
         PdPainter.__init__(self)
 
         assert width > 0
@@ -71,19 +71,19 @@ class CairoPainter(PdPainter):
         self.width = width
         self.height = height
 
-        assert format
-        format = format.lower()
-        self.format = format
+        assert fmt
+        fmt = fmt.lower()
+        self.format = fmt
 
         assert output
         self.output = output
 
-        if format == 'png':
+        if fmt == 'png':
             self.ims = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.width, self.height)
-        elif format == 'pdf':
+        elif fmt == 'pdf':
             assert self.output
             self.ims = cairo.PDFSurface(self.output, self.width, self.height)
-        elif format == 'svg':
+        elif fmt == 'svg':
             assert self.output
             self.ims = cairo.SVGSurface(self.output, self.width, self.height)
 
@@ -103,7 +103,6 @@ class CairoPainter(PdPainter):
             self.cr.set_source_rgb(rgb, rgb, rgb)
         elif len(rgb) == 3:
             self.cr.set_source_rgb(rgb[0], rgb[1], rgb[2])
-
 
     def __del__(self):
         if self.format == 'png':
@@ -129,7 +128,6 @@ class CairoPainter(PdPainter):
         inlet_space = 0
         if len(xlets) > 1:
             inlet_space = (obj_width - len(xlets) * self.st_xlet_width) / (len(xlets) - 1)
-
 
         for num in xrange(0, len(xlets)):
             inx = x + num * inlet_space
@@ -157,7 +155,7 @@ class CairoPainter(PdPainter):
 
 
     def draw_subpatch(self, subpatch):
-        txt = "pd " + subpatch.name()
+        txt = "pd " + subpatch.name
         (x, y, width, height, dx, dy) = self.cr.text_extents(txt)
         x = subpatch.x
         y = subpatch.y
@@ -177,8 +175,8 @@ class CairoPainter(PdPainter):
         y = object.y
         w = max(width + self.st_object_xpad * 2, self.st_object_min_width)
         h = self.st_object_height
-        object.width = w
-        object.height = h
+        object.set_width(w)
+        object.set_height(h)
 
         self.draw_box(x, y, w, h)
         self.draw_txt(x, y, txt)
@@ -192,8 +190,8 @@ class CairoPainter(PdPainter):
         y = message.y
         w = width + self.st_object_xpad * 4
         h = self.st_object_height
-        message.height = h
-        message.width = w
+        message.set_height(h)
+        message.set_width(w)
 
         # draw message box
         cr = self.cr
@@ -222,43 +220,42 @@ class CairoPainter(PdPainter):
         self.draw_xlets(message.outlets(), x, y + h - self.st_xlet_height, w)
 
     def draw_core_gui(self, gui):
-        if gui.name() == "tgl":
-            if not gui.props["bg_color"].is_black():
-                self.set_src_color(gui.props["bg_color"].to_float())
+        if gui.name == "tgl":
+            if not gui.prop("bg_color").is_black():
+                self.set_src_color(gui.bgcolor())
             else:
                 self.set_src_color((1, 1, 1))
 
-            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width(), gui.height())
+            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width, gui.height)
             self.cr.fill()
             self.set_src_color(self.st_gui_border_color)
-            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width(), gui.height())
+            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width, gui.height)
             self.cr.stroke()
 
             # print gui.inlets()
-            self.draw_xlets(gui.inlets(), gui.x, gui.y, gui.width())
-            self.draw_xlets(gui.outlets(), gui.x, gui.y + gui.height() - self.st_xlet_height_gui,
-                            gui.props["size"])
+            self.draw_xlets(gui.inlets(), gui.x, gui.y, gui.width)
+            self.draw_xlets(gui.outlets(), gui.x, gui.bottom - self.st_xlet_height_gui, gui.width)
             return
 
-        if gui.name() == "cnv":
+        if gui.name == "cnv":
             self.cr.save()
             x = gui.x
             y = gui.y
-            w = gui.width()
-            h = gui.height()
-            self.set_src_color(gui.props["bg_color"].to_float())
+            w = gui.width
+            h = gui.height
+            self.set_src_color(gui.bgcolor())
             self.cr.rectangle(x, y, w, h)
             self.cr.fill()
 
             fonts = ("Monaco Bold", "Helvetica", "Times")
-            fontsize = gui.props["fontsize"]
-            fontidx = int(gui.props["font"])
+            fontsize = gui.prop("fontsize")
+            fontidx = int(gui.prop("font"))
             self.cr.select_font_face(fonts[fontidx])
             self.cr.set_font_size(fontsize)
-            self.set_src_color(gui.props["label_color"].to_float())
-            txt = gui.props["label"]
+            self.set_src_color(gui.lbcolor())
+            txt = gui.prop("label")
             tx, ty, tw, th, tdx, tdy = self.cr.text_extents(txt)
-            self.cr.move_to(x + gui.props["label_xoff"], y + gui.props["label_yoff"] + th)
+            self.cr.move_to(x + gui.prop("label_xoff"), y + gui.prop("label_yoff") + th)
             self.cr.show_text(txt)
             self.cr.restore()
             return
@@ -288,10 +285,10 @@ class CairoPainter(PdPainter):
 
         xlet_space = 0;
         if len(outlets) > 1:
-            xlet_space = (obj.width - len(outlets) * self.st_xlet_width) / float(len(outlets) - 1)
+            xlet_space = (obj.width() - len(outlets) * self.st_xlet_width) / float(len(outlets) - 1)
 
         x = obj.x + xlet_space * outlet_no + self.st_xlet_width / 2.0
-        y = obj.y + obj.height
+        y = obj.bottom
         return (x, y)
 
     def draw_connections(self, canvas):

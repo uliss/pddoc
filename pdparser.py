@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2014 by Serge Poltavski                                 #
+# Copyright (C) 2014 by Serge Poltavski                                   #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -119,16 +119,15 @@ class PdParser:
 
         if name in ("bng", "cnv", "hradio", "hsl", "nbx", "tgl", "vradio", "vsl", "vu"):
             # print name
-            obj = PdCoreGui(x, y, atoms[2:])
+            obj = PdCoreGui(name, x, y, atoms[3:])
         else:
-            obj = PdObject(x, y, -1, -1, atoms[2:])
+            obj = PdObject(name, x, y, -1, -1, atoms[3:])
 
         self.current_canvas().append_object(obj)
 
     def parse_connect(self, atoms):
         c = self.current_canvas()
         c.connect(atoms)
-
 
     def parse_objects(self, atoms):
         name = atoms[0]
@@ -176,6 +175,8 @@ class PdParser:
             line = found.group(1)
             atoms = self.split_re.split(line)
             self.parse_atoms(atoms)
+
+        return True
 
 pass
 

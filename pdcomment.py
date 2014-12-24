@@ -56,7 +56,7 @@ class PdComment(PdBaseObject):
 
 
     def __str__(self):
-        res = "# %-39s {x:%i,y:%i}" % (self.text(), self.x, self.y)
+        res = "# %-39s {x:%i,y:%i}" % (self.text(), self._x, self._y)
         return res
 
     def draw(self, painter):

@@ -42,22 +42,37 @@ from termcolor import colored
 
 class PdColor:
     def __init__(self, r=0, g=0, b=0):
+        assert isinstance(r, float) or isinstance(r, int)
+        assert isinstance(g, float) or isinstance(g, int)
+        assert isinstance(b, float) or isinstance(b, int)
         self._r = r
         self._g = g
         self._b = b
+
+    @staticmethod
+    def black():
+        return PdColor(0, 0, 0)
+
+    @staticmethod
+    def white():
+        return PdColor(1, 1, 1)
 
     def rgb(self):
         return (self._r, self._g, self._b)
 
-    def parse(self, value):
-        # print value
-        v = abs(int(value))
-        r = ((0b111111000000000000 & v) >> 12) * 4
-        g = ((0b111111000000 & v) >> 6) * 4
-        b = ((0b111111 & v)) * 4
-        self._r = r
-        self._g = g
-        self._b = b
+    def set_rgb(self, rgb):
+        self._r = rgb[0]
+        self._g = rgb[1]
+        self._b = rgb[2]
+
+    def from_pd(self, value):
+        v = abs(int(value) + 1)
+        r = v / 4096
+        g = (v % 4096) / 64
+        b = (v % 4096) % 64
+        self._r = int(round(r / 63.0 * 255)) % 256
+        self._g = int(round(g / 63.0 * 255)) % 256
+        self._b = int(round(b / 63.0 * 255)) % 256
 
     def compare(self, rgb):
         if isinstance(rgb, list) or isinstance(rgb, tuple):
@@ -70,104 +85,116 @@ class PdColor:
     def is_black(self):
         return self.compare((0, 0, 0))
 
-    def to_float(self):
+    def rgb_float(self):
         return (self._r / 255.0, self._g / 255.0, self._b / 255.0)
 
+    def to_pd(self):
+        return -4096 * int(round(self._r * (63 / 255.0))) \
+               - 64 * int(round(self._g * (63 / 255.0))) \
+               - 1 * int(round(self._b * (63 / 255.0))) - 1
 
     def __str__(self):
         res = colored("RGB[%i,%i,%i]" % (self._r, self._g, self._b), "green")
         return res
 
+    def __eq__(self, other):
+        return self.compare(other)
+
 
 class PdCoreGui(pdobject.PdObject):
-    def __init__(self, x, y, args):
-        super(PdCoreGui, self).__init__(x, y, -1, -1, args)
-        self.size = int(args[1])
-        self._width = self.size
-        self._height = self.size
+    tgl_defaults = ['15', '0', 'empty', 'empty', 'empty', '17', '7', '0', '10', '-262144', '-1', '-1', '0', '1']
 
-        # self.init = args[2]
-        self.send = args[3]
-        self.color = PdColor(255, 0, 0)
-
-        self.props = {}
-        self.parse_props(args)
-
-    def name(self):
-        return self.args[0]
+    def __init__(self, name, x, y, args):
+        pdobject.PdObject.__init__(self, name, x, y, 0, 0, args)
+        assert len(args) > 0
+        self._props = {}
+        self.parse_args(args)
 
     def __str__(self):
-        return "[GUI:%-36s {x:%i,y:%i,id:%i}" % (self.args[0] + "]", self.x, self.y, self.id)
+        return "[GUI:%-36s {x:%i,y:%i,id:%i}" % (self.name + "]", self._x, self._y, self._id)
 
     def draw(self, painter):
         painter.draw_core_gui(self)
 
-    def parse_props(self, args):
-        if self.name() == "tgl":
+
+    def prop(self, key):
+        return self._props[key]
+
+    def parse_args(self, args):
+        def color_from_pd(v):
+            c = PdColor()
+            c.from_pd(v)
+            return c
+
+        def slot_from_pd(slot):
+            if slot == "empty":
+                return None
+            else:
+                return slot
+
+        if self.name == "tgl":
             # square size of the gui element
-            self.props["size"] = int(args[1])
-            self._width = self.props["size"]
-            self._height = self.props["size"]
+            self._props["size"] = int(args[0])
+            self.width = self._props["size"]
+            self.height = self._props["size"]
             # set on load
-            self.props["init"] = int(args[2])
-            self.props["send"] = args[3]
-            self.props["receive"] = args[4]
-            self.props["label"] = args[5]
+            self._props["init"] = int(args[1])
+            self._props["send"] = slot_from_pd(args[2])
+            self._props["receive"] = slot_from_pd(args[3])
+            self._props["label"] = slot_from_pd(args[4])
             # horizontal position of the label text relative to the upperleft corner of the object
-            self.props["label_xoff"] = int(args[6])
+            self._props["label_xoff"] = int(args[5])
             # vertical position of the label text relative to the upperleft corner of the object
-            self.props["label_yoff"] = int(args[7])
-            self.props["font"] = args[8]
-            self.props["font_size"] = args[9]
-
-            bgc = PdColor()
-            bgc.parse(args[10])
-            self.props["bg_color"] = bgc
-            fgc = PdColor()
-            fgc.parse(args[11])
-            self.props["fg_color"] = fgc
-            lc = PdColor()
-            lc.parse(args[12])
-            self.props["label_color"] = lc
+            self._props["label_yoff"] = int(args[6])
+            self._props["font"] = args[7]
+            self._props["font_size"] = args[8]
+            self._props["bg_color"] = color_from_pd(args[9])
+            self._props["fg_color"] = color_from_pd(args[10])
+            self._props["label_color"] = color_from_pd(args[11])
             # value sent when the [init] attribute is set
-            self.props["init_value"] = int(args[13])
+            self._props["init_value"] = int(args[12])
             # default_value when the [init]? attribute is not set
-            self.props["default_value"] = int(args[14])
+            self._props["default_value"] = int(args[13])
             return
 
-        if self.name() == "cnv":
-            self.props["size"] = int(args[1])  # size of selectable square
-            self.props["width"] = int(args[2])  # horizontal size of the GUI-element
-            self._width = self.props["width"]
-            self.props["height"] = int(args[3])  # vertical size of the GUI-element
-            self._height = self.props["height"]
-            self.props["send"] = args[4]  # send symbol name
-            self.props["receive"] = args[5]  # receive symbol name
-            self.props["label"] = args[6]
+        if self.name == "cnv":
+            self._props["size"] = int(args[0])  # size of selectable square
+            self._props["width"] = int(args[1])  # horizontal size of the GUI-element
+            self.width = self._props["width"]
+            self._props["height"] = int(args[2])  # vertical size of the GUI-element
+            self.height = self._props["height"]
+            self._props["send"] = args[3]  # send symbol name
+            self._props["receive"] = args[4]  # receive symbol name
+            self._props["label"] = args[5]
             # horizontal position of the label text relative to the upperleft corner of the object
-            self.props["label_xoff"] = int(args[7])
+            self._props["label_xoff"] = int(args[6])
             # vertical position of the label text relative to the upperleft corner of the object
-            self.props["label_yoff"] = int(args[8])
-            self.props["font"] = args[9]
-            self.props["fontsize"] = int(args[10])
-            bgc = PdColor()
-            bgc.parse(args[11])
-            self.props["bg_color"] = bgc
-            lc = PdColor()
-            lc.parse(args[12])
-            self.props["label_color"] = lc
+            self._props["label_yoff"] = int(args[7])
+            self._props["font"] = args[8]
+            self._props["fontsize"] = int(args[9])
+            self._props["bg_color"] = color_from_pd(args[10])
+            self._props["label_color"] = color_from_pd(args[11])
             return
+
+    def bgcolor(self):
+        return self.prop("bg_color").rgb_float()
+
+    def fgcolor(self):
+        return self.prop("fg_color").rgb_float()
+
+    def lbcolor(self):
+        return self.prop("label_color").rgb_float()
 
     def inlets(self):
         if self.name in ("tgl", "bng", "hsl", "vsl", "nbx"):
-            if not self.props.has_key("receive") or self.props["receive"] == "empty":
+            if not self._props.has_key("receive") or self._props["receive"] == None:
                 return [self.XLET_GUI]
             else:
                 return []
 
     def outlets(self):
         if self.name in ("tgl", "bng", "hsl", "vsl", "nbx"):
-            if not self.props.has_key("receive") or self.props["receive"] == "empty":
+            if not self._props.has_key("receive") or self._props["receive"] == None:
                 return [self.XLET_GUI]
             else:
                 return []

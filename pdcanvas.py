@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #   Copyright (C) 2014 by Serge Poltavski                                 #
-#   serge.poltavski@gmail.com                                            #
+# serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -30,64 +30,114 @@ class PdCanvas(PdBaseObject):
 
     def __init__(self, x, y, w, h, **kwargs):
         PdBaseObject.__init__(self, x, y, w, h)
-        self.objects = []
-        self.id_counter = 0
+        self._objects = []
+        self._id_counter = 0
         self._name = ""
-        self.type = self.TYPE_NONE
-        self.graphs = []
-        self.subpatches = []
-        self.connections = {}
+        self._type = self.TYPE_NONE
+        self._graphs = []
+        self._subpatches = []
+        self._connections = {}
 
-        if kwargs.has_key('name'):
+        if 'name' in kwargs:
             self._name = kwargs['name']
 
-        if kwargs.has_key('open_on_load'):
+        if 'open_on_load' in kwargs:
             self.open_on_load = kwargs['open_on_load']
 
+    @property
+    def objects(self):
+        return self._objects
+
+    @property
+    def graphs(self):
+        return self._graphs
+
+    @property
+    def subpatches(self):
+        return self._subpatches
+
+    @property
+    def connections(self):
+        return self._connections
+
+    @property
+    def type(self):
+        return self._type
+
+    @type.setter
+    def type(self, t):
+        assert t in (self.TYPE_NONE, self.TYPE_WINDOW, self.TYPE_SUBPATCH, self.TYPE_GRAPH)
+        self._type = t
+
+    @property
     def name(self):
         return self._name
 
+    @name.setter
+    def name(self, name):
+        self._name = name
+
     def append_graph(self, obj):
+        assert self != obj
         assert isinstance(obj, PdCanvas)
         assert obj.type == self.TYPE_GRAPH
-        self.graphs.append(obj)
+        self._graphs.append(obj)
+
+    def gen_object_id(self):
+        res = self._id_counter
+        self._id_counter += 1
+        return res
 
     def append_object(self, obj):
-        if self == obj:
-            common.warning("Self assignment %s" % (common.error_place()))
-            return
-
+        assert self != obj
         assert issubclass(obj.__class__, PdBaseObject)
 
+        if obj in self._objects:
+            common.warning(u"object already on canvas: {0:s}".format(obj))
+            return False
+
         if issubclass(obj.__class__, PdObject):
-            obj.id = self.id_counter
-            self.id_counter += 1
+            obj.id = self.gen_object_id()
 
         self.objects.append(obj)
+        return True
 
     def find_object_by_id(self, oid):
-        for obj in self.objects:
+        for obj in self._objects:
             if issubclass(obj.__class__, PdObject):
                 if obj.id == oid:
                     return obj
 
         return None
 
-    def make_connection_key(self, sid, soutl, did, dinl):
-        return "%i %i %i %i" % (sid, soutl, did, dinl)
+    @staticmethod
+    def make_connection_key(sid, soutl, did, dinl):
+        return "%i:%i => %i:%i" % (sid, soutl, did, dinl)
 
-    def add_connection(self, sid, soutl, did, dinl):
+    def add_connection(self, sid, soutl, did, dinl, check_xlets=False):
+        assert sid != did
+        assert sid >= 0 and did >= 0 and soutl >= 0 and dinl >= 0
+
         src_obj = self.find_object_by_id(sid)
         dest_obj = self.find_object_by_id(did)
         if src_obj and dest_obj:
-            ckey = self.make_connection_key(sid, soutl, did, dinl)
-            self.connections[ckey] = (src_obj, soutl, dest_obj, dinl)
+            if check_xlets:
+                if soutl >= len(src_obj.outlets()):
+                    common.warning(u"invalid outlet number: {0:d}, total outlets: {1:d}".
+                                   format(soutl, len(src_obj.outlets())))
+                    return False
+
+                if dinl >= len(dest_obj.inlets()):
+                    common.warning(u"invalid inlet number: {0:d}, total inlets: {1:d}".
+                                   format(dinl, len(dest_obj.inlets())))
+                    return False
+
+            ckey = PdCanvas.make_connection_key(sid, soutl, did, dinl)
+            self._connections[ckey] = (src_obj, soutl, dest_obj, dinl)
+            return True
         else:
             common.warning("connection not found: %s:%d => %s:%d" % (sid, soutl, did, dinl))
-
-    def remove_connection(self, sid, soutl, did, dinl):
-        ckey = self.make_connection_key(sid, soutl, did, dinl)
-        del self.connections[ckey]
+            return False
 
     def connect(self, args):
         assert len(args) == 4
@@ -99,24 +149,11 @@ class PdCanvas(PdBaseObject):
         self.add_connection(src_id, src_outl, dest_id, dest_inl)
 
     def append_subpatch(self, obj):
+        assert self != obj
         assert isinstance(obj, PdCanvas)
         assert obj.type == self.TYPE_SUBPATCH
-        self.subpatches.append(obj)
-
-    def get_object_by_id(self, id):
-        for obj in self.objects:
-            if obj.id == id:
-                return obj
-
-        return None
-
-    def identify_objects(self):
-        num = 0
-        for obj in self.objects:
-            if obj.has_id == True:
-                obj.id = num
-                num += 1
-        pass
+        self._subpatches.append(obj)
+        return True
 
     def __str__(self):
         name = ""
@@ -128,21 +165,21 @@ class PdCanvas(PdBaseObject):
         elif self.type == self.TYPE_SUBPATCH:
             name = "Subpatch "
 
-        name += "\"%s\"" % (self.name())
+        name += "\"%s\"" % (self.name)
 
-        res = "%-30s (%i,%i %ix%i)\n" % (name, self.x, self.y, self._width, self._height)
+        res = "%-30s (%i,%i %ix%i)\n" % (name, self._x, self._y, self._width, self._height)
         for obj in self.objects:
             res += "    " + str(obj)
             res += "\n"
 
         # res += "\n"
         # graphs
-        for graph in self.graphs:
+        for graph in self._graphs:
             res += str(graph)
 
         # res += "\n"
         # subpatches
-        for sp in self.subpatches:
+        for sp in self._subpatches:
             res += str(sp)
 
         return res
@@ -158,13 +195,13 @@ class PdCanvas(PdBaseObject):
         elif self.type == self.TYPE_WINDOW:
             painter.draw_canvas(self)
 
-            for obj in self.objects:
+            for obj in self._objects:
                 obj.draw(painter)
 
-            for graph in self.graphs:
+            for graph in self._graphs:
                 graph.draw(painter)
 
-            for sp in self.subpatches:
+            for sp in self._subpatches:
                 sp.draw(painter)
 
             painter.draw_connections(self)
@@ -172,11 +209,13 @@ class PdCanvas(PdBaseObject):
     def inlets(self):
         res = []
 
-        for o in self.objects:
+        objects = sorted(self._objects, key=lambda obj: obj.x)
+
+        for o in objects:
             if issubclass(o.__class__, PdObject):
-                if o.name() == "inlet":
+                if o.name == "inlet":
                     res.append(self.XLET_MESSAGE)
-                elif o.name() == "inlet~":
+                elif o.name == "inlet~":
                     res.append(self.XLET_SOUND)
 
         return res
@@ -184,19 +223,23 @@ class PdCanvas(PdBaseObject):
     def outlets(self):
         res = []
 
-        for o in self.objects:
+        objects = sorted(self._objects, key=lambda obj: obj.x)
+
+        for o in objects:
             if issubclass(o.__class__, PdObject):
-                if o.name() == "outlet":
+                if o.name == "outlet":
                     res.append(self.XLET_MESSAGE)
-                elif o.name() == "outlet~":
+                elif o.name == "outlet~":
                     res.append(self.XLET_SOUND)
 
         return res
 
     def traverse(self, visitor):
-        visitor.visit_canvas_begin(self)
+        if hasattr(visitor, 'visit_canvas_begin'):
+            visitor.visit_canvas_begin(self)
 
         for o in self.objects:
             o.traverse(visitor)
 
-        visitor.visit_canvas_end(self)
+        if hasattr(visitor, 'visit_canvas_end'):
+            visitor.visit_canvas_end(self)

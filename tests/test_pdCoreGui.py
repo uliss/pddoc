@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2014 by Serge Poltavski                                   #
-# serge.poltavski@gmail.com                                             #
+# Copyright (C) 2014 by Serge Poltavski                                 #
+#   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -18,28 +18,22 @@
 
 
 # -*- coding: utf-8 -*-
+from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-import sys
-import os
-
-package_directory = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(package_directory + "/..")
-from cairopainter import *
-from pddrawer import *
+from pdcoregui import *
 
 
-if __name__ == '__main__':
-    parser = PdParser()
-    # parser.parse(package_directory + "/simple.pd")
-    parser.parse("/Applications/Pd-extended.app/Contents/Resources/doc/5.reference/intro-help.pd")
+class TestPdCoreGui(TestCase):
+    def test_init(self):
+        pco = PdCoreGui("tgl", 0, 0, PdCoreGui.tgl_defaults)
+        self.assertEqual(pco.inlets(), [PdCoreGui.XLET_GUI])
+        self.assertEqual(pco.outlets(), [PdCoreGui.XLET_GUI])
+        self.assertEqual(pco.prop("size"), 15)
+        self.assertEqual(pco.prop("send"), None)
+        self.assertEqual(pco.prop("receive"), None)
 
-    canvas = parser.canvas
-    canvas.height = 5000
-
-    cp = CairoPainter(canvas.width, canvas.height, "output_cairo.png")
-    drawer = PdDrawer()
-    drawer.draw(canvas, cp)
-
-
+    def test_str__(self):
+        pco = PdCoreGui("tgl", 5, 6, PdCoreGui.tgl_defaults)
+        self.assertEqual(str(pco), "[GUI:tgl]                                 {x:5,y:6,id:-1}")

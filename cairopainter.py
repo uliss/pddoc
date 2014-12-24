@@ -228,15 +228,15 @@ class CairoPainter(PdPainter):
             else:
                 self.set_src_color((1, 1, 1))
 
-            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width, gui.height)
+            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width(), gui.height())
             self.cr.fill()
             self.set_src_color(self.st_gui_border_color)
-            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width, gui.height)
+            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width(), gui.height())
             self.cr.stroke()
 
             # print gui.inlets()
-            self.draw_xlets(gui.inlets(), gui.x, gui.y, gui.width)
-            self.draw_xlets(gui.outlets(), gui.x, gui.y + gui.height - self.st_xlet_height_gui,
+            self.draw_xlets(gui.inlets(), gui.x, gui.y, gui.width())
+            self.draw_xlets(gui.outlets(), gui.x, gui.y + gui.height() - self.st_xlet_height_gui,
                             gui.props["size"])
             return
 
@@ -244,8 +244,8 @@ class CairoPainter(PdPainter):
             self.cr.save()
             x = gui.x
             y = gui.y
-            w = gui.width
-            h = gui.height
+            w = gui.width()
+            h = gui.height()
             self.set_src_color(gui.props["bg_color"].to_float())
             self.cr.rectangle(x, y, w, h)
             self.cr.fill()

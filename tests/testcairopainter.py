@@ -38,7 +38,7 @@ if __name__ == '__main__':
     canvas = parser.canvas
     # canvas.height = 10000
 
-    cp = CairoPainter(canvas.width, canvas.height, "output_cairo.png")
+    cp = CairoPainter(canvas.width(), canvas.height(), "output_cairo.png")
     drawer = PdDrawer()
     drawer.draw(canvas, cp)
 

@@ -61,3 +61,4 @@ class PdComment(PdBaseObject):
 
     def draw(self, painter):
         painter.draw_comment(self)
+

@@ -185,3 +185,6 @@ class PdObject(PdBaseObject):
                 "+~", "*~", "-~", "/~"
         ):
             return [self.XLET_SOUND]
+
+    def traverse(self, visitor):
+        visitor.visit_object(self)

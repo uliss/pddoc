@@ -83,8 +83,8 @@ class PdCoreGui(pdobject.PdObject):
     def __init__(self, x, y, args):
         super(PdCoreGui, self).__init__(x, y, -1, -1, args)
         self.size = int(args[1])
-        self.width = self.size
-        self.height = self.size
+        self._width = self.size
+        self._height = self.size
 
         # self.init = args[2]
         self.send = args[3]
@@ -106,8 +106,8 @@ class PdCoreGui(pdobject.PdObject):
         if self.name() == "tgl":
             # square size of the gui element
             self.props["size"] = int(args[1])
-            self.width = self.props["size"]
-            self.height = self.props["size"]
+            self._width = self.props["size"]
+            self._height = self.props["size"]
             # set on load
             self.props["init"] = int(args[2])
             self.props["send"] = args[3]
@@ -138,9 +138,9 @@ class PdCoreGui(pdobject.PdObject):
         if self.name() == "cnv":
             self.props["size"] = int(args[1])  # size of selectable square
             self.props["width"] = int(args[2])  # horizontal size of the GUI-element
-            self.width = self.props["width"]
+            self._width = self.props["width"]
             self.props["height"] = int(args[3])  # vertical size of the GUI-element
-            self.height = self.props["height"]
+            self._height = self.props["height"]
             self.props["send"] = args[4]  # send symbol name
             self.props["receive"] = args[5]  # receive symbol name
             self.props["label"] = args[6]
@@ -171,3 +171,6 @@ class PdCoreGui(pdobject.PdObject):
                 return [self.XLET_GUI]
             else:
                 return []
+
+    def traverse(self, visitor):
+        visitor.visit_core_gui(self)

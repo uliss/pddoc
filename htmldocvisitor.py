@@ -176,11 +176,11 @@ class HtmlDocVisitor(object):
 
     def pdexample_end(self, pd):
         img_width = pd.width()
-        img_height = pd.height()
+        img_height = pd.height
 
         if self._include:
-            img_height = self._cur_canvas.width
-            img_width = self._cur_canvas.height
+            img_height = self._cur_canvas.width()
+            img_width = self._cur_canvas.height()
         else:
             for pdo in self._cur_canvas.objects:
                 litem = getattr(pdo, "layout")

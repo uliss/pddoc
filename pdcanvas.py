@@ -130,7 +130,7 @@ class PdCanvas(PdBaseObject):
 
         name += "\"%s\"" % (self.name())
 
-        res = "%-30s (%i,%i %ix%i)\n" %(name, self.x, self.y, self.width, self.height)
+        res = "%-30s (%i,%i %ix%i)\n" % (name, self.x, self.y, self._width, self._height)
         for obj in self.objects:
             res += "    " + str(obj)
             res += "\n"
@@ -192,3 +192,11 @@ class PdCanvas(PdBaseObject):
                     res.append(self.XLET_SOUND)
 
         return res
+
+    def traverse(self, visitor):
+        visitor.visit_canvas_begin(self)
+
+        for o in self.objects:
+            o.traverse(visitor)
+
+        visitor.visit_canvas_end(self)

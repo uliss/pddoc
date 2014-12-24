@@ -30,8 +30,20 @@ class PdBaseObject(object):
     def __init__(self, x, y, w, h):
         self.x = int(x)
         self.y = int(y)
-        self.height = int(h)
-        self.width = int(w)
+        self._height = int(h)
+        self._width = int(w)
+
+    def height(self):
+        return self._height
+
+    def set_height(self, h):
+        self._height = int(h)
+
+    def width(self):
+        return self._width
+
+    def set_width(self, w):
+        self._width = int(w)
 
     def draw(self, painter):
         pass
@@ -41,3 +53,6 @@ class PdBaseObject(object):
 
     def outlets(self):
         return ()
+
+    def traverse(self, visitor):
+        assert not "Not implemented"

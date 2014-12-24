@@ -39,3 +39,6 @@ class PdMessage(PdObject):
 
     def outlets(self):
         return [self.XLET_MESSAGE]
+
+    def traverse(self, visitor):
+        visitor.visit_message(self)

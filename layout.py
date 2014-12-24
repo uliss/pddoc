@@ -205,7 +205,7 @@ class Layout(object):
             col_len = 0
             els = []
             for item in self._elements:
-                els.append("[%i:%ix%i]" % (item.y(), item.width(), item.height()))
+                els.append("[%i:%ix%i]" % (item.y(), item.width(), item.height))
                 col_len = max(col_len, len(els[-1]))
 
             res += "-" * (col_len + 4)

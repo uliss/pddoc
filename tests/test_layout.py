@@ -1,4 +1,4 @@
-# /usr/bin/env python
+#!/usr/bin/env python
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                            #

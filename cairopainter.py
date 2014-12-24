@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2014 by Serge Poltavski                                 #
-# serge.poltavski@gmail.com                                             #
+# Copyright (C) 2014 by Serge Poltavski                                   #
+# serge.poltavski@gmail.com                                               #
 # #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -24,9 +24,11 @@ __author__ = 'Serge Poltavski'
 from pdpainter import *
 import cairo
 import textwrap
+from pddrawstyle import *
 
 
 class CairoPainter(PdPainter):
+    style = PdDrawStyle()
     st_bg_color = (1, 1, 1)
     st_text_color = (0, 0, 0)
     st_object_border_color = (0.2, 0.2, 0.2)
@@ -132,7 +134,7 @@ class CairoPainter(PdPainter):
         for num in xrange(0, len(xlets)):
             inx = x + num * inlet_space
             if num != 0:
-                inx += (num) * self.st_xlet_width
+                inx += num * self.st_xlet_width
 
             xlet = xlets[num]
 
@@ -153,7 +155,6 @@ class CairoPainter(PdPainter):
 
             num += 1
 
-
     def draw_subpatch(self, subpatch):
         txt = "pd " + subpatch.name
         (x, y, width, height, dx, dy) = self.cr.text_extents(txt)
@@ -168,20 +169,20 @@ class CairoPainter(PdPainter):
         self.draw_xlets(subpatch.inlets(), x, y, w)
         self.draw_xlets(subpatch.outlets(), x, y + h - self.st_xlet_height, w)
 
-    def draw_object(self, object):
-        txt = object.to_string()
+    def draw_object(self, obj):
+        txt = obj.to_string()
         (x, y, width, height, dx, dy) = self.cr.text_extents(txt)
-        x = object.x
-        y = object.y
+        x = obj.x
+        y = obj.y
         w = max(width + self.st_object_xpad * 2, self.st_object_min_width)
         h = self.st_object_height
-        object.set_width(w)
-        object.set_height(h)
+        obj.set_width(w)
+        obj.set_height(h)
 
         self.draw_box(x, y, w, h)
         self.draw_txt(x, y, txt)
-        self.draw_xlets(object.inlets(), x, y, w)
-        self.draw_xlets(object.outlets(), x, y + h - self.st_xlet_height, w)
+        self.draw_xlets(obj.inlets(), x, y, w)
+        self.draw_xlets(obj.outlets(), x, y + h - self.st_xlet_height, w)
 
     def draw_message(self, message):
         txt = message.to_string()
@@ -260,8 +261,6 @@ class CairoPainter(PdPainter):
             self.cr.restore()
             return
 
-
-
     def xlet_height(self, t):
         if t == PdBaseObject.XLET_GUI:
             return self.st_xlet_height_gui
@@ -271,25 +270,25 @@ class CairoPainter(PdPainter):
     def inlet_connection_coords(self, obj, inlet_no):
         inlets = obj.inlets()
 
-        xlet_space = 0;
+        xlet_space = 0
         if len(inlets) > 1:
             xlet_space = (obj.width - len(inlets) * self.st_xlet_width) / float(len(inlets) - 1)
 
         x = obj.x + (xlet_space + self.st_xlet_width) * inlet_no + self.st_xlet_width / 2.0
         y = obj.y
 
-        return (x, y)
+        return x, y
 
     def outlet_connection_coords(self, obj, outlet_no):
         outlets = obj.outlets()
 
-        xlet_space = 0;
+        xlet_space = 0
         if len(outlets) > 1:
             xlet_space = (obj.width() - len(outlets) * self.st_xlet_width) / float(len(outlets) - 1)
 
         x = obj.x + (xlet_space + self.st_xlet_width) * outlet_no + self.st_xlet_width / 2.0
         y = obj.bottom
-        return (x, y)
+        return x, y
 
     def draw_connections(self, canvas):
         for key, c in canvas.connections.items():

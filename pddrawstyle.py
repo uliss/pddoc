@@ -2,7 +2,7 @@
 
 # Copyright (C) 2014 by Serge Poltavski                                   #
 # serge.poltavski@gmail.com                                             #
-#                                                                         #
+# #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
 #   the Free Software Foundation; either version 3 of the License, or     #
@@ -23,43 +23,40 @@ __author__ = 'Serge Poltavski'
 
 
 class PdDrawStyle(object):
-    def __init__(self):
-        self._props = {}
-        self.__dict__['fill_color'] = (1, 1, 1)
-        self.__dict__['font_family'] = "terminus"
-        self.__dict__['font_size'] = 12
+    fill_color = property(lambda self: (1, 1, 1))
+    font_family = property(lambda self: "terminus")
+    font_size = property(lambda self: 12)
 
-        self.__dict__['obj_fill_color'] = (0.95, 0.95, 0.95)
-        self.__dict__['obj_text_color'] = (0, 0, 0)
-        self.__dict__['obj_border_color'] = (0.2, 0.2, 0.2)
-        self.__dict__['obj_line_width'] = 1
-        self.__dict__['obj_pad_x'] = 2.5
-        self.__dict__['obj_pad_y'] = 1
-        self.__dict__['obj_min_width'] = 22
+    obj_fill_color = property(lambda self: (0.95, 0.95, 0.95))
+    obj_text_color = property(lambda self: (0, 0, 0))
+    obj_border_color = property(lambda self: (0.2, 0.2, 0.2))
+    obj_line_width = property(lambda self: 1)
+    obj_pad_x = property(lambda self: 2.5)
+    obj_pad_y = property(lambda self: 1)
+    obj_min_width = property(lambda self: 22)
 
-        self.__dict__['msg_fill_color'] = (0.94)
-        self.__dict__['msg_min_width'] = 22
+    msg_fill_color = property(lambda self: 0.94)
+    msg_min_width = property(lambda self: 22)
 
-        self.__dict__['xlet_width'] = 7
-        self.__dict__['xlet_msg_height'] = 2
-        self.__dict__['xlet_snd_height'] = 2
-        self.__dict__['xlet_gui_height'] = 1
-        self.__dict__['xlet_msg_color'] = (0, 0, 0)
-        self.__dict__['xlet_snd_color'] = (0.3, 0.2, 0.4)
-        self.__dict__['xlet_gui_color'] = (0, 0, 0)
+    xlet_width = property(lambda self: 7)
+    xlet_msg_height = property(lambda self: 2)
+    xlet_snd_height = property(lambda self: 2)
+    xlet_gui_height = property(lambda self: 1)
+    xlet_msg_color = property(lambda self: (0, 0, 0))
+    xlet_snd_color = property(lambda self: (0.3, 0.2, 0.4))
+    xlet_gui_color = property(lambda self: (0, 0, 0))
 
-        self.__dict__['conn_snd_width'] = 2
-        self.__dict__['conn_snd_stripe'] = True
-        self.__dict__['conn_snd_color'] = (0.2, 0.2, 0.2)
-        self.__dict__['conn_snd_color2'] = (0.6, 0.6, 0)
-        self.__dict__['conn_snd_dash'] = [4, 8]
+    conn_snd_width = property(lambda self: 2)
+    conn_snd_stripe = property(lambda self: True)
+    conn_snd_color = property(lambda self: (0.2, 0.2, 0.2))
+    conn_snd_color2 = property(lambda self: (0.6, 0.6, 0))
+    conn_snd_dash = property(lambda self: [4, 8])
 
-        self.__dict__['conn_msg_color'] = (0, 0, 0)
-        self.__dict__['conn_msg_width'] = 1
+    conn_msg_color = property(lambda self: (0, 0, 0))
+    conn_msg_width = property(lambda self: 1)
 
-        self.__dict__['comment_color'] = (0.5, 0.5, 0.5)
+    comment_color = property(lambda self: (0.5, 0.5, 0.5))
 
     @property
     def obj_height(self):
         return self.font_size + 5
-

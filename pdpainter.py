@@ -38,10 +38,10 @@ class PdPainter(object):
         print "Draw object: [id:%i] [%s]" % (object.id, " ".join(object.args))
 
     def draw_core_gui(self, gui):
-        print "Draw core GUI: [id:%i] [%s]" % (gui.id, gui.name())
+        print "Draw core GUI: [id:%i] [%s]" % (gui.id, gui.name)
 
     def draw_subpatch(self, subpatch):
-        print "Draw subpatch: [pd %s]" % (subpatch.name())
+        print "Draw subpatch: [pd %s]" % (subpatch.name)
 
     def draw_graph(self, graph):
         print "Draw graph "

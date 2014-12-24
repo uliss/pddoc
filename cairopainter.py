@@ -28,7 +28,7 @@ from pddrawstyle import *
 
 
 class CairoPainter(PdPainter):
-    def __init__(self, width, height, output, fmt="png"):
+    def __init__(self, width, height, output, fmt="png", **kwargs):
         PdPainter.__init__(self)
         self.style = PdDrawStyle()
 
@@ -67,6 +67,15 @@ class CairoPainter(PdPainter):
         self.cr.select_font_face(self.style.font_family, self.st_font_slant, self.st_font_weight)
         self.cr.set_font_size(self.style.font_size)
         self.cr.set_line_join(self.st_line_join)
+
+        matrix = cairo.Matrix()
+        if 'xoffset' in kwargs:
+            matrix.translate(kwargs['yoffset'], 0)
+        if 'yoffset' in kwargs:
+            matrix.translate(0, kwargs['yoffset'])
+
+        self.cr.set_matrix(matrix)
+
 
     def set_src_color(self, rgb):
         if isinstance(rgb, float):

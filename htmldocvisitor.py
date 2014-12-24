@@ -191,7 +191,8 @@ class HtmlDocVisitor(object):
         self._image_counter += 1
         fname = "image_%02d.png" % (self._image_counter)
 
-        painter = cairopainter.CairoPainter(img_width, img_height, fname)
+        pad = 10
+        painter = cairopainter.CairoPainter(img_width + 2 * pad, img_height + 2 * pad, fname, xoffset=pad, yoffset=pad)
         walker = pddrawer.PdDrawer()
         walker.draw(self._cur_canvas, painter)
 

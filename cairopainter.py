@@ -38,7 +38,7 @@ class CairoPainter(PdPainter):
     st_line_width = 1
     st_line_join = cairo.LINE_JOIN_ROUND
 
-    st_message_fill_color = (0.94, )
+    st_message_fill_color = (0.94)
 
     st_object_xpad = 2.5
     st_object_ypad = 1
@@ -275,7 +275,7 @@ class CairoPainter(PdPainter):
         if len(inlets) > 1:
             xlet_space = (obj.width - len(inlets) * self.st_xlet_width) / float(len(inlets) - 1)
 
-        x = obj.x + xlet_space * inlet_no + self.st_xlet_width / 2.0
+        x = obj.x + (xlet_space + self.st_xlet_width) * inlet_no + self.st_xlet_width / 2.0
         y = obj.y
 
         return (x, y)
@@ -287,7 +287,7 @@ class CairoPainter(PdPainter):
         if len(outlets) > 1:
             xlet_space = (obj.width() - len(outlets) * self.st_xlet_width) / float(len(outlets) - 1)
 
-        x = obj.x + xlet_space * outlet_no + self.st_xlet_width / 2.0
+        x = obj.x + (xlet_space + self.st_xlet_width) * outlet_no + self.st_xlet_width / 2.0
         y = obj.bottom
         return (x, y)
 

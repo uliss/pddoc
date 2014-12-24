@@ -29,6 +29,7 @@ import cairopainter
 import pdparser
 from layout import *
 
+
 class HtmlDocVisitor(object):
     def __init__(self, tmpl="default.tmpl"):
         self._body = ""
@@ -50,7 +51,7 @@ class HtmlDocVisitor(object):
 
     def title_begin(self, t):
         self._title = t.text()
-        self._head += "<title>PureData [%s] object</title>\n" % (self._title)
+        self._head += u"<title>PureData [{0:s}] object</title>\n".format(self._title)
 
     def website_begin(self, w):
         self._website = w.text()
@@ -61,17 +62,17 @@ class HtmlDocVisitor(object):
 
     def keywords_begin(self, k):
         self._keywords = k.keywords()
-        self._head += '<meta name="keywords" content="%s">\n' % (" ".join(self._keywords))
+        self._head += u'<meta name="keywords" content="{0:s}">\n'.format(" ".join(self._keywords))
 
     def description_begin(self, d):
         self._description = d.text()
-        self._head += '<meta name="description" content="%s">\n' % (self._description)
+        self._head += u'<meta name="description" content="{0:s}">\n'.format(self._description)
 
     def version_begin(self, v):
         self._version = v.text()
 
     def footer(self):
-        res = '<div class="footer">version: %s</div>\n' % (self._version)
+        res = u'<div class="footer">version: {0:s}</div>\n'.format(self._version)
         return res
 
     def example_begin(self, ex):
@@ -88,7 +89,7 @@ class HtmlDocVisitor(object):
 
     def core_type_help(self, t):
         assert t in ("bang", "float", "list", "symbol", "any", "pointer")
-        return '<a href="http://puredata.info/wiki/%s.html">%s</a>' % (t, t)
+        return '<a href="http://puredata.info/wiki/{0:s}.html">{1:s}</a>'.format(t, t)
 
     def process_xlets(self, xlets):
         for xlet_number in sorted(xlets):
@@ -99,12 +100,13 @@ class HtmlDocVisitor(object):
             for xl in xlet_list:
                 self._body += "<tr>\n"
                 if col_span == xlet_list_count:
-                    self._body += "<td rowspan=\"%s\" class=\"number\"><span>%s</span></td>\n" % (col_span, xlet_number)
+                    self._body += "<td rowspan=\"{0:d}\" class=\"number\"><span>{1:s}</span></td>\n".format(col_span,
+                                                                                                            xlet_number)
 
-                self._body += "<td class=\"type\">%s</td>\n" % (self.core_type_help(xl.type()))
+                self._body += u"<td class=\"type\">{0:s}</td>\n".format(self.core_type_help(xl.type()))
                 range_str = lambda x: ("&ndash;".join(map(str, x))) if (len(x) > 1) else "&nbsp;"
-                self._body += "<td class=\"range\">%s</td>\n" % (range_str(xl.range()))
-                self._body += "<td class=\"description\">%s</td>\n" % (xl.text())
+                self._body += u"<td class=\"range\">{0:s}</td>\n".format(range_str(xl.range()))
+                self._body += u"<td class=\"description\">{0:s}</td>\n".format(xl.text())
                 self._body += "</tr>\n"
                 col_span -= 1
 
@@ -145,7 +147,6 @@ class HtmlDocVisitor(object):
         cnv.append_object(pdm)
         self._pdobj_id_map[obj._id] = pdm._id
 
-
     def pdobject_begin(self, obj):
         cnv = self._cur_canvas
         args = filter(None, obj._args.split(" "))
@@ -170,11 +171,7 @@ class HtmlDocVisitor(object):
         self._cur_canvas = parser.canvas
         self._include = True
 
-
     def pdexample_end(self, pd):
-        img_width = pd.width()
-        img_height = pd.height()
-
         if self._include:
             img_height = self._cur_canvas.width
             img_width = self._cur_canvas.height
@@ -187,16 +184,15 @@ class HtmlDocVisitor(object):
             img_width = self._example_brect[2]
             img_height = self._example_brect[3]
 
-
         self._image_counter += 1
-        fname = "image_%02d.png" % (self._image_counter)
+        fname = "image_{0:02d}.png".format(self._image_counter)
 
         pad = 10
         painter = cairopainter.CairoPainter(img_width + 2 * pad, img_height + 2 * pad, fname, xoffset=pad, yoffset=pad)
         walker = pddrawer.PdDrawer()
         walker.draw(self._cur_canvas, painter)
 
-        self._body += '<img src="%s"/>\n' % (fname)
+        self._body += u'<img src="{0:s}"/>\n'.format(fname)
 
         self._include = False
 
@@ -236,28 +232,24 @@ class HtmlDocVisitor(object):
         self._body += '<ol>\n'
 
         for arg in args._elements:
-            self._body += '<li>%s</li>' % (arg.text())
+            self._body += u'<li>{0:s}</li>'.format
 
         self._body += '</ol>\n'
         self._body += "</div>\n"
 
     def header(self):
         res = '<div class="header">\n' \
-              '<h1>[%s]</h1>\n' \
-              '<div class="description">%s</div>\n' \
-              '</div>\n' % (self._title, self._description)
+              '<h1>[{0:s}]</h1>\n' \
+              '<div class="description">{0:s}</div>\n' \
+              '</div>\n'.format(self._title, self._description)
         return res
 
     def __str__(self):
         res = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n'
-        res += "<html>\n<head>\n%s</head>\n<body>\n" % (self._head)
+        res += u"<html>\n<head>\n{0:s}</head>\n<body>\n".format(self._head)
         res += self.header()
         res += self._body
         res += self.footer()
         res += "</body>\n</html>\n"
 
         return res
-
-
-
-

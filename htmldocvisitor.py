@@ -192,7 +192,7 @@ class HtmlDocVisitor(object):
         walker = pddrawer.PdDrawer()
         walker.draw(self._cur_canvas, painter)
 
-        self._body += u'<img src="{0:s}"/>\n'.format(fname)
+        self._body += u'<img src="{0:s}" alt="example:{1:d}"/>\n'.format(fname, self._image_counter)
 
         self._include = False
 
@@ -232,7 +232,7 @@ class HtmlDocVisitor(object):
         self._body += '<ol>\n'
 
         for arg in args._elements:
-            self._body += u'<li>{0:s}</li>'.format
+            self._body += u"<li>{0:s}</li>".format(arg.text())
 
         self._body += '</ol>\n'
         self._body += "</div>\n"

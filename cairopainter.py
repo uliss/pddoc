@@ -28,44 +28,13 @@ from pddrawstyle import *
 
 
 class CairoPainter(PdPainter):
-    style = PdDrawStyle()
-    st_bg_color = (1, 1, 1)
-    st_text_color = (0, 0, 0)
-    st_object_border_color = (0.2, 0.2, 0.2)
-    st_object_fill_color = (0.95, 0.95, 0.95)
-    st_font = "terminus"
-    st_font_size = 12
-    st_font_slant = cairo.FONT_SLANT_NORMAL
-    st_font_weight = cairo.FONT_WEIGHT_NORMAL
-    st_line_width = 1
-    st_line_join = cairo.LINE_JOIN_ROUND
-
-    st_message_fill_color = (0.94)
-
-    st_object_xpad = 2.5
-    st_object_ypad = 1
-    st_object_height = 17
-    st_object_min_width = 22
-
-    st_xlet_width = 7
-    st_xlet_height = 2
-    st_xlet_height_gui = 1
-    st_xlet_msg_color = (0, 0, 0)
-    st_xlet_snd_color = (0.3, 0.2, 0.4)
-
-    st_gui_border_color = (0, 0, 0)
-
-    st_connection_sndline_width = 2
-    st_connection_sndline_color = (0.2, 0.2, 0.2)
-    st_connection_sndline_color2 = (0.6, 0.6, 0)
-    st_connection_line_color = (0, 0, 0)
-    st_connection_line_width = 1
-    st_connection_dash = [4, 8]
-
-    st_comment_color = (0.5, 0.5, 0.5)
-
     def __init__(self, width, height, output, fmt="png"):
         PdPainter.__init__(self)
+        self.style = PdDrawStyle()
+
+        self.st_font_slant = cairo.FONT_SLANT_NORMAL
+        self.st_font_weight = cairo.FONT_WEIGHT_NORMAL
+        self.st_line_join = cairo.LINE_JOIN_ROUND
 
         assert width > 0
         assert height > 0
@@ -91,13 +60,12 @@ class CairoPainter(PdPainter):
 
         self.cr = cairo.Context(self.ims)
 
-        self.set_src_color(self.st_bg_color)
+        self.set_src_color(self.style.fill_color)
         self.cr.rectangle(0, 0, self.width, self.height)
         self.cr.fill()
 
-        self.cr.select_font_face(self.st_font, self.st_font_slant, self.st_font_weight)
-        self.cr.set_font_size(self.st_font_size)
-        self.cr.set_line_width(self.st_line_width)
+        self.cr.select_font_face(self.style.font_family, self.st_font_slant, self.st_font_weight)
+        self.cr.set_font_size(self.style.font_size)
         self.cr.set_line_join(self.st_line_join)
 
     def set_src_color(self, rgb):
@@ -111,16 +79,19 @@ class CairoPainter(PdPainter):
             self.ims.write_to_png(self.output)
 
     def draw_box(self, x, y, w, h):
-        self.set_src_color(self.st_object_border_color)
+        self.cr.save()
+        self.cr.set_line_width(self.style.obj_line_width)
+        self.set_src_color(self.style.obj_border_color)
         self.cr.rectangle(x + 0.5, y + 0.5, w, h)
         self.cr.stroke_preserve()
-        self.set_src_color(self.st_object_fill_color)
+        self.set_src_color(self.style.obj_fill_color)
         self.cr.fill()
+        self.cr.restore()
 
     def draw_txt(self, x, y, txt):
         (tx, ty, width, height, dx, dy) = self.cr.text_extents(txt)
-        self.set_src_color(self.st_text_color)
-        self.cr.move_to(x + self.st_object_xpad, y + height + self.st_object_ypad)
+        self.set_src_color(self.style.obj_text_color)
+        self.cr.move_to(x + self.style.obj_pad_x, y + height + self.style.obj_pad_y)
         self.cr.show_text(txt)
 
     def draw_xlets(self, xlets, x, y, obj_width):
@@ -129,22 +100,22 @@ class CairoPainter(PdPainter):
 
         inlet_space = 0
         if len(xlets) > 1:
-            inlet_space = (obj_width - len(xlets) * self.st_xlet_width) / (len(xlets) - 1)
+            inlet_space = (obj_width - len(xlets) * self.style.xlet_width) / (len(xlets) - 1)
 
         for num in xrange(0, len(xlets)):
             inx = x + num * inlet_space
             if num != 0:
-                inx += num * self.st_xlet_width
+                inx += num * self.style.xlet_width
 
             xlet = xlets[num]
 
             if xlet in (PdBaseObject.XLET_MESSAGE, PdBaseObject.XLET_GUI):
-                self.set_src_color(self.st_xlet_msg_color)
+                self.set_src_color(self.style.xlet_msg_color)
             else:
-                self.set_src_color(self.st_xlet_snd_color)
+                self.set_src_color(self.style.xlet_snd_color)
 
             iny = y
-            self.cr.rectangle(inx + 0.5, iny + 0.5, self.st_xlet_width, self.xlet_height(xlet))
+            self.cr.rectangle(inx + 0.5, iny + 0.5, self.style.xlet_width, self.xlet_height(xlet))
             self.cr.stroke_preserve()
 
             if xlet == PdBaseObject.XLET_SOUND:
@@ -160,29 +131,30 @@ class CairoPainter(PdPainter):
         (x, y, width, height, dx, dy) = self.cr.text_extents(txt)
         x = subpatch.x
         y = subpatch.y
-        w = width + self.st_object_xpad * 2
-        h = self.st_object_height
+        w = width + self.style.obj_pad_x * 2
+        h = self.style.obj_height
 
         self.draw_box(x, y, w, h)
         self.draw_txt(x, y, txt)
 
         self.draw_xlets(subpatch.inlets(), x, y, w)
-        self.draw_xlets(subpatch.outlets(), x, y + h - self.st_xlet_height, w)
+        self.draw_xlets(subpatch.outlets(), x, y + h - self.style.xlet_msg_height, w)
 
     def draw_object(self, obj):
         txt = obj.to_string()
         (x, y, width, height, dx, dy) = self.cr.text_extents(txt)
         x = obj.x
         y = obj.y
-        w = max(width + self.st_object_xpad * 2, self.st_object_min_width)
-        h = self.st_object_height
+        w = max(width + self.style.obj_pad_x * 2, self.style.obj_min_width)
+        h = self.style.obj_height
         obj.set_width(w)
         obj.set_height(h)
 
+        self.cr.set_line_width(self.style.obj_line_width)
         self.draw_box(x, y, w, h)
         self.draw_txt(x, y, txt)
         self.draw_xlets(obj.inlets(), x, y, w)
-        self.draw_xlets(obj.outlets(), x, y + h - self.st_xlet_height, w)
+        self.draw_xlets(obj.outlets(), x, y + h - self.style.xlet_msg_height, w)
 
     def draw_message(self, message):
         txt = message.to_string()
@@ -263,9 +235,9 @@ class CairoPainter(PdPainter):
 
     def xlet_height(self, t):
         if t == PdBaseObject.XLET_GUI:
-            return self.st_xlet_height_gui
+            return self.style.xlet_gui_height
         else:
-            return self.st_xlet_height
+            return self.style.xlet_msg_height
 
     def inlet_connection_coords(self, obj, inlet_no):
         inlets = obj.inlets()
@@ -343,13 +315,13 @@ class CairoPainter(PdPainter):
         txt = comment.text()
         lines = textwrap.wrap(txt, 59)
 
-        self.set_src_color(self.st_comment_color)
+        self.set_src_color(self.style.comment_color)
         lnum = 0
         for line in lines:
             line = ";\n".join(line.split(";")).split("\n")
             for subl in line:
                 subl = subl.strip()
-                self.draw_txt(comment.x, comment.y + lnum * self.st_font_size, subl)
+                self.draw_txt(comment.x, comment.y + lnum * self.style.font_size, subl)
                 lnum += 1
 
 pass

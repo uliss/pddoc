@@ -57,7 +57,7 @@ class PdDrawStyle(object):
         self.__dict__['conn_msg_color'] = (0, 0, 0)
         self.__dict__['conn_msg_width'] = 1
 
-        self.__dict__['comment_color '] = (0.5, 0.5, 0.5)
+        self.__dict__['comment_color'] = (0.5, 0.5, 0.5)
 
     @property
     def obj_height(self):

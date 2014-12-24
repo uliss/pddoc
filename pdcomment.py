@@ -62,3 +62,5 @@ class PdComment(PdBaseObject):
     def draw(self, painter):
         painter.draw_comment(self)
 
+    def traverse(self, visitor):
+        visitor.visit_comment(self)

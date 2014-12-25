@@ -245,7 +245,7 @@ class PdCanvas(PdBaseObject):
             visitor.visit_graph(graph)
 
         for sp in self._subpatches:
-            visitor.visit_subpatch(sp)
+            sp.traverse(visitor)
 
         for k, conn in self._connections.items():
             visitor.visit_connection(conn)

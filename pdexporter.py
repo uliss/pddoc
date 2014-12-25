@@ -36,6 +36,11 @@ class PdExporter(object):
             line = "#N canvas {0:d} {1:d} {2:d} {3:d} {4:s};". \
                 format(cnv.x, cnv.y, cnv.width, cnv.height, cnv.name)
             self.result.append(line)
+        elif cnv.type == PdCanvas.TYPE_SUBPATCH:
+            line = "#N canvas {0:d} {1:d} {2:d} {3:d} {4:s} 0;". \
+                format(cnv.x, cnv.y, cnv.width, cnv.height, cnv.name)
+            self.result.append(line)
+            pass
 
     def visit_graph(self, graph):
         pass
@@ -47,7 +52,8 @@ class PdExporter(object):
         if cnv.type == PdCanvas.TYPE_WINDOW:
             self.result.append("")
         elif cnv.type == PdCanvas.TYPE_SUBPATCH:
-            pass
+            line = "#X restore {0:d} {1:d} pd {2:s};".format(cnv.x, cnv.y, cnv.name)
+            self.result.append(line)
         else:
             pass
 

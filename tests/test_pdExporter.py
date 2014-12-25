@@ -80,6 +80,12 @@ class TestPdExporter(TestCase):
         for n in range(0, len(l1)):
             self.assertEqual(l2[n], l1[n])
 
+    def test_export_subpatch(self):
+        fname1 = "subpatch.pd"
+        fname2 = "export_subpatch.pd"
+        self.reexport(fname1, fname2)
+        self.assertFalse(self.diff(fname1, fname2))
+
     def test_export_core_gui(self):
         fname1 = "core_gui.pd"
         fname2 = "export_core_gui.pd"

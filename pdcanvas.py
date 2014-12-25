@@ -241,5 +241,14 @@ class PdCanvas(PdBaseObject):
         for o in self.objects:
             o.traverse(visitor)
 
+        for graph in self._graphs:
+            visitor.visit_graph(graph)
+
+        for sp in self._subpatches:
+            visitor.visit_subpatch(sp)
+
+        for k, conn in self._connections.items():
+            visitor.visit_connection(conn)
+
         if hasattr(visitor, 'visit_canvas_end'):
             visitor.visit_canvas_end(self)

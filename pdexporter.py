@@ -37,12 +37,24 @@ class PdExporter(object):
                 format(cnv.x, cnv.y, cnv.width, cnv.height, cnv.name)
             self.result.append(line)
 
-    def visit_canvas_end(self, cnv):
-        for k, v in cnv.connections.items():
-            line = "#X connect {0:d} {1:d} {2:d} {3:d};".format(v[0].id, v[1], v[2].id, v[3])
-            self.result.append(line)
+    def visit_graph(self, graph):
+        pass
 
-        self.result.append("")
+    def visit_subpatch(self, spatch):
+        pass
+
+    def visit_canvas_end(self, cnv):
+        if cnv.type == PdCanvas.TYPE_WINDOW:
+            self.result.append("")
+        elif cnv.type == PdCanvas.TYPE_SUBPATCH:
+            pass
+        else:
+            pass
+
+    def visit_connection(self, conn):
+        line = "#X connect {0:d} {1:d} {2:d} {3:d};".format(conn[0].id, conn[1], conn[2].id, conn[3])
+        self.result.append(line)
+
 
     def visit_comment(self, comment):
         line = "#X text {0:d} {1:d} {2:s};".format(comment.x, comment.y, " ".join(comment.args))

@@ -85,3 +85,9 @@ class TestPdExporter(TestCase):
         fname2 = "export_core_gui.pd"
         self.reexport(fname1, fname2)
         self.assertFalse(self.diff(fname1, fname2))
+
+        # def test_export_many(self):
+        # fname1 = "simple.pd"
+        #     fname2 = "export_simple.pd"
+        #     self.reexport(fname1, fname2)
+        #     self.assertFalse(self.diff(fname1, fname2))

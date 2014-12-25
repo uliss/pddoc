@@ -48,6 +48,8 @@ class HtmlDocVisitor(object):
         self._example_brect = ()
         self._pdobj_id_map = {}
         self._include = None
+        self._css_theme = "../theme.css"
+        self._img_output_dir = "./out"
 
     def title_begin(self, t):
         self._title = t.text()
@@ -58,7 +60,7 @@ class HtmlDocVisitor(object):
 
     def object_begin(self, obj):
         self._head += '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">\n'
-        self._head += '<link rel="stylesheet" type="text/css" href="theme.css">\n'
+        self._head += '<link rel="stylesheet" type="text/css" href="{0:s}">\n'.format(self._css_theme)
 
     def keywords_begin(self, k):
         self._keywords = k.keywords()
@@ -186,9 +188,11 @@ class HtmlDocVisitor(object):
 
         self._image_counter += 1
         fname = "image_{0:02d}.png".format(self._image_counter)
+        output_fname = "./tests/out/" + fname
 
         pad = 10
-        painter = cairopainter.CairoPainter(img_width + 2 * pad, img_height + 2 * pad, fname, xoffset=pad, yoffset=pad)
+        painter = cairopainter.CairoPainter(img_width + 2 * pad, img_height + 2 * pad,
+                                            output_fname, xoffset=pad, yoffset=pad)
         walker = pddrawer.PdDrawer()
         walker.draw(self._cur_canvas, painter)
 

@@ -426,7 +426,7 @@ if __name__ == '__main__':
             dobj.traverse(v)
 
             s = str(v)
-            f = open("test.html", "w")
+            f = open("tests/out/test.html", "w")
             f.write(s)
             f.close()
             break

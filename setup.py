@@ -3,9 +3,14 @@
 
 from setuptools import setup
 
+def readme():
+    with open('README.md') as f:
+        return f.read()
+
 setup(name='pddoc',
       version='0.1',
       description='PureData documentation tools',
+      long_description=readme(),
       classifiers=[
             'Development Status :: 2 - Pre-Alpha',
             'Topic :: Software Development :: Documentation',
@@ -22,4 +27,5 @@ setup(name='pddoc',
       install_requires=[
             'termcolor', 'colorama'
       ],
+      include_package_data=True,
       zip_safe=False)

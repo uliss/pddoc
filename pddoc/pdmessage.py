@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 #   Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -16,17 +17,14 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
-# -*- coding: utf-8 -*-
-
 __author__ = 'Serge Poltavski'
 
 from pdobject import *
 
+
 class PdMessage(PdObject):
     def __init__(self, x, y, atoms):
         super(PdMessage, self).__init__("msg", x, y, 0, 0, atoms)
-
 
     def __str__(self):
         res = "[%-40s {x:%i,y:%i,id:%i}" % (self.args_to_string() + "(", self._x, self._y, self._id)

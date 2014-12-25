@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -15,8 +16,6 @@
 #                                                                         #
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
-
-# -*- coding: utf-8 -*-
 
 __author__ = 'Serge Poltavski'
 
@@ -71,12 +70,12 @@ class XletCalcDatabase(object):
             "sin~", "cos~", "osc~", "r~", "receieve~", "+~", "*~", "-~", "/~"
         )
 
-    def inlets(self, object):
-        if not issubclass(object.__class__, pdobject.PdObject):
+    def inlets(self, obj):
+        if not issubclass(obj.__class__, pdobject.PdObject):
             return []
 
-        name = object.name
-        nargs = object.num_args()
+        name = obj.name
+        nargs = obj.num_args()
 
         # 1 msg inlet
         if name in self._one_msg_inlet:
@@ -99,7 +98,6 @@ class XletCalcDatabase(object):
             return [self.XLET_SOUND, self.XLET_MESSAGE]
 
         return self.inlet_conditional(name, nargs)
-
 
     def inlet_conditional(self, name, nargs):
         # [s] or [send]
@@ -154,6 +152,6 @@ class XletCalcDatabase(object):
             if nargs == 0:
                 return [self.XLET_MESSAGE] * 2
             else:
-                return [self.XLET_MESSAGE] * (n + 1)
+                return [self.XLET_MESSAGE] * (nargs + 1)
 
         return []

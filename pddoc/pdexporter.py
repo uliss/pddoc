@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -15,9 +16,6 @@
 #                                                                         #
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
-
-
-# -*- coding: utf-8 -*-
 
 __author__ = 'Serge Poltavski'
 
@@ -60,7 +58,6 @@ class PdExporter(object):
     def visit_connection(self, conn):
         line = "#X connect {0:d} {1:d} {2:d} {3:d};".format(conn[0].id, conn[1], conn[2].id, conn[3])
         self.result.append(line)
-
 
     def visit_comment(self, comment):
         line = "#X text {0:d} {1:d} {2:s};".format(comment.x, comment.y, " ".join(comment.args))

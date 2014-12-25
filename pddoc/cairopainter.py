@@ -19,6 +19,7 @@
 
 __author__ = 'Serge Poltavski'
 
+from pdbaseobject import *
 from pdpainter import *
 import cairo
 import textwrap

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 #   Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                            #
@@ -16,25 +17,8 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
-# -*- coding: utf-8 -*-
-
 __author__ = 'Serge Poltavski'
 
-# [size]? - square size of the gui element
-# [init]? - set on load
-# [send]? - send symbol name
-# [receive]? - receive symbol name
-# [label]? - label
-# [x_off]? - horizontal position of the label text relative to the upperleft corner of the object
-# [y_off]? - vertical position of the label text relative to the upperleft corner of the object
-# [font]? - font type
-# [fontsize]? - font size
-# [bg_color]? - background color
-# [fg_color]? - foreground color
-# [label_color]? - label color
-# [init_value]? - value sent when the [init]? attribute is set
-# [default_value]? - default value when the [init]? attribute is not set
 
 import pdobject
 from termcolor import colored
@@ -58,7 +42,7 @@ class PdColor:
         return PdColor(1, 1, 1)
 
     def rgb(self):
-        return (self._r, self._g, self._b)
+        return self._r, self._g, self._b
 
     def set_rgb(self, rgb):
         self._r = rgb[0]
@@ -86,7 +70,7 @@ class PdColor:
         return self.compare((0, 0, 0))
 
     def rgb_float(self):
-        return (self._r / 255.0, self._g / 255.0, self._b / 255.0)
+        return self._r / 255.0, self._g / 255.0, self._b / 255.0
 
     def to_pd(self):
         return -4096 * int(round(self._r * (63 / 255.0))) \
@@ -115,7 +99,6 @@ class PdCoreGui(pdobject.PdObject):
 
     def draw(self, painter):
         painter.draw_core_gui(self)
-
 
     def prop(self, key):
         return self._props[key]
@@ -187,14 +170,14 @@ class PdCoreGui(pdobject.PdObject):
 
     def inlets(self):
         if self.name in ("tgl", "bng", "hsl", "vsl", "nbx"):
-            if not self._props.has_key("receive") or self._props["receive"] == None:
+            if "receive" not in self._props or self._props["receive"] is None:
                 return [self.XLET_GUI]
             else:
                 return []
 
     def outlets(self):
         if self.name in ("tgl", "bng", "hsl", "vsl", "nbx"):
-            if not self._props.has_key("receive") or self._props["receive"] == None:
+            if "send" not in self._props or self._props["send"] is None:
                 return [self.XLET_GUI]
             else:
                 return []

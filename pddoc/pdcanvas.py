@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 #   Copyright (C) 2014 by Serge Poltavski                                 #
 # serge.poltavski@gmail.com                                             #
@@ -16,8 +17,6 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
-# -*- coding: utf-8 -*-
 
 __author__ = 'Serge Poltavski'
 
@@ -165,7 +164,7 @@ class PdCanvas(PdBaseObject):
         elif self.type == self.TYPE_SUBPATCH:
             name = "Subpatch "
 
-        name += "\"%s\"" % (self.name)
+        name += u"\"{0:s}\"".format(self.name)
 
         res = "%-30s (%i,%i %ix%i)\n" % (name, self._x, self._y, self._width, self._height)
         for obj in self.objects:

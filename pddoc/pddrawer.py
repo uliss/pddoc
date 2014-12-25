@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 #   Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                            #
@@ -16,9 +17,6 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
-# -*- coding: utf-8 -*-
-
 __author__ = 'Serge Poltavski'
 
 from pdparser import *
@@ -30,17 +28,3 @@ class PdDrawer:
 
     def draw(self, canvas, painter):
         canvas.draw(painter)
-
-
-if __name__ == '__main__':
-    parser = PdParser()
-    parser.parse("tests/simple.pd")
-
-    painter = PdPainter()
-
-    d = PdDrawer()
-    canvas = parser.canvas
-    if canvas != None:
-        d.draw(parser.canvas, painter)
-    else:
-        common.warning("No canvas given")

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                   #
 #   serge.poltavski@gmail.com                                             #
@@ -16,15 +17,13 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
-# -*- coding: utf-8 -*-
-
 __author__ = 'Serge Poltavski'
 
 import re
 from pdbaseobject import *
 from xletcalcdatabase import *
 import six
+
 
 class PdObject(PdBaseObject):
     xlet_calculator = XletCalcDatabase()
@@ -53,8 +52,8 @@ class PdObject(PdBaseObject):
         return self._id
 
     @id.setter
-    def id(self, id):
-        self._id = int(id)
+    def id(self, oid):
+        self._id = int(oid)
 
     @property
     def name(self):

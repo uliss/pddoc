@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                  #
 #   serge.poltavski@gmail.com                                             #
@@ -16,12 +17,7 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
-# -*- coding: utf-8 -*-
-
 __author__ = 'Serge Poltavski'
-
-from pdcomment import *
 
 
 class PdPainter(object):
@@ -34,18 +30,17 @@ class PdPainter(object):
     def draw_message(self, message):
         print "Draw message [id:%i]: %s" % (message.id, message.to_string())
 
-    def draw_object(self, object):
-        print "Draw object: [id:%i] [%s]" % (object.id, " ".join(object.args))
+    def draw_object(self, obj):
+        print "Draw object: [id:%i] [%s]" % (obj.id, " ".join(obj.args))
 
     def draw_core_gui(self, gui):
         print "Draw core GUI: [id:%i] [%s]" % (gui.id, gui.name)
 
     def draw_subpatch(self, subpatch):
-        print "Draw subpatch: [pd %s]" % (subpatch.name)
+        print u"Draw subpatch: [pd {0:s}]".format(subpatch.name)
 
     def draw_graph(self, graph):
         print "Draw graph "
 
     def draw_connections(self, canvas):
         print "Draw connections "
-

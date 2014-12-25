@@ -2,7 +2,7 @@
 # coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
-#   serge.poltavski@gmail.com                                             #
+# serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -17,48 +17,23 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
+from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pdbaseobject import *
+from pddoc.pddrawer import *
+from pddoc.pdpainter import *
+from pddoc.pdcanvas import *
 
 
-class PdComment(PdBaseObject):
-    def __init__(self, x, y, args):
-        super(PdComment, self).__init__(x, y, -1, -1)
-        self.args = args
+class TestPdDrawer(TestCase):
+    def test_draw(self):
+        parser = PdParser()
+        parser.parse("simple.pd")
 
-    @staticmethod
-    def unescape(s):
-        return s.strip() \
-            .replace(chr(13), "") \
-            .replace(chr(10), "") \
-            .replace("\\;", ";") \
-            .replace("\\,", ",")
+        painter = PdPainter()
 
-    def text(self):
-        res = ""
-
-        for a in self.args:
-            a = self.unescape(a)
-
-            if a == ",":
-                res += ","
-            elif a == ";":
-                res += ";"
-            else:
-                res += " " + a
-
-        res = res.strip()
-
-        return res
-
-    def __str__(self):
-        res = "# %-39s {x:%i,y:%i}" % (self.text(), self._x, self._y)
-        return res
-
-    def draw(self, painter):
-        painter.draw_comment(self)
-
-    def traverse(self, visitor):
-        visitor.visit_comment(self)
+        d = PdDrawer()
+        canvas = parser.canvas
+        self.assertTrue(canvas)
+        d.draw(parser.canvas, painter)

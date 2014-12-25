@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 #   Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                            #
@@ -16,9 +17,6 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
-# -*- coding: utf-8 -*-
-
 __author__ = 'Serge Poltavski'
 import re
 
@@ -33,16 +31,16 @@ class PdBaseObject(object):
         self._height = int(h)
         self._width = int(w)
 
-    x = property(lambda c: c.get_x(), lambda c, v: c.set_x(v))
-    y = property(lambda c: c.get_y(), lambda c, v: c.set_y(v))
-    height = property(lambda c: c.get_height(), lambda c, v: c.set_height(v))
-    width = property(lambda c: c.get_width(), lambda c, v: c.set_width(v))
+    x = property(lambda self: self.get_x(), lambda self, v: self.set_x(v))
+    y = property(lambda self: self.get_y(), lambda self, v: self.set_y(v))
+    height = property(lambda self: self.get_height(), lambda self, v: self.set_height(v))
+    width = property(lambda self: self.get_width(), lambda self, v: self.set_width(v))
 
     def is_null(self):
         return not self.x and not self.y and not self.width and not self.height
 
     def brect(self):
-        return (self.x, self.y, self.width, self.height)
+        return self.x, self.y, self.width, self.height
 
     def move_by(self, x, y):
         self.x += x

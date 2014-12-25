@@ -53,19 +53,19 @@ class TestPdExporter(TestCase):
 
     def test_export_comments(self):
         fname1 = "comments.pd"
-        fname2 = "export_comments.pd"
+        fname2 = "out/export_comments.pd"
         self.reexport(fname1, fname2)
         self.assertFalse(self.diff(fname1, fname2))
 
     def test_export_objects(self):
         fname1 = "objects.pd"
-        fname2 = "export_objects.pd"
+        fname2 = "out/export_objects.pd"
         self.reexport(fname1, fname2)
         self.assertFalse(self.diff(fname1, fname2))
 
     def test_export_connections(self):
         fname1 = "connections.pd"
-        fname2 = "export_connections.pd"
+        fname2 = "out/export_connections.pd"
         self.reexport(fname1, fname2)
         f1 = open(fname1, 'r')
         l1 = f1.readlines()
@@ -81,19 +81,19 @@ class TestPdExporter(TestCase):
     @expectedFailure
     def test_export_subpatch(self):
         fname1 = "subpatch.pd"
-        fname2 = "export_subpatch.pd"
+        fname2 = "out/export_subpatch.pd"
         self.reexport(fname1, fname2)
         self.assertFalse(self.diff(fname1, fname2))
 
     def test_export_core_gui(self):
         fname1 = "core_gui.pd"
-        fname2 = "export_core_gui.pd"
+        fname2 = "out/export_core_gui.pd"
         self.reexport(fname1, fname2)
         self.assertFalse(self.diff(fname1, fname2))
 
     @expectedFailure
     def test_export_many(self):
         fname1 = "simple.pd"
-        fname2 = "export_simple.pd"
+        fname2 = "out/export_simple.pd"
         self.reexport(fname1, fname2)
         self.assertFalse(self.diff(fname1, fname2))

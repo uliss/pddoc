@@ -1,0 +1,7 @@
+#N canvas 0 22 501 300 10;
+#X text 68 35 Simple comment;
+#X text 67 65 Comment with symbols: $"!@#$%^&*()[] \; new line;
+#X text 67 97 Lorem ipsum dolor sit amet \, consectetur adipiscing
+elit \, sed do eiusmod tempor incididunt ut labore et dolore magna
+aliqua. Ut enim ad minim veniam \, quis nostrud exercitation ullamco
+laboris nisi ut aliquip ex ea commodo consequat.;

@@ -24,6 +24,7 @@ __author__ = 'Serge Poltavski'
 from pdcanvas import *
 import textwrap
 
+
 class PdExporter(object):
     def __init__(self):
         self.result = []
@@ -36,10 +37,10 @@ class PdExporter(object):
                 format(cnv.x, cnv.y, cnv.width, cnv.height, cnv.name)
             self.result.append(line)
 
-
     def visit_canvas_end(self, cnv):
-        if len(cnv.connections):
-            pass
+        for k, v in cnv.connections.items():
+            line = "#X connect {0:d} {1:d} {2:d} {3:d};".format(v[0].id, v[1], v[2].id, v[3])
+            self.result.append(line)
 
         self.result.append("")
 
@@ -56,4 +57,17 @@ class PdExporter(object):
 
         line += ";"
 
+        for l in textwrap.wrap(line, 70):
+            self.result.append(l)
+
+    def visit_core_gui(self, gui):
+        self.visit_object(gui)
+
+    def visit_message(self, msg):
+        line = "#X msg {0:d} {1:d} {2:s};".format(msg.x, msg.y, msg.args_to_string())
         self.result.append(line)
+
+    def save(self, fname):
+        f = open(fname, 'w')
+        f.write("\n".join(self.result))
+        f.close()

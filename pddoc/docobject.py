@@ -108,7 +108,7 @@ class DocAuthors(DocItem):
         super(self.__class__, self).__init__()
 
     def is_valid_tag(self, tag_name):
-        return tag_name in ("author")
+        return tag_name in ("author",)
 
 
 class DocAuthor(DocItem):
@@ -146,7 +146,7 @@ class DocExample(DocItem):
         super(self.__class__, self).__init__()
 
     def is_valid_tag(self, tag_name):
-        return tag_name in ("pdexample")
+        return tag_name in ("pdexample",)
 
 
 class DocPdmessage(DocItem):
@@ -154,12 +154,14 @@ class DocPdmessage(DocItem):
         DocItem.__init__(self)
         self._id = ""
         self._comment = ""
+        self._msg = ""
+        self._comment = ""
 
     def from_xml(self, xmlobj):
         try:
             self._id = xmlobj.attrib["id"]
             self._msg = xmlobj.attrib["text"]
-            self._common = xmlobj.attrib.get("comment", "")
+            self._comment = xmlobj.attrib.get("comment", "")
             DocItem.from_xml(self, xmlobj)
         except KeyError, e:
             common.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
@@ -224,6 +226,7 @@ class DocPdinclude(DocItem):
         self._file = xmlobj.attrib["file"]
         DocItem.from_xml(self, xmlobj)
 
+
 class DocPdconnect(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self)
@@ -238,6 +241,7 @@ class DocPdconnect(DocItem):
         self._dest_id = xmlobj.attrib["dest"]
         self._src_id = xmlobj.attrib["src"]
         DocItem.from_xml(self, xmlobj)
+
 
 class DocPdexample(DocItem):
     def __init__(self, *args):
@@ -297,7 +301,7 @@ class DocXlets(DocItem):
         res = {}
         for inl in self._elements:
             n = inl._number
-            if not res.has_key(n):
+            if n not in res:
                 res[n] = []
 
             res[n].append(inl)
@@ -351,7 +355,7 @@ class DocXlet(DoxTypeElement):
         if not self._minvalue and not self._maxvalue:
             return ()
 
-        return (float(self._minvalue), float(self._maxvalue))
+        return float(self._minvalue), float(self._maxvalue)
 
 
 class DocInlet(DocXlet):

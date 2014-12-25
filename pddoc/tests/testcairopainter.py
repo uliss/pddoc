@@ -21,11 +21,8 @@ __author__ = 'Serge Poltavski'
 
 import sys
 import os
-
-package_directory = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(package_directory + "/..")
-from cairopainter import *
-from pddrawer import *
+from pddoc.cairopainter import *
+from pddoc.pddrawer import *
 
 
 if __name__ == '__main__':
@@ -36,6 +33,6 @@ if __name__ == '__main__':
     canvas = parser.canvas
     canvas.height = 5000
 
-    cp = CairoPainter(canvas.width, canvas.height, "output_cairo.png")
+    cp = CairoPainter(canvas.width, canvas.height, "out/output_cairo.png")
     drawer = PdDrawer()
     drawer.draw(canvas, cp)

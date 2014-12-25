@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                            #
@@ -15,9 +16,6 @@
 #                                                                         #
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
-
-
-# -*- coding: utf-8 -*-
 
 __author__ = 'Serge Poltavski'
 
@@ -44,7 +42,7 @@ class LayoutItem(object):
         return self._h
 
     def brect(self):
-        return (self._x, self._y, self._w, self._h)
+        return self._x, self._y, self._w, self._h
 
     def __str__(self):
         return "(%i,%i,%ix%i)" % (self._x, self._y, self._w, self._h)
@@ -132,15 +130,13 @@ class Layout(object):
 
         self._elements.append(layout)
 
-
     def item(self, num):
         assert num < len(self._elements)
         return self._elements[num]
 
-
     def brect(self):
         if self.count() == 0:
-            return (0, 0, 0, 0)
+            return 0, 0, 0, 0
 
         left = []
         top = []
@@ -158,7 +154,7 @@ class Layout(object):
         y0 = min(top)
         x1 = max(right)
         y1 = max(bottom)
-        return (x0, y0, x1 - x0, y1 - y0)
+        return x0, y0, x1 - x0, y1 - y0
 
     def x(self):
         return self.brect()[0]
@@ -210,14 +206,9 @@ class Layout(object):
 
             res += "-" * (col_len + 4)
             res += "\n"
-            fmt = "| %%%ds |\n" % (col_len)
+            fmt = u"| %{0:d}s |\n".format(col_len)
             for e in els:
                 res += fmt % (e)
             res += "-" * (col_len + 4)
 
         return res
-
-
-
-
-

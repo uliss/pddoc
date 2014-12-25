@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                            #
@@ -15,9 +16,6 @@
 #                                                                         #
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
-
-
-# -*- coding: utf-8 -*-
 
 __author__ = 'Serge Poltavski'
 
@@ -127,7 +125,6 @@ class HtmlDocVisitor(object):
 
         self._example_brect = lh.brect()
 
-
     def col_begin(self, col):
         lv = Layout(Layout.VERTICAL, 15)
         self._cur_layout.append(lv)
@@ -163,7 +160,7 @@ class HtmlDocVisitor(object):
         self._pdobj_id_map[obj._id] = pdo._id
 
     def pdobject_end(self, obj):
-        pdobj = self._cur_canvas.objects[-1]
+        pass
 
     def pdinclude_begin(self, inc):
         fname = inc._file

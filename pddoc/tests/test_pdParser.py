@@ -29,6 +29,11 @@ class TestPdParser(TestCase):
         p = PdParser()
         self.assertFalse(p.parse(""))
 
+    def test_parse_file(self):
+        pd_parser = PdParser()
+        pd_parser.parse("simple.pd")
+        self.assertTrue(pd_parser.canvas is not None)
+
     # def test_parse_canvas(self):
     #     self.fail()
     #

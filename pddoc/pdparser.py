@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                   #
 #   serge.poltavski@gmail.com                                             #
@@ -17,8 +18,6 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 
-# -*- coding: utf-8 -*-
-
 __author__ = 'Serge Poltavski'
 
 from os import path
@@ -31,7 +30,7 @@ from pdcoregui import *
 
 
 class PdParser:
-    lines_re = re.compile("(#(.*?)[^\\\])\r{0,1}\n{0,1};\r{0,1}\n", re.MULTILINE | re.DOTALL)
+    lines_re = re.compile("(#(.*?)[^\\\])\r?\n?;\r?\n", re.MULTILINE | re.DOTALL)
     split_re = re.compile(" |\r\n?|\n", re.MULTILINE)
 
     def __init__(self):
@@ -171,12 +170,3 @@ class PdParser:
             self.parse_atoms(atoms)
 
         return True
-
-pass
-
-
-if __name__ == '__main__':
-    pd_parser = PdParser()
-    pd_parser.parse("tests/simple.pd")
-
-    print pd_parser.canvas

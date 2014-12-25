@@ -23,12 +23,11 @@ __author__ = 'Serge Poltavski'
 
 from os import path
 import re
-
 import common
-from pdcanvas  import *
+from pdcanvas import *
 from pdmessage import *
 from pdcomment import *
-from pdcoregui  import *
+from pdcoregui import *
 
 
 class PdParser:
@@ -58,12 +57,11 @@ class PdParser:
         c = PdCanvas(x, y, w, h, **kwargs)
 
         # root canvas
-        if self.canvas == None:
+        if self.canvas is None:
             c.type = PdCanvas.TYPE_WINDOW
             self.canvas = c
 
         self.canvas_stack.append(c)
-
 
     def current_canvas(self):
         assert len(self.canvas_stack) > 0
@@ -74,7 +72,7 @@ class PdParser:
             atoms.pop(0)
             self.parse_canvas(atoms)
         else:
-            common.warning("unknown frameset type:" % (atoms[0]))
+            common.warning(u"unknown frameset type: {0:s}".format(atoms[0]))
 
     def parse_messages(self, atoms):
         x = atoms[0]
@@ -84,7 +82,6 @@ class PdParser:
 
         msg = PdMessage(x, y, atoms)
         self.current_canvas().append_object(msg)
-
 
     def parse_comments(self, atoms):
         x = atoms[0]
@@ -109,13 +106,12 @@ class PdParser:
             else:
                 self.canvas.append_subpatch(c)
         else:
-            common.warning("unknown canvas type: %s" % (cnv_type))
+            common.warning(u"unknown canvas type: {0:s}".format(cnv_type))
 
     def parse_obj(self, atoms):
         x = atoms[0]
         y = atoms[1]
         name = atoms[2]
-        obj = None
 
         if name in ("bng", "cnv", "hradio", "hsl", "nbx", "tgl", "vradio", "vsl", "vu"):
             # print name
@@ -150,7 +146,6 @@ class PdParser:
         else:
             pass
 
-
     def parse_atoms(self, atoms):
         if atoms[0] == '#X':
             atoms.pop(0)
@@ -162,9 +157,8 @@ class PdParser:
             pass
 
     def parse(self, file_name):
-        self.file_name = file_name
         if not path.exists(file_name):
-            common.warning("File not exists: \"%s\"" % (file_name))
+            common.warning(u"File not exists: \"{0:s}\"".format(file_name))
             return False
 
         f = open(file_name, "r")

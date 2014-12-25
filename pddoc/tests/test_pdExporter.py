@@ -39,8 +39,8 @@ class TestPdExporter(TestCase):
         diff = difflib.unified_diff(file1.readlines(), file2.readlines())
         lines = list(diff)
         ln = len(lines)
-        if ln:
-            print "".join(lines)
+        # if ln:
+        # print "".join(lines)
 
         return ln != 0
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -15,9 +16,6 @@
 #                                                                         #
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
-
-
-# -*- coding: utf-8 -*-
 
 __author__ = 'Serge Poltavski'
 
@@ -409,27 +407,3 @@ class DocObject(DocItem):
     def from_xml(self, xobj):
         self._name = xobj.attrib["name"]
         DocItem.from_xml(self, xobj)
-
-
-if __name__ == '__main__':
-    dobj = DocObject()
-
-    import htmldocvisitor
-
-    xml = ET.parse("tests/float.pddoc")
-    pddoc = xml.getroot()
-    for child in pddoc:
-        if child.tag == "object":
-            dobj.from_xml(child)
-
-            v = htmldocvisitor.HtmlDocVisitor()
-            dobj.traverse(v)
-
-            s = str(v)
-            f = open("tests/out/test.html", "w")
-            f.write(s)
-            f.close()
-            break
-
-
-

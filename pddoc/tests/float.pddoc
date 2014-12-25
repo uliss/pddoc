@@ -54,7 +54,7 @@
                 <pdconnect src="*~" src_out="0" dest="dac~" dest_in="1"/>
             </pdexample>
             <pdexample width="10" height="10">
-                <pdinclude file="tests/objects.pd"/>
+                <pdinclude file="objects.pd"/>
             </pdexample>
         </example>
         <!-- inlets documentation -->

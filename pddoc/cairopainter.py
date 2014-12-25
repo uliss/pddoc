@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                   #
 # serge.poltavski@gmail.com                                               #
@@ -15,9 +16,6 @@
 #                                                                         #
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
-
-# -*- coding: utf-8 -*-
-
 
 __author__ = 'Serge Poltavski'
 
@@ -75,7 +73,6 @@ class CairoPainter(PdPainter):
             matrix.translate(0, kwargs['yoffset'])
 
         self.cr.set_matrix(matrix)
-
 
     def set_src_color(self, rgb):
         if isinstance(rgb, float):

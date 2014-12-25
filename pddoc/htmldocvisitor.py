@@ -188,7 +188,7 @@ class HtmlDocVisitor(object):
 
         self._image_counter += 1
         fname = "image_{0:02d}.png".format(self._image_counter)
-        output_fname = "./tests/out/" + fname
+        output_fname = "./out/" + fname
 
         pad = 10
         painter = cairopainter.CairoPainter(img_width + 2 * pad, img_height + 2 * pad,

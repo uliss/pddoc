@@ -1,8 +1,8 @@
+#!/usr/bin/env python
 # coding=utf-8
-from __future__ import print_function
 
-#   Copyright (C) 2014 by Serge Poltavski                                 #
-#   serge.poltavski@gmail.com                                             #
+# Copyright (C) 2014 by Serge Poltavski                                 #
+# serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -17,23 +17,30 @@ from __future__ import print_function
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
+from unittest import TestCase, expectedFailure
+from pddoc.docobject import *
+from pddoc.htmldocvisitor import *
 
 __author__ = 'Serge Poltavski'
 
-import sys
-import os.path as path
-from termcolor import colored
-from colorama import init
-import inspect
 
-# use Colorama to make Termcolor work on Windows too
-init()
+class TestDocObject(TestCase):
+    pass
 
+    def test_float_export(self):
+        dobj = DocObject()
 
-def warning(*objs):
-    print(colored("WARNING: ", "red"), *objs, file=sys.stderr)
+        xml = ET.parse("float.pddoc")
+        pddoc = xml.getroot()
+        for child in pddoc:
+            if child.tag == "object":
+                dobj.from_xml(child)
 
+                v = HtmlDocVisitor()
+                dobj.traverse(v)
 
-def error_place():
-    info = inspect.getframeinfo(inspect.currentframe().f_back)[0:3]
-    return '[file: %s, method: %s, line:%d]' % (path.basename(info[0]), info[2], info[1])
+                s = str(v)
+                f = open("out/test.html", "w")
+                f.write(s)
+                f.close()
+                break

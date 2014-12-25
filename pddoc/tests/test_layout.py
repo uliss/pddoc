@@ -18,12 +18,10 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 
-# -*- coding: utf-8 -*-
-
 __author__ = 'Serge Poltavski'
 
 import unittest
-from layout import *
+from pddoc.layout import *
 
 
 class TestLayout(unittest.TestCase):

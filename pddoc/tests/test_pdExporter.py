@@ -20,9 +20,9 @@
 __author__ = 'Serge Poltavski'
 
 from unittest import TestCase, expectedFailure
-from pdexporter import *
-from pdcanvas import *
-from pdparser import *
+from pddoc.pdexporter import *
+from pddoc.pdcanvas import *
+from pddoc.pdparser import *
 import difflib
 
 

@@ -20,7 +20,7 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pdmessage import *
+from pddoc.pdmessage import *
 
 
 class TestPdMessage(TestCase):
@@ -32,32 +32,32 @@ class TestPdMessage(TestCase):
     def test_draw(self):
         class P:
             def __init__(self):
-                self._msg = ""
+                self.cnt = 0
 
-            def draw_message(self, m):
-                self._msg = m
+            def draw_message(self, msg):
+                self.cnt += 1
 
         m = PdMessage(0, 0, "sample message".split())
         p = P()
 
-        self.assertEqual(hasattr(p, "_msg"), False)
+        self.assertEqual(p.cnt, 0)
         m.draw(p)
-        self.assertEqual(hasattr(p, "_msg"), True)
+        self.assertEqual(p.cnt, 1)
 
     def test_visitor(self):
         class V:
             def __init__(self):
-                self._msg = ""
+                self.cnt = 0
 
-            def visit_message(self, m):
-                self._msg = m
+            def visit_message(self, msg):
+                self.cnt += 1
 
         m = PdMessage(0, 0, "sample message".split())
         v = V()
 
-        self.assertEqual(hasattr(v, "_msg"), False)
+        self.assertEqual(v.cnt, 0)
         m.traverse(v)
-        self.assertEqual(hasattr(v, "_msg"), True)
+        self.assertEqual(v.cnt, 1)
 
     def test_str__(self):
         m = PdMessage(1, 1, "sample message".split())

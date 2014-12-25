@@ -21,8 +21,8 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from xletcalcdatabase import *
-from pdobject import *
+from pddoc.xletcalcdatabase import *
+from pddoc.pdobject import *
 
 
 class TestXletCalcDatabase(TestCase):

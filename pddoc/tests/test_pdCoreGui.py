@@ -21,7 +21,7 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pdcoregui import *
+from pddoc.pdcoregui import *
 
 
 class TestPdCoreGui(TestCase):

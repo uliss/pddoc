@@ -21,7 +21,7 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pdparser import *
+from pddoc.pdparser import *
 
 
 class TestPdParser(TestCase):

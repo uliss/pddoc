@@ -21,7 +21,7 @@ import unittest
 
 __author__ = 'Serge Poltavski'
 
-from pdobject import *
+from pddoc.pdobject import *
 
 
 class TestPdObject(unittest.TestCase):

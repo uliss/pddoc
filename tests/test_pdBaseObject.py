@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -16,12 +17,9 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
-# -*- coding: utf-8 -*-
-import unittest
-
 __author__ = 'Serge Poltavski'
 
+import unittest
 from pdbaseobject import *
 
 

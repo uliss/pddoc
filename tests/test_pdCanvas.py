@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -16,8 +17,6 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
-# -*- coding: utf-8 -*-
 from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
@@ -42,7 +41,6 @@ class TestPdCanvas(TestCase):
         cnv.name = "new"
         self.assertEqual(cnv.name, "new")
 
-
     def test_append_graph(self):
         cnv = PdCanvas(0, 0, 100, 50)
         graph = PdCanvas(0, 0, 10, 10)
@@ -64,7 +62,6 @@ class TestPdCanvas(TestCase):
         self.assertEqual(oid, 1)
         oid = cnv.gen_object_id()
         self.assertEqual(oid, 2)
-
 
     def test_append_object(self):
         cnv = PdCanvas(0, 0, 100, 50)
@@ -89,7 +86,6 @@ class TestPdCanvas(TestCase):
 
     def test_make_connection_key(self):
         self.assertEqual(PdCanvas.make_connection_key(1, 2, 3, 4), "1:2 => 3:4")
-
 
     def test_add_connection(self):
         cnv = PdCanvas(0, 0, 100, 50)
@@ -157,7 +153,6 @@ class TestPdCanvas(TestCase):
 
             def visit_canvas_end(self, c):
                 self.ce += 1
-
 
         t = T()
         cnv = PdCanvas(0, 0, 100, 50)

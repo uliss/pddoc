@@ -1,4 +1,5 @@
 # /usr/bin/env python
+# coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -16,8 +17,6 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
-# -*- coding: utf-8 -*-
 import unittest
 
 __author__ = 'Serge Poltavski'
@@ -59,7 +58,7 @@ class TestPdObject(unittest.TestCase):
     def test_str__(self):
         po = PdObject("pd")
         self.assertEqual(str(po), "[pd]                                      {x:0,y:0,id:-1}")
-        del (po)
+        del po
         po = PdObject("s", 10, 0, 20, 16, ["\\$0-out"])
         po.id = 1
         self.assertEqual(str(po), "[s $0-out]                                {x:10,y:0,id:1}")
@@ -96,5 +95,3 @@ class TestPdObject(unittest.TestCase):
         self.assertEqual(hasattr(visitor, "_o"), False)
         po.traverse(visitor)
         self.assertEqual(hasattr(visitor, "_o"), True)
-
-

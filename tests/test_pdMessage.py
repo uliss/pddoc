@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# coding=utf-8
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
@@ -16,8 +16,6 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
-# -*- coding: utf-8 -*-
 from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
@@ -33,6 +31,9 @@ class TestPdMessage(TestCase):
 
     def test_draw(self):
         class P:
+            def __init__(self):
+                self._msg = ""
+
             def draw_message(self, m):
                 self._msg = m
 
@@ -45,6 +46,9 @@ class TestPdMessage(TestCase):
 
     def test_visitor(self):
         class V:
+            def __init__(self):
+                self._msg = ""
+
             def visit_message(self, m):
                 self._msg = m
 
@@ -58,7 +62,6 @@ class TestPdMessage(TestCase):
     def test_str__(self):
         m = PdMessage(1, 1, "sample message".split())
         self.assertEqual(str(m), "[sample message(                          {x:1,y:1,id:-1}")
-
 
     def test_inlets(self):
         m = PdMessage(0, 0, "sample message".split())

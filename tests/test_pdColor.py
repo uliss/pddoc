@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -16,8 +17,6 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
-# -*- coding: utf-8 -*-
 import unittest
 
 __author__ = 'Serge Poltavski'
@@ -61,7 +60,6 @@ class TestPdColor(unittest.TestCase):
             c.from_pd(-v)
             self.assertEqual(c.to_pd(), -v)
 
-
     def test_compare(self):
         c = PdColor(0.1, 0, 0)
         self.assertEqual(self.c.compare(c), False)
@@ -85,14 +83,8 @@ class TestPdColor(unittest.TestCase):
         self.assertEqual(PdColor(0, 0, 8).to_pd(), -3)
         self.assertEqual(PdColor(0, 0, 168).to_pd(), -43)
         self.assertEqual(PdColor(0, 0, 255).to_pd(), -64)
-        self.assertEqual(PdColor(0, 4, 0).to_pd(), -(64) - 1)
+        self.assertEqual(PdColor(0, 4, 0).to_pd(), -64 - 1)
         self.assertEqual(PdColor(0, 8, 0).to_pd(), -(64 * 2) - 1)
         self.assertEqual(PdColor(0, 12, 0).to_pd(), -(64 * 3) - 1)
         self.assertEqual(PdColor(0, 12, 4).to_pd(), -(64 * 3) - 2)
-        self.assertEqual(PdColor(4, 0, 0).to_pd(), -(4096) - 1)
-
-
-
-
-
-
+        self.assertEqual(PdColor(4, 0, 0).to_pd(), -4096 - 1)

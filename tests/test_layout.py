@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                            #
@@ -106,7 +107,6 @@ class TestLayout(unittest.TestCase):
         self.assertEqual(lv.item(1).item(0).brect(), (0, 10, 10, 10))
         self.assertEqual(lv.item(1).item(1).brect(), (0, 20, 10, 10))
 
-
     def test_brect(self):
         lv = Layout(Layout.VERTICAL)
         self.assertEqual(lv.brect(), (0, 0, 0, 0))
@@ -155,7 +155,6 @@ class TestLayout(unittest.TestCase):
         lh.add_layout(lv)
         self.assertEqual(iv.brect(), (150, 0, 100, 100))
 
-
     def test_str(self):
         lh = Layout(Layout.HORIZONTAL)
         i = LayoutItem(0, 0, 10, 10)
@@ -193,4 +192,3 @@ class TestLayoutItem(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

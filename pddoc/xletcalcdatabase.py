@@ -27,6 +27,8 @@ class XletCalcDatabase(object):
     XLET_SOUND = pdobject.PdBaseObject.XLET_SOUND
 
     def __init__(self):
+        # INLETS
+        # MESSAGE
         self._one_msg_inlet = (
             "bang", "b", "change", "makefilename", "print",
             "mtof", "ftom", "powtodb", "dbtopow", "rmstodb", "dbtorms",
@@ -45,17 +47,23 @@ class XletCalcDatabase(object):
             "route", "spigot", "moses", "until", "swap", "delay", "del", "metro",
             "timer", "cputime", "realtime", "random", "pgmout", "bendout",
             "touchout", "midiout", "stripnote", "tabwrite", "bag", "poly",
-
         )
 
         self._tree_msg_inlet = (
             "clip", "line", "noteout", "ctlout", "polytouchout", "makenote"
         )
-
+        # SOUND
         self._one_snd_inlet = (
-            "s~", "send~", "sin~", "cos~"
+            "s~", "send~", "sin~", "cos~", "q8_sqrt~", "q8_rsqrt~", "wrap~",
+            "rfft~", "mtof~", "ftom~", "rmstodb~", "dbtorms~"
         )
 
+        self._two_snd_inlet = (
+            "rifft~", "fft~", "ifft~", "framp~"
+        )
+
+        # OUTLETS
+        # MESSAGE
         self._one_msg_outlet = (
             "bang", "b", "float", "f", "int", "i", "symbol", "receive", "r",
             "change", "makefilename", "pipe", "+", "-", "*", "/", "%", "pow",
@@ -78,8 +86,15 @@ class XletCalcDatabase(object):
             "poly",
         }
 
+        # SOUND
         self._one_snd_outlet = (
-            "sin~", "cos~", "osc~", "r~", "receieve~", "+~", "*~", "-~", "/~"
+            "sin~", "cos~", "osc~", "r~", "receieve~", "+~", "*~", "-~", "/~",
+            "max~", "min~", "clip~", "q8_sqrt~", "q8_rsqrt~", "wrap~", "mtof~",
+            "ftom~", "rmstodb~", "dbtorms~"
+        )
+
+        self._two_snd_outlet = (
+            "fft~", "ifft~", "rfft~", "rifft~", "framp~"
         )
 
     def inlets(self, obj):
@@ -105,6 +120,10 @@ class XletCalcDatabase(object):
         if name in self._one_snd_inlet:
             return [self.XLET_SOUND]
 
+        # 2 snd inlet
+        if name in self._two_snd_inlet:
+            return [self.XLET_SOUND] * 2
+
         # [osc~]
         if name in ("osc~", ):
             return [self.XLET_SOUND, self.XLET_MESSAGE]
@@ -127,7 +146,7 @@ class XletCalcDatabase(object):
                 return [self.XLET_SOUND] * nargs
 
         # 2 sound
-        if name in ("*~", "-~", "+~", "/~"):
+        if name in ("*~", "-~", "+~", "/~", "max~", "min~"):
             if nargs == 0:
                 return [self.XLET_SOUND] * 2
             else:
@@ -144,6 +163,9 @@ class XletCalcDatabase(object):
                 return [self.XLET_MESSAGE] * 2
             else:
                 return [self.XLET_MESSAGE] * nargs
+
+        if name == "clip~":
+            return [self.XLET_SOUND] + [self.XLET_MESSAGE] * 2
 
         return []
 
@@ -165,6 +187,10 @@ class XletCalcDatabase(object):
         # 1 snd outlet
         if name in self._one_snd_outlet:
             return [self.XLET_SOUND]
+
+        # 2 snd outlet
+        if name in self._two_snd_outlet:
+            return [self.XLET_SOUND] * 2
 
         return self.outlet_conditional(name, nargs)
 

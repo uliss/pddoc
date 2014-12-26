@@ -33,7 +33,8 @@ class XletCalcDatabase(object):
             "sin", "cos", "tan", "atan", "atan2", "sqrt", "log", "exp", "abs",
             "loadbang", "bang~",
             "r~", "receive~", "unpack", "value", "v", "t", "trigger",
-            "tabread", "tabread4", "soundfiler"
+            "tabread", "tabread4", "soundfiler", "netsend", "qlist",
+            "textfile", "openpanel", "savepanel"
         )
 
         self._two_msg_inlet = (
@@ -43,7 +44,8 @@ class XletCalcDatabase(object):
             "&", "&&", "|", "||", "mod", "div", "min", "max",
             "route", "spigot", "moses", "until", "swap", "delay", "del", "metro",
             "timer", "cputime", "realtime", "random", "pgmout", "bendout",
-            "touchout", "midiout", "stripnote", "tabwrite"
+            "touchout", "midiout", "stripnote", "tabwrite", "bag", "poly",
+
         )
 
         self._tree_msg_inlet = (
@@ -63,12 +65,18 @@ class XletCalcDatabase(object):
             "random", "mod", "div", "min", "max", "clip", "loadbang", "bang~",
             "pack", "spigot", "until", "value", "v", "line", "delay", "del",
             "metro", "timer", "cputime", "realtime", "tabread", "tabread4",
-            "soundfiler"
+            "soundfiler", "netsend", "openpanel", "savepanel", "bag", "key",
+            "keyup"
         )
 
         self._two_msg_outlet = (
-            "moses", "swap", "sysexin", "midiin", "makenote", "stripnote"
+            "moses", "swap", "sysexin", "midiin", "makenote", "stripnote",
+            "netreceive", "qlist", "textfile", "keyname"
         )
+
+        self._three_msg_outlet = {
+            "poly",
+        }
 
         self._one_snd_outlet = (
             "sin~", "cos~", "osc~", "r~", "receieve~", "+~", "*~", "-~", "/~"
@@ -150,6 +158,9 @@ class XletCalcDatabase(object):
         # 2 msg outlet
         if name in self._two_msg_outlet:
             return [self.XLET_MESSAGE] * 2
+
+        if name in self._three_msg_outlet:
+            return [self.XLET_MESSAGE] * 3
 
         # 1 snd outlet
         if name in self._one_snd_outlet:

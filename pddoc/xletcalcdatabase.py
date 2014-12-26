@@ -31,9 +31,8 @@ class XletCalcDatabase(object):
             "bang", "b", "change", "makefilename", "print",
             "mtof", "ftom", "powtodb", "dbtopow", "rmstodb", "dbtorms",
             "sin", "cos", "tan", "atan", "atan2", "sqrt", "log", "exp", "abs",
-            "random",
             "loadbang", "bang~",
-            "r~", "receive~", "unpack", "value", "v"
+            "r~", "receive~", "unpack", "value", "v", "t", "trigger"
         )
 
         self._two_msg_inlet = (
@@ -41,7 +40,8 @@ class XletCalcDatabase(object):
             "+", "-", "*", "/", "pow", "%",
             "==", "!=", "<", ">", ">=", "<=",
             "&", "&&", "|", "||", "mod", "div", "min", "max",
-            "route", "spigot", "moses", "until", "swap"
+            "route", "spigot", "moses", "until", "swap", "delay", "del", "metro",
+            "timer", "cputime", "realtime", "random"
         )
 
         self._tree_msg_inlet = (
@@ -59,7 +59,8 @@ class XletCalcDatabase(object):
             "ftom", "powtodb", "dbtopow", "rmstodb", "dbtorms",
             "sin", "cos", "tan", "atan", "atan2", "sqrt", "log", "exp", "abs",
             "random", "mod", "div", "min", "max", "clip", "loadbang", "bang~",
-            "pack", "spigot", "until", "value", "v", "line"
+            "pack", "spigot", "until", "value", "v", "line", "delay", "del",
+            "metro", "timer", "cputime", "realtime"
         )
 
         self._two_msg_outlet = (
@@ -114,7 +115,7 @@ class XletCalcDatabase(object):
             else:
                 return [self.XLET_SOUND] * nargs
 
-                # 2 sound
+        # 2 sound
         if name in ("*~", "-~", "+~", "/~"):
             if nargs == 0:
                 return [self.XLET_SOUND] * 2
@@ -126,6 +127,12 @@ class XletCalcDatabase(object):
                 return [self.XLET_MESSAGE] * 2
             else:
                 return [self.XLET_MESSAGE]
+
+        if name in ("pack",):
+            if nargs == 0:
+                return [self.XLET_MESSAGE] * 2
+            else:
+                return [self.XLET_MESSAGE] * nargs
 
         return []
 
@@ -148,10 +155,18 @@ class XletCalcDatabase(object):
         return self.outlet_conditional(name, nargs)
 
     def outlet_conditional(self, name, nargs):
+        lout_msg = lambda x, func: [self.XLET_MESSAGE] * func(x)
+
         if name in ("select", "sel", "route"):
-            if nargs == 0:
-                return [self.XLET_MESSAGE] * 2
-            else:
-                return [self.XLET_MESSAGE] * (nargs + 1)
+            return lout_msg(nargs, lambda x: 2 if x == 0 else x + 1)
+
+        if name in ("unpack", "t", "trigger"):
+            return lout_msg(nargs, lambda x: 2 if x == 0 else x)
+
+        if name in ("notein",):
+            return lout_msg(nargs, lambda x: 3 if x == 0 else 2)
+
+        if name in ("ctlin",):
+            return lout_msg(nargs, lambda x: 3 if x == 0 else 2 if x == 1 else 1)
 
         return []

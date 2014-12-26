@@ -72,3 +72,12 @@ class TestXletCalcDatabase(TestCase):
         self.assertEqual(xd.outlets(pdo), [PdObject.XLET_SOUND])
         pdo.name = "mtof"
         self.assertEqual(xd.outlets(pdo), [PdObject.XLET_MESSAGE])
+
+    def test_outlets_cond(self):
+        xd = XletCalcDatabase()
+        self.assertEqual(xd.outlet_conditional("unpack", 0), [0, 0])
+        self.assertEqual(xd.outlet_conditional("unpack", 16), [0] * 16)
+        self.assertEqual(xd.outlet_conditional("ctlin", 0), [0] * 3)
+        self.assertEqual(xd.outlet_conditional("ctlin", 1), [0] * 2)
+        self.assertEqual(xd.outlet_conditional("ctlin", 2), [0] * 1)
+        self.assertEqual(xd.outlet_conditional("ctlin", 20), [0] * 1)

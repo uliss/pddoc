@@ -41,11 +41,12 @@ class XletCalcDatabase(object):
             "==", "!=", "<", ">", ">=", "<=",
             "&", "&&", "|", "||", "mod", "div", "min", "max",
             "route", "spigot", "moses", "until", "swap", "delay", "del", "metro",
-            "timer", "cputime", "realtime", "random"
+            "timer", "cputime", "realtime", "random", "pgmout", "bendout",
+            "touchout", "midiout", "stripnote"
         )
 
         self._tree_msg_inlet = (
-            "clip", "line"
+            "clip", "line", "noteout", "ctlout", "polytouchout", "makenote"
         )
 
         self._one_snd_inlet = (
@@ -64,7 +65,7 @@ class XletCalcDatabase(object):
         )
 
         self._two_msg_outlet = (
-            "moses", "swap"
+            "moses", "swap", "sysexin", "midiin", "makenote", "stripnote"
         )
 
         self._one_snd_outlet = (
@@ -168,5 +169,11 @@ class XletCalcDatabase(object):
 
         if name in ("ctlin",):
             return lout_msg(nargs, lambda x: 3 if x == 0 else 2 if x == 1 else 1)
+
+        if name in ("pgmin", "bendin", "touchin"):
+            return lout_msg(nargs, lambda x: 2 if x == 0 else 1)
+
+        if name in ("polytouchin",):
+            return lout_msg(nargs, lambda x: 3 if x == 0 else 2)
 
         return []

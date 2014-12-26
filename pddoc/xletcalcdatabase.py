@@ -32,7 +32,8 @@ class XletCalcDatabase(object):
             "mtof", "ftom", "powtodb", "dbtopow", "rmstodb", "dbtorms",
             "sin", "cos", "tan", "atan", "atan2", "sqrt", "log", "exp", "abs",
             "loadbang", "bang~",
-            "r~", "receive~", "unpack", "value", "v", "t", "trigger"
+            "r~", "receive~", "unpack", "value", "v", "t", "trigger",
+            "tabread", "tabread4", "soundfiler"
         )
 
         self._two_msg_inlet = (
@@ -42,7 +43,7 @@ class XletCalcDatabase(object):
             "&", "&&", "|", "||", "mod", "div", "min", "max",
             "route", "spigot", "moses", "until", "swap", "delay", "del", "metro",
             "timer", "cputime", "realtime", "random", "pgmout", "bendout",
-            "touchout", "midiout", "stripnote"
+            "touchout", "midiout", "stripnote", "tabwrite"
         )
 
         self._tree_msg_inlet = (
@@ -61,7 +62,8 @@ class XletCalcDatabase(object):
             "sin", "cos", "tan", "atan", "atan2", "sqrt", "log", "exp", "abs",
             "random", "mod", "div", "min", "max", "clip", "loadbang", "bang~",
             "pack", "spigot", "until", "value", "v", "line", "delay", "del",
-            "metro", "timer", "cputime", "realtime"
+            "metro", "timer", "cputime", "realtime", "tabread", "tabread4",
+            "soundfiler"
         )
 
         self._two_msg_outlet = (

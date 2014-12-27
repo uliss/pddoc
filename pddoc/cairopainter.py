@@ -69,11 +69,23 @@ class CairoPainter(PdPainter):
 
         matrix = cairo.Matrix()
         if 'xoffset' in kwargs:
-            matrix.translate(kwargs['yoffset'], 0)
+            matrix.translate(kwargs['xoffset'], 0)
         if 'yoffset' in kwargs:
             matrix.translate(0, kwargs['yoffset'])
 
         self.cr.set_matrix(matrix)
+
+    def draw_rect(self, x, y, w, h, **kwargs):
+        self.cr.save()
+        if 'color' in kwargs:
+            self.set_src_color(kwargs['color'])
+
+        if 'width' in kwargs:
+            self.cr.set_line_width(kwargs['width'])
+
+        self.cr.rectangle(x + 0.5, y + 0.5, w, h)
+        self.cr.stroke()
+        self.cr.restore()
 
     def set_src_color(self, rgb):
         if isinstance(rgb, float):

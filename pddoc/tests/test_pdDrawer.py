@@ -24,10 +24,16 @@ __author__ = 'Serge Poltavski'
 from pddoc.pddrawer import *
 from pddoc.pdpainter import *
 from pddoc.pdcanvas import *
+import sys
+import StringIO
 
 
 class TestPdDrawer(TestCase):
     def test_draw(self):
+        # suppres output
+        cout = sys.stdout
+        sys.stdout = StringIO.StringIO()
+
         parser = PdParser()
         parser.parse("simple.pd")
 
@@ -37,3 +43,6 @@ class TestPdDrawer(TestCase):
         canvas = parser.canvas
         self.assertTrue(canvas)
         d.draw(parser.canvas, painter)
+
+        # restore output
+        sys.stdout = cout

@@ -28,6 +28,8 @@ import pdparser
 from layout import *
 from brectcalculator import *
 from pdcomment import *
+import os
+from pdobject import *
 
 
 class Tag(object):
@@ -80,6 +82,7 @@ class HtmlDocVisitor(object):
         self._template = tmpl
         self._website = ""
         self._version = ""
+        self._aliases = []
         self._inlet_counter = 0
         self._cur_canvas = None
         self._image_counter = 0
@@ -111,6 +114,9 @@ class HtmlDocVisitor(object):
     def description_begin(self, d):
         self._description = d.text()
         self._head += u'<meta name="description" content="{0:s}">\n'.format(self._description)
+
+    def aliases_begin(self, a):
+        self._aliases += a.aliases()
 
     def version_begin(self, v):
         self._version = v.text()
@@ -304,11 +310,22 @@ class HtmlDocVisitor(object):
         self._body += '</ol>\n'
         self._body += "</div>\n"
 
+    def aliases(self):
+        if not self._aliases:
+            return ""
+
+        res = []
+        for a in [self._title] + self._aliases:
+            res.append("<img src=\"object_{0:s}.png\" alt=\"{0:s}\"/>\n".format(a))
+
+        return "<span>aliases:</span> " + " or ".join(res)
+
     def header(self):
         res = '<div class="header">\n' \
               '<h1>[{0:s}]</h1>\n' \
-              '<div class="description">{0:s}</div>\n' \
-              '</div>\n'.format(self._title, self._description)
+              '<div class="description">{1:s}</div>\n' \
+              '<div class="aliases">{2:s}</div>\n' \
+              '</div>\n'.format(self._title, self._description, self.aliases())
         return res
 
     def head(self):
@@ -321,7 +338,24 @@ class HtmlDocVisitor(object):
         res = u'<div class="footer">version: {0:s}</div>\n'.format(self._version)
         return res
 
+    def generate_object_image(self, name):
+        fname = "out/object_{0:s}.png".format(name)
+        if os.path.exists(fname):
+            return
+
+        pdo = PdObject(name)
+        brect = BRectCalculator().object_brect(pdo)
+        painter = cairopainter.CairoPainter(int(brect[2]) + 1, int(brect[3]) + 1, fname, "png")
+        painter.draw_object(pdo)
+
+    def generate_images(self):
+        if self._aliases:
+            for a in [self._title] + self._aliases:
+                self.generate_object_image(a)
+
+
     def __str__(self):
+        self.generate_images()
         res = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n'
         res += u"<html>"
         res += self.head()

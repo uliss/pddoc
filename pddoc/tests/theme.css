@@ -22,6 +22,7 @@ td.number {
 div.header {
    background-color: #EED;
    padding: 10px;
+   height: 60px;
 }
 
 div.footer {
@@ -40,6 +41,19 @@ div.header .description {
    font-family: "Monaco";
    font-size: 12px;
    margin-left: 20px;
+   float: left;
+}
+
+div.header .aliases {
+   float: right;
+}
+
+div.header .aliases img {
+   vertical-align: middle;
+}
+
+div.header .aliases span {
+   display: block;
 }
 
 div.example img {

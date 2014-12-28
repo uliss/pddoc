@@ -187,7 +187,6 @@ class DocPdobject(DocItem):
             self._name = xmlobj.attrib["name"]
             self._args = xmlobj.attrib.get("args", "")
             self._comment = xmlobj.attrib.get("comment", "")
-
             DocItem.from_xml(self, xmlobj)
         except KeyError, e:
             common.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
@@ -292,6 +291,9 @@ class DocAliases(DocItem):
     def __init__(self, *args):
         super(self.__class__, self).__init__()
         self._aliases = []
+
+    def aliases(self):
+        return self._aliases
 
     def from_xml(self, xmlobj):
         for child in xmlobj:

@@ -41,10 +41,15 @@
                             <pdinlet type="control"/>
                             <pdoutlet type="audio"/>
                         </pdobject>
-                        <pdobject id="dac~" name="dac~">
-                            <pdinlet type="audio"/>
-                            <pdinlet type="audio"/>
-                        </pdobject>
+                        <row>
+                            <pdobject id="dac~" name="dac~" comment="sound output">
+                                <pdinlet type="audio"/>
+                                <pdinlet type="audio"/>
+                            </pdobject>
+                            <pdobject id="outlet~" name="outlet~" comment="patch output">
+                                <pdinlet type="audio"/>
+                            </pdobject>
+                        </row>
                     </col>
                 </row>
                 <pdconnect src="msg1" src_out="0" dest="osc~" dest_in="0"/>
@@ -52,6 +57,7 @@
                 <pdconnect src="osc~" src_out="0" dest="*~" dest_in="0"/>
                 <pdconnect src="*~" src_out="0" dest="dac~" dest_in="0"/>
                 <pdconnect src="*~" src_out="0" dest="dac~" dest_in="1"/>
+                <pdconnect src="*~" src_out="0" dest="outlet~" dest_in="0"/>
             </pdexample>
             <pdexample width="10" height="10">
                 <pdinclude file="objects.pd"/>

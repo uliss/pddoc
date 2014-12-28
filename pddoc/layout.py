@@ -73,6 +73,20 @@ class Layout(object):
         self._dir = direction
         self._distance = distance
 
+    @staticmethod
+    def vertical(distance=0):
+        return Layout(Layout.VERTICAL, distance)
+
+    @staticmethod
+    def horizontal(distance=0):
+        return Layout(Layout.HORIZONTAL, distance)
+
+    def is_vertical(self):
+        return self._dir == Layout.VERTICAL
+
+    def is_horizontal(self):
+        return self._dir == Layout.HORIZONTAL
+
     def parent(self):
         return self._parent
 
@@ -110,6 +124,9 @@ class Layout(object):
             self._add_vertical(item)
         else:
             assert False
+
+    def pop_item(self):
+        return self._elements.pop()
 
     def add_layout(self, layout):
         assert layout != self

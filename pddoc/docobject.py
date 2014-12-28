@@ -186,9 +186,15 @@ class DocPdobject(DocItem):
             self._id = xmlobj.attrib["id"]
             self._name = xmlobj.attrib["name"]
             self._args = xmlobj.attrib.get("args", "")
+            self._comment = xmlobj.attrib.get("comment", "")
+
             DocItem.from_xml(self, xmlobj)
         except KeyError, e:
             common.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
+
+    @property
+    def comment(self):
+        return self._comment
 
 
 class DocPdinlet(DocItem):

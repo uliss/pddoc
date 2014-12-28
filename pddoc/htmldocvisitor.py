@@ -26,6 +26,47 @@ import pdmessage
 import cairopainter
 import pdparser
 from layout import *
+from brectcalculator import *
+from pdcomment import *
+
+
+class Tag(object):
+    def __init__(self, name, text="", attrs={}):
+        self._name = name
+        self._text = text
+        self._attrs = attrs
+        self._children = []
+
+    def set_attr(self, name, value=None):
+        self._attrs[name] = value
+
+    def del_attr(self, name):
+        del self._attrs[name]
+
+    def append(self, tag):
+        assert isinstance(tag, Tag)
+        assert not self._text
+        self._children.append(Tag)
+
+    def _attrs_to_string(self):
+        attrs = filter(lambda k: k not in ('br'), self._attrs)
+        res = []
+        for k in attrs:
+            res.append("{0:s}=\"{1:s}\"".format(k, self._attrs[k]))
+
+        return " ".join(res)
+
+    @property
+    def _br(self):
+        return "\n" if 'br' in self._attrs else ""
+
+    def __str__(self):
+        if not self._children and not self._text:
+            str_attrs = self._attrs_to_string()
+            if not str_attrs:
+                return "<{0:s}/>{1:s}".format(self._name, self._br)
+            else:
+                return "<{0:s} {1:s}/>{2:s}".format(self._name, str_attrs, self._br)
 
 
 class HtmlDocVisitor(object):
@@ -48,6 +89,9 @@ class HtmlDocVisitor(object):
         self._include = None
         self._css_theme = "../theme.css"
         self._img_output_dir = "./out"
+        self._comment_xoffset = 2
+        self._hlayout_space = 20
+        self._vlayout_space = 25
 
     def title_begin(self, t):
         self._title = t.text()
@@ -70,10 +114,6 @@ class HtmlDocVisitor(object):
 
     def version_begin(self, v):
         self._version = v.text()
-
-    def footer(self):
-        res = u'<div class="footer">version: {0:s}</div>\n'.format(self._version)
-        return res
 
     def example_begin(self, ex):
         self._body += '<div class="example">\n'
@@ -115,23 +155,25 @@ class HtmlDocVisitor(object):
         self._cur_canvas.type = pdcanvas.PdCanvas.TYPE_WINDOW
 
     def row_begin(self, row):
-        lh = Layout(Layout.HORIZONTAL, 10)
+        lh = Layout(Layout.HORIZONTAL, self._hlayout_space)
         self._cur_layout.append(lh)
 
     def row_end(self, row):
         lh = self._cur_layout.pop()
+        # adds child layout to parent
         if self._cur_layout:
             self._cur_layout[-1].add_layout(lh)
 
         self._example_brect = lh.brect()
 
     def col_begin(self, col):
-        lv = Layout(Layout.VERTICAL, 15)
+        lv = Layout(Layout.VERTICAL, self._vlayout_space)
         self._cur_layout.append(lv)
 
     def col_end(self, col):
         lv = self._cur_layout.pop()
-        if len(self._cur_layout) > 0:
+        # adds child layout to parent
+        if self._cur_layout:
             self._cur_layout[-1].add_layout(lv)
 
         self._example_brect = lv.brect()
@@ -146,18 +188,42 @@ class HtmlDocVisitor(object):
         cnv.append_object(pdm)
         self._pdobj_id_map[obj._id] = pdm._id
 
-    def pdobject_begin(self, obj):
+    def pdobject_begin(self, doc_obj):
         cnv = self._cur_canvas
-        args = filter(None, obj._args.split(" "))
+        args = filter(None, doc_obj._args.split(" "))
 
-        pdo = pdobject.PdObject(obj.name(), 10, 10, -1, -1, args)
-        pdo._id = obj._id
-        litem = LayoutItem(0, 0, 50, 20)
-        self._cur_layout[-1].add_item(litem)
-        setattr(pdo, "layout", litem)
+        pd_obj = pdobject.PdObject(doc_obj.name(), 10, 10, -1, -1, args)
+        pd_obj._id = doc_obj._id
 
-        cnv.append_object(pdo)
-        self._pdobj_id_map[obj._id] = pdo._id
+        bc = BRectCalculator()
+        obj_bbox = list(bc.object_brect(pd_obj))
+
+        litem = LayoutItem(0, 0, obj_bbox[2], obj_bbox[3])
+        cnv.append_object(pd_obj)
+
+        # handle object comment
+        if doc_obj.comment:
+            # print doc_obj.comment
+            cbbox = bc.comment_brect(doc_obj.comment)
+            obj_bbox[2] += cbbox[2]
+            comment_litem = LayoutItem(0, 0, cbbox[2], cbbox[3])
+
+            pd_comment = PdComment(0, 0, doc_obj.comment.split(" "))
+            setattr(pd_comment, "layout", comment_litem)
+            cnv.append_object(pd_comment)
+
+            hor_layout = Layout.horizontal(self._comment_xoffset)
+            hor_layout.add_item(litem)
+            hor_layout.add_item(comment_litem)
+            self._cur_layout[-1].add_layout(hor_layout)
+        else:
+            self._cur_layout[-1].add_item(litem)
+
+        setattr(pd_obj, "layout", litem)
+        self.add_id_mapping(doc_obj, pd_obj)
+
+    def add_id_mapping(self, doc_obj, pd_obj):
+        self._pdobj_id_map[doc_obj._id] = pd_obj._id
 
     def pdobject_end(self, obj):
         pass
@@ -180,8 +246,8 @@ class HtmlDocVisitor(object):
                 pdo.x = litem.x()
                 pdo.y = litem.y()
 
-            img_width = self._example_brect[2]
-            img_height = self._example_brect[3]
+            img_width = int(self._example_brect[2])
+            img_height = int(self._example_brect[3])
 
         self._image_counter += 1
         fname = "image_{0:02d}.png".format(self._image_counter)
@@ -245,12 +311,21 @@ class HtmlDocVisitor(object):
               '</div>\n'.format(self._title, self._description)
         return res
 
+    def head(self):
+        return "<head>{0:s}</head>\n".format(self._head)
+
+    def body(self):
+        return "<body>\n{0:s}\n{1:s}\n{2:s}\n</body>\n".format(self.header(), self._body, self.footer())
+
+    def footer(self):
+        res = u'<div class="footer">version: {0:s}</div>\n'.format(self._version)
+        return res
+
     def __str__(self):
         res = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n'
-        res += u"<html>\n<head>\n{0:s}</head>\n<body>\n".format(self._head)
-        res += self.header()
-        res += self._body
-        res += self.footer()
-        res += "</body>\n</html>\n"
+        res += u"<html>"
+        res += self.head()
+        res += self.body()
+        res += "</html>\n"
 
         return res

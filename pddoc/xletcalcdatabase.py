@@ -55,7 +55,7 @@ class XletCalcDatabase(object):
         # SOUND
         self._one_snd_inlet = (
             "s~", "send~", "sin~", "cos~", "q8_sqrt~", "q8_rsqrt~", "wrap~",
-            "rfft~", "mtof~", "ftom~", "rmstodb~", "dbtorms~"
+            "rfft~", "mtof~", "ftom~", "rmstodb~", "dbtorms~", "outlet~"
         )
 
         self._two_snd_inlet = (

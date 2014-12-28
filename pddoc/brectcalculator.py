@@ -54,8 +54,13 @@ class BRectCalculator(object):
 
         return left, top, right - left, bottom - top
 
-    def obj_width(self, text_wd):
-        return max(text_wd + self._style.obj_pad_x * 2, self._style.obj_min_width)
+    def object_brect(self, obj):
+        txt = obj.to_string()
+        (x, y, width, height, dx, dy) = self._cr.text_extents(txt)
+
+        w = max(width + self._style.obj_pad_x * 2, self._style.obj_min_width)
+        h = self._style.obj_height
+        return obj.x, obj.y, w, h
 
     def comment_brect(self, text):
         lines = []
@@ -73,14 +78,10 @@ class BRectCalculator(object):
         return 0, 0, maxwd, height
 
     def visit_object(self, obj):
-        txt = obj.to_string()
-        (x, y, width, height, dx, dy) = self._cr.text_extents(txt)
-
-        w = self.obj_width(width)
-        h = self._style.obj_height
-        obj.set_width(w)
-        obj.set_height(h)
-        self._bboxes.append((obj.x, obj.y, w, h))
+        bbox = self.object_brect(obj)
+        obj.set_width(bbox[2])
+        obj.set_height(bbox[3])
+        self._bboxes.append(bbox)
 
     def visit_message(self, msg):
         pass

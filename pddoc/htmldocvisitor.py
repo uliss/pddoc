@@ -47,6 +47,7 @@ class HtmlDocVisitor(object):
         self._version = ""
         self._aliases = []
         self._inlets = {}
+        self._outlets = {}
         self._inlet_counter = 0
         self._cur_canvas = None
         self._image_counter = 0
@@ -88,34 +89,9 @@ class HtmlDocVisitor(object):
     def example_end(self, ex):
         self._body += '</div>\n'
 
-    def has_inlets(self, obj):
-        return len(obj.inlet_dict()) > 0
-
-    def has_outlets(self, obj):
-        return len(obj.outlet_dict()) > 0
-
     def core_type_help(self, t):
         assert t in ("bang", "float", "list", "symbol", "any", "pointer")
         return '<a href="http://puredata.info/wiki/{0:s}.html">{1:s}</a>'.format(t, t)
-
-    def process_xlets(self, xlets):
-        for xlet_number in sorted(xlets):
-            xlet_list = xlets[xlet_number]
-            col_span = len(xlet_list)
-            xlet_list_count = col_span
-
-            for xl in xlet_list:
-                self._body += "<tr>\n"
-                if col_span == xlet_list_count:
-                    self._body += "<td rowspan=\"{0:d}\" class=\"number\"><span>{1:s}</span></td>\n".format(col_span,
-                                                                                                            xlet_number)
-
-                self._body += u"<td class=\"type\">{0:s}</td>\n".format(self.core_type_help(xl.type()))
-                range_str = lambda x: ("&ndash;".join(map(str, x))) if (len(x) > 1) else "&nbsp;"
-                self._body += u"<td class=\"range\">{0:s}</td>\n".format(range_str(xl.range()))
-                self._body += u"<td class=\"description\">{0:s}</td>\n".format(xl.text())
-                self._body += "</tr>\n"
-                col_span -= 1
 
     def pdexample_begin(self, pd):
         self._cur_canvas = pdcanvas.PdCanvas(0, 0, pd.width(), pd.height(), name="10")
@@ -250,14 +226,6 @@ class HtmlDocVisitor(object):
 
     def outlets_begin(self, outlets):
         self._outlets = outlets.outlet_dict()
-        if not self.has_outlets(outlets):
-            return
-
-        self._body += '<div class="outlets">\n<h2>Outlets:</h2>\n'
-        self._body += "<table>\n"
-        self.process_xlets(outlets.outlet_dict())
-        self._body += "</table>\n"
-        self._body += '</div>\n'
 
     def arguments_begin(self, args):
         if args.argument_count() < 1:
@@ -297,7 +265,8 @@ class HtmlDocVisitor(object):
             css_theme=self._css_theme,
             aliases=[self._title] + self._aliases,
             version=self._version,
-            inlets=self._inlets)
+            inlets=self._inlets,
+            outlets=self._outlets)
 
     def __str__(self):
         res = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n'

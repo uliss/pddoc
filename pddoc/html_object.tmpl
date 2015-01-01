@@ -30,8 +30,7 @@
     <h2>Inlets:</h2>
     <table>
         % for inlet_number in sorted(inlets):
-        <
-        %
+        <%
         inlet_list = inlets[inlet_number]
         col_span = len(inlet_list)
         inlet_list_count = col_span
@@ -46,8 +45,35 @@
             <td class="type">${inlet.type() | h}</td>
             <td class="range">${range_str(inlet.range())}</td>
             <td class="description">${inlet.text()|h}</td>
-            <
-            % col_span -= 1 %>
+            <% col_span -= 1 %>
+        </tr>
+        % endfor
+        % endfor
+    </table>
+</div>
+% endif
+
+% if outlets:
+<div class="outlets">
+    <h2>Outlets:</h2>
+    <table>
+        % for outlet_number in sorted(outlets):
+        <%
+        outlet_list = outlets[outlet_number]
+        col_span = len(outlet_list)
+        outlet_list_count = col_span
+        range_str = lambda x: ("&ndash;".join(map(str, x))) if (len(x) > 1) else "&nbsp;"
+        %>
+
+        % for outlet in outlet_list:
+        <tr>
+            % if col_span == outlet_list_count:
+            <td rowspan="${col_span}" class="number"><span>${outlet_number|h}</span></td>
+            % endif
+            <td class="type">${outlet.type() | h}</td>
+            <td class="range">${range_str(outlet.range())}</td>
+            <td class="description">${outlet.text()|h}</td>
+            <% col_span -= 1 %>
         </tr>
         % endfor
         % endfor

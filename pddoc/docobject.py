@@ -91,12 +91,12 @@ class DocItem(object):
 
 class DocTitle(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
 
 
 class DocMeta(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
         return tag_name in ("description", "authors", "contacts",
@@ -111,7 +111,7 @@ class DocDescription(DocItem):
 
 class DocAuthors(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
         return tag_name in ("author",)
@@ -119,27 +119,27 @@ class DocAuthors(DocItem):
 
 class DocAuthor(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
 
 
 class DocContacts(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
 
 
 class DocLibrary(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
 
 
 class DocVersion(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
 
 
 class DocLicense(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
         self._url = ""
 
     def from_xml(self, xmlobj):
@@ -149,7 +149,7 @@ class DocLicense(DocItem):
 
 class DocExample(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
         return tag_name in ("pdexample",)
@@ -157,7 +157,7 @@ class DocExample(DocItem):
 
 class DocPdmessage(DocItem):
     def __init__(self, *args):
-        DocItem.__init__(self)
+        DocItem.__init__(self, args)
         self._id = ""
         self._comment = ""
         self._msg = ""
@@ -180,12 +180,15 @@ class DocPdmessage(DocItem):
 
 class DocPdobject(DocItem):
     def __init__(self, *args):
-        DocItem.__init__(self)
+        DocItem.__init__(self, args)
         self._id = ""
         self._name = ""
         self._args = ""
         self._comment = ""
         self._offset = 0
+
+    def id(self):
+        return self._id
 
     def is_valid_tag(self, tag_name):
         return tag_name in ("pdinlet", "pdoutlet")
@@ -214,17 +217,17 @@ class DocPdobject(DocItem):
 
 class DocPdinlet(DocItem):
     def __init__(self, *args):
-        DocItem.__init__(self)
+        DocItem.__init__(self, args)
 
 
 class DocPdoutlet(DocItem):
     def __init__(self, *args):
-        DocItem.__init__(self)
+        DocItem.__init__(self, args)
 
 
 class DocRow(DocItem):
     def __init__(self, *args):
-        DocItem.__init__(self)
+        DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
         return tag_name in ("col", "pdmessage", "pdobject")
@@ -232,7 +235,7 @@ class DocRow(DocItem):
 
 class DocCol(DocItem):
     def __init__(self, *args):
-        DocItem.__init__(self)
+        DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
         return tag_name in ("row", "pdmessage", "pdobject")
@@ -240,7 +243,7 @@ class DocCol(DocItem):
 
 class DocPdinclude(DocItem):
     def __init__(self, *args):
-        DocItem.__init__(self)
+        DocItem.__init__(self, args)
         self._file = ""
 
     def from_xml(self, xmlobj):
@@ -250,11 +253,17 @@ class DocPdinclude(DocItem):
 
 class DocPdconnect(DocItem):
     def __init__(self, *args):
-        DocItem.__init__(self)
+        DocItem.__init__(self, args)
         self._src_id = ""
         self._dest_id = ""
         self._src_out = None
         self._dest_in = None
+
+    def src_id(self):
+        return self._src_id
+
+    def dest_id(self):
+        return self._dest_id
 
     def from_xml(self, xmlobj):
         self._src_out = int(xmlobj.attrib["src_out"])
@@ -266,7 +275,7 @@ class DocPdconnect(DocItem):
 
 class DocPdexample(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
         self._width = 0
         self._height = 0
 
@@ -287,12 +296,12 @@ class DocPdexample(DocItem):
 
 class DocWebsite(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
 
 
 class DocKeywords(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
         self._keywords = []
 
     def from_xml(self, xmlobj):
@@ -305,7 +314,7 @@ class DocKeywords(DocItem):
 
 class DocAliases(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
         self._aliases = []
 
     def aliases(self):
@@ -319,12 +328,12 @@ class DocAliases(DocItem):
 
 class DocXlets(DocItem):
     def __init__(self, *args):
-        DocItem.__init__(self)
+        DocItem.__init__(self, args)
 
     def xlet_dict(self):
         res = {}
-        for inl in self._elements:
-            n = inl._number
+        for inl in self.items():
+            n = inl.number()
             if n not in res:
                 res[n] = []
 
@@ -335,7 +344,7 @@ class DocXlets(DocItem):
 
 class DocInlets(DocXlets):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocXlets.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
         return tag_name == "inlet"
@@ -348,7 +357,7 @@ class DoxTypeElement(DocItem):
     allowed_types = ("bang", "float", "list", "symbol", "pointer", "any")
 
     def __init__(self, *args):
-        DocItem.__init__(self)
+        DocItem.__init__(self, args)
         self._type = ""
 
     def is_valid_type(self, t):
@@ -368,6 +377,9 @@ class DocXlet(DoxTypeElement):
         self._maxvalue = ""
         self._minvalue = ""
         self._number = ""
+
+    def number(self):
+        return int(self._number)
 
     def from_xml(self, xmlobj):
         self._maxvalue = xmlobj.attrib.get("maxvalue", "")
@@ -410,7 +422,7 @@ class DocArgument(DoxTypeElement):
 
 class DocArguments(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
         return tag_name == "argument"
@@ -421,7 +433,7 @@ class DocArguments(DocItem):
 
 class DocInfo(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
         return tag_name in ("itemize", "p")
@@ -429,14 +441,14 @@ class DocInfo(DocItem):
 
 class DocItemize(DocItem):
     def __init__(self, *args):
-        DocItem.__init__(self)
+        DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
         return tag_name in ("item",)
 
 class DocObject(DocItem):
-    def __init__(self):
-        super(self.__class__, self).__init__()
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
         self._name = ""
 
     def is_valid_tag(self, tag_name):

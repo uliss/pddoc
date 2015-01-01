@@ -201,8 +201,8 @@ class HtmlDocVisitor(object):
         self._include = False
 
     def pdconnect_begin(self, c):
-        src_id = self._pdobj_id_map[c._src_id]
-        dest_id = self._pdobj_id_map[c._dest_id]
+        src_id = self._pdobj_id_map[c.src_id()]
+        dest_id = self._pdobj_id_map[c.dest_id()]
         src_out = c._src_out
         dest_in = c._dest_in
 

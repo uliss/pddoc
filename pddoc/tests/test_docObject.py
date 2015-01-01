@@ -41,7 +41,7 @@ class TestDocObject(TestCase):
                 v.generate_images()
 
                 s = v.render()
-                f = open("out/test.html", "w")
+                f = open("out/float.html", "w")
                 f.write(s)
                 f.close()
                 break

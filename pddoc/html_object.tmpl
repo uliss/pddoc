@@ -46,7 +46,13 @@
             % if col_span == inlet_list_count:
             <td rowspan="${col_span}" class="number"><span>${inlet_number|h}</span></td>
             % endif
-            <td class="type">${inlet.type() | h}</td>
+            <td class="type">
+                % if inlet.type() in ("bang", "float", "list", "symbol", "any", "pointer"):
+                    <a href="http://puredata.info/wiki/${inlet.type() | u}">${inlet.type() | h}</a>
+                % else :
+                    ${inlet.type() | h}
+                % endif
+            </td>
             <td class="range">${range_str(inlet.range())}</td>
             <td class="description">${inlet.text()|h}</td>
             <% col_span -= 1 %>
@@ -74,7 +80,13 @@
             % if col_span == outlet_list_count:
             <td rowspan="${col_span}" class="number"><span>${outlet_number|h}</span></td>
             % endif
-            <td class="type">${outlet.type() | h}</td>
+            <td class="type">
+                % if outlet.type() in ("bang", "float", "list", "symbol", "any", "pointer"):
+                    <a href="http://puredata.info/wiki/${inlet.type() | u}">${outlet.type() | h}</a>
+                % else:
+                    ${outlet.type() | h}
+                % endif
+            </td>
             <td class="range">${range_str(outlet.range())}</td>
             <td class="description">${outlet.text()|h}</td>
             <% col_span -= 1 %>

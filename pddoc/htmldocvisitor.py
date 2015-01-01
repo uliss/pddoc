@@ -253,10 +253,3 @@ class HtmlDocVisitor(object):
             inlets=self._inlets,
             outlets=self._outlets,
             arguments=self._arguments)
-
-    def __str__(self):
-        res = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n'
-        res += u"<html>"
-        res += "</html>\n"
-
-        return res

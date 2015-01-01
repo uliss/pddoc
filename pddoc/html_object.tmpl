@@ -26,7 +26,9 @@
 </div>
 
 <div class="example">
-
+% for ex_num, ex_path in examples.items():
+    <img src="${ex_path | u}" alt="example ${ex_num}"/>
+% endfor
 </div>
 
 % if inlets:
@@ -44,16 +46,16 @@
         % for inlet in inlet_list:
         <tr>
             % if col_span == inlet_list_count:
-            <td rowspan="${col_span}" class="number"><span>${inlet_number|h}</span></td>
+            <td rowspan="${col_span}" class="number" title="inlet number"><span>${inlet_number|h}</span></td>
             % endif
-            <td class="type">
+            <td class="type" title="inlet type">
                 % if inlet.type() in ("bang", "float", "list", "symbol", "any", "pointer"):
                     <a href="http://puredata.info/wiki/${inlet.type() | u}">${inlet.type() | h}</a>
                 % else :
                     ${inlet.type() | h}
                 % endif
             </td>
-            <td class="range">${range_str(inlet.range())}</td>
+            <td class="range" title="value range">${range_str(inlet.range())}</td>
             <td class="description">${inlet.text()|h}</td>
             <% col_span -= 1 %>
         </tr>
@@ -78,16 +80,16 @@
         % for outlet in outlet_list:
         <tr>
             % if col_span == outlet_list_count:
-            <td rowspan="${col_span}" class="number"><span>${outlet_number|h}</span></td>
+            <td rowspan="${col_span}" class="number" title="outlet number"><span>${outlet_number|h}</span></td>
             % endif
-            <td class="type">
+            <td class="type" title="outlet type">
                 % if outlet.type() in ("bang", "float", "list", "symbol", "any", "pointer"):
-                    <a href="http://puredata.info/wiki/${inlet.type() | u}">${outlet.type() | h}</a>
+                    <a href="http://puredata.info/wiki/${inlet.type() | u}" title="outlet type">${outlet.type() | h}</a>
                 % else:
                     ${outlet.type() | h}
                 % endif
             </td>
-            <td class="range">${range_str(outlet.range())}</td>
+            <td class="range" title="value range">${range_str(outlet.range())}</td>
             <td class="description">${outlet.text()|h}</td>
             <% col_span -= 1 %>
         </tr>

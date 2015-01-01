@@ -35,17 +35,14 @@ from mako.lookup import TemplateLookup
 
 
 class HtmlDocVisitor(object):
-    def __init__(self, tmpl="default.tmpl"):
-        self._body = ""
-        self._head = ""
-        self._html5 = False
+    def __init__(self):
         self._title = ""
         self._description = ""
         self._keywords = []
-        self._template = tmpl
         self._website = ""
         self._version = ""
         self._aliases = []
+        self._examples = {}
         self._inlets = {}
         self._outlets = {}
         self._arguments = []
@@ -83,10 +80,6 @@ class HtmlDocVisitor(object):
 
     def version_begin(self, v):
         self._version = v.text()
-
-    def core_type_help(self, t):
-        assert t in ("bang", "float", "list", "symbol", "any", "pointer")
-        return '<a href="http://puredata.info/wiki/{0:s}.html">{1:s}</a>'.format(t, t)
 
     def pdexample_begin(self, pd):
         self._cur_canvas = pdcanvas.PdCanvas(0, 0, pd.width(), pd.height(), name="10")
@@ -204,8 +197,7 @@ class HtmlDocVisitor(object):
         walker = pddrawer.PdDrawer()
         walker.draw(self._cur_canvas, painter)
 
-        self._body += u'<img src="{0:s}" alt="example:{1:d}"/>\n'.format(fname, self._image_counter)
-
+        self._examples[self._image_counter] = fname
         self._include = False
 
     def pdconnect_begin(self, c):
@@ -250,6 +242,7 @@ class HtmlDocVisitor(object):
             css_theme=self._css_theme,
             aliases=[self._title] + self._aliases,
             version=self._version,
+            examples=self._examples,
             inlets=self._inlets,
             outlets=self._outlets,
             arguments=self._arguments)

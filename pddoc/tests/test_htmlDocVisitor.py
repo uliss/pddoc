@@ -31,4 +31,4 @@ class TestHtmlDocVisitor(TestCase):
 
     def test_render(self):
         v = HtmlDocVisitor()
-        print v.render()
+        self.assertTrue(v.render())

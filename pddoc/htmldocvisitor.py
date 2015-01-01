@@ -19,19 +19,20 @@
 
 __author__ = 'Serge Poltavski'
 
+import os
 import pdcanvas
 import pddrawer
 import pdobject
-import pdmessage
 import cairopainter
 import pdparser
 from layout import *
 from brectcalculator import *
 from pdcomment import *
-import os
+from pdmessage import *
 from pdobject import *
 from mako.template import Template
 from mako.lookup import TemplateLookup
+from docobject import *
 
 
 class HtmlDocVisitor(object):
@@ -62,6 +63,7 @@ class HtmlDocVisitor(object):
         tmpl_path = "{0:s}/html_object.tmpl".format(os.path.dirname(__file__))
         # self._tmpl_lookup = TemplateLookup(directories=[os.path.dirname(__file__)])
         self._html_template = Template(filename=tmpl_path)
+        self._brect_calc = BRectCalculator()
 
     def title_begin(self, t):
         self._title = t.text()
@@ -111,45 +113,74 @@ class HtmlDocVisitor(object):
 
     def pdmessage_begin(self, msg_obj):
         cnv = self._cur_canvas
-        pdm = pdmessage.PdMessage(10, 10, [msg_obj.text()])
+        pd_msg = self.doc_msg2pd_msg(msg_obj)
+        cnv.append_object(pd_msg)
 
-        litem = LayoutItem(msg_obj.offset(), 0, 50, 20)
-        self._cur_layout[-1].add_item(litem)
+        # handle object comment
+        if msg_obj.comment:
+            pd_comment = self.comment2pd_comment(msg_obj.comment)
+            cnv.append_object(pd_comment)
+
+            hor_layout = Layout.horizontal(self._comment_xoffset)
+            hor_layout.add_item(pd_msg.layout)
+            hor_layout.add_item(pd_comment.layout)
+            self._cur_layout[-1].add_layout(hor_layout)
+        else:
+            self._cur_layout[-1].add_item(pd_msg.layout)
+
+        self.add_id_mapping(msg_obj, pd_msg)
+
+    def calc_brect(self, obj):
+        if isinstance(obj, PdMessage):
+            return self._brect_calc.message_brect(obj)
+        elif isinstance(obj, PdObject):
+            return self._brect_calc.object_brect(obj)
+        elif isinstance(obj, PdComment):
+            return self._brect_calc.comment_brect(obj)
+        else:
+            assert False
+
+    def doc_msg2pd_msg(self, doc_msg):
+        assert isinstance(doc_msg, DocPdmessage)
+        pdm = PdMessage(0, 0, [doc_msg.text()])
+        obj_bbox = list(self.calc_brect(pdm))
+        litem = LayoutItem(doc_msg.offset(), 0, obj_bbox[2], obj_bbox[3])
         setattr(pdm, "layout", litem)
-        cnv.append_object(pdm)
-        self.add_id_mapping(msg_obj, pdm)
+        return pdm
+
+    def doc_obj2pd_obj(self, doc_obj):
+        assert isinstance(doc_obj, DocPdobject)
+        args = filter(None, doc_obj.args())
+        pd_obj = pdobject.PdObject(doc_obj.name(), 0, 0, 0, 0, args)
+        obj_bbox = list(self.calc_brect(pd_obj))
+        litem = LayoutItem(0, 0, obj_bbox[2], obj_bbox[3])
+        setattr(pd_obj, "layout", litem)
+        return pd_obj
+
+    def comment2pd_comment(self, txt):
+        pd_comment = PdComment(0, 0, txt.split(" "))
+        cbbox = self.calc_brect(pd_comment)
+        comment_litem = LayoutItem(0, 0, cbbox[2], cbbox[3])
+        setattr(pd_comment, "layout", comment_litem)
+        return pd_comment
 
     def pdobject_begin(self, doc_obj):
         cnv = self._cur_canvas
-        args = filter(None, doc_obj._args.split(" "))
-
-        pd_obj = pdobject.PdObject(doc_obj.name(), 10, 10, -1, -1, args)
-
-        bc = BRectCalculator()
-        obj_bbox = list(bc.object_brect(pd_obj))
-
-        litem = LayoutItem(0, 0, obj_bbox[2], obj_bbox[3])
+        pd_obj = self.doc_obj2pd_obj(doc_obj)
         cnv.append_object(pd_obj)
 
         # handle object comment
         if doc_obj.comment:
-            # print doc_obj.comment
-            cbbox = bc.comment_brect(doc_obj.comment)
-            obj_bbox[2] += cbbox[2]
-            comment_litem = LayoutItem(0, 0, cbbox[2], cbbox[3])
-
-            pd_comment = PdComment(0, 0, doc_obj.comment.split(" "))
-            setattr(pd_comment, "layout", comment_litem)
+            pd_comment = self.comment2pd_comment(doc_obj.comment)
             cnv.append_object(pd_comment)
 
             hor_layout = Layout.horizontal(self._comment_xoffset)
-            hor_layout.add_item(litem)
-            hor_layout.add_item(comment_litem)
+            hor_layout.add_item(pd_obj.layout)
+            hor_layout.add_item(pd_comment.layout)
             self._cur_layout[-1].add_layout(hor_layout)
         else:
-            self._cur_layout[-1].add_item(litem)
+            self._cur_layout[-1].add_item(pd_obj.layout)
 
-        setattr(pd_obj, "layout", litem)
         self.add_id_mapping(doc_obj, pd_obj)
 
     def add_id_mapping(self, doc_obj, pd_obj):

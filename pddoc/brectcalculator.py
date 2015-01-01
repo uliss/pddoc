@@ -21,6 +21,9 @@ __author__ = 'Serge Poltavski'
 from pddrawstyle import *
 import cairo
 import textwrap
+from pdcomment import *
+from pdobject import *
+from pdmessage import *
 
 
 class BRectCalculator(object):
@@ -55,6 +58,7 @@ class BRectCalculator(object):
         return left, top, right - left, bottom - top
 
     def object_brect(self, obj):
+        assert isinstance(obj, PdObject)
         txt = obj.to_string()
         (x, y, width, height, dx, dy) = self._cr.text_extents(txt)
 
@@ -62,7 +66,7 @@ class BRectCalculator(object):
         h = self._style.obj_height
         return obj.x, obj.y, w, h
 
-    def comment_brect(self, text):
+    def text_brect(self, text):
         lines = []
         for line in textwrap.wrap(text, 59):
             line = ";\n".join(line.split(";")).split("\n")
@@ -77,6 +81,17 @@ class BRectCalculator(object):
         height = len(lines) * self._style.font_size
         return 0, 0, maxwd, height
 
+    def comment_brect(self, comment):
+        assert isinstance(comment, PdComment)
+        return self.text_brect(comment.text())
+
+    def message_brect(self, message):
+        assert  isinstance(message, PdMessage)
+        (x, y, width, height, dx, dy) = self._cr.text_extents(message.to_string())
+        w = width + self._style.obj_pad_x * 4
+        h = self._style.obj_height
+        return message.x, message.y, w, h
+
     def visit_object(self, obj):
         bbox = self.object_brect(obj)
         obj.set_width(bbox[2])
@@ -84,10 +99,13 @@ class BRectCalculator(object):
         self._bboxes.append(bbox)
 
     def visit_message(self, msg):
-        pass
+        bbox = self.message_brect(msg)
+        msg.set_width(bbox[2])
+        msg.set_height(bbox[3])
+        self._bboxes.append(bbox)
 
     def visit_comment(self, comment):
-        (x, y, w, h) = self.comment_brect(comment.text())
+        (x, y, w, h) = self.comment_brect(comment)
         self._bboxes.append((comment.x, comment.y, w, h))
 
     def visit_core_gui(self, gui):

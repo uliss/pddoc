@@ -22,6 +22,10 @@
             <aliases>
                 <alias>f</alias>
             </aliases>
+            <!-- other objects to see -->
+            <see>
+
+            </see>
         </meta>
         <example>
             <pdexample width="200" height="200">

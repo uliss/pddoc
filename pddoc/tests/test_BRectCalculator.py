@@ -48,8 +48,8 @@ class TestBRectCalculator(TestCase):
 
     def test_comment_brect(self):
         br = BRectCalculator()
-        self.assertEqual(br.comment_brect("test"), (0, 0, 24, 12))
-        self.assertEqual(br.comment_brect("test; line break"), (0, 0, 60, 24))
+        self.assertEqual(br.text_brect("test"), (0, 0, 24, 12))
+        self.assertEqual(br.text_brect("test; line break"), (0, 0, 60, 24))
 
     def test_comment(self):
         p = PdParser()

@@ -192,6 +192,9 @@ class DocPdobject(DocItem):
     def comment(self):
         return self._comment
 
+    def args(self):
+        return self._args.split(" ")
+
 
 class DocPdmessage(DocPdobject):
     def __init__(self, *args):

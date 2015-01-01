@@ -28,3 +28,7 @@ from pddoc.htmldocvisitor import *
 class TestHtmlDocVisitor(TestCase):
     def test_init(self):
         v = HtmlDocVisitor()
+
+    def test_render(self):
+        v = HtmlDocVisitor()
+        print v.render()

@@ -40,7 +40,7 @@ class TestDocObject(TestCase):
                 dobj.traverse(v)
                 v.generate_images()
 
-                s = str(v)
+                s = v.render()
                 f = open("out/test.html", "w")
                 f.write(s)
                 f.close()

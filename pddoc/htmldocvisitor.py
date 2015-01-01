@@ -30,6 +30,8 @@ from brectcalculator import *
 from pdcomment import *
 import os
 from pdobject import *
+from mako.template import Template
+from mako.lookup import TemplateLookup
 
 
 class Tag(object):
@@ -95,6 +97,10 @@ class HtmlDocVisitor(object):
         self._comment_xoffset = 2
         self._hlayout_space = 20
         self._vlayout_space = 25
+        # template config
+        tmpl_path = "{0:s}/html_object.tmpl".format(os.path.dirname(__file__))
+        # self._tmpl_lookup = TemplateLookup(directories=[os.path.dirname(__file__)])
+        self._html_template = Template(filename=tmpl_path)
 
     def title_begin(self, t):
         self._title = t.text()
@@ -360,6 +366,13 @@ class HtmlDocVisitor(object):
         if self._aliases:
             for a in [self._title] + self._aliases:
                 self.generate_object_image(a)
+
+    def render(self):
+        return self._html_template.render(
+            title=self._title,
+            description=self._description,
+            keywords=self._keywords,
+            css_theme=self._css_theme)
 
     def __str__(self):
         res = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n'

@@ -106,7 +106,7 @@ class DocMeta(DocItem):
 
 class DocDescription(DocItem):
     def __init__(self, *args):
-        super(self.__class__, self).__init__()
+        DocItem.__init__(self, args)
 
 
 class DocAuthors(DocItem):
@@ -155,29 +155,6 @@ class DocExample(DocItem):
         return tag_name in ("pdexample",)
 
 
-class DocPdmessage(DocItem):
-    def __init__(self, *args):
-        DocItem.__init__(self, args)
-        self._id = ""
-        self._comment = ""
-        self._msg = ""
-        self._comment = ""
-        self._offset = 0
-
-    def offset(self):
-        return self._offset
-
-    def from_xml(self, xmlobj):
-        try:
-            self._id = xmlobj.attrib["id"]
-            self._msg = xmlobj.attrib["text"]
-            self._comment = xmlobj.attrib.get("comment", "")
-            self._offset = int(xmlobj.attrib.get("offset", "0"))
-            DocItem.from_xml(self, xmlobj)
-        except KeyError, e:
-            common.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
-
-
 class DocPdobject(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
@@ -187,6 +164,7 @@ class DocPdobject(DocItem):
         self._comment = ""
         self._offset = 0
 
+    @property
     def id(self):
         return self._id
 
@@ -213,6 +191,25 @@ class DocPdobject(DocItem):
     @property
     def comment(self):
         return self._comment
+
+
+class DocPdmessage(DocPdobject):
+    def __init__(self, *args):
+        DocPdobject.__init__(self, args)
+
+    def is_valid_tag(self, name):
+        return False
+
+    def from_xml(self, xmlobj):
+        try:
+            self._id = xmlobj.attrib["id"]
+            self._comment = xmlobj.attrib.get("comment", "")
+            self._offset = int(xmlobj.attrib.get("offset", "0"))
+            DocItem.from_xml(self, xmlobj)
+            # after parent method
+            self._text = xmlobj.attrib["text"]
+        except KeyError, e:
+            common.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
 
 
 class DocPdinlet(DocItem):

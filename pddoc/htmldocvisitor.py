@@ -109,22 +109,21 @@ class HtmlDocVisitor(object):
 
         self._example_brect = lv.brect()
 
-    def pdmessage_begin(self, obj):
+    def pdmessage_begin(self, msg_obj):
         cnv = self._cur_canvas
-        pdm = pdmessage.PdMessage(10, 10, [obj._msg])
+        pdm = pdmessage.PdMessage(10, 10, [msg_obj.text()])
 
-        litem = LayoutItem(obj.offset(), 0, 50, 20)
+        litem = LayoutItem(msg_obj.offset(), 0, 50, 20)
         self._cur_layout[-1].add_item(litem)
         setattr(pdm, "layout", litem)
         cnv.append_object(pdm)
-        self._pdobj_id_map[obj._id] = pdm._id
+        self.add_id_mapping(msg_obj, pdm)
 
     def pdobject_begin(self, doc_obj):
         cnv = self._cur_canvas
         args = filter(None, doc_obj._args.split(" "))
 
         pd_obj = pdobject.PdObject(doc_obj.name(), 10, 10, -1, -1, args)
-        pd_obj._id = doc_obj._id
 
         bc = BRectCalculator()
         obj_bbox = list(bc.object_brect(pd_obj))
@@ -154,10 +153,7 @@ class HtmlDocVisitor(object):
         self.add_id_mapping(doc_obj, pd_obj)
 
     def add_id_mapping(self, doc_obj, pd_obj):
-        self._pdobj_id_map[doc_obj._id] = pd_obj._id
-
-    def pdobject_end(self, obj):
-        pass
+        self._pdobj_id_map[doc_obj.id] = pd_obj.id
 
     def pdinclude_begin(self, inc):
         fname = inc._file

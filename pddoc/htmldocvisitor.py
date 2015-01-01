@@ -34,45 +34,6 @@ from mako.template import Template
 from mako.lookup import TemplateLookup
 
 
-class Tag(object):
-    def __init__(self, name, text="", attrs={}):
-        self._name = name
-        self._text = text
-        self._attrs = attrs
-        self._children = []
-
-    def set_attr(self, name, value=None):
-        self._attrs[name] = value
-
-    def del_attr(self, name):
-        del self._attrs[name]
-
-    def append(self, tag):
-        assert isinstance(tag, Tag)
-        assert not self._text
-        self._children.append(Tag)
-
-    def _attrs_to_string(self):
-        attrs = filter(lambda k: k not in ('br'), self._attrs)
-        res = []
-        for k in attrs:
-            res.append("{0:s}=\"{1:s}\"".format(k, self._attrs[k]))
-
-        return " ".join(res)
-
-    @property
-    def _br(self):
-        return "\n" if 'br' in self._attrs else ""
-
-    def __str__(self):
-        if not self._children and not self._text:
-            str_attrs = self._attrs_to_string()
-            if not str_attrs:
-                return "<{0:s}/>{1:s}".format(self._name, self._br)
-            else:
-                return "<{0:s} {1:s}/>{2:s}".format(self._name, str_attrs, self._br)
-
-
 class HtmlDocVisitor(object):
     def __init__(self, tmpl="default.tmpl"):
         self._body = ""
@@ -85,6 +46,7 @@ class HtmlDocVisitor(object):
         self._website = ""
         self._version = ""
         self._aliases = []
+        self._inlets = {}
         self._inlet_counter = 0
         self._cur_canvas = None
         self._image_counter = 0
@@ -104,22 +66,15 @@ class HtmlDocVisitor(object):
 
     def title_begin(self, t):
         self._title = t.text()
-        self._head += u"<title>PureData [{0:s}] object</title>\n".format(self._title)
 
     def website_begin(self, w):
         self._website = w.text()
 
-    def object_begin(self, obj):
-        self._head += '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">\n'
-        self._head += '<link rel="stylesheet" type="text/css" href="{0:s}">\n'.format(self._css_theme)
-
     def keywords_begin(self, k):
         self._keywords = k.keywords()
-        self._head += u'<meta name="keywords" content="{0:s}">\n'.format(" ".join(self._keywords))
 
     def description_begin(self, d):
         self._description = d.text()
-        self._head += u'<meta name="description" content="{0:s}">\n'.format(self._description)
 
     def aliases_begin(self, a):
         self._aliases += a.aliases()
@@ -291,16 +246,10 @@ class HtmlDocVisitor(object):
         self._cur_canvas.add_connection(src_id, src_out, dest_id, dest_in)
 
     def inlets_begin(self, inlets):
-        if not self.has_inlets(inlets):
-            return
-
-        self._body += '<div class="inlets">\n<h2>Inlets:</h2>\n'
-        self._body += "<table>\n"
-        self.process_xlets(inlets.inlet_dict())
-        self._body += "</table>\n"
-        self._body += '</div>\n'
+        self._inlets = inlets.inlet_dict()
 
     def outlets_begin(self, outlets):
+        self._outlets = outlets.outlet_dict()
         if not self.has_outlets(outlets):
             return
 
@@ -323,34 +272,6 @@ class HtmlDocVisitor(object):
         self._body += '</ol>\n'
         self._body += "</div>\n"
 
-    def aliases(self):
-        if not self._aliases:
-            return ""
-
-        res = []
-        for a in [self._title] + self._aliases:
-            res.append("<img src=\"object_{0:s}.png\" alt=\"{0:s}\"/>\n".format(a))
-
-        return "<span>aliases:</span> " + " or ".join(res)
-
-    def header(self):
-        res = '<div class="header">\n' \
-              '<h1>[{0:s}]</h1>\n' \
-              '<div class="description">{1:s}</div>\n' \
-              '<div class="aliases">{2:s}</div>\n' \
-              '</div>\n'.format(self._title, self._description, self.aliases())
-        return res
-
-    def head(self):
-        return "<head>{0:s}</head>\n".format(self._head)
-
-    def body(self):
-        return "<body>\n{0:s}\n{1:s}\n{2:s}\n</body>\n".format(self.header(), self._body, self.footer())
-
-    def footer(self):
-        res = u'<div class="footer">version: {0:s}</div>\n'.format(self._version)
-        return res
-
     def generate_object_image(self, name):
         fname = "out/object_{0:s}.png".format(name)
         if os.path.exists(fname):
@@ -372,13 +293,15 @@ class HtmlDocVisitor(object):
             title=self._title,
             description=self._description,
             keywords=self._keywords,
-            css_theme=self._css_theme)
+            image_dir='.',
+            css_theme=self._css_theme,
+            aliases=[self._title] + self._aliases,
+            version=self._version,
+            inlets=self._inlets)
 
     def __str__(self):
         res = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n'
         res += u"<html>"
-        res += self.head()
-        res += self.body()
         res += "</html>\n"
 
         return res

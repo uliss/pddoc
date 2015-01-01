@@ -2,13 +2,60 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>${title | h}</title>
+    <title>PureData [${title | h}] object</title>
     <link rel="stylesheet" type="text/css" href="${css_theme | h}"/>
     <meta name="description" content="${description | h}"/>
     <meta name="keywords" content="${' '.join(keywords) | h}"/>
 </head>
 <body>
+<div class="header">
+    <h1>[${title | h}]</h1>
+
+    <div class="description">${description|h}</div>
+    <div class="aliases">
+        % if len(aliases) > 1:
+        <span>aliases:</span>
+        % for a in xrange(0, len(aliases)):
+        % if a != 0:
+        or
+        % endif
+        <img src="${image_dir}/object_${aliases[a]|h}.png" alt="[${aliases[a]|h}]"/>
+        % endfor
+        % endif
+    </div>
+</div>
+
+% if inlets:
+<div class="inlets">
+    <h2>Inlets:</h2>
+    <table>
+        % for inlet_number in sorted(inlets):
+        <
+        %
+        inlet_list = inlets[inlet_number]
+        col_span = len(inlet_list)
+        inlet_list_count = col_span
+        range_str = lambda x: ("&ndash;".join(map(str, x))) if (len(x) > 1) else "&nbsp;"
+        %>
+
+        % for inlet in inlet_list:
+        <tr>
+            % if col_span == inlet_list_count:
+            <td rowspan="${col_span}" class="number"><span>${inlet_number|h}</span></td>
+            % endif
+            <td class="type">${inlet.type() | h}</td>
+            <td class="range">${range_str(inlet.range())}</td>
+            <td class="description">${inlet.text()|h}</td>
+            <
+            % col_span -= 1 %>
+        </tr>
+        % endfor
+        % endfor
+    </table>
+</div>
+% endif
 
 
+<div class="footer">version: ${version | h}</div>
 </body>
 </html>

@@ -38,6 +38,7 @@ class TestDocObject(TestCase):
 
                 v = HtmlDocVisitor()
                 dobj.traverse(v)
+                v.generate_images()
 
                 s = str(v)
                 f = open("out/test.html", "w")

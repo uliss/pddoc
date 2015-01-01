@@ -22,7 +22,8 @@ td.number {
 div.header {
    background-color: #EED;
    padding: 10px;
-   height: 60px;
+   clear: both;
+   overflow: auto;
 }
 
 div.footer {
@@ -54,6 +55,10 @@ div.header .aliases img {
 
 div.header .aliases span {
    display: block;
+}
+
+div.header .cleaner {
+   clean:both;
 }
 
 div.example img {

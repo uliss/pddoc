@@ -27,6 +27,14 @@
             <pdexample width="200" height="200">
                 <row>
                     <col>
+                        <pdmessage id="msg1" text="bang" comment="outputs argument"/>
+                        <pdmessage id="msg2" text="555" comment="overrides argument" offset="40"/>
+                        <row>
+                            <pdmessage id="msg3" text="12"/>
+                            <pdmessage id="msg4" text="-0.02"/>
+                        </row>
+                        <pdobject id="float1" name="float" args="7" comment="stores value"/>
+                        <pdnbx id="nbx1"/>
                         <row>
                             <pdmessage id="msg1" text="440" comment="440 Hz"/>
                             <pdmessage id="msg2" text="442" comment="442 Hz"/>

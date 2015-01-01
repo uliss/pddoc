@@ -188,7 +188,7 @@ class HtmlDocVisitor(object):
         cnv = self._cur_canvas
         pdm = pdmessage.PdMessage(10, 10, [obj._msg])
 
-        litem = LayoutItem(0, 0, 50, 20)
+        litem = LayoutItem(obj.offset(), 0, 50, 20)
         self._cur_layout[-1].add_item(litem)
         setattr(pdm, "layout", litem)
         cnv.append_object(pdm)
@@ -244,8 +244,15 @@ class HtmlDocVisitor(object):
 
     def pdexample_end(self, pd):
         if self._include:
-            img_height = self._cur_canvas.width
-            img_width = self._cur_canvas.height
+            if pd.width():
+                img_width = pd.width()
+            else:
+                img_width = self._cur_canvas.height
+
+            if pd.height():
+                img_height = pd.height()
+            else:
+                img_height = self._cur_canvas.width
         else:
             for pdo in self._cur_canvas.objects:
                 litem = getattr(pdo, "layout")
@@ -345,7 +352,8 @@ class HtmlDocVisitor(object):
 
         pdo = PdObject(name)
         brect = BRectCalculator().object_brect(pdo)
-        painter = cairopainter.CairoPainter(int(brect[2]) + 1, int(brect[3]) + 1, fname, "png")
+        pad = 1  # pixel
+        painter = cairopainter.CairoPainter(int(brect[2]) + pad, int(brect[3]) + pad, fname, "png")
         painter.draw_object(pdo)
 
     def generate_images(self):
@@ -353,9 +361,7 @@ class HtmlDocVisitor(object):
             for a in [self._title] + self._aliases:
                 self.generate_object_image(a)
 
-
     def __str__(self):
-        self.generate_images()
         res = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n'
         res += u"<html>"
         res += self.head()

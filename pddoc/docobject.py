@@ -34,9 +34,12 @@ def create_instance(tag_name, *args):
 
 
 class DocItem(object):
-    def __init__(self):
+    def __init__(self, *args):
         self._elements = []
         self._text = ""
+
+        if len(args) > 1:
+            self._text = args[0]
 
     def text(self):
         return self._text
@@ -156,12 +159,17 @@ class DocPdmessage(DocItem):
         self._comment = ""
         self._msg = ""
         self._comment = ""
+        self._offset = 0
+
+    def offset(self):
+        return self._offset
 
     def from_xml(self, xmlobj):
         try:
             self._id = xmlobj.attrib["id"]
             self._msg = xmlobj.attrib["text"]
             self._comment = xmlobj.attrib.get("comment", "")
+            self._offset = int(xmlobj.attrib.get("offset", "0"))
             DocItem.from_xml(self, xmlobj)
         except KeyError, e:
             common.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
@@ -174,6 +182,7 @@ class DocPdobject(DocItem):
         self._name = ""
         self._args = ""
         self._comment = ""
+        self._offset = 0
 
     def is_valid_tag(self, tag_name):
         return tag_name in ("pdinlet", "pdoutlet")
@@ -181,12 +190,16 @@ class DocPdobject(DocItem):
     def name(self):
         return self._name
 
+    def offset(self):
+        return self._offset
+
     def from_xml(self, xmlobj):
         try:
             self._id = xmlobj.attrib["id"]
             self._name = xmlobj.attrib["name"]
             self._args = xmlobj.attrib.get("args", "")
             self._comment = xmlobj.attrib.get("comment", "")
+            self._offset = int(xmlobj.attrib.get("offset", "0"))
             DocItem.from_xml(self, xmlobj)
         except KeyError, e:
             common.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
@@ -407,6 +420,16 @@ class DocInfo(DocItem):
     def __init__(self, *args):
         super(self.__class__, self).__init__()
 
+    def is_valid_tag(self, tag_name):
+        return tag_name in ("itemize", "p")
+
+
+class DocItemize(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self)
+
+    def is_valid_tag(self, tag_name):
+        return tag_name in ("item",)
 
 class DocObject(DocItem):
     def __init__(self):

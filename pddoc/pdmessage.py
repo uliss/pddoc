@@ -30,6 +30,9 @@ class PdMessage(PdObject):
         res = "[%-40s {x:%i,y:%i,id:%i}" % (self.args_to_string() + "(", self._x, self._y, self._id)
         return res
 
+    def to_string(self):
+        return self.args_to_string()
+
     def draw(self, painter):
         painter.draw_message(self)
 

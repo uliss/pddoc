@@ -41,6 +41,9 @@ class DocItem(object):
         if len(args) > 1:
             self._text = args[0]
 
+    def items(self):
+        return self._elements
+
     def text(self):
         return self._text
 

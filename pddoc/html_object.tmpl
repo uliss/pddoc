@@ -25,6 +25,10 @@
     </div>
 </div>
 
+<div class="example">
+
+</div>
+
 % if inlets:
 <div class="inlets">
     <h2>Inlets:</h2>
@@ -78,6 +82,17 @@
         % endfor
         % endfor
     </table>
+</div>
+% endif
+
+% if arguments:
+<div class="arguments">
+    <h2>Arguments:</h2>
+    <ol>
+        % for arg in arguments:
+        <li>${arg.text() | h}</li>
+        % endfor
+    </ol>
 </div>
 % endif
 

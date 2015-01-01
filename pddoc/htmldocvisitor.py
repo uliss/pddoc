@@ -48,6 +48,7 @@ class HtmlDocVisitor(object):
         self._aliases = []
         self._inlets = {}
         self._outlets = {}
+        self._arguments = []
         self._inlet_counter = 0
         self._cur_canvas = None
         self._image_counter = 0
@@ -82,12 +83,6 @@ class HtmlDocVisitor(object):
 
     def version_begin(self, v):
         self._version = v.text()
-
-    def example_begin(self, ex):
-        self._body += '<div class="example">\n'
-
-    def example_end(self, ex):
-        self._body += '</div>\n'
 
     def core_type_help(self, t):
         assert t in ("bang", "float", "list", "symbol", "any", "pointer")
@@ -228,17 +223,7 @@ class HtmlDocVisitor(object):
         self._outlets = outlets.outlet_dict()
 
     def arguments_begin(self, args):
-        if args.argument_count() < 1:
-            return
-
-        self._body += '<div class="arguments">\n<h2>Arguments:</h2>\n'
-        self._body += '<ol>\n'
-
-        for arg in args._elements:
-            self._body += u"<li>{0:s}</li>".format(arg.text())
-
-        self._body += '</ol>\n'
-        self._body += "</div>\n"
+        self._arguments = args.items()
 
     def generate_object_image(self, name):
         fname = "out/object_{0:s}.png".format(name)
@@ -266,7 +251,8 @@ class HtmlDocVisitor(object):
             aliases=[self._title] + self._aliases,
             version=self._version,
             inlets=self._inlets,
-            outlets=self._outlets)
+            outlets=self._outlets,
+            arguments=self._arguments)
 
     def __str__(self):
         res = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">\n'

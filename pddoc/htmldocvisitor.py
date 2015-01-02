@@ -111,6 +111,10 @@ class HtmlDocVisitor(object):
         dict['link'] = "{0:s}.html".format(see.text())
         self._see_also.append(dict)
 
+    def make_image_id_name(self):
+        self._image_counter += 1
+        return self._image_counter, "image_{0:02d}.png".format(self._image_counter)
+
     def pdexample_begin(self, pd):
         if pd.file():
             parser = pdparser.PdParser()
@@ -119,10 +123,6 @@ class HtmlDocVisitor(object):
         else:
             self._cur_canvas = pdcanvas.PdCanvas(0, 0, 10, 10, name="10")
             self._cur_canvas.type = pdcanvas.PdCanvas.TYPE_WINDOW
-
-    def make_image_id_name(self):
-        self._image_counter += 1
-        return self._image_counter, "image_{0:02d}.png".format(self._image_counter)
 
     def pdexample_end(self, pd):
         w, h = self.draw_area_size(pd)

@@ -160,7 +160,7 @@ class HtmlDocVisitor(object):
         h = 0
 
         if pd.file() and pd.size() == "canvas":
-            w, h = self._layout.calc_brect()[2:]
+            w, h = self._layout.canvas_brect()[2:]
         elif pd.size() == "auto":
             w, h = self._layout.layout_brect()[2:]
         elif not pd.size():

@@ -24,6 +24,7 @@ __author__ = 'Serge Poltavski'
 
 from pddoc.htmldocvisitor import *
 from pddoc.pdcanvas import *
+from pddoc.pdlayout import *
 import os
 
 
@@ -53,9 +54,9 @@ class TestHtmlDocVisitor(TestCase):
         os.remove("out/object_tobj.png")
 
     def test_place_pd_objects(self):
-        v = HtmlDocVisitor()
+        v = PdLayout()
         pd_canvas = PdCanvas(0, 0, 100, 50, name="10")
-        v._cur_canvas = pd_canvas
+        v._canvas = pd_canvas
         pdo = PdObject("float")
         pd_canvas.append_object(pdo)
         self.assertEqual(pdo.x, 0)
@@ -66,21 +67,21 @@ class TestHtmlDocVisitor(TestCase):
         li = LayoutItem(10, 20, 30, 40)
         setattr(pdo, "layout", li)
 
-        v.place_pd_objects()
+        v.update()
         self.assertEqual(pdo.x, 10)
         self.assertEqual(pdo.y, 20)
         self.assertEqual(pdo.width, 0)
         self.assertEqual(pdo.height, 0)
 
     def test_doc2obj(self):
-        v = HtmlDocVisitor()
+        v = PdLayout()
         do = DocPdobject()
         do._comment = "comment"
         do._id = "float"
         do._offset = 10
         do._name = "float"
         do._args = "3.1415926"
-        pdo = v.doc_obj2pd_obj(do)
+        pdo = v.doc2obj(do)
 
         self.assertEqual(pdo.x, 0)
         self.assertEqual(pdo.y, 0)
@@ -94,13 +95,13 @@ class TestHtmlDocVisitor(TestCase):
         self.assertEqual(pdo.layout.height(), 17)
 
     def test_doc2msg(self):
-        v = HtmlDocVisitor()
+        v = PdLayout()
         dmsg = DocPdmessage()
         dmsg._comment = "comment"
         dmsg._id = "float"
         dmsg._offset = 10
         dmsg._text = "message"
-        pdm = v.doc_msg2pd_msg(dmsg)
+        pdm = v.doc2msg(dmsg)
 
         self.assertEqual(pdm.x, 0)
         self.assertEqual(pdm.y, 0)
@@ -114,7 +115,7 @@ class TestHtmlDocVisitor(TestCase):
         self.assertEqual(pdm.layout.height(), 17)
 
     def test_comment2pd(self):
-        v = HtmlDocVisitor()
+        v = PdLayout()
         pdc = v.comment2pd_comment("simple comment")
         self.assertTrue(isinstance(pdc, PdComment))
 

@@ -39,6 +39,12 @@ class PdLayout(object):
         self._hlayout_space = 20
         self._vlayout_space = 25
 
+    def canvas_brect(self):
+        return 0, 0, self._canvas.width, self._canvas.height
+
+    def layout_brect(self):
+        return self._example_brect
+
     @property
     def canvas(self):
         return self._canvas
@@ -115,15 +121,22 @@ class PdLayout(object):
         setattr(pd_obj, "layout", litem)
         return pd_obj
 
+    def connect_begin(self, c):
+        src_id = self._pdobj_id_map[c.src_id()]
+        dest_id = self._pdobj_id_map[c.dest_id()]
+        src_out = c._src_out
+        dest_in = c._dest_in
+
+        self._canvas.add_connection(src_id, src_out, dest_id, dest_in)
+
     def message_begin(self, msg_obj):
-        cnv = self._canvas
         pd_msg = self.doc2msg(msg_obj)
-        cnv.append_object(pd_msg)
+        self._canvas.append_object(pd_msg)
 
         # handle object comment
         if msg_obj.comment:
             pd_comment = self.comment2pd_comment(msg_obj.comment)
-            cnv.append_object(pd_comment)
+            self._canvas.append_object(pd_comment)
 
             hor_layout = Layout.horizontal(self._comment_xoffset)
             hor_layout.add_item(pd_msg.layout)

@@ -116,7 +116,23 @@
 </div>
 % endif
 
+% if see_also:
+<div class="also">
+    <h2>See Also:</h2>
+    <div class="objects">
+    % for obj in see_also:
+        <a href="${obj['link']}"><img src="${obj['image']|h}" alt="${obj['name'] | h}"/></a>
+    % endfor
+    </div>
+</div>
+% endif
 
-<div class="footer">version: ${version | h}</div>
+
+<div class="footer">
+    <div class="version">version: ${version | h}</div>
+    % if license:
+    <div class="license">License: <a href="${license['url'] | h}">${license['name'] | h}</a></div>
+    % endif
+</div>
 </body>
 </html>

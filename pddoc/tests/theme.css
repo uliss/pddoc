@@ -67,14 +67,14 @@ div.example img {
 
 }
 
-div.inlets, div.outlets, div.arguments {
+div.inlets, div.outlets, div.arguments, div.also {
    margin-top: 20px;
    margin-left: 10px;
    border-bottom: 1px dotted #ADE;
    padding-bottom: 10px;
 }
 
-div.inlets h2,  div.outlets h2, div.arguments h2{
+div.inlets h2,  div.outlets h2, div.arguments h2, div.also h2 {
    font-weight: bold;
    font-family: "Verdana";
    font-size: 15px;
@@ -121,6 +121,10 @@ div.arguments ol {
 div.arguments li {
    margin: 0;
    padding: 0 0 0 10px;
+}
+
+div.also .objects {
+   margin-left: 160px;
 }
 
 

@@ -23,9 +23,10 @@
                 <alias>f</alias>
             </aliases>
             <!-- other objects to see -->
-            <see>
-
-            </see>
+            <also>
+                <see>int</see>
+                <see>+</see>
+            </also>
         </meta>
         <example>
             <pdexample>

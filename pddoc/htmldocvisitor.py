@@ -42,7 +42,9 @@ class HtmlDocVisitor(object):
         self._keywords = []
         self._website = ""
         self._version = ""
+        self._license = {}
         self._aliases = []
+        self._see_also = []
         self._examples = []
         self._inlets = {}
         self._outlets = {}
@@ -80,8 +82,18 @@ class HtmlDocVisitor(object):
     def aliases_begin(self, a):
         self._aliases += a.aliases()
 
+    def license_begin(self, l):
+        self._license['url'] = l.url()
+        self._license['name'] = l.name()
+
     def version_begin(self, v):
         self._version = v.text()
+
+    def see_begin(self, see):
+        dict = {'name' : see.text()}
+        dict['image'] = "object_{0:s}.png".format(see.text())
+        dict['link'] = "{0:s}.html".format(see.text())
+        self._see_also.append(dict)
 
     def pdexample_begin(self, pd):
         if pd.file():
@@ -277,6 +289,10 @@ class HtmlDocVisitor(object):
             for a in [self._title] + self._aliases:
                 self.generate_object_image(a)
 
+        if self._see_also:
+            for sa in self._see_also:
+                self.generate_object_image(sa['name'])
+
     def render(self):
         return self._html_template.render(
             title=self._title,
@@ -285,8 +301,10 @@ class HtmlDocVisitor(object):
             image_dir='.',
             css_theme=self._css_theme,
             aliases=[self._title] + self._aliases,
+            license=self._license,
             version=self._version,
             examples=self._examples,
             inlets=self._inlets,
             outlets=self._outlets,
-            arguments=self._arguments)
+            arguments=self._arguments,
+            see_also=self._see_also)

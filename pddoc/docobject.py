@@ -75,8 +75,11 @@ class DocItem(object):
         for e in self._elements:
             e.traverse(visitor)
 
-    def from_xml(self, xmlobj):
+    def read_xml_data(self, xmlobj):
         self._text = xmlobj.text
+
+    def from_xml(self, xmlobj):
+        self.read_xml_data(xmlobj)
 
         for child in xmlobj:
             if not self.is_valid_tag(child.tag):
@@ -101,7 +104,8 @@ class DocMeta(DocItem):
     def is_valid_tag(self, tag_name):
         return tag_name in ("description", "authors", "contacts",
                             "license", "version", "website",
-                            "aliases", "keywords", "library")
+                            "aliases", "keywords", "library",
+                            "also")
 
 
 class DocDescription(DocItem):
@@ -118,6 +122,19 @@ class DocAuthors(DocItem):
 
 
 class DocAuthor(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
+
+
+class DocAlso(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
+
+    def is_valid_tag(self, tag_name):
+        return tag_name == "see"
+
+
+class DocSee(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
 
@@ -141,10 +158,17 @@ class DocLicense(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
         self._url = ""
+        self._name = ""
 
-    def from_xml(self, xmlobj):
+    def read_xml_data(self, xmlobj):
         self._url = xmlobj.attrib.get("url", "")
-        super(self.__class__, self).from_xml(xmlobj)
+        self._name = xmlobj.text
+
+    def url(self):
+        return self._url
+
+    def name(self):
+        return self._name
 
 
 class DocExample(DocItem):

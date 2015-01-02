@@ -37,42 +37,27 @@
                         <pdmessage id="msg1" text="bang" comment="outputs argument"/>
                         <pdmessage id="msg2" text="555" comment="overrides argument" offset="40"/>
                         <row>
-                            <pdmessage id="msg3" text="12"/>
+                            <pdmessage id="msg3" text="12" offset="40"/>
                             <pdmessage id="msg4" text="-0.02"/>
                         </row>
                         <pdobject id="float1" name="float" args="7" comment="stores value"/>
-                        <pdnbx id="nbx1"/>
+                    </col>
+                    <col>
+                        <pdmessage id="msg5" text="7 3 4"/>
+                        <pdmessage id="msg6" text="list one 2 3 4" comment="does not work!" offset="40"/>
                         <row>
-                            <pdmessage id="msg1" text="440" comment="440 Hz"/>
-                            <pdmessage id="msg2" text="442" comment="442 Hz"/>
+                            <pdmessage id="msg7" text="bang" offset="40"/>
                         </row>
-                        <pdobject id="osc~" name="osc~" args="415" comment="oscillator">
-                            <pdinlet type="audio"/>
-                            <pdinlet type="control"/>
-                            <pdoutlet type="audio"/>
-                        </pdobject>
-                        <pdobject id="*~" name="*~" args="0.5" comment="gain">
-                            <pdinlet type="audio"/>
-                            <pdinlet type="control"/>
-                            <pdoutlet type="audio"/>
-                        </pdobject>
-                        <row>
-                            <pdobject id="dac~" name="dac~" comment="sound output">
-                                <pdinlet type="audio"/>
-                                <pdinlet type="audio"/>
-                            </pdobject>
-                            <pdobject id="outlet~" name="outlet~" comment="patch output">
-                                <pdinlet type="audio"/>
-                            </pdobject>
-                        </row>
+                        <pdobject id="f1" name="f"/>
                     </col>
                 </row>
-                <pdconnect src="msg1" src_out="0" dest="osc~" dest_in="0"/>
-                <pdconnect src="msg2" src_out="0" dest="osc~" dest_in="0"/>
-                <pdconnect src="osc~" src_out="0" dest="*~" dest_in="0"/>
-                <pdconnect src="*~" src_out="0" dest="dac~" dest_in="0"/>
-                <pdconnect src="*~" src_out="0" dest="dac~" dest_in="1"/>
-                <pdconnect src="*~" src_out="0" dest="outlet~" dest_in="0"/>
+                <pdconnect src="msg1" src_out="0" dest="float1" dest_in="0"/>
+                <pdconnect src="msg2" src_out="0" dest="float1" dest_in="0"/>
+                <pdconnect src="msg3" src_out="0" dest="float1" dest_in="1"/>
+                <pdconnect src="msg4" src_out="0" dest="float1" dest_in="1"/>
+                <pdconnect src="msg5" src_out="0" dest="f1" dest_in="0"/>
+                <pdconnect src="msg6" src_out="0" dest="f1" dest_in="0"/>
+                <pdconnect src="msg7" src_out="0" dest="f1" dest_in="0"/>
             </pdexample>
             <pdexample width="10" height="10" file="objects.pd"/>
         </example>
@@ -82,7 +67,6 @@
             <inlet number="0" type="float">outputs the incoming number and stores it.</inlet>
             <inlet number="0" type="list">truncates to the first element, outputs it, and stores it.</inlet>
             <inlet number="1" type="float">a float received on the right inlet is stored.</inlet>
-
         </inlets>
         <!-- outlets documentation -->
         <outlets>

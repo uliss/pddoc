@@ -122,12 +122,16 @@ class PdLayout(object):
         return pd_obj
 
     def connect_begin(self, c):
-        src_id = self._pdobj_id_map[c.src_id()]
-        dest_id = self._pdobj_id_map[c.dest_id()]
-        src_out = c._src_out
-        dest_in = c._dest_in
+        try:
+            src_id = self._pdobj_id_map[c.src_id()]
+            dest_id = self._pdobj_id_map[c.dest_id()]
+            src_out = c._src_out
+            dest_in = c._dest_in
 
-        self._canvas.add_connection(src_id, src_out, dest_id, dest_in)
+            self._canvas.add_connection(src_id, src_out, dest_id, dest_in)
+        except KeyError, e:
+            common.warning("connection not found: {0:s}:{1:s} => {2:s}:{3:s}".
+                           format(c.src_id(), src_out, c.dest_id(), dest_in))
 
     def message_begin(self, msg_obj):
         pd_msg = self.doc2msg(msg_obj)

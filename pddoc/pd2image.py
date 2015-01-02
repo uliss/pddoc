@@ -37,7 +37,7 @@ def detect_format(args):
         ext = args['format'][0].lower()
 
     if ext not in ('png', 'pdf', 'svg'):
-        raise ValueError("output format not supported ot can't be detected")
+        raise ValueError("output format not supported or can't be detected")
 
     return ext
 

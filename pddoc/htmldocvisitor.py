@@ -53,7 +53,6 @@ class HtmlDocVisitor(object):
         self._cur_layout = []
         self._example_brect = ()
         self._pdobj_id_map = {}
-        self._include = None
         self._css_theme = "../theme.css"
         self._img_output_dir = "./out"
         self._comment_xoffset = 2
@@ -64,6 +63,7 @@ class HtmlDocVisitor(object):
         # self._tmpl_lookup = TemplateLookup(directories=[os.path.dirname(__file__)])
         self._html_template = Template(filename=tmpl_path)
         self._brect_calc = BRectCalculator()
+        self._canvas_padding = 10
 
     def title_begin(self, t):
         self._title = t.text()
@@ -84,8 +84,30 @@ class HtmlDocVisitor(object):
         self._version = v.text()
 
     def pdexample_begin(self, pd):
-        self._cur_canvas = pdcanvas.PdCanvas(0, 0, pd.width(), pd.height(), name="10")
-        self._cur_canvas.type = pdcanvas.PdCanvas.TYPE_WINDOW
+        if pd.file():
+            parser = pdparser.PdParser()
+            parser.parse(pd.file())
+            self._cur_canvas = parser.canvas
+        else:
+            self._cur_canvas = pdcanvas.PdCanvas(0, 0, 10, 10, name="10")
+            self._cur_canvas.type = pdcanvas.PdCanvas.TYPE_WINDOW
+
+    def pdexample_end(self, pd):
+        w, h = self.draw_area_size(pd)
+        if not pd.file():
+            self.place_pd_objects()
+
+        self._image_counter += 1
+        fname = "image_{0:02d}.png".format(self._image_counter)
+        output_fname = "./out/" + fname
+
+        painter = cairopainter.CairoPainter(w, h, output_fname,
+                                            xoffset=self._canvas_padding,
+                                            yoffset=self._canvas_padding)
+        walker = pddrawer.PdDrawer()
+        walker.draw(self._cur_canvas, painter)
+
+        self._examples[self._image_counter] = fname
 
     def row_begin(self, row):
         lh = Layout(Layout.HORIZONTAL, self._hlayout_space)
@@ -186,49 +208,31 @@ class HtmlDocVisitor(object):
     def add_id_mapping(self, doc_obj, pd_obj):
         self._pdobj_id_map[doc_obj.id] = pd_obj.id
 
-    def pdinclude_begin(self, inc):
-        fname = inc._file
-        parser = pdparser.PdParser()
-        parser.parse(fname)
+    def draw_area_size(self, pd):
+        assert isinstance(pd, DocPdexample)
+        w = 0
+        h = 0
 
-        self._cur_canvas = parser.canvas
-        self._include = True
+        if pd.file() and pd.size() == "canvas":
+            w = self._cur_canvas.width
+            h = self._cur_canvas.height
+        elif pd.size() == "auto":
+            w = self._example_brect[2]
+            h = self._example_brect[3]
+        elif not pd.size():
+            w = pd.width()
+            h = pd.height()
+        else:
+            w = self._example_brect[2]
+            h = self._example_brect[3]
+
+        return int(w + 2 * self._canvas_padding), int(h + 2 * self._canvas_padding)
 
     def place_pd_objects(self):
         for pdo in self._cur_canvas.objects:
             litem = getattr(pdo, "layout")
             pdo.x = litem.x()
             pdo.y = litem.y()
-
-    def pdexample_end(self, pd):
-        if self._include:
-            if pd.width():
-                img_width = pd.width()
-            else:
-                img_width = self._cur_canvas.height
-
-            if pd.height():
-                img_height = pd.height()
-            else:
-                img_height = self._cur_canvas.width
-        else:
-            self.place_pd_objects()
-
-            img_width = int(self._example_brect[2])
-            img_height = int(self._example_brect[3])
-
-        self._image_counter += 1
-        fname = "image_{0:02d}.png".format(self._image_counter)
-        output_fname = "./out/" + fname
-
-        pad = 10
-        painter = cairopainter.CairoPainter(img_width + 2 * pad, img_height + 2 * pad,
-                                            output_fname, xoffset=pad, yoffset=pad)
-        walker = pddrawer.PdDrawer()
-        walker.draw(self._cur_canvas, painter)
-
-        self._examples[self._image_counter] = fname
-        self._include = False
 
     def pdconnect_begin(self, c):
         src_id = self._pdobj_id_map[c.src_id()]

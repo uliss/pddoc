@@ -241,16 +241,6 @@ class DocCol(DocItem):
         return tag_name in ("row", "pdmessage", "pdobject")
 
 
-class DocPdinclude(DocItem):
-    def __init__(self, *args):
-        DocItem.__init__(self, args)
-        self._file = ""
-
-    def from_xml(self, xmlobj):
-        self._file = xmlobj.attrib["file"]
-        DocItem.from_xml(self, xmlobj)
-
-
 class DocPdconnect(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
@@ -278,20 +268,36 @@ class DocPdexample(DocItem):
         DocItem.__init__(self, args)
         self._width = 0
         self._height = 0
+        self._file = ""
+        self._size = ""
 
     def is_valid_tag(self, tag_name):
-        return tag_name in ("row", "col", "pdconnect", "pdinclude")
+        return tag_name in ("row", "col", "pdconnect")
 
     def from_xml(self, xmlobj):
-        self._width = int(xmlobj.attrib["width"])
-        self._height = int(xmlobj.attrib["height"])
+        size = xmlobj.attrib.get("size", None)
+        if size:
+            if size in ("auto", "canvas"):
+                self._size = size
+            else:
+                common.warning("invalid size value: \"{0:s}\" in <{1:s}>".format(size, xmlobj.tag))
+
+        self._width = int(xmlobj.attrib.get("width", 0))
+        self._height = int(xmlobj.attrib.get("height", 0))
+        self._file = xmlobj.attrib.get("file", "")
         DocItem.from_xml(self, xmlobj)
 
+    def file(self):
+        return self._file
+
     def width(self):
-        return int(self._width)
+        return self._width
 
     def height(self):
-        return int(self._height)
+        return self._height
+
+    def size(self):
+        return self._size
 
 
 class DocWebsite(DocItem):

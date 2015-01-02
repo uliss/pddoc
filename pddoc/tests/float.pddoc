@@ -28,7 +28,7 @@
             </see>
         </meta>
         <example>
-            <pdexample width="200" height="200">
+            <pdexample width="200" height="200" size="canvas">
                 <row>
                     <col>
                         <pdmessage id="msg1" text="bang" comment="outputs argument"/>
@@ -71,9 +71,7 @@
                 <pdconnect src="*~" src_out="0" dest="dac~" dest_in="1"/>
                 <pdconnect src="*~" src_out="0" dest="outlet~" dest_in="0"/>
             </pdexample>
-            <pdexample width="10" height="10">
-                <pdinclude file="objects.pd"/>
-            </pdexample>
+            <pdexample width="10" height="10" file="objects.pd"/>
         </example>
         <!-- inlets documentation -->
         <inlets>

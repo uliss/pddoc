@@ -41,11 +41,15 @@ class HtmlDocVisitor(object):
         self._description = ""
         self._keywords = []
         self._website = ""
+        self._library = ""
+        self._category = ""
         self._version = ""
         self._license = {}
         self._aliases = []
         self._see_also = []
         self._examples = []
+        self._authors = []
+        self._contacts = ""
         self._inlets = {}
         self._outlets = {}
         self._arguments = []
@@ -86,8 +90,20 @@ class HtmlDocVisitor(object):
         self._license['url'] = l.url()
         self._license['name'] = l.name()
 
+    def library_begin(self, lib):
+        self._library = lib.text()
+
+    def category_begin(self, cat):
+        self._category = cat.text()
+
     def version_begin(self, v):
         self._version = v.text()
+
+    def author_begin(self, author):
+        self._authors.append(author.text())
+
+    def contacts_begin(self, cnt):
+        self._contacts = cnt.text()
 
     def see_begin(self, see):
         dict = {'name' : see.text()}
@@ -307,4 +323,9 @@ class HtmlDocVisitor(object):
             inlets=self._inlets,
             outlets=self._outlets,
             arguments=self._arguments,
-            see_also=self._see_also)
+            see_also=self._see_also,
+            website=self._website,
+            authors=self._authors,
+            contacts=self._contacts,
+            library=self._library,
+            category=self._category)

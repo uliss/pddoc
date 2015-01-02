@@ -129,10 +129,25 @@
 
 
 <div class="footer">
-    <div class="version">version: ${version | h}</div>
-    % if license:
-    <div class="license">License: <a href="${license['url'] | h}">${license['name'] | h}</a></div>
-    % endif
+    <div class="about">
+        <div class="library">Library: ${library | h}</div>
+        % if category:
+        <div class="category">Category: ${category | h}</div>
+        % endif
+        <div class="version">Version: ${version | h}</div>
+        % if license:
+        <div class="license">License: <a href="${license['url'] | h}">${license['name'] | h}</a></div>
+        % endif
+        % if website:
+        <div class="website">Website: <a href="${website | h}">${website | h}</a></div>
+        % endif
+        % if authors:
+        <div class="authors">Authors: ${", ".join(authors) | h}</div>
+        % endif
+        % if contacts:
+        <div class="contacts">Contacts: ${contacts | h}</div>
+        % endif
+    </div>
 </div>
 </body>
 </html>

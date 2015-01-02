@@ -105,7 +105,7 @@ class DocMeta(DocItem):
         return tag_name in ("description", "authors", "contacts",
                             "license", "version", "website",
                             "aliases", "keywords", "library",
-                            "also")
+                            "also", "category")
 
 
 class DocDescription(DocItem):
@@ -153,6 +153,9 @@ class DocVersion(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
 
+
+class DocCategory(DocItem):
+    pass
 
 class DocLicense(DocItem):
     def __init__(self, *args):

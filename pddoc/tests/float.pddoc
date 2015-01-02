@@ -18,6 +18,8 @@
             <keywords>float math</keywords>
             <!-- object library -->
             <library>core library</library>
+            <!-- object category -->
+            <category>glue</category>
             <!-- list of aliases -->
             <aliases>
                 <alias>f</alias>

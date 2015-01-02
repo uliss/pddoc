@@ -25,7 +25,7 @@ from pdbaseobject import *
 
 class PdComment(PdBaseObject):
     def __init__(self, x, y, args):
-        super(PdComment, self).__init__(x, y, -1, -1)
+        super(PdComment, self).__init__(x, y, 0, 0)
         self.args = args
 
     @staticmethod

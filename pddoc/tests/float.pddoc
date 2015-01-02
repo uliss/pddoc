@@ -79,16 +79,20 @@
         <!-- inlets documentation -->
         <inlets>
             <inlet number="0" type="bang">outputs the currently stored value.</inlet>
-            <inlet number="0" type="float" minvalue="0.0" maxvalue="1.0">outputs the currently stored value.</inlet>
-            <inlet number="1" type="symbol">range parameter.</inlet>
+            <inlet number="0" type="float">outputs the incoming number and stores it.</inlet>
+            <inlet number="0" type="list">truncates to the first element, outputs it, and stores it.</inlet>
+            <inlet number="1" type="float">a float received on the right inlet is stored.</inlet>
+
         </inlets>
         <!-- outlets documentation -->
         <outlets>
-            <outlet number="0" type="bang">outputs bang all the time</outlet>
+            <outlet number="0" type="float">outputs the stored value as a float message.</outlet>
         </outlets>
         <!-- arguments documentation -->
         <arguments>
-            <argument type="float">oscillator frequency in hz.</argument>
+            <argument type="float"> [float] accepts a single number as a creation
+                argument which sets the value that is stored.
+            </argument>
         </arguments>
         <!-- additional info -->
         <info>

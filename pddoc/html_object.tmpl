@@ -62,7 +62,7 @@
                 % endif
             </td>
             <td class="range" title="value range">${range_str(inlet.range())}</td>
-            <td class="description">${inlet.text()|h}</td>
+            <td class="description">&ndash; ${inlet.text()|h}</td>
             <% col_span -= 1 %>
         </tr>
         % endfor
@@ -96,7 +96,7 @@
                 % endif
             </td>
             <td class="range" title="value range">${range_str(outlet.range())}</td>
-            <td class="description">${outlet.text()|h}</td>
+            <td class="description">&ndash; ${outlet.text()|h}</td>
             <% col_span -= 1 %>
         </tr>
         % endfor

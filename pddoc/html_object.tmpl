@@ -26,8 +26,14 @@
 </div>
 
 <div class="example">
-% for ex_num, ex_path in examples.items():
-    <img src="${ex_path | u}" alt="example ${ex_num}"/>
+% for ex in examples:
+    % if ex['file']:
+    <a href="${ex['file'] | u}">
+    % endif
+    <img src="${ex['image'] | h}" alt="example ${ex['id'] | h}" title="${ex['title'] | h}"/>
+    % if ex['file']:
+    </a>
+    % endif
 % endfor
 </div>
 

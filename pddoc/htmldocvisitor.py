@@ -43,7 +43,7 @@ class HtmlDocVisitor(object):
         self._website = ""
         self._version = ""
         self._aliases = []
-        self._examples = {}
+        self._examples = []
         self._inlets = {}
         self._outlets = {}
         self._arguments = []
@@ -92,22 +92,27 @@ class HtmlDocVisitor(object):
             self._cur_canvas = pdcanvas.PdCanvas(0, 0, 10, 10, name="10")
             self._cur_canvas.type = pdcanvas.PdCanvas.TYPE_WINDOW
 
+    def make_image_id_name(self):
+        self._image_counter += 1
+        return self._image_counter, "image_{0:02d}.png".format(self._image_counter)
+
     def pdexample_end(self, pd):
         w, h = self.draw_area_size(pd)
+        img_id, img_fname = self.make_image_id_name()
+
+        example_dict = {'id' : img_id, 'image' : img_fname, 'title' : pd.title(), 'file' : pd.file() }
+
         if not pd.file():
             self.place_pd_objects()
 
-        self._image_counter += 1
-        fname = "image_{0:02d}.png".format(self._image_counter)
-        output_fname = "./out/" + fname
+        self._examples.append(example_dict)
 
+        output_fname = "./out/" + img_fname
         painter = cairopainter.CairoPainter(w, h, output_fname,
                                             xoffset=self._canvas_padding,
                                             yoffset=self._canvas_padding)
         walker = pddrawer.PdDrawer()
         walker.draw(self._cur_canvas, painter)
-
-        self._examples[self._image_counter] = fname
 
     def row_begin(self, row):
         lh = Layout(Layout.HORIZONTAL, self._hlayout_space)

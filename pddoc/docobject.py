@@ -270,6 +270,7 @@ class DocPdexample(DocItem):
         self._height = 0
         self._file = ""
         self._size = ""
+        self._title = ""
 
     def is_valid_tag(self, tag_name):
         return tag_name in ("row", "col", "pdconnect")
@@ -285,6 +286,7 @@ class DocPdexample(DocItem):
         self._width = int(xmlobj.attrib.get("width", 0))
         self._height = int(xmlobj.attrib.get("height", 0))
         self._file = xmlobj.attrib.get("file", "")
+        self._title = xmlobj.attrib.get("title", "")
         DocItem.from_xml(self, xmlobj)
 
     def file(self):
@@ -298,6 +300,9 @@ class DocPdexample(DocItem):
 
     def size(self):
         return self._size
+
+    def title(self):
+        return self._title
 
 
 class DocWebsite(DocItem):

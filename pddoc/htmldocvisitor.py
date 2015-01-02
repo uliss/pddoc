@@ -153,7 +153,7 @@ class HtmlDocVisitor(object):
         args = filter(None, doc_obj.args())
         pd_obj = pdobject.PdObject(doc_obj.name(), 0, 0, 0, 0, args)
         obj_bbox = list(self.calc_brect(pd_obj))
-        litem = LayoutItem(0, 0, obj_bbox[2], obj_bbox[3])
+        litem = LayoutItem(doc_obj.offset(), 0, obj_bbox[2], obj_bbox[3])
         setattr(pd_obj, "layout", litem)
         return pd_obj
 
@@ -194,6 +194,12 @@ class HtmlDocVisitor(object):
         self._cur_canvas = parser.canvas
         self._include = True
 
+    def place_pd_objects(self):
+        for pdo in self._cur_canvas.objects:
+            litem = getattr(pdo, "layout")
+            pdo.x = litem.x()
+            pdo.y = litem.y()
+
     def pdexample_end(self, pd):
         if self._include:
             if pd.width():
@@ -206,10 +212,7 @@ class HtmlDocVisitor(object):
             else:
                 img_height = self._cur_canvas.width
         else:
-            for pdo in self._cur_canvas.objects:
-                litem = getattr(pdo, "layout")
-                pdo.x = litem.x()
-                pdo.y = litem.y()
+            self.place_pd_objects()
 
             img_width = int(self._example_brect[2])
             img_height = int(self._example_brect[3])

@@ -222,6 +222,11 @@ class HtmlDocVisitor(object):
         elif not pd.size():
             w = pd.width()
             h = pd.height()
+
+            if not w:
+                w = self._example_brect[2]
+            if not h:
+                h = self._example_brect[3]
         else:
             w = self._example_brect[2]
             h = self._example_brect[3]

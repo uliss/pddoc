@@ -40,7 +40,7 @@
                             <pdmessage id="msg3" text="12" offset="40"/>
                             <pdmessage id="msg4" text="-0.02"/>
                         </row>
-                        <pdobject id="float1" name="float" args="7" comment="stores value"/>
+                        <pdobject id="float1" name="float" args="7" comment="stores value" highlight="true"/>
                     </col>
                     <col>
                         <pdmessage id="msg5" text="7 3 4"/>
@@ -48,7 +48,7 @@
                         <row>
                             <pdmessage id="msg7" text="bang" offset="40"/>
                         </row>
-                        <pdobject id="f1" name="f"/>
+                        <pdobject id="f1" name="f" highlight="true"/>
                     </col>
                 </row>
                 <pdconnect src="msg1" src_out="0" dest="float1" dest_in="0"/>

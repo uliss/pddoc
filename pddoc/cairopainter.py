@@ -170,6 +170,12 @@ class CairoPainter(PdPainter):
         obj.set_width(w)
         obj.set_height(h)
 
+        if hasattr(obj, "highlight"):
+            pad = self.style.highlight_padding
+            self.cr.rectangle(x + 0.5 - pad, y + 0.5 - pad, w + pad*2, h + pad*2)
+            self.set_src_color(self.style.highlight_color)
+            self.cr.fill()
+
         self.cr.set_line_width(self.style.obj_line_width)
         self.draw_box(x, y, w, h)
         self.draw_txt(x, y, txt)

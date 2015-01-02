@@ -190,6 +190,7 @@ class DocPdobject(DocItem):
         self._args = ""
         self._comment = ""
         self._offset = 0
+        self._highlight = False
 
     @property
     def id(self):
@@ -197,6 +198,9 @@ class DocPdobject(DocItem):
 
     def is_valid_tag(self, tag_name):
         return tag_name in ("pdinlet", "pdoutlet")
+
+    def highlight(self):
+        return self._highlight == "true"
 
     def name(self):
         return self._name
@@ -211,6 +215,7 @@ class DocPdobject(DocItem):
             self._args = xmlobj.attrib.get("args", "")
             self._comment = xmlobj.attrib.get("comment", "")
             self._offset = int(xmlobj.attrib.get("offset", "0"))
+            self._highlight = xmlobj.attrib.get("highlight", "")
             DocItem.from_xml(self, xmlobj)
         except KeyError, e:
             common.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))

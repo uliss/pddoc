@@ -119,6 +119,10 @@ class PdLayout(object):
         obj_bbox = list(self.calc_brect(pd_obj))
         litem = LayoutItem(doc_obj.offset(), 0, obj_bbox[2], obj_bbox[3])
         setattr(pd_obj, "layout", litem)
+
+        if doc_obj.highlight():
+            setattr(pd_obj, "highlight", True)
+
         return pd_obj
 
     def connect_begin(self, c):

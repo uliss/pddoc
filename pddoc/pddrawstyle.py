@@ -55,6 +55,9 @@ class PdDrawStyle(object):
 
     comment_color = property(lambda self: (0.5, 0.5, 0.5))
 
+    highlight_color = property(lambda self: (1, 1, 0.5))
+    highlight_padding = 3
+
     @property
     def obj_height(self):
         return self.font_size + 5

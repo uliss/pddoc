@@ -332,7 +332,7 @@ class CairoPainter(PdPainter):
                 self.cr.set_line_width(self.style.conn_msg_width)
                 self.set_src_color(self.style.conn_msg_color)
                 # pixel correction
-                if self.style.conn_msg_width % 2 == 0:
+                if self.style.conn_msg_width % 2 == 1 and (sx - int(sx) == 0):
                     sx += 0.5
                     dx += 0.5
 

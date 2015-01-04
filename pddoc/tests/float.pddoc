@@ -41,6 +41,7 @@
                             <pdmessage id="msg4" text="-0.02"/>
                         </row>
                         <pdobject id="float1" name="float" args="7" comment="stores value" highlight="true"/>
+                        <pdobject id="fatom1" name="floatatom"/>
                     </col>
                     <col>
                         <pdmessage id="msg5" text="7 3 4"/>
@@ -49,6 +50,7 @@
                             <pdmessage id="msg7" text="bang" offset="40"/>
                         </row>
                         <pdobject id="f1" name="f" highlight="true"/>
+                        <pdobject id="fatom2" name="floatatom"/>
                     </col>
                 </row>
                 <pdconnect src="msg1" src_out="0" dest="float1" dest_in="0"/>
@@ -58,6 +60,8 @@
                 <pdconnect src="msg5" src_out="0" dest="f1" dest_in="0"/>
                 <pdconnect src="msg6" src_out="0" dest="f1" dest_in="0"/>
                 <pdconnect src="msg7" src_out="0" dest="f1" dest_in="0"/>
+                <pdconnect src="float1" src_out="0" dest="fatom1" dest_in="0"/>
+                <pdconnect src="f1" src_out="0" dest="fatom2" dest_in="0"/>
             </pdexample>
             <pdexample width="10" height="10" file="objects.pd"/>
         </example>

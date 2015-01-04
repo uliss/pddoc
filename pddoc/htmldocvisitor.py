@@ -34,6 +34,7 @@ from mako.template import Template
 from mako.lookup import TemplateLookup
 from docobject import *
 from pdlayout import *
+import pdfactory
 
 
 class HtmlDocVisitor(object):
@@ -193,11 +194,11 @@ class HtmlDocVisitor(object):
         if os.path.exists(fname):
             return
 
-        pdo = PdObject(name)
+        pdo = pdfactory.make_by_name(name)
         brect = BRectCalculator().object_brect(pdo)
         pad = 1  # pixel
         painter = cairopainter.CairoPainter(int(brect[2]) + pad, int(brect[3]) + pad, fname, "png")
-        painter.draw_object(pdo)
+        pdo.draw(painter)
 
     def generate_images(self):
         if self._aliases:

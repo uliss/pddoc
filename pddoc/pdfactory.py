@@ -37,3 +37,10 @@ def make(atoms):
     else:
         pass
         # return PdObject(name, x, y)
+
+
+def make_by_name(name, args = []):
+    if name == "floatatom":
+        return PdFloatAtom(0, 0)
+    else:
+        return PdObject(name, 0, 0, 0, 0, args)

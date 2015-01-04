@@ -26,6 +26,7 @@ from pdmessage import *
 from layout import *
 from brectcalculator import *
 from docobject import DocPdobject, DocPdmessage
+import pdfactory
 
 
 class PdLayout(object):
@@ -116,6 +117,7 @@ class PdLayout(object):
         assert isinstance(doc_obj, DocPdobject)
         args = filter(None, doc_obj.args())
         pd_obj = pdobject.PdObject(doc_obj.name(), 0, 0, 0, 0, args)
+        pd_obj = pdfactory.make_by_name(doc_obj.name(), args)
         obj_bbox = list(self.calc_brect(pd_obj))
         litem = LayoutItem(doc_obj.offset(), 0, obj_bbox[2], obj_bbox[3])
         setattr(pd_obj, "layout", litem)

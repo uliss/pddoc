@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-# Copyright (C) 2014 by Serge Poltavski                                  #
+#   Copyright (C) 2015 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -19,40 +19,21 @@
 
 __author__ = 'Serge Poltavski'
 
+from pdfloatatom import PdFloatAtom
+from pdcoregui import PdCoreGui
+from pdobject import PdObject
 
-class PdPainter(object):
-    def draw_canvas(self, canvas):
+
+def make(atoms):
+    assert isinstance(atoms, list)
+    assert len(atoms) > 0
+    name = atoms[0]
+
+    if name == "floatatom":
+        return PdFloatAtom.from_atoms(atoms[1:])
+    elif name in ("bng", "cnv", "hradio", "hsl", "nbx", "tgl", "vradio", "vsl", "vu"):
         pass
-
-    def draw_comment(self, comment):
-        print "Draw comment: #", comment.text()
-
-    def draw_message(self, message):
-        print "Draw message [id:%i]: %s" % (message.id, message.to_string())
-
-    def draw_object(self, obj):
-        print "Draw object: [id:%i] [%s]" % (obj.id, " ".join(obj.args))
-
-    def draw_core_gui(self, gui):
-        print "Draw core GUI: [id:%i] [%s]" % (gui.id, gui.name)
-
-    def draw_subpatch(self, subpatch):
-        print u"Draw subpatch: [pd {0:s}]".format(subpatch.name)
-
-    def draw_graph(self, graph):
-        print "Draw graph "
-
-    def draw_connections(self, canvas):
-        print "Draw connections "
-
-    def draw_poly(self, vertexes, **kwargs):
-        print "Draw poly:", vertexes
-
-    def draw_text(self, x, y, text, **kwargs):
-        print "Draw text:", text
-
-    def draw_inlets(self, inlets, x, y, width):
-        print "Draw inlets:", inlets
-
-    def draw_outlets(self, outlets, x, y, width):
-        print "Draw outlets:", outlets
+        # return PdCoreGui(name, x, y, [0])
+    else:
+        pass
+        # return PdObject(name, x, y)

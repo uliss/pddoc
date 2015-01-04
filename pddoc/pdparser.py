@@ -27,6 +27,7 @@ from pdcanvas import *
 from pdmessage import *
 from pdcomment import *
 from pdcoregui import *
+import pdfactory
 
 
 class PdParser:
@@ -112,7 +113,7 @@ class PdParser:
         y = atoms[1]
         name = atoms[2]
 
-        if name in ("bng", "cnv", "hradio", "hsl", "nbx", "tgl", "vradio", "vsl", "vu"):
+        if name in ("bng", "floatatom", "cnv", "hradio", "hsl", "nbx", "tgl", "vradio", "vsl", "vu"):
             # print name
             obj = PdCoreGui(name, x, y, atoms[3:])
         else:
@@ -142,8 +143,12 @@ class PdParser:
             # end canvas definition
             atoms.pop(0)
             self.parse_restore(atoms)
+        elif name == "floatatom":
+            obj = pdfactory.make(atoms)
+            self.current_canvas().append_object(obj)
         else:
             pass
+
 
     def parse_atoms(self, atoms):
         if atoms[0] == '#X':

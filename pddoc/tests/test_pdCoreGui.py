@@ -22,6 +22,9 @@ from unittest import TestCase
 __author__ = 'Serge Poltavski'
 
 from pddoc.pdcoregui import *
+from pddoc.pdparser import *
+from pddoc.cairopainter import *
+from pddoc.pddrawer import *
 
 
 class TestPdCoreGui(TestCase):
@@ -36,3 +39,14 @@ class TestPdCoreGui(TestCase):
     def test_str__(self):
         pco = PdCoreGui("tgl", 5, 6, PdCoreGui.tgl_defaults)
         self.assertEqual(str(pco), "[GUI:tgl]                                 {x:5,y:6,id:-1}")
+
+    def test_draw(self):
+        p = PdParser()
+        p.parse("core_gui.pd")
+        canvas = p.canvas
+        self.assertTrue(canvas)
+        self.assertEqual(canvas.width, 450)
+        self.assertEqual(canvas.height, 300)
+        painter = CairoPainter(canvas.width, canvas.height, "out/core_gui.png")
+        drawer = PdDrawer()
+        drawer.draw(canvas, painter)

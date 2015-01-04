@@ -19,6 +19,8 @@
 
 __author__ = 'Serge Poltavski'
 
+from pdbaseobject import PdBaseObject
+
 
 class PdDrawStyle(object):
     fill_color = property(lambda self: (1, 1, 1))
@@ -36,7 +38,7 @@ class PdDrawStyle(object):
     msg_fill_color = property(lambda self: 0.94)
     msg_min_width = property(lambda self: 22)
 
-    xlet_width = property(lambda self: 7)
+    xlet_width = property(lambda self: 8)
     xlet_msg_height = property(lambda self: 2)
     xlet_snd_height = property(lambda self: 2)
     xlet_gui_height = property(lambda self: 1)
@@ -61,3 +63,13 @@ class PdDrawStyle(object):
     @property
     def obj_height(self):
         return self.font_size + 5
+
+    def xlet_height(self, t):
+        if t == PdBaseObject.XLET_MESSAGE:
+            return self.xlet_msg_height
+        elif t == PdBaseObject.XLET_GUI:
+            return self.xlet_gui_height
+        elif t == PdBaseObject.XLET_SOUND:
+            return self.xlet_snd_height
+        else:
+            assert False

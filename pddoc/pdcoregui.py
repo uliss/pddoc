@@ -90,9 +90,41 @@ class PdCoreGui(pdobject.PdObject):
 
     def __init__(self, name, x, y, args):
         pdobject.PdObject.__init__(self, name, x, y, 0, 0, args)
-        assert len(args) > 0
+        self._send = ""
+        self._receive = ""
+        self._label = ""
         self._props = {}
         self.parse_args(args)
+
+    @property
+    def label(self):
+        return self._label
+
+    @label.setter
+    def label(self, v):
+        self._label = v
+
+    @property
+    def send(self):
+        return self._send
+
+    @send.setter
+    def send(self, v):
+        self._send = v
+
+    def no_send(self):
+        return not self._send or self.send == "empty"
+
+    @property
+    def receive(self):
+        return self._receive
+
+    @receive.setter
+    def receive(self, v):
+        self._receive = v
+
+    def no_receive(self):
+        return not self._send or self.receive == "empty"
 
     def __str__(self):
         return "[GUI:%-36s {x:%i,y:%i,id:%i}" % (self.name + "]", self._x, self._y, self._id)
@@ -159,6 +191,14 @@ class PdCoreGui(pdobject.PdObject):
             self._props["label_color"] = color_from_pd(args[11])
             return
 
+        if self.name == "bng":
+            pass
+            # print self._args
+
+        if self.name == "nbx":
+            pass
+            # print self._args
+
     def bgcolor(self):
         return self.prop("bg_color").rgb_float()
 
@@ -169,18 +209,16 @@ class PdCoreGui(pdobject.PdObject):
         return self.prop("label_color").rgb_float()
 
     def inlets(self):
-        if self.name in ("tgl", "bng", "hsl", "vsl", "nbx"):
-            if "receive" not in self._props or self._props["receive"] is None:
-                return [self.XLET_GUI]
-            else:
-                return []
+        if self.no_receive():
+            return [self.XLET_GUI]
+        else:
+            return []
 
     def outlets(self):
-        if self.name in ("tgl", "bng", "hsl", "vsl", "nbx"):
-            if "send" not in self._props or self._props["send"] is None:
-                return [self.XLET_GUI]
-            else:
-                return []
+        if self.no_send():
+            return [self.XLET_GUI]
+        else:
+            return []
 
     def traverse(self, visitor):
         visitor.visit_core_gui(self)

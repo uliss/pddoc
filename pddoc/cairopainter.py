@@ -237,6 +237,9 @@ class CairoPainter(PdPainter):
             self.draw_xlets(gui.outlets(), gui.x, gui.bottom - self.style.xlet_gui_height, gui.width)
             return
 
+        if gui.name == "bng":
+            self.draw_bang(gui)
+
         if gui.name == "cnv":
             self.cr.save()
             x = gui.x
@@ -259,6 +262,10 @@ class CairoPainter(PdPainter):
             self.cr.show_text(txt)
             self.cr.restore()
             return
+
+    def draw_bang(self, b):
+        print "DRAWAWAWA"
+        pass
 
     def xlet_height(self, t):
         if t == PdBaseObject.XLET_GUI:
@@ -351,4 +358,44 @@ class CairoPainter(PdPainter):
                 self.draw_txt(comment.x, comment.y + lnum * self.style.font_size, subl)
                 lnum += 1
 
-pass
+    def draw_poly(self, vertexes, **kwargs):
+        assert len(vertexes) > 1
+        assert len(vertexes[0]) == 2
+        self.cr.save()
+        self.cr.move_to(vertexes[0][0] + 0.5, vertexes[0][1] + 0.5)
+        for v in vertexes[1:]:
+            self.cr.rel_line_to(v[0], v[1])
+
+        self.cr.line_to(vertexes[0][0] + 0.5, vertexes[0][1] + 0.5)
+
+        if 'fill' in kwargs:
+            self.set_src_color(kwargs['fill'])
+            self.cr.fill_preserve()
+
+        if 'outline' in kwargs:
+            self.set_src_color(kwargs['outline'])
+            self.cr.stroke()
+
+        self.cr.restore()
+
+    def draw_text(self, x, y, text, **kwargs):
+        self.cr.save()
+
+        if 'color' in kwargs:
+            self.set_src_color(kwargs['color'])
+        else:
+            self.set_src_color((0, 0, 0))
+
+        self.cr.move_to(x, y)
+        self.cr.show_text(text)
+        self.cr.restore()
+
+    def draw_inlets(self, inlets, x, y, width):
+        self.draw_xlets(inlets, x, y, width)
+
+    def draw_outlets(self, outlets, x, y, width):
+        if not outlets:
+            return
+
+        yoffset = self.style.xlet_height(outlets[0])
+        self.draw_xlets(outlets, x, y - yoffset, width)

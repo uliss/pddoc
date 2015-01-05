@@ -116,8 +116,7 @@ class PdLayout(object):
     def doc2obj(self, doc_obj):
         assert isinstance(doc_obj, DocPdobject)
         args = filter(None, doc_obj.args())
-        pd_obj = pdobject.PdObject(doc_obj.name(), 0, 0, 0, 0, args)
-        pd_obj = pdfactory.make_by_name(doc_obj.name(), args)
+        pd_obj = pdfactory.make_by_name(doc_obj.name(), args, **doc_obj.attrs())
         obj_bbox = list(self.calc_brect(pd_obj))
         litem = LayoutItem(doc_obj.offset(), 0, obj_bbox[2], obj_bbox[3])
         setattr(pd_obj, "layout", litem)

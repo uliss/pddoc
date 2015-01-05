@@ -39,8 +39,8 @@ def make(atoms):
         # return PdObject(name, x, y)
 
 
-def make_by_name(name, args = []):
+def make_by_name(name, args = [], **kwargs):
     if name == "floatatom":
-        return PdFloatAtom(0, 0)
+        return PdFloatAtom(0, 0, **kwargs)
     else:
         return PdObject(name, 0, 0, 0, 0, args)

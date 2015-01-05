@@ -191,6 +191,7 @@ class DocPdobject(DocItem):
         self._comment = ""
         self._offset = 0
         self._highlight = False
+        self._attrs = {}
 
     @property
     def id(self):
@@ -216,6 +217,12 @@ class DocPdobject(DocItem):
             self._comment = xmlobj.attrib.get("comment", "")
             self._offset = int(xmlobj.attrib.get("offset", "0"))
             self._highlight = xmlobj.attrib.get("highlight", "")
+
+            # save other attrs
+            for k, v in xmlobj.attrib.items():
+                if k not in ('id', 'name', 'args', 'comment', 'offset', 'highlight'):
+                    self._attrs[k] = v
+
             DocItem.from_xml(self, xmlobj)
         except KeyError, e:
             common.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
@@ -226,6 +233,9 @@ class DocPdobject(DocItem):
 
     def args(self):
         return self._args.split(" ")
+
+    def attrs(self):
+        return self._attrs
 
 
 class DocPdmessage(DocPdobject):

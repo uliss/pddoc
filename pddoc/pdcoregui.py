@@ -88,6 +88,8 @@ class PdColor:
 class PdCoreGui(pdobject.PdObject):
     tgl_defaults = ['15', '0', 'empty', 'empty', 'empty', '17', '7', '0', '10', '-262144', '-1', '-1', '0', '1']
 
+    POS_LEFT, POS_RIGHT, POS_TOP, POS_BOTTOM = (0, 1, 2, 3)
+
     def __init__(self, name, x, y, args):
         pdobject.PdObject.__init__(self, name, x, y, 0, 0, args)
         self._send = ""

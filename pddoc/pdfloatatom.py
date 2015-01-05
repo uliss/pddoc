@@ -20,9 +20,12 @@
 __author__ = 'Serge Poltavski'
 
 from pdcoregui import PdCoreGui
+from brectcalculator import BRectCalculator
 
 
 class PdFloatAtom(PdCoreGui):
+    _bcalc = BRectCalculator()
+
     def __init__(self, x, y, **kwargs):
         PdCoreGui.__init__(self, "floatatom", x, y, [])
         self._digits = int(kwargs.get("digits", 5))
@@ -38,6 +41,17 @@ class PdFloatAtom(PdCoreGui):
         self.label = kwargs.get("label", "-")
         self.send = kwargs.get("send", "-")
         self.receive = kwargs.get("receive", "-")
+
+        self._value = float(kwargs.get("value", 0))
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, v):
+        assert isinstance(v, float) or isinstance(v, int)
+        self._value = v
 
     @staticmethod
     def from_atoms(atoms):
@@ -68,6 +82,9 @@ class PdFloatAtom(PdCoreGui):
     def no_receive(self):
         return self.receive == "-"
 
+    def has_label(self):
+        return self._label and self._label != "-"
+
     def outlets(self):
         if self.no_send():
             return [self.XLET_MESSAGE]
@@ -80,6 +97,20 @@ class PdFloatAtom(PdCoreGui):
         else:
             return []
 
+    def _is_int(self):
+        return abs(self._value - int(self._value)) < 0.001
+
+    def _str_value(self):
+        if self._is_int():
+            return str(int(self._value))
+        else:
+            return "{0:.2f}".format(self.value)
+
+    def _label_brect(self):
+        if not self.has_label():
+            return 0, 0, 0, 0
+        return self._bcalc.text_brect(self._label)
+
     def draw(self, painter):
         vertexes = (
             (self.x, self.y),
@@ -89,8 +120,31 @@ class PdFloatAtom(PdCoreGui):
             (-7, -7)
         )
 
+        text_yoff = 13
+
         painter.draw_poly(vertexes, fill=(0.88, 0.88, 0.88), outline=(0.75, 0.75, 0.75))
-        painter.draw_text(self.x + 2, self.y + 13, "0")
+        painter.draw_text(self.x + 2, self.top + text_yoff, self._str_value())
         painter.draw_inlets(self.inlets(), self.x, self.y, self.width)
-        painter.draw_outlets(self.outlets(), self.x, self.y + self.height, self.width)
+        painter.draw_outlets(self.outlets(), self.x, self.bottom, self.width)
+
+        if self.has_label():
+            lx, ly, lw, lh = self._label_brect()
+            pad = 3
+            if self._label_pos == self.POS_LEFT:
+                lx = self.x - lw - pad
+                ly = self.y + text_yoff
+            elif self._label_pos == self.POS_RIGHT:
+                lx = self.right + pad
+                ly = self.y + text_yoff
+            elif self._label_pos == self.POS_BOTTOM:
+                lx = self.left
+                ly = self.bottom + text_yoff
+            elif self._label_pos == self.POS_TOP:
+                lx = self.left
+                ly = self.top - pad
+
+            painter.draw_text(lx, ly, self._label)
+
+
+
 

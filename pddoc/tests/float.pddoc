@@ -50,7 +50,7 @@
                             <pdmessage id="msg7" text="bang" offset="40"/>
                         </row>
                         <pdobject id="f1" name="f" highlight="true"/>
-                        <pdobject id="fatom2" name="floatatom" value="-1.23" digits="10"/>
+                        <pdobject id="fatom2" name="floatatom" value="-1.23" digits="10" label_pos="left" label="label"/>
                     </col>
                 </row>
                 <pdconnect src="msg1" src_out="0" dest="float1" dest_in="0"/>

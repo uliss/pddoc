@@ -22,6 +22,8 @@ __author__ = 'Serge Poltavski'
 
 import pdobject
 from termcolor import colored
+import six
+import common
 
 
 class PdColor:
@@ -224,3 +226,25 @@ class PdCoreGui(pdobject.PdObject):
 
     def traverse(self, visitor):
         visitor.visit_core_gui(self)
+
+    def _get_label_pos(self, pos):
+        if isinstance(pos, int):
+            if pos not in (self.POS_LEFT, self.POS_TOP, self.POS_BOTTOM, self.POS_RIGHT):
+                common.warning("invalid label position: {0:d}".format(pos))
+                return None
+
+            return pos
+        elif isinstance(pos, six.string_types):
+            map = { "left": self.POS_LEFT,
+                    "right": self.POS_RIGHT,
+                    "top": self.POS_TOP,
+                    "bottom": self.POS_BOTTOM}
+
+            if pos.lower() in map:
+                return map[pos.lower()]
+            else:
+                common.warning("invalid label position: {0:s}".format(pos))
+                return None
+        else:
+            common.warning("invalid label position: {0:s}".format(str(pos)))
+            return None

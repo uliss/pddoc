@@ -35,8 +35,11 @@ class PdFloatAtom(PdCoreGui):
         self._max = kwargs.get("max", 0)
         assert self._min <= self._max
 
-        self._label_pos = kwargs.get("label_pos", 0)
-        assert self._label_pos in xrange(0, 4)
+        self._label_pos = self.POS_LEFT
+        if "label_pos" in kwargs:
+            pos = self._get_label_pos(kwargs["label_pos"])
+            if pos is not None:
+                self._label_pos = pos
 
         self.label = kwargs.get("label", "-")
         self.send = kwargs.get("send", "-")
@@ -142,9 +145,7 @@ class PdFloatAtom(PdCoreGui):
             elif self._label_pos == self.POS_TOP:
                 lx = self.left
                 ly = self.top - pad
+            else:
+                assert False
 
             painter.draw_text(lx, ly, self._label)
-
-
-
-

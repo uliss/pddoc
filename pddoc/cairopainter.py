@@ -24,6 +24,7 @@ from pdpainter import *
 import cairo
 import textwrap
 from pddrawstyle import *
+from math import pi
 
 
 class CairoPainter(PdPainter):
@@ -399,3 +400,16 @@ class CairoPainter(PdPainter):
 
         yoffset = self.style.xlet_height(outlets[0])
         self.draw_xlets(outlets, x, y - yoffset, width)
+
+    def draw_circle(self, x, y, radius, **kwargs):
+        self.cr.save()
+        self.cr.arc(x, y, radius, 0, 2*pi)
+        if 'fill' in kwargs:
+            self.set_src_color(kwargs['fill'])
+            self.cr.fill_preserve()
+
+        if 'outline' in kwargs:
+            self.set_src_color(kwargs['outline'])
+            self.cr.stroke()
+
+        self.cr.restore()

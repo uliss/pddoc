@@ -21,7 +21,7 @@ import unittest
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.pdcoregui import PdColor
+from pddoc.pdcoregui import *
 
 
 class TestPdColor(unittest.TestCase):
@@ -32,7 +32,8 @@ class TestPdColor(unittest.TestCase):
         self.assertEqual(PdColor.black().rgb(), (0, 0, 0))
 
     def test_white(self):
-        self.assertEqual(PdColor.white().rgb(), (1, 1, 1))
+        self.assertEqual(PdColor.white().rgb(), (255, 255, 255))
+        self.assertEqual(PdColor.white().rgb_float(), (1, 1, 1))
 
     def test_rgb(self):
         c = PdColor(0.1, 0.2, 0.3)
@@ -88,3 +89,19 @@ class TestPdColor(unittest.TestCase):
         self.assertEqual(PdColor(0, 12, 0).to_pd(), -(64 * 3) - 1)
         self.assertEqual(PdColor(0, 12, 4).to_pd(), -(64 * 3) - 2)
         self.assertEqual(PdColor(4, 0, 0).to_pd(), -4096 - 1)
+
+    def test_to_hex_str(self):
+        c = PdColor()
+        self.assertEqual("#000000", c.to_hex_str())
+        c = c.white()
+        self.assertEqual("#FFFFFF", c.to_hex_str())
+        c.set_rgb((0xDE, 0xAD, 0xBE))
+        self.assertEqual("#DEADBE", c.to_hex_str())
+
+    def test_from_hex(self):
+        c = PdColor.from_hex("FA1234")
+        self.assertEqual(c.to_hex_str(), "#FA1234")
+        c = PdColor.from_hex("#123456")
+        self.assertEqual(c.to_hex_str(), "#123456")
+        c = PdColor.from_hex("#FAC")
+        self.assertEqual(c.to_hex_str(), "#FFAACC")

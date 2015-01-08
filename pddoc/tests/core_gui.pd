@@ -1,4 +1,4 @@
-#N canvas 411 235 450 300 10;
+#N canvas 411 235 600 500 10;
 #X obj 22 47 tgl 15 0 empty empty empty 17 7 0 10 -260097 -1 -1 0 1;
 #X obj 22 67 tgl 15 0 empty empty empty 17 7 0 10 -258113 -1 -10 0 1;
 #X obj 22 26 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1;
@@ -8,6 +8,8 @@
 #X floatatom 140 65 10 0 0 2 label - -;
 #X floatatom 140 105 10 0 0 1 label - -;
 #X floatatom 140 145 10 0 0 3 label - -;
+#X obj 256 25 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1 -1;
+#X obj 256 65 bng 30 250 50 0 s1 r1 bang 40 7 0 10 -191407 -257985 -4160;
 #X connect 0 0 1 0;
 #X connect 2 0 0 0;
 #X connect 6 0 7 0;

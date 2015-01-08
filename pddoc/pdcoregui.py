@@ -41,7 +41,7 @@ class PdColor:
 
     @staticmethod
     def white():
-        return PdColor(1, 1, 1)
+        return PdColor(255, 255, 255)
 
     def rgb(self):
         return self._r, self._g, self._b
@@ -59,6 +59,28 @@ class PdColor:
         self._r = int(round(r / 63.0 * 255)) % 256
         self._g = int(round(g / 63.0 * 255)) % 256
         self._b = int(round(b / 63.0 * 255)) % 256
+
+    @staticmethod
+    def from_hex(hex_str):
+        c = PdColor()
+
+        if hex_str[0] == '#':
+            hex_str = hex_str[1:]
+
+        if len(hex_str) == 6:
+            r = int(hex_str[0:2], 16)
+            g = int(hex_str[2:4], 16)
+            b = int(hex_str[4:6], 16)
+            c.set_rgb((r, g, b))
+        elif len(hex_str) == 3:
+            r = int(hex_str[0], 16) * 0x11
+            g = int(hex_str[1], 16) * 0x11
+            b = int(hex_str[2], 16) * 0x11
+            c.set_rgb((r, g, b))
+        else:
+            assert False
+
+        return c
 
     def compare(self, rgb):
         if isinstance(rgb, list) or isinstance(rgb, tuple):
@@ -78,6 +100,9 @@ class PdColor:
         return -4096 * int(round(self._r * (63 / 255.0))) \
                - 64 * int(round(self._g * (63 / 255.0))) \
                - 1 * int(round(self._b * (63 / 255.0))) - 1
+
+    def to_hex_str(self):
+        return "#{0:02X}{1:02X}{2:02X}".format(self._r, self._g, self._b)
 
     def __str__(self):
         res = colored("RGB[%i,%i,%i]" % (self._r, self._g, self._b), "green")
@@ -118,6 +143,9 @@ class PdCoreGui(pdobject.PdObject):
 
     def no_send(self):
         return not self._send or self.send == "empty"
+
+    def no_label(self):
+        return not self._label or self.label == "empty"
 
     @property
     def receive(self):
@@ -176,32 +204,6 @@ class PdCoreGui(pdobject.PdObject):
             self._props["default_value"] = int(args[13])
             return
 
-        if self.name == "cnv":
-            self._props["size"] = int(args[0])  # size of selectable square
-            self._props["width"] = int(args[1])  # horizontal size of the GUI-element
-            self.width = self._props["width"]
-            self._props["height"] = int(args[2])  # vertical size of the GUI-element
-            self.height = self._props["height"]
-            self._props["send"] = args[3]  # send symbol name
-            self._props["receive"] = args[4]  # receive symbol name
-            self._props["label"] = args[5]
-            # horizontal position of the label text relative to the upperleft corner of the object
-            self._props["label_xoff"] = int(args[6])
-            # vertical position of the label text relative to the upperleft corner of the object
-            self._props["label_yoff"] = int(args[7])
-            self._props["font"] = args[8]
-            self._props["fontsize"] = int(args[9])
-            self._props["bg_color"] = color_from_pd(args[10])
-            self._props["label_color"] = color_from_pd(args[11])
-            return
-
-        if self.name == "bng":
-            pass
-            # print self._args
-
-        if self.name == "nbx":
-            pass
-            # print self._args
 
     def bgcolor(self):
         return self.prop("bg_color").rgb_float()
@@ -235,13 +237,13 @@ class PdCoreGui(pdobject.PdObject):
 
             return pos
         elif isinstance(pos, six.string_types):
-            map = { "left": self.POS_LEFT,
+            lmap = { "left": self.POS_LEFT,
                     "right": self.POS_RIGHT,
                     "top": self.POS_TOP,
                     "bottom": self.POS_BOTTOM}
 
-            if pos.lower() in map:
-                return map[pos.lower()]
+            if pos.lower() in lmap:
+                return lmap[pos.lower()]
             else:
                 common.warning("invalid label position: {0:s}".format(pos))
                 return None

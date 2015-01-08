@@ -22,6 +22,7 @@ __author__ = 'Serge Poltavski'
 from pdfloatatom import PdFloatAtom
 from pdcoregui import PdCoreGui
 from pdobject import PdObject
+from pdbng import PdBng
 
 
 def make(atoms):
@@ -31,16 +32,18 @@ def make(atoms):
 
     if name == "floatatom":
         return PdFloatAtom.from_atoms(atoms[1:])
+    elif name == "bng":
+        return PdBng.from_atoms(atoms[1:])
     elif name in ("bng", "cnv", "hradio", "hsl", "nbx", "tgl", "vradio", "vsl", "vu"):
-        pass
-        # return PdCoreGui(name, x, y, [0])
+        return PdCoreGui(name, 0, 0, atoms[1:])
     else:
-        pass
-        # return PdObject(name, x, y)
+        return PdObject(name, 0, 0)
 
 
 def make_by_name(name, args = [], **kwargs):
     if name == "floatatom":
         return PdFloatAtom(0, 0, **kwargs)
+    elif name == "bng":
+        return PdBng(0, 0, **kwargs)
     else:
         return PdObject(name, 0, 0, 0, 0, args)

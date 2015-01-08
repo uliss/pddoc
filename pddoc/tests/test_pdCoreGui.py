@@ -45,8 +45,8 @@ class TestPdCoreGui(TestCase):
         p.parse("core_gui.pd")
         canvas = p.canvas
         self.assertTrue(canvas)
-        self.assertEqual(canvas.width, 450)
-        self.assertEqual(canvas.height, 300)
+        self.assertEqual(canvas.width, 600)
+        self.assertEqual(canvas.height, 500)
         painter = CairoPainter(canvas.width, canvas.height, "out/core_gui.png")
         drawer = PdDrawer()
         drawer.draw(canvas, painter)

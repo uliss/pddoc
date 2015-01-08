@@ -56,3 +56,6 @@ class PdPainter(object):
 
     def draw_outlets(self, outlets, x, y, width):
         print "Draw outlets:", outlets
+
+    def draw_circle(self, x, y, width, **kwargs):
+        print "Draw circle"

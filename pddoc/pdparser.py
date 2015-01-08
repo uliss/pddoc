@@ -113,9 +113,12 @@ class PdParser:
         y = atoms[1]
         name = atoms[2]
 
-        if name in ("bng", "floatatom", "cnv", "hradio", "hsl", "nbx", "tgl", "vradio", "vsl", "vu"):
+        if name in ("bng", "cnv", "hradio", "hsl", "nbx", "tgl", "vradio", "vsl", "vu"):
             # print name
-            obj = PdCoreGui(name, x, y, atoms[3:])
+            obj = pdfactory.make(atoms[2:])
+            obj.x = x
+            obj.y = y
+            # obj = PdCoreGui(name, x, y, atoms[3:])
         else:
             obj = PdObject(name, x, y, -1, -1, atoms[3:])
 

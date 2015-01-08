@@ -111,19 +111,39 @@ class PdColor:
     def __eq__(self, other):
         return self.compare(other)
 
+def color_from_str(value):
+    c = PdColor()
+
+    if isinstance(value, int):
+        c.from_pd(value)
+    elif isinstance(value, six.string_types):
+        if value[0] == '#':
+            return PdColor.from_hex(value)
+        else:
+            c.from_pd(value)
+    else:
+        assert False
+
+    return c
+
 
 class PdCoreGui(pdobject.PdObject):
     tgl_defaults = ['15', '0', 'empty', 'empty', 'empty', '17', '7', '0', '10', '-262144', '-1', '-1', '0', '1']
 
     POS_LEFT, POS_RIGHT, POS_TOP, POS_BOTTOM = (0, 1, 2, 3)
 
-    def __init__(self, name, x, y, args):
+    def __init__(self, name, x, y, args, **kwargs):
         pdobject.PdObject.__init__(self, name, x, y, 0, 0, args)
-        self._send = ""
-        self._receive = ""
-        self._label = ""
-        self._props = {}
-        self.parse_args(args)
+        self._send = kwargs.get("send", "empty")
+        self._receive = kwargs.get("send", "empty")
+        self._label = kwargs.get("label", "empty")
+        self._label_xoff = int(kwargs.get("label_xoff", 17))
+        self._label_yoff = int(kwargs.get("label_yoff", 7))
+        self._font_type = int(kwargs.get("font_type", 0))
+        self._font_size = int(kwargs.get("font_size", 10))
+        self._bg_color = color_from_str(kwargs.get("bg_color", -262144))
+        self._fg_color = color_from_str(kwargs.get("fg_color", -1))
+        self._label_color = color_from_str(kwargs.get("label_color", -1))
 
     @property
     def label(self):
@@ -164,55 +184,14 @@ class PdCoreGui(pdobject.PdObject):
     def draw(self, painter):
         painter.draw_core_gui(self)
 
-    def prop(self, key):
-        return self._props[key]
-
-    def parse_args(self, args):
-        def color_from_pd(v):
-            c = PdColor()
-            c.from_pd(v)
-            return c
-
-        def slot_from_pd(slot):
-            if slot == "empty":
-                return None
-            else:
-                return slot
-
-        if self.name == "tgl":
-            # square size of the gui element
-            self._props["size"] = int(args[0])
-            self.width = self._props["size"]
-            self.height = self._props["size"]
-            # set on load
-            self._props["init"] = int(args[1])
-            self._props["send"] = slot_from_pd(args[2])
-            self._props["receive"] = slot_from_pd(args[3])
-            self._props["label"] = slot_from_pd(args[4])
-            # horizontal position of the label text relative to the upperleft corner of the object
-            self._props["label_xoff"] = int(args[5])
-            # vertical position of the label text relative to the upperleft corner of the object
-            self._props["label_yoff"] = int(args[6])
-            self._props["font"] = args[7]
-            self._props["font_size"] = args[8]
-            self._props["bg_color"] = color_from_pd(args[9])
-            self._props["fg_color"] = color_from_pd(args[10])
-            self._props["label_color"] = color_from_pd(args[11])
-            # value sent when the [init] attribute is set
-            self._props["init_value"] = int(args[12])
-            # default_value when the [init]? attribute is not set
-            self._props["default_value"] = int(args[13])
-            return
-
-
     def bgcolor(self):
-        return self.prop("bg_color").rgb_float()
+        return self._bg_color.rgb_float()
 
     def fgcolor(self):
-        return self.prop("fg_color").rgb_float()
+        return self._fg_color.rgb_float()
 
     def lbcolor(self):
-        return self.prop("label_color").rgb_float()
+        return self._label_color.rgb_float()
 
     def inlets(self):
         if self.no_receive():
@@ -228,6 +207,9 @@ class PdCoreGui(pdobject.PdObject):
 
     def traverse(self, visitor):
         visitor.visit_core_gui(self)
+
+    def _get_label_xy(self):
+        return self.x + self._label_xoff, self.y + self._label_yoff  # font height correction
 
     def _get_label_pos(self, pos):
         if isinstance(pos, int):

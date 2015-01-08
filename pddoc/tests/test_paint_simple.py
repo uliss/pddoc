@@ -23,15 +23,16 @@ import sys
 import os
 from pddoc.cairopainter import *
 from pddoc.pddrawer import *
+import unittest
 
 
-if __name__ == '__main__':
-    parser = PdParser()
-    parser.parse("/Applications/Pd-extended.app/Contents/Resources/doc/5.reference/intro-help.pd")
+class TestPaintSimple(unittest.TestCase):
+    def test_simple(self):
+        path = os.path.basename(__file__)
+        parser = PdParser()
+        parser.parse("simple.pd")
 
-    canvas = parser.canvas
-    canvas.height = 5000
-
-    cp = CairoPainter(canvas.width, canvas.height, "out/output_cairo.png")
-    drawer = PdDrawer()
-    drawer.draw(canvas, cp)
+        canvas = parser.canvas
+        cp = CairoPainter(canvas.width, canvas.height, "out/output_simple.png")
+        drawer = PdDrawer()
+        drawer.draw(canvas, cp)

@@ -221,52 +221,46 @@ class CairoPainter(PdPainter):
         self.draw_xlets(message.outlets(), x, y + h - self.style.xlet_msg_height, w)
 
     def draw_core_gui(self, gui):
-        if gui.name == "tgl":
-            if not gui.prop("bg_color").is_black():
-                self.set_src_color(gui.bgcolor())
-            else:
-                self.set_src_color((1, 1, 1))
-
-            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width, gui.height)
-            self.cr.fill()
-            self.set_src_color(gui.fgcolor())
-            self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width, gui.height)
-            self.cr.stroke()
-
-            # print gui.inlets()
-            self.draw_xlets(gui.inlets(), gui.x, gui.y, gui.width)
-            self.draw_xlets(gui.outlets(), gui.x, gui.bottom - self.style.xlet_gui_height, gui.width)
-            return
-
-        if gui.name == "bng":
-            self.draw_bang(gui)
-
-        if gui.name == "cnv":
-            self.cr.save()
-            x = gui.x
-            y = gui.y
-            w = gui.width
-            h = gui.height
-            self.set_src_color(gui.bgcolor())
-            self.cr.rectangle(x, y, w, h)
-            self.cr.fill()
-
-            fonts = ("Monaco Bold", "Helvetica", "Times")
-            fontsize = gui.prop("fontsize")
-            fontidx = int(gui.prop("font"))
-            self.cr.select_font_face(fonts[fontidx])
-            self.cr.set_font_size(fontsize)
-            self.set_src_color(gui.lbcolor())
-            txt = gui.prop("label")
-            tx, ty, tw, th, tdx, tdy = self.cr.text_extents(txt)
-            self.cr.move_to(x + gui.prop("label_xoff"), y + gui.prop("label_yoff") + th)
-            self.cr.show_text(txt)
-            self.cr.restore()
-            return
-
-    def draw_bang(self, b):
-        print "DRAWAWAWA"
         pass
+        # if gui.name == "tgl":
+        #     if not gui.prop("bg_color").is_black():
+        #         self.set_src_color(gui.bgcolor())
+        #     else:
+        #         self.set_src_color((1, 1, 1))
+        #
+        #     self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width, gui.height)
+        #     self.cr.fill()
+        #     self.set_src_color(gui.fgcolor())
+        #     self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width, gui.height)
+        #     self.cr.stroke()
+        #
+        #     # print gui.inlets()
+        #     self.draw_xlets(gui.inlets(), gui.x, gui.y, gui.width)
+        #     self.draw_xlets(gui.outlets(), gui.x, gui.bottom - self.style.xlet_gui_height, gui.width)
+        #     return
+
+        # if gui.name == "cnv":
+        #     self.cr.save()
+        #     x = gui.x
+        #     y = gui.y
+        #     w = gui.width
+        #     h = gui.height
+        #     self.set_src_color(gui.bgcolor())
+        #     self.cr.rectangle(x, y, w, h)
+        #     self.cr.fill()
+        #
+        #     fonts = ("Monaco Bold", "Helvetica", "Times")
+        #     fontsize = gui.prop("fontsize")
+        #     fontidx = int(gui.prop("font"))
+        #     self.cr.select_font_face(fonts[fontidx])
+        #     self.cr.set_font_size(fontsize)
+        #     self.set_src_color(gui.lbcolor())
+        #     txt = gui.prop("label")
+        #     tx, ty, tw, th, tdx, tdy = self.cr.text_extents(txt)
+        #     self.cr.move_to(x + gui.prop("label_xoff"), y + gui.prop("label_yoff") + th)
+        #     self.cr.show_text(txt)
+        #     self.cr.restore()
+        #     return
 
     def xlet_height(self, t):
         if t == PdBaseObject.XLET_GUI:
@@ -363,6 +357,7 @@ class CairoPainter(PdPainter):
         assert len(vertexes) > 1
         assert len(vertexes[0]) == 2
         self.cr.save()
+        self.cr.set_line_width(self.style.obj_line_width)
         self.cr.move_to(vertexes[0][0] + 0.5, vertexes[0][1] + 0.5)
         for v in vertexes[1:]:
             self.cr.rel_line_to(v[0], v[1])
@@ -403,6 +398,7 @@ class CairoPainter(PdPainter):
 
     def draw_circle(self, x, y, radius, **kwargs):
         self.cr.save()
+        self.cr.set_line_width(self.style.obj_line_width)
         self.cr.arc(x, y, radius, 0, 2*pi)
         if 'fill' in kwargs:
             self.set_src_color(kwargs['fill'])
@@ -412,4 +408,16 @@ class CairoPainter(PdPainter):
             self.set_src_color(kwargs['outline'])
             self.cr.stroke()
 
+        self.cr.restore()
+
+    def draw_line(self, x0, y0, x1, y1, **kwargs):
+        self.cr.save()
+        self.cr.set_line_width(float(kwargs.get('width', 1)))
+        if 'color' in kwargs:
+            self.set_src_color(kwargs['color'])
+
+        self.cr.set_line_cap(cairo.LINE_CAP_BUTT)
+        self.cr.move_to(x0 + 0.5, y0 + 0.5)
+        self.cr.line_to(x1 + 0.5, y1 + 0.5)
+        self.cr.stroke()
         self.cr.restore()

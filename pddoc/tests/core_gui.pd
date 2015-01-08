@@ -9,8 +9,9 @@
 #X floatatom 140 105 10 0 0 1 label - -;
 #X floatatom 140 145 10 0 0 3 label - -;
 #X obj 256 25 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1 -1;
-#X obj 256 65 bng 30 250 50 0 s1 r1 bang 40 7 0 10 -191407 -257985 -4160;
+#X obj 256 65 bng 30 250 50 0 s1 r1 bang 40 7 0 10 -191407 -257985 -1;
 #X connect 0 0 1 0;
 #X connect 2 0 0 0;
 #X connect 6 0 7 0;
 #X connect 7 0 8 0;
+#X obj 22 100 tgl 32 0 s r label 40 20 0 10 -262144 -1 -1 0 1;

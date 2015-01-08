@@ -32,9 +32,8 @@ class TestPdCoreGui(TestCase):
         pco = PdCoreGui("tgl", 0, 0, PdCoreGui.tgl_defaults)
         self.assertEqual(pco.inlets(), [PdCoreGui.XLET_GUI])
         self.assertEqual(pco.outlets(), [PdCoreGui.XLET_GUI])
-        self.assertEqual(pco.prop("size"), 15)
-        self.assertEqual(pco.prop("send"), None)
-        self.assertEqual(pco.prop("receive"), None)
+        self.assertEqual(pco.send, "empty")
+        self.assertEqual(pco.receive, "empty")
 
     def test_str__(self):
         pco = PdCoreGui("tgl", 5, 6, PdCoreGui.tgl_defaults)

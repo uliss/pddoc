@@ -23,6 +23,7 @@ from pdfloatatom import PdFloatAtom
 from pdcoregui import PdCoreGui
 from pdobject import PdObject
 from pdbng import PdBng
+from pdtoggle import PdToggle
 
 
 def make(atoms):
@@ -34,7 +35,9 @@ def make(atoms):
         return PdFloatAtom.from_atoms(atoms[1:])
     elif name == "bng":
         return PdBng.from_atoms(atoms[1:])
-    elif name in ("bng", "cnv", "hradio", "hsl", "nbx", "tgl", "vradio", "vsl", "vu"):
+    elif name == "tgl":
+        return PdToggle.from_atoms(atoms[1:])
+    elif name in ("cnv", "hradio", "hsl", "nbx", "vradio", "vsl", "vu"):
         return PdCoreGui(name, 0, 0, atoms[1:])
     else:
         return PdObject(name, 0, 0)

@@ -24,28 +24,12 @@ from pdcoregui import *
 import six
 
 
-def color_from_str(value):
-    c = PdColor()
-
-    if isinstance(value, int):
-        c.from_pd(value)
-    elif isinstance(value, six.string_types):
-        if value[0] == '#':
-            return PdColor.from_hex(value)
-        else:
-            c.from_pd(value)
-    else:
-        assert False
-
-    return c
-
-
 class PdBng(PdCoreGui):
     # default arguments:
     # X obj 256 25 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1 -1;
 
     def __init__(self, x, y, **kwargs):
-        PdCoreGui.__init__(self, "bng", x, y, [])
+        PdCoreGui.__init__(self, "bng", x, y, [], **kwargs)
         self._size = int(kwargs.get("size", 15))
         assert self._size > 0
 
@@ -56,18 +40,6 @@ class PdBng(PdCoreGui):
         assert 10 <= self._interrupt <= 250
 
         self._init = int(kwargs.get("init", 0))
-        self._send = kwargs.get("send", "empty")
-        self._receive = kwargs.get("receive", "empty")
-        self._label = kwargs.get("label", "empty")
-
-        self._label_xoff = int(kwargs.get("label_xoff", 17))
-        self._label_yoff = int(kwargs.get("label_yoff", 7))
-        self._font_type = int(kwargs.get("font_type", 0))
-        self._font_size = int(kwargs.get("font_size", 10))
-        self._bg_color = color_from_str(kwargs.get("bg_color", -262144))
-        self._fg_color = color_from_str(kwargs.get("fg_color", -1))
-        self._label_color = color_from_str(kwargs.get("label_color", -1))
-
         self._pressed = 'pressed' in kwargs and kwargs['pressed'].lower() == "true"
 
     @staticmethod
@@ -100,9 +72,6 @@ class PdBng(PdCoreGui):
     def center(self):
         return self.x + self.width/2 + 0.75, self.y + self.height/2 + 0.75
 
-    def _get_label_pos(self):
-        return self.x + self._label_xoff, self.y + self._label_yoff  # font height correction
-
     def draw(self, painter):
         vertexes = (
             (self.x, self.y),
@@ -111,17 +80,17 @@ class PdBng(PdCoreGui):
             (0, -self.height)
         )
 
-        painter.draw_poly(vertexes, fill=self._bg_color.rgb_float(), outline=(0, 0, 0))
+        painter.draw_poly(vertexes, fill=self.bgcolor(), outline=(0, 0, 0))
         cx, cy = self.center()
 
-        circle_color = self._bg_color.rgb_float()
+        circle_color = self.bgcolor()
         if self._pressed:
-            circle_color = self._fg_color.rgb_float()
+            circle_color = self.fgcolor()
         painter.draw_circle(cx, cy, (self.width-1.5)/2, fill=circle_color)
 
         if not self.no_label():
-            lx, ly = self._get_label_pos()
-            painter.draw_text(lx, ly, self.label, color=self._label_color.rgb_float())
+            lx, ly = self._get_label_xy()
+            painter.draw_text(lx, ly, self.label, color=self.lbcolor())
         painter.draw_inlets(self.inlets(), self.x, self.y, self.width)
         painter.draw_outlets(self.outlets(), self.x, self.bottom, self.width)
 

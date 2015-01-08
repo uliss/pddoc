@@ -20,11 +20,14 @@
 __author__ = 'Serge Poltavski'
 
 import pdobject
+import re
 
 
 class XletCalcDatabase(object):
     XLET_MESSAGE = pdobject.PdBaseObject.XLET_MESSAGE
     XLET_SOUND = pdobject.PdBaseObject.XLET_SOUND
+
+    re_num = re.compile(r"^\d+$")
 
     def __init__(self):
         # INLETS
@@ -167,6 +170,9 @@ class XletCalcDatabase(object):
         if name == "clip~":
             return [self.XLET_SOUND] + [self.XLET_MESSAGE] * 2
 
+        if XletCalcDatabase.re_num.search(name):
+            return [self.XLET_MESSAGE] * 2
+
         return []
 
     def outlets(self, obj):
@@ -214,5 +220,8 @@ class XletCalcDatabase(object):
 
         if name in ("polytouchin",):
             return lout_msg(nargs, lambda x: 3 if x == 0 else 2)
+
+        if XletCalcDatabase.re_num.search(name):
+            return [self.XLET_MESSAGE]
 
         return []

@@ -32,28 +32,45 @@
         </meta>
         <example>
             <pdexample>
-                <row>
-                    <col>
-                        <pdmessage id="msg1" text="bang" comment="outputs argument"/>
-                        <pdmessage id="msg2" text="555" comment="overrides argument" offset="40"/>
-                        <row>
-                            <pdmessage id="msg3" text="12" offset="40"/>
-                            <pdmessage id="msg4" text="-0.02"/>
-                        </row>
-                        <pdobject id="float1" name="float" args="7" comment="stores value" highlight="true"/>
-                        <pdobject id="fatom1" name="floatatom"/>
-                    </col>
-                    <col>
-                        <pdmessage id="msg5" text="7 3 4"/>
-                        <pdmessage id="msg6" text="list one 2 3 4" comment="does not work!" offset="40"/>
-                        <row>
-                            <pdobject id="bng1" name="bng" bg_color="#0F0" offset="40"/>
-                            <pdobject id="nbx1" name="floatatom"/>
-                        </row>
-                        <pdobject id="f1" name="f" highlight="true"/>
-                        <pdobject id="fatom2" name="floatatom" value="-1.23" digits="10" label_pos="left" label="label"/>
-                    </col>
-                </row>
+                <col>
+                    <row>
+                        <col>
+                            <pdmessage id="msg1" text="bang" comment="outputs argument"/>
+                            <pdmessage id="msg2" text="555" comment="overrides argument" offset="40"/>
+                            <row>
+                                <pdmessage id="msg3" text="12" offset="40"/>
+                                <pdmessage id="msg4" text="-0.02"/>
+                            </row>
+                            <pdobject id="float1" name="float" args="7" comment="stores value" highlight="true"/>
+                            <pdobject id="fatom1" name="floatatom"/>
+                        </col>
+                        <col>
+                            <pdmessage id="msg5" text="7 3 4"/>
+                            <pdmessage id="msg6" text="list one 2 3 4" comment="does not work!" offset="40"/>
+                            <row>
+                                <pdobject id="bng1" name="bng" bg_color="#0F0" offset="40"/>
+                                <pdobject id="nbx1" name="floatatom"/>
+                            </row>
+                            <pdobject id="f1" name="f" highlight="true"/>
+                            <pdobject id="fatom2" name="floatatom" value="-1.23" digits="10" label_pos="left" label="label"/>
+                        </col>
+                    </row>
+                    <row>
+                        <pdcomment>implicit
+                        [float]
+                        object</pdcomment>
+                        <col>
+                            <pdobject id="bng2" name="bng"/>
+                            <pdobject id="o21" name="21" comment=""/>
+                            <pdobject id="fatom3" name="floatatom"/>
+                        </col>
+                        <pdcomment>
+                            As an additional shortcut, you can leave off the class name &quot;float&quot;
+                            altogether and just use a single number in an object box to create a [float] object
+                            (with the value initialized to that number).
+                        </pdcomment>
+                    </row>
+                </col>
                 <pdconnect src="msg1" src_out="0" dest="float1" dest_in="0"/>
                 <pdconnect src="msg2" src_out="0" dest="float1" dest_in="0"/>
                 <pdconnect src="msg3" src_out="0" dest="float1" dest_in="1"/>
@@ -64,6 +81,8 @@
                 <pdconnect src="float1" src_out="0" dest="fatom1" dest_in="0"/>
                 <pdconnect src="f1" src_out="0" dest="fatom2" dest_in="0"/>
                 <pdconnect src="nbx1" src_out="0" dest="f1" dest_in="1"/>
+                <pdconnect src="bng2" src_out="0" dest="o21" dest_in="0"/>
+                <pdconnect src="o21" src_out="0" dest="fatom3" dest_in="0"/>
             </pdexample>
             <pdexample width="10" height="10" file="objects.pd"/>
         </example>

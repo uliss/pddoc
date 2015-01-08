@@ -157,6 +157,7 @@ class DocVersion(DocItem):
 class DocCategory(DocItem):
     pass
 
+
 class DocLicense(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
@@ -272,7 +273,7 @@ class DocRow(DocItem):
         DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
-        return tag_name in ("col", "pdmessage", "pdobject")
+        return tag_name in ("col", "pdmessage", "pdobject", "pdcomment")
 
 
 class DocCol(DocItem):
@@ -280,7 +281,7 @@ class DocCol(DocItem):
         DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
-        return tag_name in ("row", "pdmessage", "pdobject")
+        return tag_name in ("row", "pdmessage", "pdobject", "pdcomment")
 
 
 class DocPdconnect(DocItem):
@@ -303,6 +304,11 @@ class DocPdconnect(DocItem):
         self._dest_id = xmlobj.attrib["dest"]
         self._src_id = xmlobj.attrib["src"]
         DocItem.from_xml(self, xmlobj)
+
+
+class DocPdcomment(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
 
 
 class DocPdexample(DocItem):

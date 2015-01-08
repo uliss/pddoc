@@ -176,3 +176,15 @@ class PdLayout(object):
 
     def add_id_mapping(self, doc_obj, pd_obj):
         self._pdobj_id_map[doc_obj.id] = pd_obj.id
+
+    def comment(self, doc_comment):
+        comments = doc_comment.text().split("\n")
+
+        vlayout = Layout.vertical()
+
+        for c in comments:
+            pd_c = self.comment2pd_comment(c)
+            self._canvas.append_object(pd_c)
+            vlayout.add_item(pd_c.layout)
+
+        self._cur_layout[-1].add_layout(vlayout)

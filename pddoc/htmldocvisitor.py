@@ -137,6 +137,9 @@ class HtmlDocVisitor(object):
         walker = pddrawer.PdDrawer()
         walker.draw(self._layout.canvas, painter)
 
+    def pdcomment_begin(self, comment):
+        self._layout.comment(comment)
+
     def row_begin(self, row):
         self._layout.row_begin()
 

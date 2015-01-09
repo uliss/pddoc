@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-# Copyright (C) 2014 by Serge Poltavski                                 #
+# Copyright (C) 2015 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -16,37 +16,17 @@
 #                                                                         #
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
-
 from unittest import TestCase
+from pddoc.pdfactory import find_external_object, make
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.pdcoregui import *
-from pddoc.pdparser import *
-from pddoc.cairopainter import *
-from pddoc.pddrawer import *
 
-tgl = ['15', '0', 'empty', 'empty', 'empty', '17', '7', '0', '10', '-262144', '-1', '-1', '0', '1']
+class TestFind_external_object(TestCase):
+    def test_find_external_object(self):
+        self.assertFalse(find_external_object("../name"))
+        self.assertTrue(find_external_object("pddp/pddplink"))
+        self.assertFalse(find_external_object("pddp/not-exists"))
 
-class TestPdCoreGui(TestCase):
-    def test_init(self):
-        pco = PdCoreGui("tgl", 0, 0, tgl)
-        self.assertEqual(pco.inlets(), [PdCoreGui.XLET_GUI])
-        self.assertEqual(pco.outlets(), [PdCoreGui.XLET_GUI])
-        self.assertEqual(pco.send, "empty")
-        self.assertEqual(pco.receive, "empty")
-
-    def test_str__(self):
-        pco = PdCoreGui("tgl", 5, 6, tgl)
-        self.assertEqual(str(pco), "[GUI:tgl]                                 {x:5,y:6,id:-1}")
-
-    def test_draw(self):
-        p = PdParser()
-        p.parse("core_gui.pd")
-        canvas = p.canvas
-        self.assertTrue(canvas)
-        self.assertEqual(canvas.width, 600)
-        self.assertEqual(canvas.height, 500)
-        painter = CairoPainter(canvas.width, canvas.height, "out/core_gui.png")
-        drawer = PdDrawer()
-        drawer.draw(canvas, painter)
+    def test_make(self):
+        self.assertTrue(make(["pddp/pddplink", "http://google.com"]))

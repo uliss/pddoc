@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-# Copyright (C) 2014 by Serge Poltavski                                 #
+#   Copyright (C) 2015 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -17,23 +17,37 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
+ 
 __author__ = 'Serge Poltavski'
 
-import sys
-import os
-from pddoc.cairopainter import *
-from pddoc.pddrawer import *
+from pddoc.pdobject import PdObject
+from pddoc.cairopainter import CairoPainter
 
 
-if __name__ == '__main__':
-    parser = PdParser()
-    f = "/Applications/Pd-extended.app/Contents/Resources/doc/5.reference/float-help.pd"
-    # f = "/Applications/Pd-extended.app/Contents/Resources/doc/5.reference/intro-help.pd"
-    parser.parse(f)
+def create(atoms):
+    assert len(atoms) > 1
+    return PddpLink(atoms[0], atoms[1:])
 
-    canvas = parser.canvas
-    canvas.height = 5000
 
-    cp = CairoPainter(canvas.width, canvas.height, "out/output_cairo.png")
-    drawer = PdDrawer()
-    drawer.draw(canvas, cp)
+class PddpLink(PdObject):
+    def __init__(self, name, args):
+        PdObject.__init__(self, name, 0, 0, 0, 0, args)
+
+    def inlets(self):
+        return ()
+
+    def outlets(self):
+        return ()
+
+    def url(self):
+        return self.args[0]
+
+    def text(self):
+        if len(self.args) > 2:
+            return " ".join(self._args[2:])
+        else:
+            return self.url()
+
+    def draw(self, painter):
+        assert isinstance(painter, CairoPainter)
+        painter.draw_text(self.x + 4, self.y + 12, self.text(), color=(0, 0, 1))

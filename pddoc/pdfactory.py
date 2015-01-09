@@ -27,6 +27,12 @@ from pdtoggle import PdToggle
 from pdslider import PdSlider
 from pdradio import PdRadio
 from pdgcanvas import PdGCanvas
+import os
+import re
+import imp
+import sys
+
+externals = {}
 
 
 def make(atoms):
@@ -48,14 +54,38 @@ def make(atoms):
         return PdGCanvas.from_atoms(atoms[1:])
     elif name in ("nbx", "vu"):
         return PdCoreGui(name, 0, 0, atoms[1:])
+    elif find_external_object(name):
+        return externals[name].create(atoms)
     else:
-        return PdObject(name, 0, 0)
+        return PdObject(name, 0, 0, 0, 0, atoms[1:])
 
 
-def make_by_name(name, args = [], **kwargs):
+def make_by_name(name, args=[], **kwargs):
     if name == "floatatom":
         return PdFloatAtom(0, 0, **kwargs)
     elif name == "bng":
         return PdBng(0, 0, **kwargs)
     else:
         return PdObject(name, 0, 0, 0, 0, args)
+
+
+def find_external_object(name):
+    rname = re.compile(r"^([a-z0-9~/]+)$")
+    if not rname.match(name):
+        return False
+
+    mod_path = os.path.dirname(__file__) + "/externals/" + name
+    if not os.path.exists(mod_path + ".py"):
+        return False
+
+    mod_dir = os.path.dirname(mod_path)
+    mod_name = os.path.basename(mod_path)
+
+    if mod_dir not in sys.path:
+        sys.path.append(mod_dir)
+    try:
+        mod = __import__(mod_name)
+        externals[name] = mod
+        return True
+    except ImportError:
+        return None

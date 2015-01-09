@@ -505,6 +505,7 @@ class DocItemize(DocItem):
     def is_valid_tag(self, tag_name):
         return tag_name in ("item",)
 
+
 class DocObject(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)

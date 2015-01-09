@@ -24,6 +24,7 @@ from pdcoregui import PdCoreGui
 from pdobject import PdObject
 from pdbng import PdBng
 from pdtoggle import PdToggle
+from pdslider import PdSlider
 
 
 def make(atoms):
@@ -37,7 +38,9 @@ def make(atoms):
         return PdBng.from_atoms(atoms[1:])
     elif name == "tgl":
         return PdToggle.from_atoms(atoms[1:])
-    elif name in ("cnv", "hradio", "hsl", "nbx", "vradio", "vsl", "vu"):
+    elif name in ("hsl", "vsl"):
+        return PdSlider.from_atoms(atoms)
+    elif name in ("cnv", "hradio", "nbx", "vradio", "vu"):
         return PdCoreGui(name, 0, 0, atoms[1:])
     else:
         return PdObject(name, 0, 0)

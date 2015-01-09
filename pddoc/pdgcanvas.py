@@ -51,5 +51,5 @@ class PdGCanvas(PdCoreGui):
                          label_color=atoms[12])
 
     def draw(self, painter):
-        self.draw_bbox(painter)
+        painter.draw_rect(self.x, self.y, self.width, self.height, fill=self.bgcolor())
         self.draw_label(painter)

@@ -46,7 +46,7 @@ def make(atoms):
         return PdRadio.from_atoms(atoms)
     elif name == "cnv":
         return PdGCanvas.from_atoms(atoms[1:])
-    elif name in ("cnv", "nbx", "vu"):
+    elif name in ("nbx", "vu"):
         return PdCoreGui(name, 0, 0, atoms[1:])
     else:
         return PdObject(name, 0, 0)

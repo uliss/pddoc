@@ -43,8 +43,8 @@ def make(atoms):
         return PdSlider.from_atoms(atoms)
     elif name in ("hradio", "vradio"):
         return PdRadio.from_atoms(atoms)
-    elif name == "cnv":
-        pass
+    # elif name == "cnv":
+    #     pass
         # return PdGCanvas(atoms[1:])
     elif name in ("cnv", "nbx", "vu"):
         return PdCoreGui(name, 0, 0, atoms[1:])

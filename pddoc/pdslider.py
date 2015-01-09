@@ -34,6 +34,14 @@ class PdSlider(PdCoreGui):
         self._init = int(kwargs.get("init", 0))
         self._default_value = int(kwargs.get("default_value", 0))
         self._steady = int(kwargs.get("steady", 0))
+        self._value = float(kwargs.get("value", self._min))
+        self._pad = 3
+
+    def slider_width(self):
+        if self._value == self._max / 2:
+            return 5
+        else:
+            return 3
 
     @staticmethod
     def from_atoms(atoms):
@@ -90,8 +98,13 @@ class PdHSlider(PdSlider):
 
     def draw(self, painter):
         self.draw_bbox(painter)
-        self.draw_xlets(painter)
         self.draw_label(painter)
+
+        xoff = self._value / self._max
+        x = int(self.left + self._pad + (self.width - self._pad) * xoff)
+        painter.draw_line(x, self.top, x, self.bottom, color=self.fgcolor(), width=self.slider_width())
+
+        self.draw_xlets(painter)
 
 
 class PdVSlider(PdSlider):
@@ -103,5 +116,12 @@ class PdVSlider(PdSlider):
 
     def draw(self, painter):
         self.draw_bbox(painter)
-        self.draw_xlets(painter)
         self.draw_label(painter)
+
+        assert self._value < self._max
+
+        yoff = self._value / self._max
+        y = int(self.bottom - self._pad - (self.height - self._pad) * yoff)
+        painter.draw_line(self.left, y, self.right, y, color=self.fgcolor(), width=self.slider_width())
+
+        self.draw_xlets(painter)

@@ -222,6 +222,15 @@ class PdCoreGui(pdobject.PdObject):
         painter.draw_inlets(self.inlets(), self.x, self.y, self.width)
         painter.draw_outlets(self.outlets(), self.x, self.bottom, self.width)
 
+    def draw_label(self, painter):
+        if not self.no_label():
+            lx, ly = self._get_label_xy()
+            ly += self._font_size/2  # TODO hardcoded
+            painter.draw_text(lx, ly, self.label,
+                              color=self.lbcolor(),
+                              font_size=self._font_size,  # FIXME! hardcoded font family
+                              font="Menlo")
+
     def _get_label_xy(self):
         return self.x + self._label_xoff, self.y + self._label_yoff  # font height correction
 

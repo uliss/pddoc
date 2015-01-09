@@ -66,8 +66,5 @@ class PdToggle(PdCoreGui):
             painter.draw_line(self.left, self.top, self.right, self.bottom, color=self.fgcolor())
             painter.draw_line(self.left, self.bottom, self.right, self.top, color=self.fgcolor())
 
-        if not self.no_label():
-            lx, ly = self._get_label_xy()
-            painter.draw_text(lx, ly, self.label, color=self._label_color.rgb_float())
-
+        self.draw_label(painter)
         self.draw_xlets(painter)

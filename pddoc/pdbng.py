@@ -81,9 +81,6 @@ class PdBng(PdCoreGui):
             circle_color = self.fgcolor()
         painter.draw_circle(cx, cy, (self.width-1.5)/2, fill=circle_color)
 
-        if not self.no_label():
-            lx, ly = self._get_label_xy()
-            painter.draw_text(lx, ly, self.label, color=self.lbcolor())
-
+        self.draw_label(painter)
         self.draw_xlets(painter)
 

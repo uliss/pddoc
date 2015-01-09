@@ -82,6 +82,7 @@ class PdHRadio(PdRadio):
             x = self.x + i * step
             painter.draw_line(x, self.top, x, self.bottom, color=(0, 0, 0))
 
+        self.draw_label(painter)
         self.draw_xlets(painter)
 
 
@@ -105,4 +106,5 @@ class PdVRadio(PdRadio):
             y = self.y + i * step
             painter.draw_line(self.left, y, self.right, y, color=(0, 0, 0))
 
+        self.draw_label(painter)
         self.draw_xlets(painter)

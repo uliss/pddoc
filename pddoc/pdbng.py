@@ -73,14 +73,7 @@ class PdBng(PdCoreGui):
         return self.x + self.width/2 + 0.75, self.y + self.height/2 + 0.75
 
     def draw(self, painter):
-        vertexes = (
-            (self.x, self.y),
-            (0, self.height),
-            (self.width, 0),
-            (0, -self.height)
-        )
-
-        painter.draw_poly(vertexes, fill=self.bgcolor(), outline=(0, 0, 0))
+        self.draw_bbox(painter)
         cx, cy = self.center()
 
         circle_color = self.bgcolor()
@@ -91,6 +84,6 @@ class PdBng(PdCoreGui):
         if not self.no_label():
             lx, ly = self._get_label_xy()
             painter.draw_text(lx, ly, self.label, color=self.lbcolor())
-        painter.draw_inlets(self.inlets(), self.x, self.y, self.width)
-        painter.draw_outlets(self.outlets(), self.x, self.bottom, self.width)
+
+        self.draw_xlets(painter)
 

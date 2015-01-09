@@ -73,15 +73,9 @@ class PdHRadio(PdRadio):
         return self._size * self._number
 
     def draw(self, painter):
-        vertexes = (
-            (self.x, self.y),
-            (0, self.height),
-            (self.width, 0),
-            (0, -self.height)
-        )
+        self.draw_bbox(painter)
 
-        painter.draw_poly(vertexes, fill=self.bgcolor(), outline=(0, 0, 0))
-
+        # draw cells
         assert self._number > 0
         step = self.width / self._number
         for i in range(1, self._number):
@@ -102,13 +96,13 @@ class PdVRadio(PdRadio):
         return self._size * self._number
 
     def draw(self, painter):
-        vertexes = (
-            (self.x, self.y),
-            (0, self.height),
-            (self.width, 0),
-            (0, -self.height)
-        )
+        self.draw_bbox(painter)
 
-        painter.draw_poly(vertexes, fill=self.bgcolor(), outline=(0, 0, 0))
+        # draw cells
+        assert self._number > 0
+        step = self.height / self._number
+        for i in range(1, self._number):
+            y = self.y + i * step
+            painter.draw_line(self.left, y, self.right, y, color=(0, 0, 0))
 
         self.draw_xlets(painter)

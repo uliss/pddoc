@@ -60,14 +60,7 @@ class PdToggle(PdCoreGui):
         return self._size
 
     def draw(self, painter):
-        vertexes = (
-            (self.x, self.y),
-            (0, self.height),
-            (self.width, 0),
-            (0, -self.height)
-        )
-
-        painter.draw_poly(vertexes, fill=self.bgcolor(), outline=(0, 0, 0))
+        self.draw_bbox(painter)
 
         if self._checked:
             painter.draw_line(self.left, self.top, self.right, self.bottom, color=self.fgcolor())
@@ -76,5 +69,5 @@ class PdToggle(PdCoreGui):
         if not self.no_label():
             lx, ly = self._get_label_xy()
             painter.draw_text(lx, ly, self.label, color=self._label_color.rgb_float())
-        painter.draw_inlets(self.inlets(), self.x, self.y, self.width)
-        painter.draw_outlets(self.outlets(), self.x, self.bottom, self.width)
+
+        self.draw_xlets(painter)

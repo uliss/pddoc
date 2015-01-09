@@ -208,6 +208,16 @@ class PdCoreGui(pdobject.PdObject):
     def traverse(self, visitor):
         visitor.visit_core_gui(self)
 
+    def draw_bbox(self, painter):
+        vertexes = (
+            (self.x, self.y),
+            (0, self.height),
+            (self.width, 0),
+            (0, -self.height)
+        )
+
+        painter.draw_poly(vertexes, fill=self.bgcolor(), outline=(0, 0, 0))
+
     def draw_xlets(self, painter):
         painter.draw_inlets(self.inlets(), self.x, self.y, self.width)
         painter.draw_outlets(self.outlets(), self.x, self.bottom, self.width)

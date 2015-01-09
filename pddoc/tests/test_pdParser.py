@@ -88,5 +88,5 @@ class TestPdParser(TestCase):
         p = PdParser()
         self.assertTrue(p.parse("core_gui.pd"))
         cnv = p.canvas
-        self.assertEqual(len(cnv.objects), 13)
+        self.assertEqual(len(cnv.objects), 14)
         self.assertEqual(len(cnv.connections), 4)

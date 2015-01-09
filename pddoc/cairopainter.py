@@ -382,6 +382,12 @@ class CairoPainter(PdPainter):
         else:
             self.set_src_color((0, 0, 0))
 
+        if 'font_size' in kwargs:
+            self.cr.set_font_size(kwargs['font_size'])
+
+        if 'font' in kwargs:
+            self.cr.select_font_face(kwargs['font'])
+
         self.cr.move_to(x, y)
         self.cr.show_text(text)
         self.cr.restore()

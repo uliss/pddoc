@@ -20,11 +20,11 @@
 __author__ = 'Serge Poltavski'
 
 from pdbaseobject import PdBaseObject
+from sys import platform as _platform
 
 
 class PdDrawStyle(object):
     fill_color = property(lambda self: (1, 1, 1))
-    font_family = property(lambda self: "terminus")
     font_size = property(lambda self: 12)
 
     obj_fill_color = property(lambda self: (0.95, 0.95, 0.95))
@@ -73,3 +73,13 @@ class PdDrawStyle(object):
             return self.xlet_snd_height
         else:
             assert False
+
+    @property
+    def font_family(self):
+        # FIXME
+        return "terminus"
+
+        if _platform == "darwin":
+            return "Menlo"
+        else:
+            return "terminus"

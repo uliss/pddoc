@@ -31,6 +31,7 @@ class PdRadio(PdCoreGui):
         self._init = int(kwargs.get("init", 0))
         self._number = int(kwargs.get("number", 8))
         self._value = int(kwargs.get("value", 0))
+        self._sq_offset = 3
 
     @staticmethod
     def from_atoms(atoms):
@@ -81,10 +82,9 @@ class PdHRadio(PdRadio):
             painter.draw_line(x, self.top, x, self.bottom, color=(0, 0, 0))
 
         # draw switch
-        off = 3
-        sx = self.x + self._size * self._value + off
-        sy = self.y + off
-        sz = self._size - 2*off
+        sx = self.x + self._size * self._value + self._sq_offset
+        sy = self.y + self._sq_offset
+        sz = self._size - 2 * self._sq_offset
         painter.draw_rect(sx, sy, sz, sz, fill=self.fgcolor())
 
         self.draw_label(painter)
@@ -112,10 +112,9 @@ class PdVRadio(PdRadio):
             painter.draw_line(self.left, y, self.right, y, color=(0, 0, 0))
 
         # draw switch
-        off = 3
-        sy = self.y + self._size * self._value + off
-        sx = self.x + off
-        sz = self._size - 2*off
+        sy = self.y + self._size * self._value + self._sq_offset
+        sx = self.x + self._sq_offset
+        sz = self._size - 2 * self._sq_offset
         painter.draw_rect(sx, sy, sz, sz, fill=self.fgcolor())
 
         self.draw_label(painter)

@@ -17,45 +17,39 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
+ 
 __author__ = 'Serge Poltavski'
 
-from pdfloatatom import PdFloatAtom
 from pdcoregui import PdCoreGui
-from pdobject import PdObject
-from pdbng import PdBng
-from pdtoggle import PdToggle
-from pdslider import PdSlider
-from pdradio import PdRadio
-from pdgcanvas import PdGCanvas
 
 
-def make(atoms):
-    assert isinstance(atoms, list)
-    assert len(atoms) > 0
-    name = atoms[0]
+class PdGCanvas(PdCoreGui):
+    # X [size]? [width]? [height]? [send]? [receive]? [label]?
+    # [x_off]? [y_off]? [font]? [font_size]? [bg_color]? [label_color]? [?]?;\r\n
+    def __init__(self, x, y, **kwargs):
+        PdCoreGui.__init__(self, "cnv", x, y, [], **kwargs)
+        self._size = int(kwargs.get("size", 15))
+        self.width = int(kwargs.get("width", 100))
+        self.height = int(kwargs.get("height", 60))
 
-    if name == "floatatom":
-        return PdFloatAtom.from_atoms(atoms[1:])
-    elif name == "bng":
-        return PdBng.from_atoms(atoms[1:])
-    elif name == "tgl":
-        return PdToggle.from_atoms(atoms[1:])
-    elif name in ("hsl", "vsl"):
-        return PdSlider.from_atoms(atoms)
-    elif name in ("hradio", "vradio"):
-        return PdRadio.from_atoms(atoms)
-    elif name == "cnv":
-        return PdGCanvas.from_atoms(atoms[1:])
-    elif name in ("cnv", "nbx", "vu"):
-        return PdCoreGui(name, 0, 0, atoms[1:])
-    else:
-        return PdObject(name, 0, 0)
+    @staticmethod
+    def from_atoms(atoms):
+        assert len(atoms) == 13
+        return PdGCanvas(0, 0,
+                         size=atoms[0],
+                         width=atoms[1],
+                         height=atoms[2],
+                         send=atoms[3],
+                         receive=atoms[4],
+                         label=atoms[5],
+                         label_xoff=atoms[6],
+                         label_yoff=atoms[7],
+                         font_type=atoms[8],
+                         font_size=atoms[9],
+                         bg_color=atoms[10],
+                         fg_color=atoms[11],
+                         label_color=atoms[12])
 
-
-def make_by_name(name, args = [], **kwargs):
-    if name == "floatatom":
-        return PdFloatAtom(0, 0, **kwargs)
-    elif name == "bng":
-        return PdBng(0, 0, **kwargs)
-    else:
-        return PdObject(name, 0, 0, 0, 0, args)
+    def draw(self, painter):
+        self.draw_bbox(painter)
+        self.draw_label(painter)

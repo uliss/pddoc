@@ -135,7 +135,7 @@ class PdCoreGui(pdobject.PdObject):
     def __init__(self, name, x, y, args, **kwargs):
         pdobject.PdObject.__init__(self, name, x, y, 0, 0, args)
         self._send = kwargs.get("send", "empty")
-        self._receive = kwargs.get("send", "empty")
+        self._receive = kwargs.get("receive", "empty")
         self._label = kwargs.get("label", "empty")
         self._label_xoff = int(kwargs.get("label_xoff", 17))
         self._label_yoff = int(kwargs.get("label_yoff", 7))

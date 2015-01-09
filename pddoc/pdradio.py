@@ -24,15 +24,13 @@ from pdcoregui import *
 
 
 class PdRadio(PdCoreGui):
-    # [size]? [new_old]? [init]? [number]? [send]? [receive]?
-    # [label]? [x_off]? [y_off]? [font]? [fontsize]? [bg_color]?
-    # [fg_color]? [label_color]? [default_value]?;\r\n
     def __init__(self, name, x, y, **kwargs):
         PdCoreGui.__init__(self, name, x, y, [], **kwargs)
         self._size = int(kwargs.get("size", 15))
         self._newold = int(kwargs.get("newold", 1))
         self._init = int(kwargs.get("init", 0))
         self._number = int(kwargs.get("number", 8))
+        self._value = int(kwargs.get("value", 0))
 
     @staticmethod
     def from_atoms(atoms):
@@ -82,6 +80,13 @@ class PdHRadio(PdRadio):
             x = self.x + i * step
             painter.draw_line(x, self.top, x, self.bottom, color=(0, 0, 0))
 
+        # draw switch
+        off = 3
+        sx = self.x + self._size * self._value + off
+        sy = self.y + off
+        sz = self._size - 2*off
+        painter.draw_rect(sx, sy, sz, sz, fill=self.fgcolor())
+
         self.draw_label(painter)
         self.draw_xlets(painter)
 
@@ -105,6 +110,13 @@ class PdVRadio(PdRadio):
         for i in range(1, self._number):
             y = self.y + i * step
             painter.draw_line(self.left, y, self.right, y, color=(0, 0, 0))
+
+        # draw switch
+        off = 3
+        sy = self.y + self._size * self._value + off
+        sx = self.x + off
+        sz = self._size - 2*off
+        painter.draw_rect(sx, sy, sz, sz, fill=self.fgcolor())
 
         self.draw_label(painter)
         self.draw_xlets(painter)

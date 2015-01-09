@@ -62,3 +62,6 @@ class PdPainter(object):
 
     def draw_line(self, x0, y0, x1, y1, **kwargs):
         print "Draw line"
+
+    def draw_rect(self, x, y, w, h, **kwargs):
+        print "Draw rect"

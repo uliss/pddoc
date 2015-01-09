@@ -85,6 +85,11 @@ class CairoPainter(PdPainter):
             self.cr.set_line_width(kwargs['width'])
 
         self.cr.rectangle(x + 0.5, y + 0.5, w, h)
+
+        if 'fill' in kwargs:
+            self.set_src_color(kwargs['fill'])
+            self.cr.fill_preserve()
+
         self.cr.stroke()
         self.cr.restore()
 
@@ -222,45 +227,6 @@ class CairoPainter(PdPainter):
 
     def draw_core_gui(self, gui):
         pass
-        # if gui.name == "tgl":
-        #     if not gui.prop("bg_color").is_black():
-        #         self.set_src_color(gui.bgcolor())
-        #     else:
-        #         self.set_src_color((1, 1, 1))
-        #
-        #     self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width, gui.height)
-        #     self.cr.fill()
-        #     self.set_src_color(gui.fgcolor())
-        #     self.cr.rectangle(gui.x + 0.5, gui.y + 0.5, gui.width, gui.height)
-        #     self.cr.stroke()
-        #
-        #     # print gui.inlets()
-        #     self.draw_xlets(gui.inlets(), gui.x, gui.y, gui.width)
-        #     self.draw_xlets(gui.outlets(), gui.x, gui.bottom - self.style.xlet_gui_height, gui.width)
-        #     return
-
-        # if gui.name == "cnv":
-        #     self.cr.save()
-        #     x = gui.x
-        #     y = gui.y
-        #     w = gui.width
-        #     h = gui.height
-        #     self.set_src_color(gui.bgcolor())
-        #     self.cr.rectangle(x, y, w, h)
-        #     self.cr.fill()
-        #
-        #     fonts = ("Monaco Bold", "Helvetica", "Times")
-        #     fontsize = gui.prop("fontsize")
-        #     fontidx = int(gui.prop("font"))
-        #     self.cr.select_font_face(fonts[fontidx])
-        #     self.cr.set_font_size(fontsize)
-        #     self.set_src_color(gui.lbcolor())
-        #     txt = gui.prop("label")
-        #     tx, ty, tw, th, tdx, tdy = self.cr.text_extents(txt)
-        #     self.cr.move_to(x + gui.prop("label_xoff"), y + gui.prop("label_yoff") + th)
-        #     self.cr.show_text(txt)
-        #     self.cr.restore()
-        #     return
 
     def xlet_height(self, t):
         if t == PdBaseObject.XLET_GUI:

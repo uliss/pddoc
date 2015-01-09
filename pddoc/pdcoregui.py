@@ -208,6 +208,10 @@ class PdCoreGui(pdobject.PdObject):
     def traverse(self, visitor):
         visitor.visit_core_gui(self)
 
+    def draw_xlets(self, painter):
+        painter.draw_inlets(self.inlets(), self.x, self.y, self.width)
+        painter.draw_outlets(self.outlets(), self.x, self.bottom, self.width)
+
     def _get_label_xy(self):
         return self.x + self._label_xoff, self.y + self._label_yoff  # font height correction
 

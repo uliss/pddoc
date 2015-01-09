@@ -27,7 +27,7 @@ setup(name='pddoc',
       license='GPLv3',
       packages=['pddoc'],
       install_requires=[
-          'termcolor', 'colorama', 'six', 'mako'
+          'termcolor', 'colorama', 'six', 'mako', 'argparse'
       ],
       test_suite='nose.collector',
       tests_require=['nose'],

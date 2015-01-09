@@ -27,7 +27,9 @@ from pddoc.pddrawer import *
 
 if __name__ == '__main__':
     parser = PdParser()
-    parser.parse("/Applications/Pd-extended.app/Contents/Resources/doc/5.reference/intro-help.pd")
+    # f = "/Applications/Pd-extended.app/Contents/Resources/doc/5.reference/float-help.pd"
+    f = "/Applications/Pd-extended.app/Contents/Resources/doc/5.reference/intro-help.pd"
+    parser.parse(f)
 
     canvas = parser.canvas
     canvas.height = 5000

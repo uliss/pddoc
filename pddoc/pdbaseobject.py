@@ -2,7 +2,7 @@
 # coding=utf-8
 
 #   Copyright (C) 2014 by Serge Poltavski                                 #
-#   serge.poltavski@gmail.com                                            #
+#   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -26,6 +26,7 @@ class PdBaseObject(object):
     XLET_MESSAGE, XLET_SOUND, XLET_GUI = range(0, 3)
 
     def __init__(self, x=0, y=0, w=0, h=0):
+        self._id = -1
         self._x = int(x)
         self._y = int(y)
         self._height = int(h)
@@ -104,3 +105,11 @@ class PdBaseObject(object):
     @staticmethod
     def unescape(string):
         return re.sub(r'\\(.)', r'\1', string)
+
+    @property
+    def id(self):
+        return self._id
+
+    @id.setter
+    def id(self, oid):
+        self._id = int(oid)

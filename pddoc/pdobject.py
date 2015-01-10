@@ -19,10 +19,10 @@
 
 __author__ = 'Serge Poltavski'
 
-import re
+import six
+
 from pdbaseobject import *
 from xletcalcdatabase import *
-import six
 
 
 class PdObject(PdBaseObject):
@@ -34,7 +34,6 @@ class PdObject(PdBaseObject):
 
     def __init__(self, name, x=0, y=0, w=0, h=0, args=[]):
         PdBaseObject.__init__(self, x, y, w, h)
-        self._id = -1
         assert isinstance(name, six.string_types)
         assert len(name) > 0
 
@@ -46,14 +45,6 @@ class PdObject(PdBaseObject):
         self._inlets = []
         self._outlets = []
         self._xlets_method = self.XMETHOD_CALCULATE
-
-    @property
-    def id(self):
-        return self._id
-
-    @id.setter
-    def id(self, oid):
-        self._id = int(oid)
 
     @property
     def name(self):

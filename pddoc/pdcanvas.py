@@ -91,11 +91,7 @@ class PdCanvas(PdObject):
             common.warning(u"object already on canvas: {0:s}".format(obj))
             return False
 
-        if issubclass(obj.__class__, PdObject):
-            obj.id = self.gen_object_id()
-        elif isinstance(obj, PdComment):
-            self.gen_object_id()
-
+        obj.id = self.gen_object_id()
         self.objects.append(obj)
         return True
 

@@ -1,0 +1,15 @@
+#N canvas 314 242 450 300 10;
+#X obj 106 83 r;
+#X obj 106 113 print;
+#N canvas 570 339 450 300 sub 0;
+#X obj 63 146 outlet;
+#X obj 63 94 init 1;
+#N canvas 764 390 450 300 subsub 0;
+#X obj 45 56 int;
+#X msg 45 26 msg;
+#X connect 1 0 0 0;
+#X restore 159 83 pd subsub;
+#X connect 1 0 0 0;
+#X restore 208 83 pd sub;
+#X connect 0 0 1 0;
+#X connect 2 0 1 0;

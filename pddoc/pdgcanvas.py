@@ -47,8 +47,7 @@ class PdGCanvas(PdCoreGui):
                          font_type=atoms[8],
                          font_size=atoms[9],
                          bg_color=atoms[10],
-                         fg_color=atoms[11],
-                         label_color=atoms[12])
+                         label_color=atoms[11])
 
     def draw(self, painter):
         painter.draw_rect(self.x, self.y, self.width, self.height, fill=self.bgcolor())

@@ -226,9 +226,6 @@ class CairoPainter(PdPainter):
         self.draw_xlets(message.inlets(), x, y, w)
         self.draw_xlets(message.outlets(), x, y + h - self.style.xlet_msg_height, w)
 
-    def draw_core_gui(self, gui):
-        pass
-
     def xlet_height(self, t):
         if t == PdBaseObject.XLET_GUI:
             return self.style.xlet_gui_height

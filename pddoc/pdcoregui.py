@@ -180,9 +180,6 @@ class PdCoreGui(pdobject.PdObject):
     def __str__(self):
         return "[GUI:%-36s {x:%i,y:%i,id:%i}" % (self.name + "]", self._x, self._y, self._id)
 
-    def draw(self, painter):
-        painter.draw_core_gui(self)
-
     def bgcolor(self):
         return self._bg_color.rgb_float()
 

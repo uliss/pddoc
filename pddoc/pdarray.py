@@ -52,3 +52,16 @@ class PdArray(PdObject):
 
     def draw(self, painter):
         painter.draw_rect(*self.brect())
+        painter.draw_text(self.x, self.y - 5, self.name)
+
+        if not self._data:
+            return
+        
+        swd = self.width / self._size
+        yrange = self._yrange[1] - self._yrange[0]
+        sht = self.height / yrange
+        for idx in xrange(0, self._size):
+            x0 = self.left + swd * idx
+            x1 = x0 + swd
+            y = self.top + sht * self._data[idx] + (self.height * self._yrange[1])/yrange
+            painter.draw_line(x0, y, x1, y, width=3, color=(0, 0, 0))

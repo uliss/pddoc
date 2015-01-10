@@ -137,8 +137,8 @@ class PdParser:
         if not self._array:
             return
 
-        self._array.set_xrange(atoms[1], atoms[3])
-        self._array.set_yrange(atoms[2], atoms[4])
+        self._array.set_xrange(float(atoms[1]), float(atoms[3]))
+        self._array.set_yrange(float(atoms[2]), float(atoms[4]))
         self._array.width = int(atoms[5])
         self._array.height = int(atoms[6])
 

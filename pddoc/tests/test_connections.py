@@ -1,7 +1,7 @@
+#!/usr/bin/env python
 # coding=utf-8
-from __future__ import print_function
 
-#   Copyright (C) 2014 by Serge Poltavski                                 #
+#   Copyright (C) 2015 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -17,27 +17,33 @@ from __future__ import print_function
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
+from unittest import TestCase
+from pddoc.pdparser import PdParser
+from pddoc.cairopainter import *
+from pddoc.pddrawer import *
+ 
 __author__ = 'Serge Poltavski'
 
-import sys
-import os.path as path
-from termcolor import colored
-from colorama import init
-import inspect
 
-# use Colorama to make Termcolor work on Windows too
-init()
+class TestConnections(TestCase):
+    def test_connections0(self):
+        parser = PdParser()
+        parser.parse("connections.pd")
 
+        canvas = parser.canvas
 
-def warning(*objs):
-    print(colored("WARNING: ", "red"), *objs, file=sys.stderr)
+        cp = CairoPainter(canvas.width, canvas.height, "out/connections.png")
+        drawer = PdDrawer()
+        drawer.draw(canvas, cp)
 
+    def test_connections1(self):
+        parser = PdParser()
+        parser.parse("connections1.pd")
 
-def info(*objs):
-    print(colored("INFO: ", "yellow"), *objs, file=sys.stdout)
+        canvas = parser.canvas
 
+        cp = CairoPainter(canvas.width, canvas.height, "out/connections1.png")
+        drawer = PdDrawer()
+        drawer.draw(canvas, cp)
 
-def error_place():
-    info = inspect.getframeinfo(inspect.currentframe().f_back)[0:3]
-    return '[file: %s, method: %s, line:%d]' % (path.basename(info[0]), info[2], info[1])
+        # canvas._print_connections()

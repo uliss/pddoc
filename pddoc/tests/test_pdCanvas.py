@@ -24,6 +24,7 @@ __author__ = 'Serge Poltavski'
 from pddoc.pdcanvas import *
 from pddoc.pdobject import *
 import copy
+from nooutput import NoOutput
 
 
 class TestPdCanvas(TestCase):
@@ -31,7 +32,6 @@ class TestPdCanvas(TestCase):
         cnv = PdCanvas(0, 0, 100, 50)
         self.assertEqual(len(cnv.objects), 0)
         self.assertEqual(len(cnv.graphs), 0)
-        self.assertEqual(len(cnv.subpatches), 0)
         self.assertEqual(len(cnv.connections), 0)
         self.assertEqual(cnv.type, cnv.TYPE_NONE)
 
@@ -43,6 +43,10 @@ class TestPdCanvas(TestCase):
 
     def test_append_graph(self):
         cnv = PdCanvas(0, 0, 100, 50)
+        f1 = PdObject("float")
+        cnv.append_object(f1)
+        self.assertEqual(f1.id, 0)
+
         graph = PdCanvas(0, 0, 10, 10)
         self.assertEqual(len(cnv.graphs), 0)
         self.assertRaises(AssertionError, cnv.append_graph, None)
@@ -50,9 +54,10 @@ class TestPdCanvas(TestCase):
         self.assertRaises(AssertionError, cnv.append_graph, graph)
         graph.type = PdCanvas.TYPE_GRAPH
         cnv.append_graph(graph)
-        self.assertEqual(len(cnv.graphs), 1)
+        self.assertEqual(len(cnv.objects), 2)
 
-        self.assertEqual(cnv.graphs[0], graph)
+        self.assertEqual(cnv.objects[1], graph)
+        self.assertEqual(graph.id, 1)
 
     def test_gen_id(self):
         cnv = PdCanvas(0, 0, 100, 50)
@@ -64,6 +69,7 @@ class TestPdCanvas(TestCase):
         self.assertEqual(oid, 2)
 
     def test_append_object(self):
+        nout = NoOutput()
         cnv = PdCanvas(0, 0, 100, 50)
         pdo = PdObject("float")
         self.assertTrue(cnv.append_object(pdo))
@@ -88,6 +94,8 @@ class TestPdCanvas(TestCase):
         self.assertEqual(PdCanvas.make_connection_key(1, 2, 3, 4), "1:2 => 3:4")
 
     def test_add_connection(self):
+        nout = NoOutput()
+
         cnv = PdCanvas(0, 0, 100, 50)
         self.assertRaises(AssertionError, cnv.add_connection, 0, 0, 0, 0)
         self.assertFalse(cnv.add_connection(0, 0, 1, 0))
@@ -103,10 +111,17 @@ class TestPdCanvas(TestCase):
 
     def test_append_subpatch(self):
         cnv = PdCanvas(0, 0, 100, 50)
+        f1 = PdObject("float")
+        cnv.append_object(f1)
+        self.assertEqual(f1.id, 0)
+        self.assertEqual(len(cnv.objects), 1)
+
         sp = PdCanvas(0, 0, 10, 10)
         self.assertRaises(AssertionError, cnv.append_subpatch, sp)
         sp.type = cnv.TYPE_SUBPATCH
         self.assertTrue(cnv.append_subpatch(sp))
+        self.assertEqual(sp.id, 1)
+        self.assertEqual(len(cnv.objects), 2)
 
     def test_inlets(self):
         cnv = PdCanvas(0, 0, 100, 50)

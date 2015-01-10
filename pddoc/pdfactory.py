@@ -52,8 +52,8 @@ def make(atoms):
         return PdRadio.from_atoms(atoms)
     elif name == "cnv":
         return PdGCanvas.from_atoms(atoms[1:])
-    elif name in ("nbx", "vu"):
-        return PdCoreGui(name, 0, 0, atoms[1:])
+    # elif name in ("nbx", "vu"):
+    #     return PdCoreGui(name, 0, 0, atoms[1:])
     elif find_external_object(name):
         return externals[name].create(atoms)
     else:

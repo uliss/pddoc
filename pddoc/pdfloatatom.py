@@ -29,7 +29,7 @@ class PdFloatAtom(PdCoreGui):
     def __init__(self, x, y, **kwargs):
         PdCoreGui.__init__(self, "floatatom", x, y, [])
         self._digits = int(kwargs.get("digits", 5))
-        assert self._digits > 0
+        assert self._digits >= 0
 
         self._min = kwargs.get("min", 0)
         self._max = kwargs.get("max", 0)

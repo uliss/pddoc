@@ -39,7 +39,7 @@ class XletCalcDatabase(object):
             "loadbang", "bang~",
             "r~", "receive~", "unpack", "value", "v", "t", "trigger",
             "tabread", "tabread4", "soundfiler", "netsend", "qlist",
-            "textfile", "openpanel", "savepanel"
+            "textfile", "openpanel", "savepanel", "init", "outlet"
         )
 
         self._two_msg_inlet = (
@@ -77,7 +77,7 @@ class XletCalcDatabase(object):
             "pack", "spigot", "until", "value", "v", "line", "delay", "del",
             "metro", "timer", "cputime", "realtime", "tabread", "tabread4",
             "soundfiler", "netsend", "openpanel", "savepanel", "bag", "key",
-            "keyup"
+            "keyup", "init"
         )
 
         self._two_msg_outlet = (

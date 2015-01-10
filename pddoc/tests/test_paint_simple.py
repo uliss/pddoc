@@ -36,3 +36,5 @@ class TestPaintSimple(unittest.TestCase):
         cp = CairoPainter(canvas.width, canvas.height, "out/output_simple.png")
         drawer = PdDrawer()
         drawer.draw(canvas, cp)
+
+        # canvas._print_connections()

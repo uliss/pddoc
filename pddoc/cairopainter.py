@@ -25,6 +25,7 @@ import cairo
 import textwrap
 from pddrawstyle import *
 from math import pi
+from pdcanvas import PdCanvas
 
 
 class CairoPainter(PdPainter):
@@ -254,7 +255,10 @@ class CairoPainter(PdPainter):
             xlet_space = (obj.width() - len(outlets) * self.style.xlet_width) / float(len(outlets) - 1)
 
         x = obj.x + (xlet_space + self.style.xlet_width) * outlet_no + self.style.xlet_width / 2.0
-        y = obj.bottom
+        if isinstance(obj, PdCanvas):
+            y = obj.top + self.style.obj_height
+        else:
+            y = obj.bottom
         return x, y
 
     def draw_connections(self, canvas):
@@ -274,6 +278,8 @@ class CairoPainter(PdPainter):
 
             sx, sy = self.outlet_connection_coords(src_obj, src_outl)
             dx, dy = self.inlet_connection_coords(dest_obj, dest_inl)
+
+            # print sx, sy, "->", dx, dy
 
             self.cr.save()
             if dest_inl_type == PdBaseObject.XLET_SOUND and src_outl_type == PdBaseObject.XLET_SOUND:

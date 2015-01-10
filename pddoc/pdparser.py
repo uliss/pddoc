@@ -60,6 +60,8 @@ class PdParser:
         if self.canvas is None:
             c.type = PdCanvas.TYPE_WINDOW
             self.canvas = c
+        else:
+            c.type = PdCanvas.TYPE_SUBPATCH
 
         self.canvas_stack.append(c)
 
@@ -96,22 +98,18 @@ class PdParser:
             c = self.canvas_stack.pop()
             self.canvas.append_graph(c)
         elif cnv_type == "pd":
-            self.current_canvas().type = PdCanvas.TYPE_SUBPATCH
             c = self.canvas_stack.pop()
+            c.type = PdCanvas.TYPE_SUBPATCH
             c.x = int(atoms[0])
             c.y = int(atoms[1])
-
-            if len(self.canvas_stack) > 1:
-                self.current_canvas().append_subpatch(c)
-            else:
-                self.canvas.append_subpatch(c)
+            self.current_canvas().append_subpatch(c)
         else:
             common.warning(u"unknown canvas type: {0:s}".format(cnv_type))
+            assert False
 
     def parse_obj(self, atoms):
         x = atoms[0]
         y = atoms[1]
-        name = atoms[2]
 
         obj = pdfactory.make(atoms[2:])
         obj.x = x

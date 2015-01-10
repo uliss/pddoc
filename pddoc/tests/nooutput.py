@@ -1,7 +1,7 @@
+#!/usr/bin/env python
 # coding=utf-8
-from __future__ import print_function
 
-#   Copyright (C) 2014 by Serge Poltavski                                 #
+#   Copyright (C) 2015 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -17,27 +17,20 @@ from __future__ import print_function
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
+ 
 __author__ = 'Serge Poltavski'
 
 import sys
-import os.path as path
-from termcolor import colored
-from colorama import init
-import inspect
-
-# use Colorama to make Termcolor work on Windows too
-init()
+import StringIO
 
 
-def warning(*objs):
-    print(colored("WARNING: ", "red"), *objs, file=sys.stderr)
+class NoOutput(object):
+    def __init__(self):
+        self._cout = sys.stdout
+        self._cerr = sys.stderr
+        sys.stdout = StringIO.StringIO()
+        sys.stderr = StringIO.StringIO()
 
-
-def info(*objs):
-    print(colored("INFO: ", "yellow"), *objs, file=sys.stdout)
-
-
-def error_place():
-    info = inspect.getframeinfo(inspect.currentframe().f_back)[0:3]
-    return '[file: %s, method: %s, line:%d]' % (path.basename(info[0]), info[2], info[1])
+    def __del__(self):
+        sys.stdout = self._cout
+        sys.stderr = self._cerr

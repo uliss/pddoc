@@ -27,6 +27,7 @@ from pdcanvas import *
 from pdmessage import *
 from pdcomment import *
 from pdcoregui import *
+from pdarray import *
 import pdfactory
 
 
@@ -37,6 +38,7 @@ class PdParser:
     def __init__(self):
         self.canvas = None
         self.canvas_stack = []
+        self._array = None
 
     def parse_canvas(self, atoms):
         # get positions
@@ -96,7 +98,10 @@ class PdParser:
         if cnv_type == "graph":
             self.current_canvas().type = PdCanvas.TYPE_GRAPH
             c = self.canvas_stack.pop()
-            self.canvas.append_graph(c)
+            self._array.x = int(atoms[0])
+            self._array.y = int(atoms[1])
+            self.canvas.append_object(self._array)
+            self._array = None
         elif cnv_type == "pd":
             c = self.canvas_stack.pop()
             c.type = PdCanvas.TYPE_SUBPATCH
@@ -117,9 +122,25 @@ class PdParser:
 
         self.current_canvas().append_object(obj)
 
+    def parse_array(self, atoms):
+        self._array = PdArray.from_atoms(atoms[1:])
+
+    def parse_array_content(self, atoms):
+        assert self._array
+        self._array.set(atoms)
+
     def parse_connect(self, atoms):
         c = self.current_canvas()
         c.connect(atoms)
+
+    def parse_coords(self, atoms):
+        if not self._array:
+            return
+
+        self._array.set_xrange(atoms[1], atoms[3])
+        self._array.set_yrange(atoms[2], atoms[4])
+        self._array.width = int(atoms[5])
+        self._array.height = int(atoms[6])
 
     def parse_objects(self, atoms):
         name = atoms[0]
@@ -142,9 +163,12 @@ class PdParser:
         elif name == "floatatom":
             obj = pdfactory.make(atoms)
             self.current_canvas().append_object(obj)
+        elif name == "array":
+            self.parse_array(atoms)
+        elif name == "coords":
+            self.parse_coords(atoms)
         else:
-            pass
-
+            print name
 
     def parse_atoms(self, atoms):
         if atoms[0] == '#X':
@@ -153,8 +177,10 @@ class PdParser:
         elif atoms[0] == '#N':
             atoms.pop(0)
             self.parse_frameset(atoms)
+        elif atoms[0] == '#A':
+            self.parse_array_content(atoms[2:])
         else:
-            pass
+            common.info("unknown token: {0:s}".format(atoms[0]))
 
     def parse(self, file_name):
         if not path.exists(file_name):

@@ -396,3 +396,6 @@ class CairoPainter(PdPainter):
         self.cr.line_to(x1 + 0.5, y1 + 0.5)
         self.cr.stroke()
         self.cr.restore()
+
+    def draw_graph(self, graph):
+        print graph

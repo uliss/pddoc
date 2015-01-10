@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+# coding=utf-8
+
+#   Copyright (C) 2015 by Serge Poltavski                                 #
+#   serge.poltavski@gmail.com                                             #
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 3 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+#   This program is distributed in the hope that it will be useful,       #
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+#   GNU General Public License for more details.                          #
+#                                                                         #
+#   You should have received a copy of the GNU General Public License     #
+#   along with this program. If not, see <http://www.gnu.org/licenses/>   #
+
+ 
+__author__ = 'Serge Poltavski'
+
+
+from pdobject import PdObject
+
+
+class PdArray(PdObject):
+    def __init__(self, name, size, save=0):
+        PdObject.__init__(self, name)
+        self._size = int(size)
+        self._save = save
+        self._data = []
+        self._xrange = (0, self._size)
+        self._yrange = (-1, +1)
+
+    def set(self, atoms):
+        assert len(atoms) == self._size
+        self._data = []
+        for a in atoms:
+            self._data.append(float(a))
+
+    def set_xrange(self, min, max):
+        self._xrange = (min, max)
+
+    def set_yrange(self, min, max):
+        self._yrange = (min, max)
+
+    @staticmethod
+    def from_atoms(atoms):
+        assert len(atoms) == 4
+        return PdArray(atoms[0], atoms[1], atoms[3])
+
+    def draw(self, painter):
+        painter.draw_rect(*self.brect())

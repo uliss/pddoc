@@ -22,7 +22,7 @@ __author__ = 'Serge Poltavski'
 
 from pdobject import *
 from pdcomment import PdComment
-import common
+import logging
 
 
 class PdCanvas(PdObject):
@@ -88,7 +88,7 @@ class PdCanvas(PdObject):
         assert issubclass(obj.__class__, PdBaseObject)
 
         if obj in self._objects:
-            common.warning(u"object already on canvas: {0:s}".format(obj))
+            logging.warning(u"object already on canvas: {0:s}".format(obj))
             return False
 
         obj.id = self.gen_object_id()
@@ -124,12 +124,12 @@ class PdCanvas(PdObject):
 
             if check_xlets:
                 if soutl >= len(src_obj.outlets()):
-                    common.warning(u"[{0:s}] invalid outlet number: {1:d}, total outlets: {2:d}".
+                    logging.warning(u"[{0:s}] invalid outlet number: {1:d}, total outlets: {2:d}".
                                    format(src_obj.name, soutl, len(src_obj.outlets())))
                     return False
 
                 if dinl >= len(dest_obj.inlets()):
-                    common.warning(u"[{0:s}] invalid inlet number: {1:d}, total inlets: {2:d}".
+                    logging.warning(u"[{0:s}] invalid inlet number: {1:d}, total inlets: {2:d}".
                                    format(dest_obj.name, dinl, len(dest_obj.inlets())))
                     return False
 
@@ -137,9 +137,8 @@ class PdCanvas(PdObject):
             self._connections[ckey] = (src_obj, soutl, dest_obj, dinl)
             return True
         else:
-            common.warning("%s => %s" % (str_bbox(src_obj, soutl), str_bbox(dest_obj, dinl)))
-            # common.warning("[%s:%d] => [%s:%d]" % (src_obj.name, soutl, dest_obj.name, dinl))
-            common.warning("connection not found: %s:%d => %s:%d in canvas: %s" % (sid, soutl, did, dinl, self.name))
+            logging.warning("%s => %s" % (str_bbox(src_obj, soutl), str_bbox(dest_obj, dinl)))
+            logging.warning("connection not found: %s:%d => %s:%d in canvas: %s" % (sid, soutl, did, dinl, self.name))
             return False
 
     def connect(self, args):

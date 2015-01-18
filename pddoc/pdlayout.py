@@ -135,7 +135,7 @@ class PdLayout(object):
 
             self._canvas.add_connection(src_id, src_out, dest_id, dest_in)
         except KeyError, e:
-            common.warning("connection not found: {0:s}:{1:s} => {2:s}:{3:s}".
+            logging.warning("connection not found: {0:s}:{1:s} => {2:s}:{3:s}".
                            format(c.src_id(), src_out, c.dest_id(), dest_in))
 
     def message_begin(self, msg_obj):

@@ -21,8 +21,7 @@
 __author__ = 'Serge Poltavski'
 
 from os import path
-import re
-import common
+import logging
 from pdcanvas import *
 from pdmessage import *
 from pdcomment import *
@@ -76,7 +75,7 @@ class PdParser:
             atoms.pop(0)
             self.parse_canvas(atoms)
         else:
-            common.warning(u"unknown frameset type: {0:s}".format(atoms[0]))
+            logging.warning(u"unknown frameset type: {0:s}".format(atoms[0]))
 
     def parse_messages(self, atoms):
         x = atoms[0]
@@ -109,7 +108,7 @@ class PdParser:
             c.y = int(atoms[1])
             self.current_canvas().append_subpatch(c)
         else:
-            common.warning(u"unknown canvas type: {0:s}".format(cnv_type))
+            logging.warning(u"unknown canvas type: {0:s}".format(cnv_type))
             assert False
 
     def parse_obj(self, atoms):
@@ -180,11 +179,11 @@ class PdParser:
         elif atoms[0] == '#A':
             self.parse_array_content(atoms[2:])
         else:
-            common.info("unknown token: {0:s}".format(atoms[0]))
+            logging.info("unknown token: {0:s}".format(atoms[0]))
 
     def parse(self, file_name):
         if not path.exists(file_name):
-            common.warning(u"File not exists: \"{0:s}\"".format(file_name))
+            logging.warning(u"File not exists: \"{0:s}\"".format(file_name))
             return False
 
         f = open(file_name, "r")

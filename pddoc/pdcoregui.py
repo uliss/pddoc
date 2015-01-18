@@ -23,7 +23,7 @@ __author__ = 'Serge Poltavski'
 import pdobject
 from termcolor import colored
 import six
-import common
+import logging
 
 
 class PdColor:
@@ -233,7 +233,7 @@ class PdCoreGui(pdobject.PdObject):
     def _get_label_pos(self, pos):
         if isinstance(pos, int):
             if pos not in (self.POS_LEFT, self.POS_TOP, self.POS_BOTTOM, self.POS_RIGHT):
-                common.warning("invalid label position: {0:d}".format(pos))
+                logging.warning("invalid label position: {0:d}".format(pos))
                 return None
 
             return pos
@@ -246,8 +246,8 @@ class PdCoreGui(pdobject.PdObject):
             if pos.lower() in lmap:
                 return lmap[pos.lower()]
             else:
-                common.warning("invalid label position: {0:s}".format(pos))
+                logging.warning("invalid label position: {0:s}".format(pos))
                 return None
         else:
-            common.warning("invalid label position: {0:s}".format(str(pos)))
+            logging.warning("invalid label position: {0:s}".format(str(pos)))
             return None

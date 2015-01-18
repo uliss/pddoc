@@ -20,17 +20,12 @@
  
 __author__ = 'Serge Poltavski'
 
-import sys
-import StringIO
+import logging
 
 
-class NoOutput(object):
+class NoLogging(object):
     def __init__(self):
-        self._cout = sys.stdout
-        self._cerr = sys.stderr
-        sys.stdout = StringIO.StringIO()
-        sys.stderr = StringIO.StringIO()
+        logging.getLogger().setLevel(logging.ERROR)
 
     def __del__(self):
-        sys.stdout = self._cout
-        sys.stderr = self._cerr
+        logging.getLogger().setLevel(logging.DEBUG)

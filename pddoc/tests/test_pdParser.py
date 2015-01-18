@@ -22,13 +22,13 @@ from unittest import TestCase
 __author__ = 'Serge Poltavski'
 
 from pddoc.pdparser import *
-from nooutput import NoOutput
+from nologging import NoLogging
 
 
 class TestPdParser(TestCase):
     def test_init(self):
         p = PdParser()
-        nout = NoOutput()
+        nout = NoLogging()
         self.assertFalse(p.parse(""))
 
     def test_parse_file(self):

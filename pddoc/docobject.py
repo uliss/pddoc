@@ -19,7 +19,7 @@
 
 __author__ = 'Serge Poltavski'
 
-import common
+import logging
 import xml.etree.ElementTree as ET
 
 
@@ -83,7 +83,7 @@ class DocItem(object):
 
         for child in xmlobj:
             if not self.is_valid_tag(child.tag):
-                common.warning("tag <%s> not allowed in <%s>" % (child.tag, xmlobj.tag))
+                logging.warning("tag <%s> not allowed in <%s>" % (child.tag, xmlobj.tag))
                 continue
                 # break
 
@@ -226,7 +226,7 @@ class DocPdobject(DocItem):
 
             DocItem.from_xml(self, xmlobj)
         except KeyError, e:
-            common.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
+            logging.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
 
     @property
     def comment(self):
@@ -255,7 +255,7 @@ class DocPdmessage(DocPdobject):
             # after parent method
             self._text = xmlobj.attrib["text"]
         except KeyError, e:
-            common.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
+            logging.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
 
 
 class DocPdinlet(DocItem):
@@ -329,7 +329,7 @@ class DocPdexample(DocItem):
             if size in ("auto", "canvas"):
                 self._size = size
             else:
-                common.warning("invalid size value: \"{0:s}\" in <{1:s}>".format(size, xmlobj.tag))
+                logging.warning("invalid size value: \"{0:s}\" in <{1:s}>".format(size, xmlobj.tag))
 
         self._width = int(xmlobj.attrib.get("width", 0))
         self._height = int(xmlobj.attrib.get("height", 0))

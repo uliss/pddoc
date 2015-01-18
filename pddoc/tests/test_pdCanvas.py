@@ -24,7 +24,7 @@ __author__ = 'Serge Poltavski'
 from pddoc.pdcanvas import *
 from pddoc.pdobject import *
 import copy
-from nooutput import NoOutput
+from nologging import NoLogging
 
 
 class TestPdCanvas(TestCase):
@@ -69,7 +69,7 @@ class TestPdCanvas(TestCase):
         self.assertEqual(oid, 2)
 
     def test_append_object(self):
-        nout = NoOutput()
+        nout = NoLogging()
         cnv = PdCanvas(0, 0, 100, 50)
         pdo = PdObject("float")
         self.assertTrue(cnv.append_object(pdo))
@@ -94,7 +94,7 @@ class TestPdCanvas(TestCase):
         self.assertEqual(PdCanvas.make_connection_key(1, 2, 3, 4), "1:2 => 3:4")
 
     def test_add_connection(self):
-        nout = NoOutput()
+        nout = NoLogging()
 
         cnv = PdCanvas(0, 0, 100, 50)
         self.assertRaises(AssertionError, cnv.add_connection, 0, 0, 0, 0)

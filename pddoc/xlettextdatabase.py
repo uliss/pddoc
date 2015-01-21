@@ -89,6 +89,8 @@ class XletTextDatabase(object):
         outl = parse_xlet(atoms[2])
 
         for obj in objects:
+            if obj in self._objects:
+                logging.warning("object [{0:s}] already exists in database".format(obj))
             self._objects[obj] = (inl, outl)
 
     def __str__(self):

@@ -41,26 +41,15 @@ class XletCalcDatabase(object):
         # INLETS
         # MESSAGE
         self._one_msg_inlet = (
-            "mtof", "ftom", "powtodb", "dbtopow", "rmstodb", "dbtorms",
-            "sin", "cos", "tan", "atan", "atan2", "sqrt", "log", "exp", "abs",
-            "loadbang", "bang~",
-            "r~", "receive~", "unpack", "value", "v", "t", "trigger",
-            "tabread", "tabread4", "soundfiler", "netsend", "qlist",
-            "textfile", "openpanel", "savepanel", "init", "outlet"
+            "r~", "receive~", "unpack", "t", "trigger", "outlet"
         )
 
         self._two_msg_inlet = (
-            "pipe",
-            "+", "-", "*", "/", "pow", "%",
-            "==", "!=", "<", ">", ">=", "<=",
-            "&", "&&", "|", "||", "mod", "div", "min", "max",
-            "route", "swap", "delay", "del", "metro",
-            "timer", "cputime", "realtime", "random", "pgmout", "bendout",
-            "touchout", "midiout", "stripnote", "tabwrite", "bag", "poly",
+            "route", "bag", "poly",
         )
 
         self._tree_msg_inlet = (
-            "clip", "line", "noteout", "ctlout", "polytouchout", "makenote"
+            "noteout", "ctlout", "polytouchout"
         )
         # SOUND
         self._one_snd_inlet = (
@@ -75,20 +64,7 @@ class XletCalcDatabase(object):
         # OUTLETS
         # MESSAGE
         self._one_msg_outlet = (
-            "pipe", "+", "-", "*", "/", "%", "pow",
-            "==", "!=", "<", ">", ">=", "<=", "&", "&&", "|", "||", "mtof",
-            "ftom", "powtodb", "dbtopow", "rmstodb", "dbtorms",
-            "sin", "cos", "tan", "atan", "atan2", "sqrt", "log", "exp", "abs",
-            "random", "mod", "div", "min", "max", "clip", "loadbang", "bang~",
-            "pack", "value", "v", "line", "delay", "del",
-            "metro", "timer", "cputime", "realtime", "tabread", "tabread4",
-            "soundfiler", "netsend", "openpanel", "savepanel", "bag", "key",
-            "keyup", "init"
-        )
-
-        self._two_msg_outlet = (
-            "swap", "sysexin", "midiin", "makenote", "stripnote",
-            "netreceive", "qlist", "textfile", "keyname"
+            "pack", "bag"
         )
 
         self._three_msg_outlet = {
@@ -195,10 +171,6 @@ class XletCalcDatabase(object):
         # 1 msg outlet
         if name in self._one_msg_outlet:
             return [self.XLET_MESSAGE]
-
-        # 2 msg outlet
-        if name in self._two_msg_outlet:
-            return [self.XLET_MESSAGE] * 2
 
         if name in self._three_msg_outlet:
             return [self.XLET_MESSAGE] * 3

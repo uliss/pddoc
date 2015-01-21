@@ -43,6 +43,10 @@ class XletCalcDatabase(object):
                 lambda args: [self.XLET_MESSAGE],
                 lambda args: (2 if len(args) == 0 else len(args)) * [self.XLET_SOUND]
             ),
+            "dac~": (
+                lambda args: (2 if len(args) == 0 else len(args)) * [self.XLET_SOUND],
+                lambda args: []
+            ),
             "readsf~": (
                 lambda args: [self.XLET_MESSAGE],
                 lambda args: (1 if len(args) == 0 else int(args[0])) * [self.XLET_SOUND] + [self.XLET_MESSAGE]
@@ -131,13 +135,6 @@ class XletCalcDatabase(object):
                 return [self.XLET_MESSAGE] * 2
             else:
                 return [self.XLET_MESSAGE]
-
-        # [dac~]
-        if name == "dac~":
-            if nargs == 0:
-                return [self.XLET_SOUND] * 2
-            else:
-                return [self.XLET_SOUND] * nargs
 
         # 2 sound
         if name in ("*~", "-~", "+~", "/~", "max~", "min~"):

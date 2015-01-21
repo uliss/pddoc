@@ -6,7 +6,9 @@ bag             ..      .
 bang,b          .       .
 bang~           .       .
 bendout         ..      -
+biquad~         ~       ~
 block~          .       -
+bp~             ~..     ~
 catch~          ~       -
 change          .       .
 clip            ...     .
@@ -20,14 +22,18 @@ dbtorms~        ~       ~
 declare         -       -
 delay,del       ..      .
 div             ..      .
+env~            ~       .
 exp             .       .
 fft~            ~~      ~~
 float,f         ..      .
 framp~          ~~      ~~
 ftom            .       .
 ftom~           ~       ~
+hip~            ~.      ~
 ifft~           ~~      ~~
 init            .       .
+inlet           -       .
+inlet~          -       ~
 int,i           ..      .
 key             -       .
 keyname         -       ..
@@ -36,6 +42,7 @@ line            ...     .
 line~           ..      ~
 loadbang        .       .
 log             .       .
+lop~            ~.      ~
 makefilename    .       .
 makenote        ...     ..
 max             ..      .
@@ -49,6 +56,7 @@ mtof            .       .
 mtof~           ~       ~
 netreceive      -       ..
 netsend         .       .
+noise~          .       ~
 openpanel       .       .
 osc~            ~.      ~
 pgmout          ..      -
@@ -59,6 +67,7 @@ poly            ..      ...
 pow             ..      .
 powtodb         .       .
 print           .       -
+print~          ~       -
 q8_sqrt~        ~       ~
 q8_rsqrt~       ~       ~
 qlist           .       ..
@@ -71,6 +80,7 @@ rifft~          ~~      ~~
 rmstodb         .       .
 rmstodb~        ~       ~
 samplerate~     .       .
+samphold~       ~~      ~
 savepanel       .       .
 sig~            .       ~
 sin             .       .
@@ -101,6 +111,7 @@ throw~          -       ~
 timer           ..      .
 touchout        ..      -
 until           ..      .
+vcf~            ~~.     ~
 value,v         .       .
 vsnapshot~      ~       .
 vline~          ...     ~

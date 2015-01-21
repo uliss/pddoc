@@ -64,6 +64,11 @@ class TestXletCalcDatabase(TestCase):
         self.assertEqual(xd.inlets(pdo), [PdObject.XLET_SOUND] * 2)
         pdo.append_arg(0.5)
         self.assertEqual(xd.inlets(pdo), [PdObject.XLET_SOUND, PdObject.XLET_MESSAGE])
+        pdo.name = "writesf~"
+        pdo._args = []
+        self.assertEqual(xd.inlets(pdo), [PdObject.XLET_SOUND])
+        pdo.append_arg("4")
+        self.assertEqual(xd.inlets(pdo), [PdObject.XLET_SOUND] * 4)
 
     def test_outlets(self):
         xd = XletCalcDatabase()
@@ -72,6 +77,9 @@ class TestXletCalcDatabase(TestCase):
         self.assertEqual(xd.outlets(pdo), [PdObject.XLET_SOUND])
         pdo.name = "mtof"
         self.assertEqual(xd.outlets(pdo), [PdObject.XLET_MESSAGE])
+        pdo.name = "writesf~"
+        pdo.append_arg("1")
+        self.assertEqual(xd.outlets(pdo), [])
 
     def test_outlets_cond(self):
         xd = XletCalcDatabase()

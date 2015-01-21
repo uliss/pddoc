@@ -38,14 +38,31 @@ class XletCalcDatabase(object):
 
         self._dbtxt = XletTextDatabase(self._dbfile)
 
+        self._objects = {
+            "adc~": (
+                lambda args: [self.XLET_MESSAGE],
+                lambda args: (2 if len(args) == 0 else len(args)) * [self.XLET_SOUND]
+            ),
+            "readsf~": (
+                lambda args: [self.XLET_MESSAGE],
+                lambda args: (1 if len(args) == 0 else int(args[0])) * [self.XLET_SOUND] + [self.XLET_MESSAGE]
+            ),
+            "writesf~": (
+                lambda args: (1 if len(args) == 0 else int(args[0])) * [self.XLET_SOUND],
+                lambda args: []
+            )
+        }
+
+
+
         # INLETS
         # MESSAGE
         self._one_msg_inlet = (
-            "r~", "receive~", "unpack", "t", "trigger", "outlet"
+            "unpack", "t", "trigger", "outlet"
         )
 
         self._two_msg_inlet = (
-            "route", "bag", "poly",
+            "route",
         )
 
         self._tree_msg_inlet = (
@@ -53,34 +70,23 @@ class XletCalcDatabase(object):
         )
         # SOUND
         self._one_snd_inlet = (
-            "s~", "send~", "sin~", "cos~", "q8_sqrt~", "q8_rsqrt~", "wrap~",
-            "rfft~", "mtof~", "ftom~", "rmstodb~", "dbtorms~", "outlet~"
+            "s~", "send~", "outlet~"
         )
 
-        self._two_snd_inlet = (
-            "rifft~", "fft~", "ifft~", "framp~"
-        )
+        self._two_snd_inlet = []
 
         # OUTLETS
         # MESSAGE
         self._one_msg_outlet = (
-            "pack", "bag"
+            "pack",
         )
-
-        self._three_msg_outlet = {
-            "poly",
-        }
 
         # SOUND
         self._one_snd_outlet = (
-            "sin~", "cos~", "osc~", "r~", "receieve~", "+~", "*~", "-~", "/~",
-            "max~", "min~", "clip~", "q8_sqrt~", "q8_rsqrt~", "wrap~", "mtof~",
-            "ftom~", "rmstodb~", "dbtorms~"
+            "+~", "*~", "-~", "/~", "max~", "min~"
         )
 
-        self._two_snd_outlet = (
-            "fft~", "ifft~", "rfft~", "rifft~", "framp~"
-        )
+        self._two_snd_outlet = []
 
     def inlets(self, obj):
         if not issubclass(obj.__class__, pdobject.PdObject):
@@ -113,9 +119,8 @@ class XletCalcDatabase(object):
         if name in self._two_snd_inlet:
             return [self.XLET_SOUND] * 2
 
-        # [osc~]
-        if name in ("osc~", ):
-            return [self.XLET_SOUND, self.XLET_MESSAGE]
+        if name in self._objects:
+            return self._objects[name][0](obj.args)
 
         return self.inlet_conditional(name, nargs)
 
@@ -156,6 +161,7 @@ class XletCalcDatabase(object):
         if name == "clip~":
             return [self.XLET_SOUND] + [self.XLET_MESSAGE] * 2
 
+        # digits float object
         if XletCalcDatabase.re_num.search(name):
             return [self.XLET_MESSAGE] * 2
 
@@ -172,9 +178,6 @@ class XletCalcDatabase(object):
         if name in self._one_msg_outlet:
             return [self.XLET_MESSAGE]
 
-        if name in self._three_msg_outlet:
-            return [self.XLET_MESSAGE] * 3
-
         # 1 snd outlet
         if name in self._one_snd_outlet:
             return [self.XLET_SOUND]
@@ -183,10 +186,14 @@ class XletCalcDatabase(object):
         if name in self._two_snd_outlet:
             return [self.XLET_SOUND] * 2
 
+        if name in self._objects:
+            return self._objects[name][1](obj.args)
+
         return self.outlet_conditional(name, nargs)
 
     def outlet_conditional(self, name, nargs):
         lout_msg = lambda x, func: [self.XLET_MESSAGE] * func(x)
+        lout_snd = lambda x, func: [self.XLET_SOUND] * func(x)
 
         if name in ("select", "sel", "route"):
             return lout_msg(nargs, lambda x: 2 if x == 0 else x + 1)
@@ -206,6 +213,7 @@ class XletCalcDatabase(object):
         if name in ("polytouchin",):
             return lout_msg(nargs, lambda x: 3 if x == 0 else 2)
 
+        # digits float creation
         if XletCalcDatabase.re_num.search(name):
             return [self.XLET_MESSAGE]
 

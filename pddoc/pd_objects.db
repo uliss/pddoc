@@ -1,0 +1,12 @@
+none            -       -
+bang,b          .       .
+change          .       .
+float,f         ..      .
+int,i           ..      .
+makefilename    .      .
+moses           ..      ..
+print           .       -
+receive,r       -       .
+spigot          ..      .
+symbol          ..      .
+until           ..      .

@@ -27,15 +27,38 @@ import pddoc
 import os
 
 pddoc_path = os.path.dirname(pddoc.__file__)
+pddoc_db = pddoc_path + '/pd_objects.db'
 
 class TestXletTextDatabase(TestCase):
     def test_load(self):
         with self.assertRaises(IOError):
             XletTextDatabase('not-exists')
 
-        XletTextDatabase(pddoc_path + '/pd_objects.db')
+        db = XletTextDatabase(pddoc_db)
 
     def test_parse(self):
         db = XletTextDatabase()
-        db.parse('none ~~~ -')
-        print db
+        db.parse('abs ~~~ -')
+        self.assertTrue(db.has_object("abs"))
+
+    def test_inlets(self):
+        db = XletTextDatabase(pddoc_db)
+        self.assertEqual(db.inlets('none'), [])
+        self.assertEqual(db.inlets('bang'), [0])
+        self.assertEqual(db.inlets('b'), [0])
+        self.assertEqual(db.inlets('float'), [0, 0])
+        self.assertEqual(db.inlets('f'), [0, 0])
+        self.assertEqual(db.inlets('int'), [0, 0])
+        self.assertEqual(db.inlets('i'), [0, 0])
+        self.assertEqual(db.inlets('symbol'), [0, 0])
+
+    def test_outlets(self):
+        db = XletTextDatabase(pddoc_db)
+        self.assertEqual(db.outlets('none'), [])
+        self.assertEqual(db.outlets('bang'), [0])
+        self.assertEqual(db.outlets('b'), [0])
+        self.assertEqual(db.outlets('float'), [0])
+        self.assertEqual(db.outlets('f'), [0])
+        self.assertEqual(db.outlets('int'), [0])
+        self.assertEqual(db.outlets('i'), [0])
+        self.assertEqual(db.outlets('symbol'), [0])

@@ -21,19 +21,26 @@ __author__ = 'Serge Poltavski'
 
 import pdobject
 import re
+from xlettextdatabase import XletTextDatabase
+import os
 
 
 class XletCalcDatabase(object):
     XLET_MESSAGE = pdobject.PdBaseObject.XLET_MESSAGE
     XLET_SOUND = pdobject.PdBaseObject.XLET_SOUND
-
     re_num = re.compile(r"^\d+$")
 
-    def __init__(self):
+    def __init__(self, dbname=None):
+        if not dbname:
+            self._dbfile = os.path.dirname(__file__) + '/pd_objects.db'
+        else:
+            self._dbfile = dbname
+
+        self._dbtxt = XletTextDatabase(self._dbfile)
+
         # INLETS
         # MESSAGE
         self._one_msg_inlet = (
-            "bang", "b", "change", "makefilename", "print",
             "mtof", "ftom", "powtodb", "dbtopow", "rmstodb", "dbtorms",
             "sin", "cos", "tan", "atan", "atan2", "sqrt", "log", "exp", "abs",
             "loadbang", "bang~",
@@ -43,11 +50,11 @@ class XletCalcDatabase(object):
         )
 
         self._two_msg_inlet = (
-            "pipe", "i", "int", "float", "f", "symbol",
+            "pipe",
             "+", "-", "*", "/", "pow", "%",
             "==", "!=", "<", ">", ">=", "<=",
             "&", "&&", "|", "||", "mod", "div", "min", "max",
-            "route", "spigot", "moses", "until", "swap", "delay", "del", "metro",
+            "route", "swap", "delay", "del", "metro",
             "timer", "cputime", "realtime", "random", "pgmout", "bendout",
             "touchout", "midiout", "stripnote", "tabwrite", "bag", "poly",
         )
@@ -68,20 +75,19 @@ class XletCalcDatabase(object):
         # OUTLETS
         # MESSAGE
         self._one_msg_outlet = (
-            "bang", "b", "float", "f", "int", "i", "symbol", "receive", "r",
-            "change", "makefilename", "pipe", "+", "-", "*", "/", "%", "pow",
+            "pipe", "+", "-", "*", "/", "%", "pow",
             "==", "!=", "<", ">", ">=", "<=", "&", "&&", "|", "||", "mtof",
             "ftom", "powtodb", "dbtopow", "rmstodb", "dbtorms",
             "sin", "cos", "tan", "atan", "atan2", "sqrt", "log", "exp", "abs",
             "random", "mod", "div", "min", "max", "clip", "loadbang", "bang~",
-            "pack", "spigot", "until", "value", "v", "line", "delay", "del",
+            "pack", "value", "v", "line", "delay", "del",
             "metro", "timer", "cputime", "realtime", "tabread", "tabread4",
             "soundfiler", "netsend", "openpanel", "savepanel", "bag", "key",
             "keyup", "init"
         )
 
         self._two_msg_outlet = (
-            "moses", "swap", "sysexin", "midiin", "makenote", "stripnote",
+            "swap", "sysexin", "midiin", "makenote", "stripnote",
             "netreceive", "qlist", "textfile", "keyname"
         )
 
@@ -105,6 +111,10 @@ class XletCalcDatabase(object):
             return []
 
         name = obj.name
+
+        if self._dbtxt.has_object(name):
+            return self._dbtxt.inlets(name)
+
         nargs = obj.num_args()
 
         # 1 msg inlet
@@ -178,6 +188,9 @@ class XletCalcDatabase(object):
     def outlets(self, obj):
         name = obj.name
         nargs = obj.num_args()
+
+        if self._dbtxt.has_object(name):
+            return self._dbtxt.outlets(name)
 
         # 1 msg outlet
         if name in self._one_msg_outlet:

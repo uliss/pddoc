@@ -22,6 +22,7 @@ __author__ = 'Serge Poltavski'
 
 import logging
 from pdbaseobject import PdBaseObject
+import re
 
 
 class XletTextDatabase(object):
@@ -30,6 +31,9 @@ class XletTextDatabase(object):
         self._objects = {}
         if fname:
             self.load(fname)
+
+    def has_object(self, objname):
+        return objname in self._objects
 
     def load(self, fname):
         self._fname = fname
@@ -43,18 +47,34 @@ class XletTextDatabase(object):
             logging.error(e.message)
             raise e
 
+    def inlets(self, objname):
+        if not self.has_object(objname):
+            return []
+
+        return self._objects[objname][0]
+
+    def outlets(self, objname):
+        if not self.has_object(objname):
+            return []
+
+        return self._objects[objname][1]
+
     def parse(self, line):
-        atoms = line.split(" ")
+        if line and line[0] == "#": #  comment
+            return
+
+        atoms = re.split("\s+", line)
+
         if len(atoms) < 3:
             logging.error("line skip: " + line)
             return
 
-        def parse_xlet(line):
+        def parse_xlet(str):
             res = []
-            if line[0] == '-':
+            if str[0] == '-':
                 return res
 
-            for char in line:
+            for char in str:
                 if char == "~":
                     res.append(PdBaseObject.XLET_SOUND)
                 elif char == ".":
@@ -64,11 +84,12 @@ class XletTextDatabase(object):
 
             return res
 
-        obj = atoms[0]
+        objects = atoms[0].split(",")
         inl = parse_xlet(atoms[1])
         outl = parse_xlet(atoms[2])
 
-        self._objects[obj] = (inl, outl)
+        for obj in objects:
+            self._objects[obj] = (inl, outl)
 
     def __str__(self):
         return str(self._objects)

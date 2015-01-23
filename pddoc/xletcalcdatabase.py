@@ -38,6 +38,51 @@ class XletCalcDatabase(object):
 
         self._dbtxt = XletTextDatabase(self._dbfile)
 
+        def expr_args_parse(args):
+            if len(args) == 0:
+                return 1
+            params = list(set(re.findall("(\$[fsi][0-9])", " ".join(args))))
+            cnt = len(params)
+            if cnt == 0:
+                return 1
+            else:
+                return cnt
+
+        def expr_tilde_args_parse(args):
+            if len(args) == 0:
+                return []
+            inlets = list(set(re.findall("(\$[fsiv][0-9])", " ".join(args))))
+            if len(inlets) == 0:
+                return []
+            else:
+                res = []
+                for i in inlets:
+                    if i == "$v1":
+                        continue
+                    if i[1] == 'v':
+                        res.append(self.XLET_SOUND)
+                    else:
+                        res.append(self.XLET_MESSAGE)
+                return res
+
+        def fexpr_tilde_args_parse(args):
+            if len(args) == 0:
+                return []
+            inlets = list(set(re.findall("(\$[fsixy][0-9])", " ".join(args))))
+            if len(inlets) == 0:
+                return []
+            else:
+                inlets.sort(key=lambda x: int(x[2:]))
+                res = []
+                for i in inlets:
+                    if i == "$x1":
+                        continue
+                    if i[1] == 'x':
+                        res.append(self.XLET_SOUND)
+                    else:
+                        res.append(self.XLET_MESSAGE)
+                return res
+
         self._objects = {
             "adc~": (
                 lambda args: [self.XLET_MESSAGE],
@@ -54,10 +99,20 @@ class XletCalcDatabase(object):
             "writesf~": (
                 lambda args: (1 if len(args) == 0 else int(args[0])) * [self.XLET_SOUND],
                 lambda args: []
+            ),
+            "expr": (
+                lambda args: expr_args_parse(args) * [self.XLET_MESSAGE],
+                lambda args: [self.XLET_MESSAGE]
+            ),
+            "expr~": (
+                lambda args: [self.XLET_SOUND] + expr_tilde_args_parse(args),
+                lambda args: [self.XLET_SOUND]
+            ),
+            "fexpr~": (
+                lambda args: [self.XLET_SOUND] + fexpr_tilde_args_parse(args),
+                lambda args: [self.XLET_SOUND]
             )
         }
-
-
 
         # INLETS
         # MESSAGE

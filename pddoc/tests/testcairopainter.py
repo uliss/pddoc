@@ -34,7 +34,7 @@ class TestCairoPainter(unittest.TestCase):
         parser.parse(f)
 
         canvas = parser.canvas
-        canvas.height = 4000
+        canvas.height = 4700
 
         cp = CairoPainter(canvas.width, canvas.height, "out/output_cairo.png")
         drawer = PdDrawer()

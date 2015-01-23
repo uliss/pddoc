@@ -42,11 +42,10 @@ class XletCalcDatabase(object):
             if len(args) == 0:
                 return 1
             params = list(set(re.findall("(\$[fsi][0-9])", " ".join(args))))
-            cnt = len(params)
-            if cnt == 0:
+            if len(params) == 0:
                 return 1
             else:
-                return cnt
+                return int(max(params, key=lambda x: int(x[2]))[2])
 
         def expr_tilde_args_parse(args):
             if len(args) == 0:
@@ -55,6 +54,7 @@ class XletCalcDatabase(object):
             if len(inlets) == 0:
                 return []
             else:
+                inlets.sort(key=lambda x: int(x[2:]))
                 res = []
                 for i in inlets:
                     if i == "$v1":

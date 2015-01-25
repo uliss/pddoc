@@ -401,8 +401,12 @@ class CairoPainter(PdPainter):
             self.set_src_color(kwargs['color'])
 
         self.cr.set_line_cap(cairo.LINE_CAP_BUTT)
-        self.cr.move_to(x0 + 0.5, y0 + 0.5)
-        self.cr.line_to(x1 + 0.5, y1 + 0.5)
+        if int(self.cr.get_line_width()) % 2 == 1:
+            y0 = round(y0) + 0.5
+            y1 = round(y1) + 0.5
+
+        self.cr.move_to(x0, y0)
+        self.cr.line_to(x1, y1)
         self.cr.stroke()
         self.cr.restore()
 

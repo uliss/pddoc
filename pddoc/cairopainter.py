@@ -182,6 +182,13 @@ class CairoPainter(PdPainter):
 
             self.cr.restore()
 
+            if not subpatch._gop['hide_args']:
+                txt = "pd " + subpatch.args_to_string()
+                self.draw_text(x + self.style.obj_pad_x,
+                               y + self.style.font_size,
+                               txt,
+                               font_size=self.style.font_size)
+
             self.draw_xlets(subpatch.inlets(), x, y, w)
             self.draw_xlets(subpatch.outlets(), x, y + h - self.style.xlet_msg_height, w)
             return

@@ -120,6 +120,8 @@ class PdCanvas(PdObject):
         if 'yoff' in kwargs:
             self._gop['yoff'] = int(kwargs['yoff'])
 
+        self._gop['hide_args'] = int(kwargs.get('hide_args', False))
+
     @staticmethod
     def make_connection_key(sid, soutl, did, dinl):
         return "%i:%i => %i:%i" % (sid, soutl, did, dinl)

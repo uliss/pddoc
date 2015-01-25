@@ -139,7 +139,8 @@ class PdParser:
                                                       width=atoms[5],
                                                       height=atoms[6],
                                                       xoff=atoms[8],
-                                                      yoff=atoms[9])
+                                                      yoff=atoms[9],
+                                                      hide_args=(atoms[7] == 2))
             return
 
         self._array.set_xrange(float(atoms[1]), float(atoms[3]))

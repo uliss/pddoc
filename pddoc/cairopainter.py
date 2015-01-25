@@ -163,7 +163,8 @@ class CairoPainter(PdPainter):
             num += 1
 
     def draw_subpatch(self, subpatch):
-        txt = "pd " + subpatch.name
+        assert isinstance(subpatch, PdCanvas)
+        txt = "pd " + subpatch.args_to_string()
         (x, y, width, height, dx, dy) = self.cr.text_extents(txt)
         x = subpatch.x
         y = subpatch.y
@@ -404,6 +405,10 @@ class CairoPainter(PdPainter):
         if int(self.cr.get_line_width()) % 2 == 1:
             y0 = round(y0) + 0.5
             y1 = round(y1) + 0.5
+
+        if self.cr.get_line_width() == 1:
+            x0 = round(x0) + 0.5
+            x1 = round(x1) + 0.5
 
         self.cr.move_to(x0, y0)
         self.cr.line_to(x1, y1)

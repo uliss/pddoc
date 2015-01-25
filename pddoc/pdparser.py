@@ -106,6 +106,7 @@ class PdParser:
             c.type = PdCanvas.TYPE_SUBPATCH
             c.x = int(atoms[0])
             c.y = int(atoms[1])
+            c._args = atoms[3:]
             self.current_canvas().append_subpatch(c)
         else:
             logging.warning(u"unknown canvas type: {0:s}".format(cnv_type))

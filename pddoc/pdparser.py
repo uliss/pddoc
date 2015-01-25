@@ -99,7 +99,7 @@ class PdParser:
             c = self.canvas_stack.pop()
             self._array.x = int(atoms[0])
             self._array.y = int(atoms[1])
-            self.canvas.append_object(self._array)
+            self.current_canvas().append_object(self._array)
             self._array = None
         elif cnv_type == "pd":
             c = self.canvas_stack.pop()

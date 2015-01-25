@@ -51,7 +51,7 @@ class PddpDsp(PdObject):
 
     def draw(self, painter):
         assert isinstance(painter, CairoPainter)
-        painter.draw_rect(self.x, self.y, self.width, self.height, color=(0, 0, 0), fill=(0.5, 1, 0.5))
-        line_x = self.left + 18
-        painter.draw_line(line_x, self.top, line_x, self.bottom, color=(0, 0, 0))
+        painter.draw_rect(self.x, self.y, self.width, self.height, color=(0, 0, 0), fill=(0.5, 1, 0.5), width=1)
+        line_x = int(self.left + 18)
+        painter.draw_line(line_x, self.top, line_x, self.bottom, color=(0, 0, 0), width=1)
         painter.draw_text(line_x + 5, self.bottom - 3, "dsp", color=(0, 0, 0), font_size=14, font="Monospace")

@@ -83,7 +83,11 @@ class CairoPainter(PdPainter):
         if 'width' in kwargs:
             self.cr.set_line_width(kwargs['width'])
 
-        self.cr.rectangle(x + 0.5, y + 0.5, w, h)
+        if self.cr.get_line_width() % 2 == 1:
+            x = round(x) + 0.5
+            y = round(y) + 0.5
+
+        self.cr.rectangle(x, y, w, h)
 
         if 'fill' in kwargs:
             self.set_src_color(kwargs['fill'])
@@ -143,7 +147,11 @@ class CairoPainter(PdPainter):
 
             iny = y
             self.cr.set_line_width(self.style.obj_line_width)
-            self.cr.rectangle(inx + 0.5, iny + 0.5, self.style.xlet_width, self.xlet_height(xlet))
+            if self.style.obj_line_width % 2 == 1:
+                inx = round(inx) + 0.5
+                iny = round(iny) + 0.5
+
+            self.cr.rectangle(inx, iny, self.style.xlet_width, self.xlet_height(xlet))
             self.cr.stroke_preserve()
 
             if xlet == PdBaseObject.XLET_SOUND:

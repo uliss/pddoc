@@ -1,1 +1,3 @@
 include README.md
+include pddoc/html_object.tmpl
+

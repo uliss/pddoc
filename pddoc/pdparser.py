@@ -135,6 +135,11 @@ class PdParser:
 
     def parse_coords(self, atoms):
         if not self._array:
+            self.current_canvas().set_graph_on_parent(True,
+                                                      width=atoms[5],
+                                                      height=atoms[6],
+                                                      xoff=atoms[8],
+                                                      yoff=atoms[9])
             return
 
         self._array.set_xrange(float(atoms[1]), float(atoms[3]))

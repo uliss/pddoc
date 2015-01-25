@@ -43,6 +43,9 @@ class PdCanvas(PdObject):
         if 'open_on_load' in kwargs:
             self.open_on_load = kwargs['open_on_load']
 
+        self._graph_on_parent = False
+        self._gop = {}
+
     @property
     def objects(self):
         return self._objects
@@ -102,6 +105,20 @@ class PdCanvas(PdObject):
                     return obj
 
         return None
+
+    def is_graph_on_parent(self):
+        return self._graph_on_parent
+
+    def set_graph_on_parent(self, value, **kwargs):
+        self._graph_on_parent = bool(value)
+        if 'width' in kwargs:
+            self._gop['width'] = int(kwargs['width'])
+        if 'height' in kwargs:
+            self._gop['height'] = int(kwargs['height'])
+        if 'xoff' in kwargs:
+            self._gop['xoff'] = int(kwargs['xoff'])
+        if 'yoff' in kwargs:
+            self._gop['yoff'] = int(kwargs['yoff'])
 
     @staticmethod
     def make_connection_key(sid, soutl, did, dinl):
@@ -192,6 +209,14 @@ class PdCanvas(PdObject):
                 obj.draw(painter)
 
             painter.draw_connections(self)
+
+            if self.is_graph_on_parent():
+                painter.draw_rect(self._gop['xoff'],
+                                  self._gop['yoff'],
+                                  self._gop['width'],
+                                  self._gop['height'],
+                                  width=1,
+                                  color=(1, 0.5, 0.5))
 
     def inlets(self):
         res = []

@@ -79,8 +79,6 @@ class CairoPainter(PdPainter):
 
     def draw_rect(self, x, y, w, h, **kwargs):
         self.cr.save()
-        if 'color' in kwargs:
-            self.set_src_color(kwargs['color'])
 
         if 'width' in kwargs:
             self.cr.set_line_width(kwargs['width'])
@@ -90,6 +88,9 @@ class CairoPainter(PdPainter):
         if 'fill' in kwargs:
             self.set_src_color(kwargs['fill'])
             self.cr.fill_preserve()
+
+        if 'color' in kwargs:
+            self.set_src_color(kwargs['color'])
 
         self.cr.stroke()
         self.cr.restore()

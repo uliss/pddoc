@@ -227,6 +227,9 @@ class PdCoreGui(pdobject.PdObject):
                               font_size=self._font_size,  # FIXME! hardcoded font family
                               font="Menlo")
 
+    def draw_on_parent(self):
+        return True
+
     def _get_label_xy(self):
         return self.x + self._label_xoff, self.y + self._label_yoff  # font height correction
 

@@ -164,6 +164,28 @@ class CairoPainter(PdPainter):
 
     def draw_subpatch(self, subpatch):
         assert isinstance(subpatch, PdCanvas)
+
+        if subpatch.is_graph_on_parent():
+            x = subpatch.x
+            y = subpatch.y
+            w = subpatch._gop['width']
+            h = subpatch._gop['height']
+            self.draw_rect(x, y, w, h, color=self.style.obj_border_color, width=1)
+            m = self.cr.get_matrix()
+            m.translate(x - subpatch._gop['xoff'], y - subpatch._gop['yoff'])
+            self.cr.save()
+            self.cr.set_matrix(m)
+            for obj in subpatch.objects:
+                assert issubclass(obj.__class__, PdBaseObject)
+                if obj.draw_on_parent():
+                    obj.draw(self)
+
+            self.cr.restore()
+
+            self.draw_xlets(subpatch.inlets(), x, y, w)
+            self.draw_xlets(subpatch.outlets(), x, y + h - self.style.xlet_msg_height, w)
+            return
+
         txt = "pd " + subpatch.args_to_string()
         (x, y, width, height, dx, dy) = self.cr.text_extents(txt)
         x = subpatch.x
@@ -259,11 +281,14 @@ class CairoPainter(PdPainter):
 
         xlet_space = 0
         if len(outlets) > 1:
-            xlet_space = (obj.width() - len(outlets) * self.style.xlet_width) / float(len(outlets) - 1)
+            xlet_space = (obj.width - len(outlets) * self.style.xlet_width) / float(len(outlets) - 1)
 
         x = obj.x + (xlet_space + self.style.xlet_width) * outlet_no + self.style.xlet_width / 2.0
         if isinstance(obj, PdCanvas):
-            y = obj.top + self.style.obj_height
+            if obj.is_graph_on_parent():
+                y = obj._gop['height'] + obj.y
+            else:
+                y = obj.top + self.style.obj_height
         else:
             y = obj.bottom
         return x, y

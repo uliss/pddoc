@@ -29,6 +29,7 @@ class TestPdBaseObject(unittest.TestCase):
         self.assertEqual(pbo.is_null(), True)
         self.assertEqual(pbo.x, 0)
         self.assertEqual(pbo.get_x(), 0)
+        self.assertFalse(pbo.draw_on_parent())
 
         del (pbo)
 

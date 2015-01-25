@@ -90,6 +90,9 @@ class PdBaseObject(object):
     def draw(self, painter):
         assert not "Not implemented"
 
+    def draw_on_parent(self):
+        return False
+
     def inlets(self):
         return ()
 

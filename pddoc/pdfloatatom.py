@@ -79,26 +79,20 @@ class PdFloatAtom(PdCoreGui):
     def get_width(self):
         return max(self._digits * 7, 20)
 
-    def no_send(self):
-        return self.send == "-"
-
-    def no_receive(self):
+    def show_inlets(self):
         return self.receive == "-"
+
+    def show_outlets(self):
+        return self.send == "-"
 
     def has_label(self):
         return self._label and self._label != "-"
 
     def outlets(self):
-        if self.no_send():
-            return [self.XLET_MESSAGE]
-        else:
-            return []
+        return [self.XLET_MESSAGE]
 
     def inlets(self):
-        if self.no_receive():
-            return [self.XLET_MESSAGE]
-        else:
-            return []
+        return [self.XLET_MESSAGE]
 
     def _is_int(self):
         return abs(self._value - int(self._value)) < 0.001
@@ -127,8 +121,10 @@ class PdFloatAtom(PdCoreGui):
 
         painter.draw_poly(vertexes, fill=(0.88, 0.88, 0.88), outline=(0.75, 0.75, 0.75))
         painter.draw_text(self.x + 2, self.top + text_yoff, self._str_value())
-        painter.draw_inlets(self.inlets(), self.x, self.y, self.width)
-        painter.draw_outlets(self.outlets(), self.x, self.bottom, self.width)
+        if self.show_inlets():
+            painter.draw_inlets(self.inlets(), self.x, self.y, self.width)
+        if self.show_outlets():
+            painter.draw_outlets(self.outlets(), self.x, self.bottom, self.width)
 
         if self.has_label():
             lx, ly, lw, lh = self._label_brect()

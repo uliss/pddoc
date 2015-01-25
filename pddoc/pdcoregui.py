@@ -160,9 +160,6 @@ class PdCoreGui(pdobject.PdObject):
     def send(self, v):
         self._send = v
 
-    def no_send(self):
-        return not self._send or self.send == "empty"
-
     def no_label(self):
         return not self._label or self.label == "empty"
 
@@ -173,9 +170,6 @@ class PdCoreGui(pdobject.PdObject):
     @receive.setter
     def receive(self, v):
         self._receive = v
-
-    def no_receive(self):
-        return not self._send or self.receive == "empty"
 
     def __str__(self):
         return "[GUI:%-36s {x:%i,y:%i,id:%i}" % (self.name + "]", self._x, self._y, self._id)
@@ -190,16 +184,10 @@ class PdCoreGui(pdobject.PdObject):
         return self._label_color.rgb_float()
 
     def inlets(self):
-        if self.no_receive():
-            return [self.XLET_GUI]
-        else:
-            return []
+        return [self.XLET_GUI]
 
     def outlets(self):
-        if self.no_send():
-            return [self.XLET_GUI]
-        else:
-            return []
+        return [self.XLET_GUI]
 
     def traverse(self, visitor):
         visitor.visit_core_gui(self)
@@ -214,9 +202,17 @@ class PdCoreGui(pdobject.PdObject):
 
         painter.draw_poly(vertexes, fill=self.bgcolor(), outline=(0, 0, 0), **kwargs)
 
+    def show_inlets(self):
+        return not self.receive or self.receive == "empty"
+
+    def show_outlets(self):
+        return not self.send or self.send == "empty"
+
     def draw_xlets(self, painter):
-        painter.draw_inlets(self.inlets(), self.x, self.y, self.width)
-        painter.draw_outlets(self.outlets(), self.x, self.bottom, self.width)
+        if self.show_inlets():
+            painter.draw_inlets(self.inlets(), self.x, self.y, self.width)
+        if self.show_outlets():
+            painter.draw_outlets(self.outlets(), self.x, self.bottom, self.width)
 
     def draw_label(self, painter):
         if not self.no_label():

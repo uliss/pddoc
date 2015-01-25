@@ -1,3 +1,5 @@
 include README.md
 include pddoc/html_object.tmpl
+recursive-include pddoc/externals/pddp *.py
+
 

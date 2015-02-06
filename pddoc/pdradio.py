@@ -59,7 +59,20 @@ class PdRadio(PdCoreGui):
         else:
             return PdHRadio(0, 0,
                             size=atoms[1],
-                            number=atoms[4])
+                            newold=atoms[2],
+                            init=atoms[3],
+                            number=atoms[4],
+                            send=atoms[5],
+                            receive=atoms[6],
+                            label=atoms[7],
+                            label_xoff=atoms[8],
+                            label_yoff=atoms[9],
+                            font_type=atoms[10],
+                            font_size=atoms[11],
+                            bg_color=atoms[12],
+                            fg_color=atoms[13],
+                            label_color=atoms[14],
+                            default_value=atoms[15])
 
 class PdHRadio(PdRadio):
     def __init__(self, x, y, **kwargs):

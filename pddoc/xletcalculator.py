@@ -42,7 +42,6 @@ class XletCalculator(object):
                 calc_db = XletCalcDatabase(os.path.join(paths[0], calc_db))
                 self._dbs.append(calc_db)
 
-
     def inlets(self, obj):
         if not issubclass(obj.__class__, pdobject.PdObject):
             return []

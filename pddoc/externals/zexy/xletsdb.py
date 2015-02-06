@@ -20,29 +20,32 @@
  
 __author__ = 'Serge Poltavski'
 
-from xletdatabase import XletDatabase
-import imp
-import logging
+
+XLET_MESSAGE = 0
+XLET_SOUND = 1
 
 
-class XletCalcDatabase(XletDatabase):
-    _counter = 0
+_objects = {
+    "mux~": (
+        lambda args: (2 if not args else len(args)) * [XLET_SOUND],
+        lambda args: [XLET_SOUND]
+    )
+}
 
-    def __init__(self, path):
-        XletCalcDatabase._counter += 1
-        self._module = None
 
-        try:
-            self._module = imp.load_source("plugin{0:d}".format(XletCalcDatabase._counter), path)
-        except IOError, e:
-            logging.error("Plugin not found: {0:s}".format(path))
-            raise e
+def has_object(name):
+    return name in _objects
 
-    def outlets(self, name, args=[]):
-        return self._module.outlets(name, args)
 
-    def inlets(self, name, args=[]):
-        return self._module.inlets(name, args)
+def inlets(name, args):
+    if name in ("mux~", "multiplex~"):
+        return _objects["mux~"][0](args)
 
-    def has_object(self, name):
-        return self._module.has_object(name)
+    return []
+
+
+def outlets(name, args):
+    if name in ("mux~", "multiplex~"):
+        return _objects["mux~"][1](args)
+
+    return []

@@ -138,5 +138,8 @@ class TestXletCalcDatabase(TestCase):
         self.assertEqual(xd.outlets(make_pdo("ctlin 1 2")), [0] * 1)
         self.assertEqual(xd.outlets(make_pdo("ctlin 1 2 3 4 5")), [0] * 1)
 
+        self.assertEqual(xd.inlets(make_pdo("mux~")), [1, 1])
+        self.assertEqual(xd.outlets(make_pdo("mux~")), [1])
+
 
 

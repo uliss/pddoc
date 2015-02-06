@@ -17,6 +17,7 @@ cos             .       .
 cos~            ~       ~
 cpole~          ~~~~    ~~
 cputime         ..      .
+ctlout          ...     -
 czero~          ~~~~    ~~
 czero_rev~      ~~~~    ~~
 delread~        .       ~
@@ -69,14 +70,18 @@ mtof~           ~       ~
 netreceive      -       ..
 netsend         .       .
 noise~          .       ~
+noteout         ...     -
 openpanel       .       .
 osc~            ~.      ~
+outlet          .       -
+outlet~         ~       -
 pgmout          ..      -
 pi              .       .
 pipe            ..      .
 phasor~         ~.      ~
 plot            .       -
 poly            ..      ...
+polytouchout    ...     -
 pow             ..      .
 powtodb         .       .
 print           .       -
@@ -99,6 +104,7 @@ samplerate~     .       .
 samphold~       ~~      ~
 savepanel       .       .
 setsize         ..      -
+send~,s~        ~       -
 sig~            .       ~
 sin             .       .
 sin~            ~       ~

@@ -25,6 +25,12 @@ from pddoc.xletcalcdatabase import *
 from pddoc.pdobject import *
 
 
+def make_pdo(name):
+    a = name.split(" ")
+    pdo = PdObject(a[0], args=a[1:])
+    return pdo
+
+
 class TestXletCalcDatabase(TestCase):
     def test_inlets(self):
         xd = XletCalcDatabase()
@@ -69,6 +75,15 @@ class TestXletCalcDatabase(TestCase):
         self.assertEqual(xd.inlets(pdo), [PdObject.XLET_SOUND])
         pdo.append_arg("4")
         self.assertEqual(xd.inlets(pdo), [PdObject.XLET_SOUND] * 4)
+        pdo.name = "sprintf"
+        pdo._args = []
+        self.assertEqual(xd.inlets(pdo), [0] * 1)
+        pdo.append_arg("%0.1f")
+        self.assertEqual(xd.inlets(pdo), [0] * 1)
+        pdo.append_arg("%%")
+        self.assertEqual(xd.inlets(pdo), [0] * 1)
+        pdo.append_arg("%s")
+        self.assertEqual(xd.inlets(pdo), [0] * 2)
 
     def test_outlets(self):
         xd = XletCalcDatabase()
@@ -80,12 +95,48 @@ class TestXletCalcDatabase(TestCase):
         pdo.name = "writesf~"
         pdo.append_arg("1")
         self.assertEqual(xd.outlets(pdo), [])
+        pdo.name = "sprintf"
+        pdo._args = []
+        self.assertEqual(xd.outlets(pdo), [0] * 1)
 
-    def test_outlets_cond(self):
+    def test_xlets(self):
         xd = XletCalcDatabase()
-        self.assertEqual(xd.outlet_conditional("unpack", 0), [0, 0])
-        self.assertEqual(xd.outlet_conditional("unpack", 16), [0] * 16)
-        self.assertEqual(xd.outlet_conditional("ctlin", 0), [0] * 3)
-        self.assertEqual(xd.outlet_conditional("ctlin", 1), [0] * 2)
-        self.assertEqual(xd.outlet_conditional("ctlin", 2), [0] * 1)
-        self.assertEqual(xd.outlet_conditional("ctlin", 20), [0] * 1)
+        self.assertEqual(xd.inlets(make_pdo("sel")), [0]*2)
+        self.assertEqual(xd.inlets(make_pdo("sel .")), [0]*2)
+        self.assertEqual(xd.inlets(make_pdo("sel . .")), [0])
+        self.assertEqual(xd.outlets(make_pdo("sel")), [0]*2)
+        self.assertEqual(xd.outlets(make_pdo("sel .")), [0]*2)
+        self.assertEqual(xd.outlets(make_pdo("sel . .")), [0]*3)
+
+        self.assertEqual(xd.inlets(make_pdo("send")), [0]*2)
+        self.assertEqual(xd.inlets(make_pdo("send .")), [0])
+        self.assertEqual(xd.outlets(make_pdo("send")), [])
+
+        self.assertEqual(xd.inlets(make_pdo("pack")), [0]*2)
+        self.assertEqual(xd.inlets(make_pdo("pack .")), [0])
+        self.assertEqual(xd.inlets(make_pdo("pack . .")), [0]*2)
+        self.assertEqual(xd.inlets(make_pdo("pack . . .")), [0]*3)
+        self.assertEqual(xd.outlets(make_pdo("pack")), [0])
+
+        self.assertEqual(xd.inlets(make_pdo("unpack")), [0])
+        self.assertEqual(xd.outlets(make_pdo("unpack")), [0]*2)
+        self.assertEqual(xd.outlets(make_pdo("unpack .")), [0])
+        self.assertEqual(xd.outlets(make_pdo("unpack . .")), [0]*2)
+        self.assertEqual(xd.outlets(make_pdo("unpack . . .")), [0]*3)
+
+        self.assertEqual(xd.inlets(make_pdo("t")), [0])
+        self.assertEqual(xd.outlets(make_pdo("t")), [0]*2)
+        self.assertEqual(xd.outlets(make_pdo("t b")), [0])
+        self.assertEqual(xd.outlets(make_pdo("t b b")), [0]*2)
+        self.assertEqual(xd.outlets(make_pdo("t b b b")), [0]*3)
+
+        self.assertEqual(xd.inlets(make_pdo("outlet")), [0])
+        self.assertEqual(xd.outlets(make_pdo("outlet")), [])
+
+        self.assertEqual(xd.outlets(make_pdo("ctlin")), [0] * 3)
+        self.assertEqual(xd.outlets(make_pdo("ctlin 1")), [0] * 2)
+        self.assertEqual(xd.outlets(make_pdo("ctlin 1 2")), [0] * 1)
+        self.assertEqual(xd.outlets(make_pdo("ctlin 1 2 3 4 5")), [0] * 1)
+
+
+

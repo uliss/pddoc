@@ -37,6 +37,11 @@ class XletCalcDatabase(object):
             self._dbfile = dbname
 
         self._dbtxt = XletTextDatabase(self._dbfile)
+        self._dbs = []
+
+        for paths in os.walk(os.path.dirname(__file__) + "/externals"):
+            for db in [f for f in paths[2] if f.endswith(".db")]:
+                self._dbs.append(XletTextDatabase(paths[0] + "/" + db))
 
         def expr_args_parse(args):
             if len(args) == 0:
@@ -111,41 +116,78 @@ class XletCalcDatabase(object):
             "fexpr~": (
                 lambda args: [self.XLET_SOUND] + fexpr_tilde_args_parse(args),
                 lambda args: [self.XLET_SOUND]
+            ),
+            "sprintf": (
+                lambda args: (1 if not len(args) else len([a for a in args if a[0] == "%" and a[0:2] != "%%"])) * [self.XLET_MESSAGE],
+                lambda args: [self.XLET_MESSAGE]
+            ),
+            "select": (
+                lambda args: (2 if len(args) < 2 else 1) * [self.XLET_MESSAGE],
+                lambda args: (2 if len(args) == 0 else len(args) + 1) * [self.XLET_MESSAGE]
+            ),
+            "sel": (
+                lambda args: (2 if len(args) < 2 else 1) * [self.XLET_MESSAGE],
+                lambda args: (2 if len(args) == 0 else len(args) + 1) * [self.XLET_MESSAGE]
+            ),
+            "route": (
+                lambda args: (2 if len(args) < 2 else 1) * [self.XLET_MESSAGE],
+                lambda args: (2 if len(args) == 0 else len(args) + 1) * [self.XLET_MESSAGE]
+            ),
+            "send": (
+                lambda args: (2 if not args else 1) * [self.XLET_MESSAGE],
+                lambda args: []
+            ),
+            "s": (
+                lambda args: (2 if not args else 1) * [self.XLET_MESSAGE],
+                lambda args: []
+            ),
+            "pack": (
+                lambda args: (2 if len(args) == 0 else len(args)) * [self.XLET_MESSAGE],
+                lambda args: [self.XLET_MESSAGE]
+            ),
+            "unpack": (
+                lambda args: [self.XLET_MESSAGE],
+                lambda args: (2 if len(args) == 0 else len(args)) * [self.XLET_MESSAGE]
+            ),
+            "trigger": (
+                lambda args: [self.XLET_MESSAGE],
+                lambda args: (2 if len(args) == 0 else len(args)) * [self.XLET_MESSAGE]
+            ),
+            "t": (
+                lambda args: [self.XLET_MESSAGE],
+                lambda args: (2 if len(args) == 0 else len(args)) * [self.XLET_MESSAGE]
+            ),
+            "notein": (
+                lambda args: [],
+                lambda args: (3 if len(args) == 0 else 2) * [self.XLET_MESSAGE]
+            ),
+            "ctlin": (
+                lambda args: [],
+                lambda args: (3 if len(args) == 0 else 2 if len(args) == 1 else 1) * [self.XLET_MESSAGE]
+            ),
+            "pgmin": (
+                lambda args: [],
+                lambda args: (2 if len(args) == 0 else 1) * [self.XLET_MESSAGE]
+            ),
+            "bendin": (
+                lambda args: [],
+                lambda args: (2 if len(args) == 0 else 1) * [self.XLET_MESSAGE]
+            ),
+            "touchin": (
+                lambda args: [],
+                lambda args: (2 if len(args) == 0 else 1) * [self.XLET_MESSAGE]
+            ),
+            "polytouchin": (
+                lambda args: [],
+                lambda args: (3 if len(args) == 0 else 2) * [self.XLET_MESSAGE]
             )
         }
 
-        # INLETS
-        # MESSAGE
-        self._one_msg_inlet = (
-            "unpack", "t", "trigger", "outlet"
-        )
-
-        self._two_msg_inlet = (
-            "route",
-        )
-
-        self._tree_msg_inlet = (
-            "noteout", "ctlout", "polytouchout"
-        )
-        # SOUND
-        self._one_snd_inlet = (
-            "s~", "send~", "outlet~"
-        )
-
-        self._two_snd_inlet = []
-
         # OUTLETS
-        # MESSAGE
-        self._one_msg_outlet = (
-            "pack",
-        )
-
         # SOUND
         self._one_snd_outlet = (
             "+~", "*~", "-~", "/~", "max~", "min~"
         )
-
-        self._two_snd_outlet = []
 
     def inlets(self, obj):
         if not issubclass(obj.__class__, pdobject.PdObject):
@@ -158,39 +200,12 @@ class XletCalcDatabase(object):
 
         nargs = obj.num_args()
 
-        # 1 msg inlet
-        if name in self._one_msg_inlet:
-            return [self.XLET_MESSAGE]
-
-        # 2 msg inlets
-        if name in self._two_msg_inlet:
-            return [self.XLET_MESSAGE] * 2
-
-        # 3 msg inlets
-        if name in self._tree_msg_inlet:
-            return [self.XLET_MESSAGE] * 3
-
-        # 1 snd inlet
-        if name in self._one_snd_inlet:
-            return [self.XLET_SOUND]
-
-        # 2 snd inlet
-        if name in self._two_snd_inlet:
-            return [self.XLET_SOUND] * 2
-
         if name in self._objects:
             return self._objects[name][0](obj.args)
 
         return self.inlet_conditional(name, nargs)
 
     def inlet_conditional(self, name, nargs):
-        # [s] or [send]
-        if name in ("s", "send"):
-            if nargs == 0:
-                return [self.XLET_MESSAGE] * 2
-            else:
-                return [self.XLET_MESSAGE]
-
         # 2 sound
         if name in ("*~", "-~", "+~", "/~", "max~", "min~"):
             if nargs == 0:
@@ -198,26 +213,11 @@ class XletCalcDatabase(object):
             else:
                 return [self.XLET_SOUND, self.XLET_MESSAGE]
 
-        if name in ("sel", "select", "route"):
-            if nargs in (0, 1):
-                return [self.XLET_MESSAGE] * 2
-            else:
-                return [self.XLET_MESSAGE]
-
-        if name in ("pack",):
-            if nargs == 0:
-                return [self.XLET_MESSAGE] * 2
-            else:
-                return [self.XLET_MESSAGE] * nargs
-
-        if name == "clip~":
-            return [self.XLET_SOUND] + [self.XLET_MESSAGE] * 2
-
-        # digits float object
+        # digits float object [2], [3] and others
         if XletCalcDatabase.re_num.search(name):
             return [self.XLET_MESSAGE] * 2
 
-        return []
+        return self.search_in_extdb(name, True)
 
     def outlets(self, obj):
         name = obj.name
@@ -226,17 +226,9 @@ class XletCalcDatabase(object):
         if self._dbtxt.has_object(name):
             return self._dbtxt.outlets(name)
 
-        # 1 msg outlet
-        if name in self._one_msg_outlet:
-            return [self.XLET_MESSAGE]
-
         # 1 snd outlet
         if name in self._one_snd_outlet:
             return [self.XLET_SOUND]
-
-        # 2 snd outlet
-        if name in self._two_snd_outlet:
-            return [self.XLET_SOUND] * 2
 
         if name in self._objects:
             return self._objects[name][1](obj.args)
@@ -244,29 +236,18 @@ class XletCalcDatabase(object):
         return self.outlet_conditional(name, nargs)
 
     def outlet_conditional(self, name, nargs):
-        lout_msg = lambda x, func: [self.XLET_MESSAGE] * func(x)
-        lout_snd = lambda x, func: [self.XLET_SOUND] * func(x)
-
-        if name in ("select", "sel", "route"):
-            return lout_msg(nargs, lambda x: 2 if x == 0 else x + 1)
-
-        if name in ("unpack", "t", "trigger"):
-            return lout_msg(nargs, lambda x: 2 if x == 0 else x)
-
-        if name in ("notein",):
-            return lout_msg(nargs, lambda x: 3 if x == 0 else 2)
-
-        if name in ("ctlin",):
-            return lout_msg(nargs, lambda x: 3 if x == 0 else 2 if x == 1 else 1)
-
-        if name in ("pgmin", "bendin", "touchin"):
-            return lout_msg(nargs, lambda x: 2 if x == 0 else 1)
-
-        if name in ("polytouchin",):
-            return lout_msg(nargs, lambda x: 3 if x == 0 else 2)
-
         # digits float creation
         if XletCalcDatabase.re_num.search(name):
             return [self.XLET_MESSAGE]
+
+        return self.search_in_extdb(name, False)
+
+    def search_in_extdb(self, name, inlets=True):
+        for db in self._dbs:
+            if db.has_object(name):
+                if inlets:
+                    return db.inlets(name)
+                else:
+                    return db.outlets(name)
 
         return []

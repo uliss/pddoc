@@ -1,0 +1,22 @@
+# float
+[info]
+author = "Miller"
+
+**example**
+
+[bang % outputs signal(
+->
+[float 7 # f1]
+->
+[floatatom 7 7 7 7 # s]
+
+
+
+## inlets
+1
+
+## outlets
+
+## arguments
+1. float - type
+2. list

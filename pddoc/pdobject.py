@@ -22,11 +22,11 @@ __author__ = 'Serge Poltavski'
 import six
 
 from pdbaseobject import *
-from xletcalcdatabase import *
+from xletcalculator import *
 
 
 class PdObject(PdBaseObject):
-    xlet_calculator = XletCalcDatabase()
+    xlet_calculator = XletCalculator()
     # calculates xlets number
     XMETHOD_CALCULATE = 0
     # no calculation, xlets should be defined manually by calling set_inlets

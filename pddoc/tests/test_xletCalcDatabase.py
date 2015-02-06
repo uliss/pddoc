@@ -21,7 +21,7 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.xletcalcdatabase import *
+from pddoc.xletcalculator import *
 from pddoc.pdobject import *
 
 
@@ -33,7 +33,7 @@ def make_pdo(name):
 
 class TestXletCalcDatabase(TestCase):
     def test_inlets(self):
-        xd = XletCalcDatabase()
+        xd = XletCalculator()
         self.assertEqual(xd.inlets(12), [])
         pdo = PdObject("mtof")
         self.assertEqual(xd.inlets(pdo), [PdObject.XLET_MESSAGE])
@@ -86,7 +86,7 @@ class TestXletCalcDatabase(TestCase):
         self.assertEqual(xd.inlets(pdo), [0] * 2)
 
     def test_outlets(self):
-        xd = XletCalcDatabase()
+        xd = XletCalculator()
         self.assertEqual(xd.inlets(12), [])
         pdo = PdObject("osc~")
         self.assertEqual(xd.outlets(pdo), [PdObject.XLET_SOUND])
@@ -100,7 +100,7 @@ class TestXletCalcDatabase(TestCase):
         self.assertEqual(xd.outlets(pdo), [0] * 1)
 
     def test_xlets(self):
-        xd = XletCalcDatabase()
+        xd = XletCalculator()
         self.assertEqual(xd.inlets(make_pdo("sel")), [0]*2)
         self.assertEqual(xd.inlets(make_pdo("sel .")), [0]*2)
         self.assertEqual(xd.inlets(make_pdo("sel . .")), [0])

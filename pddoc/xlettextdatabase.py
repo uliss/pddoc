@@ -21,11 +21,11 @@
 __author__ = 'Serge Poltavski'
 
 import logging
-from pdbaseobject import PdBaseObject
+from xletdatabase import XletDatabase
 import re
 
 
-class XletTextDatabase(object):
+class XletTextDatabase(XletDatabase):
     def __init__(self, fname=None):
         self._fname = ""
         self._objects = {}
@@ -47,13 +47,13 @@ class XletTextDatabase(object):
             logging.error(e.message)
             raise e
 
-    def inlets(self, objname):
+    def inlets(self, objname, args=[]):
         if not self.has_object(objname):
             return []
 
         return self._objects[objname][0]
 
-    def outlets(self, objname):
+    def outlets(self, objname, args=[]):
         if not self.has_object(objname):
             return []
 
@@ -76,9 +76,9 @@ class XletTextDatabase(object):
 
             for char in str:
                 if char == "~":
-                    res.append(PdBaseObject.XLET_SOUND)
+                    res.append(self.XLET_SOUND)
                 elif char == ".":
-                    res.append(PdBaseObject.XLET_MESSAGE)
+                    res.append(self.XLET_MESSAGE)
                 else:
                     logging.error("unknown char in inlet definition")
 
@@ -95,5 +95,3 @@ class XletTextDatabase(object):
 
     def __str__(self):
         return str(self._objects)
-
-

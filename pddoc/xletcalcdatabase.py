@@ -26,7 +26,11 @@ import imp
 
 class XletCalcDatabase(XletDatabase):
     def __init__(self, path):
-        self._module = imp.load_source("plugin", path)
+        try:
+            self._module = imp.load_source("plugin", path)
+        except IOError, e:
+            print "Plugin not found: {0:s}".format(path)
+            raise e
 
     def outlets(self, name, args=[]):
         return self._module.outlets(name, args)

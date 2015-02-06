@@ -27,21 +27,21 @@ import os
 
 class XletCalculator(object):
     def __init__(self, dbname=None):
-        if not dbname:
-            self._dbfile = os.path.dirname(__file__) + '/pd_objects.db'
-        else:
-            self._dbfile = dbname
+        ext_dir = os.path.dirname(__file__) + "/externals"
 
         self._dbs = []
-        self._dbs.append(XletTextDatabase(self._dbfile))
+        self._dbs.append(XletTextDatabase(os.path.join(ext_dir, 'core/pd_objects.db')))
+        self._dbs.append(XletCalcDatabase(os.path.join(ext_dir, 'core/xletsdb_core.py')))
 
-        for paths in os.walk(os.path.dirname(__file__) + "/externals"):
-            for db in [f for f in paths[2] if f.endswith(".db")]:
-                self._dbs.append(XletTextDatabase(paths[0] + "/" + db))
+        for paths in os.walk(ext_dir):
+            for text_db in [f for f in paths[2] if f.endswith(".db")]:
+                txt_db = XletTextDatabase(os.path.join(paths[0], text_db))
+                self._dbs.append(txt_db)
 
-        for paths in os.walk(os.path.dirname(__file__) + "/externals"):
-            for db in [f for f in paths[2] if f == "xletsdb.py"]:
-                self._dbs.append(XletCalcDatabase(paths[0] + "/" + db))
+            for calc_db in [f for f in paths[2] if f == "xletsdb.py"]:
+                calc_db = XletCalcDatabase(os.path.join(paths[0], calc_db))
+                self._dbs.append(calc_db)
+
 
     def inlets(self, obj):
         if not issubclass(obj.__class__, pdobject.PdObject):

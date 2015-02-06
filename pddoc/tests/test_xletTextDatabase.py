@@ -25,12 +25,16 @@ __author__ = 'Serge Poltavski'
 from pddoc.xlettextdatabase import XletTextDatabase
 import pddoc
 import os
+from nologging import *
 
 pddoc_path = os.path.dirname(pddoc.__file__)
-pddoc_db = pddoc_path + '/pd_objects.db'
+pddoc_db = pddoc_path + '/externals/core/pd_objects.db'
+
 
 class TestXletTextDatabase(TestCase):
     def test_load(self):
+        nl = NoLogging()
+
         with self.assertRaises(IOError):
             XletTextDatabase('not-exists')
 

@@ -25,7 +25,7 @@ import logging
 
 class NoLogging(object):
     def __init__(self):
-        logging.getLogger().setLevel(logging.ERROR)
+        logging.getLogger().setLevel(logging.CRITICAL)
 
     def __del__(self):
         logging.getLogger().setLevel(logging.DEBUG)

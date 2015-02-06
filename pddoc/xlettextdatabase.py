@@ -44,7 +44,7 @@ class XletTextDatabase(XletDatabase):
                 self.parse(line)
 
         except IOError, e:
-            logging.error(e.message)
+            logging.error("Load failed: {0:s}".format(fname))
             raise e
 
     def inlets(self, objname, args=[]):

@@ -10,7 +10,7 @@ def readme():
 
 
 setup(name='pddoc',
-      version='0.1.5b',
+      version='0.1.6',
       description='PureData documentation tools',
       long_description=readme(),
       classifiers=[

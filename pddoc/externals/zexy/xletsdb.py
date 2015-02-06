@@ -29,6 +29,10 @@ _objects = {
     "mux~": (
         lambda args: (2 if not args else len(args)) * [XLET_SOUND],
         lambda args: [XLET_SOUND]
+    ),
+    "multiplex~": (
+        lambda args: (2 if not args else len(args)) * [XLET_SOUND],
+        lambda args: [XLET_SOUND]
     )
 }
 
@@ -38,14 +42,14 @@ def has_object(name):
 
 
 def inlets(name, args):
-    if name in ("mux~", "multiplex~"):
+    if name in _objects:
         return _objects["mux~"][0](args)
 
     return []
 
 
 def outlets(name, args):
-    if name in ("mux~", "multiplex~"):
+    if name in _objects:
         return _objects["mux~"][1](args)
 
     return []

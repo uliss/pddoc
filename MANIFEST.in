@@ -1,6 +1,6 @@
 include README.md
 include pddoc/html_object.tmpl
-recursive-include pddoc/externals/pddp *.py
-include pddoc/pd_objects.db
+recursive-include pddoc/externals *.py
+recursive-include pddoc/externals *.db
 
 

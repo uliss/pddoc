@@ -15,6 +15,10 @@
 -228856 -260097 -4160 4200 1;
 #X obj 22 270 vsl 15 128 1.27 127 1 1 empty empty label -2 -20 0 25
 -228856 -260097 -4160 4200 1;
+#X obj 205 225 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10 -262144 -1 -1 0 256;
+#X obj 203 277 nbx 10 32 -1e+37 1e+37 0 0 sdf sdf Le 0 -20 0 25 -128992 -4034 -159808 0 256;
+#X symbolatom 255 143 10 0 0 0 - - -;
+#X obj 384 32 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
 #X connect 0 0 1 0;
 #X connect 2 0 0 0;
 #X connect 6 0 7 0;

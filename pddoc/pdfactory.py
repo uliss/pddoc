@@ -27,6 +27,7 @@ from pdtoggle import PdToggle
 from pdslider import PdSlider
 from pdradio import PdRadio
 from pdgcanvas import PdGCanvas
+from pdnbx import PdNbx
 import os
 import re
 import imp
@@ -54,6 +55,8 @@ def make(atoms):
         return PdGCanvas.from_atoms(atoms[1:])
     # elif name in ("nbx", "vu"):
     #     return PdCoreGui(name, 0, 0, atoms[1:])
+    elif name == "nbx":
+        return PdNbx.from_atoms(atoms)
     elif find_external_object(name):
         return externals[name].create(atoms)
     else:

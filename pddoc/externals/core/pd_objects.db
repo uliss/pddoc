@@ -86,6 +86,7 @@ pow             ..      .
 powtodb         .       .
 print           .       -
 print~          ~       -
+pvu~            ~       ..
 q8_sqrt~        ~       ~
 q8_rsqrt~       ~       ~
 qlist           .       ..

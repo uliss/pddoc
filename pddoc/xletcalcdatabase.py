@@ -28,7 +28,8 @@ import logging
 class XletCalcDatabase(XletDatabase):
     _counter = 0
 
-    def __init__(self, path):
+    def __init__(self, path, extname):
+        self._extname = extname
         XletCalcDatabase._counter += 1
         self._module = None
 

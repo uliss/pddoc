@@ -36,17 +36,17 @@ class TestXletTextDatabase(TestCase):
         nl = NoLogging()
 
         with self.assertRaises(IOError):
-            XletTextDatabase('not-exists')
+            XletTextDatabase('not-exists', None)
 
-        db = XletTextDatabase(pddoc_db)
+        db = XletTextDatabase(pddoc_db, "core")
 
     def test_parse(self):
-        db = XletTextDatabase()
+        db = XletTextDatabase(None, None)
         db.parse('abs ~~~ -')
         self.assertTrue(db.has_object("abs"))
 
     def test_inlets(self):
-        db = XletTextDatabase(pddoc_db)
+        db = XletTextDatabase(pddoc_db, "core")
         self.assertEqual(db.inlets('none'), [])
         self.assertEqual(db.inlets('bang'), [0])
         self.assertEqual(db.inlets('b'), [0])
@@ -57,7 +57,7 @@ class TestXletTextDatabase(TestCase):
         self.assertEqual(db.inlets('symbol'), [0, 0])
 
     def test_outlets(self):
-        db = XletTextDatabase(pddoc_db)
+        db = XletTextDatabase(pddoc_db, "core")
         self.assertEqual(db.outlets('none'), [])
         self.assertEqual(db.outlets('bang'), [0])
         self.assertEqual(db.outlets('b'), [0])

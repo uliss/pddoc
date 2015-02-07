@@ -26,8 +26,9 @@ import re
 
 
 class XletTextDatabase(XletDatabase):
-    def __init__(self, fname=None):
-        self._fname = ""
+    def __init__(self, fname, extname):
+        self._extname = extname
+        self._fname = None
         self._objects = {}
         if fname:
             self.load(fname)

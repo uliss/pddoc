@@ -21,8 +21,8 @@ __author__ = 'Serge Poltavski'
 
 import six
 
-from pdbaseobject import *
-from xletcalculator import *
+from pdbaseobject import PdBaseObject
+from xletcalculator import XletCalculator
 
 
 class PdObject(PdBaseObject):

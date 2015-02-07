@@ -22,6 +22,7 @@ __author__ = 'Serge Poltavski'
 import pdobject
 from xlettextdatabase import XletTextDatabase
 from xletcalcdatabase import XletCalcDatabase
+from xletpatchlookup import XletPatchLookup
 import os
 
 
@@ -42,6 +43,8 @@ class XletCalculator(object):
             for calc_db in [f for f in paths[2] if f == "xletsdb.py"]:
                 calc_db = XletCalcDatabase(os.path.join(paths[0], calc_db), extname)
                 self._dbs.append(calc_db)
+
+        self._dbs.append(XletPatchLookup())
 
     def has_ext_prefix(self, obj):
         return "/" in obj.name and obj.name not in ("/", "/~")

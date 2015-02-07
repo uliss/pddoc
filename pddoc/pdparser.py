@@ -109,7 +109,7 @@ class PdParser:
             c._args = atoms[3:]
             self.current_canvas().append_subpatch(c)
         else:
-            logging.warning("unknown canvas type: {0:s}".format(cnv_type))
+            logging.warning(u"unknown canvas type: {0:s}".format(cnv_type))
             assert False
 
     def parse_obj(self, atoms):

@@ -74,7 +74,7 @@ class PdVu(PdCoreGui):
     def draw_scale(self, painter):
         scale_txt = (">+12", "+6", "+2", "-0dB", "-2", "-6", "-12", "-20", "-30", "-50", "<-99")
         x = self.right + 5
-        y = self.top + 8
+        y = self.top + 4
         ystep = self.get_height() / (len(scale_txt) - 1)
 
         for txt in scale_txt:

@@ -27,6 +27,9 @@ class XletDatabase(object):
     XLET_MESSAGE = PdBaseObject.XLET_MESSAGE
     XLET_SOUND = PdBaseObject.XLET_SOUND
 
+    def __init__(self, extname=None):
+        self._extname = extname
+
     def has_object(self, name):
         return False
 
@@ -35,3 +38,7 @@ class XletDatabase(object):
 
     def outlets(self, name, args=[]):
         return []
+
+    @property
+    def extname(self):
+        return self._extname

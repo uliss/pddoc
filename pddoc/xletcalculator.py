@@ -82,4 +82,4 @@ class XletCalculator(object):
             if db.has_object(name):
                 return db.inlets(name, args), db.outlets(name, args)
 
-        return []
+        return [], []

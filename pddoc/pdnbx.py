@@ -23,10 +23,6 @@ __author__ = 'Serge Poltavski'
 from pdcoregui import *
 
 
-# [init]? - when set outputs
-
-# [log_height]? -
-
 class PdNbx(PdCoreGui):
     def __init__(self, x, y, **kwargs):
         PdCoreGui.__init__(self, "nbx", x, y, [], **kwargs)

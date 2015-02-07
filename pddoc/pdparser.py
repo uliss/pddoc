@@ -75,7 +75,7 @@ class PdParser:
             atoms.pop(0)
             self.parse_canvas(atoms)
         else:
-            logging.warning(u"unknown frameset type: {0:s}".format(atoms[0]))
+            logging.warning("unknown frameset type: {0:s}".format(atoms[0]))
 
     def parse_messages(self, atoms):
         x = atoms[0]
@@ -109,7 +109,7 @@ class PdParser:
             c._args = atoms[3:]
             self.current_canvas().append_subpatch(c)
         else:
-            logging.warning(u"unknown canvas type: {0:s}".format(cnv_type))
+            logging.warning("unknown canvas type: {0:s}".format(cnv_type))
             assert False
 
     def parse_obj(self, atoms):

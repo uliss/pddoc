@@ -20,7 +20,6 @@
 __author__ = 'Serge Poltavski'
 
 from pdfloatatom import PdFloatAtom
-from pdcoregui import PdCoreGui
 from pdobject import PdObject
 from pdbng import PdBng
 from pdtoggle import PdToggle
@@ -28,9 +27,9 @@ from pdslider import PdSlider
 from pdradio import PdRadio
 from pdgcanvas import PdGCanvas
 from pdnbx import PdNbx
+from pdvu import PdVu
 import os
 import re
-import imp
 import sys
 
 externals = {}
@@ -53,8 +52,8 @@ def make(atoms):
         return PdRadio.from_atoms(atoms)
     elif name == "cnv":
         return PdGCanvas.from_atoms(atoms[1:])
-    # elif name in ("nbx", "vu"):
-    #     return PdCoreGui(name, 0, 0, atoms[1:])
+    elif name == "vu":
+        return PdVu.from_atoms(atoms)
     elif name == "nbx":
         return PdNbx.from_atoms(atoms)
     elif find_external_object(name):

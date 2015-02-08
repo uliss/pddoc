@@ -39,3 +39,6 @@ class TestCairoPainter(unittest.TestCase):
         cp = CairoPainter(canvas.width, canvas.height, "out/output_cairo.png")
         drawer = PdDrawer()
         drawer.draw(canvas, cp)
+
+        cp2 = CairoPainter(canvas.width, canvas.height, "out/output_cairo.pdf", fmt="pdf")
+        drawer.draw(canvas, cp2)

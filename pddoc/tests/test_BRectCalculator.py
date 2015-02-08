@@ -36,7 +36,7 @@ class TestBRectCalculator(TestCase):
         br = BRectCalculator()
 
         p.canvas.traverse(br)
-        self.assertEqual(br.brect(), (26, 23, 223, 227))
+        self.assertEqual(br.brect(), (26, 23, 366, 227))
 
         pnt = CairoPainter(223, 227, "out/objects.png", "png", xoffset=-26, yoffset=-23)
         d = PdDrawer()

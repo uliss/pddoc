@@ -1,4 +1,5 @@
 #N canvas 431 172 450 300 10;
+#X declare -path ..;
 #X obj 26 23 s;
 #X obj 26 53 send;
 #X obj 26 83 r;
@@ -22,3 +23,4 @@
 #X obj 176 83 int;
 #X obj 226 83 i;
 #X obj 176 113 symbol;
+#X obj 291 23 declare -path ..;

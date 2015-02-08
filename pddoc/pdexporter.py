@@ -75,6 +75,10 @@ class PdExporter(object):
         for l in textwrap.wrap(line, 70):
             self.result.append(l)
 
+        # handle declare
+        if obj.name == "declare":
+            self.result.insert(1, "#X declare {0:s};".format(" ".join(obj.args)))
+
     def visit_core_gui(self, gui):
         self.visit_object(gui)
 

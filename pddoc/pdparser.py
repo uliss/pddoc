@@ -31,7 +31,7 @@ import pdfactory
 
 
 class PdParser:
-    lines_re = re.compile("(#(.*?)[^\\\])\r?\n?;\r?\n", re.MULTILINE | re.DOTALL)
+    lines_re = re.compile("^(#(.*?)[^\\\])\r?\n?;\r?\n", re.MULTILINE | re.DOTALL)
     split_re = re.compile(" |\r\n?|\n", re.MULTILINE)
 
     def __init__(self):
@@ -39,6 +39,10 @@ class PdParser:
         self.canvas_stack = []
         self._array = None
         self._fname = None
+
+    def parse_declare(self, atoms):
+        pass  # TODO
+        # print atoms
 
     def parse_canvas(self, atoms):
         # get positions
@@ -152,21 +156,16 @@ class PdParser:
     def parse_objects(self, atoms):
         name = atoms[0]
         if name == 'msg':
-            atoms.pop(0)
-            self.parse_messages(atoms)
+            self.parse_messages(atoms[1:])
         elif name == "obj":
-            atoms.pop(0)
-            self.parse_obj(atoms)
+            self.parse_obj(atoms[1:])
         elif name == "connect":
-            atoms.pop(0)
-            self.parse_connect(atoms)
+            self.parse_connect(atoms[1:])
         elif name == "text":
-            atoms.pop(0)
-            self.parse_comments(atoms)
+            self.parse_comments(atoms[1:])
         elif name == "restore":
             # end canvas definition
-            atoms.pop(0)
-            self.parse_restore(atoms)
+            self.parse_restore(atoms[1:])
         elif name in("floatatom", "symbolatom"):
             obj = pdfactory.make(atoms)
             self.current_canvas().append_object(obj)
@@ -174,16 +173,16 @@ class PdParser:
             self.parse_array(atoms)
         elif name == "coords":
             self.parse_coords(atoms)
+        elif name == "declare":
+            self.parse_declare(atoms)
         else:
             logging.warning("unknown atom: {0:s}, in file \"{1:s}\"".format(name, self._fname))
 
     def parse_atoms(self, atoms):
         if atoms[0] == '#X':
-            atoms.pop(0)
-            self.parse_objects(atoms)
+            self.parse_objects(atoms[1:])
         elif atoms[0] == '#N':
-            atoms.pop(0)
-            self.parse_frameset(atoms)
+            self.parse_frameset(atoms[1:])
         elif atoms[0] == '#A':
             self.parse_array_content(atoms[2:])
         else:

@@ -70,8 +70,7 @@ class TestPdParser(TestCase):
         p = PdParser()
         self.assertTrue(p.parse("objects.pd"))
         cnv = p.canvas
-        self.assertEqual(len(cnv.objects), 23)
-
+        self.assertEqual(len(cnv.objects), 24)
 
     def test_parse_comments(self):
         p = PdParser()

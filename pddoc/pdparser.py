@@ -38,6 +38,7 @@ class PdParser:
         self.canvas = None
         self.canvas_stack = []
         self._array = None
+        self._fname = None
 
     def parse_canvas(self, atoms):
         # get positions
@@ -166,7 +167,7 @@ class PdParser:
             # end canvas definition
             atoms.pop(0)
             self.parse_restore(atoms)
-        elif name == "floatatom":
+        elif name in("floatatom", "symbolatom"):
             obj = pdfactory.make(atoms)
             self.current_canvas().append_object(obj)
         elif name == "array":
@@ -174,7 +175,7 @@ class PdParser:
         elif name == "coords":
             self.parse_coords(atoms)
         else:
-            print name
+            logging.warning("unknown atom: {0:s}, in file \"{1:s}\"".format(name, self._fname))
 
     def parse_atoms(self, atoms):
         if atoms[0] == '#X':
@@ -193,6 +194,7 @@ class PdParser:
             logging.warning(u"File not exists: \"{0:s}\"".format(file_name))
             return False
 
+        self._fname = file_name
         f = open(file_name, "r")
         lines = f.read()
         f.close()

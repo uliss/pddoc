@@ -28,6 +28,7 @@ from pdradio import PdRadio
 from pdgcanvas import PdGCanvas
 from pdnbx import PdNbx
 from pdvu import PdVu
+from pdsymbolatom import PdSymbolAtom
 import os
 import re
 import sys
@@ -42,6 +43,8 @@ def make(atoms):
 
     if name == "floatatom":
         return PdFloatAtom.from_atoms(atoms[1:])
+    if name == "symbolatom":
+        return PdSymbolAtom.from_atoms(atoms[1:])
     elif name == "bng":
         return PdBng.from_atoms(atoms[1:])
     elif name == "tgl":

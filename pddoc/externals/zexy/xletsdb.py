@@ -33,7 +33,23 @@ _objects = {
     "multiplex~": (
         lambda args: (2 if not args else len(args)) * [XLET_SOUND],
         lambda args: [XLET_SOUND]
-    )
+    ),
+    "mux": (
+        lambda args: (3 if len(args) < 3 else len(args) + 1) * [XLET_MESSAGE],
+        lambda args: [XLET_MESSAGE]
+    ),
+    "multiplex": (
+        lambda args: (3 if len(args) < 3 else len(args) + 1) * [XLET_MESSAGE],
+        lambda args: [XLET_MESSAGE]
+    ),
+    "demux": (
+        lambda args: 2 * [XLET_MESSAGE],
+        lambda args: (2 if len(args) < 3 else len(args)) * [XLET_MESSAGE]
+    ),
+    "demultiplex": (
+        lambda args: 2 * [XLET_MESSAGE],
+        lambda args: (2 if len(args) < 3 else len(args)) * [XLET_MESSAGE]
+    ),
 }
 
 

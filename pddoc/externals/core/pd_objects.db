@@ -2,6 +2,7 @@ none            -       -
 atan            .       .
 atan2           .       .
 abs             .       .
+abs~            ~       ~
 bag             ..      .
 bang,b          .       .
 bang~           .       .
@@ -9,7 +10,7 @@ bendout         ..      -
 biquad~         ~       ~
 block~          .       -
 bp~             ~..     ~
-catch~          ~       -
+catch~          -       ~
 change          .       .
 clip            ...     .
 clip~           ~..     ~
@@ -44,6 +45,7 @@ ftom~           ~       ~
 getsize         .       .
 hip~            ~.      ~
 ifft~           ~~      ~~
+import          .       ..
 init            .       .
 inlet           -       .
 inlet~          -       ~
@@ -107,12 +109,14 @@ savepanel       .       .
 setsize         ..      -
 send~,s~        ~       -
 sig~            .       ~
+sigmund~        ~       ..
 sin             .       .
 sin~            ~       ~
 snapshot~       ~       .
 soundfiler      .       .
 spigot          ..      .
 sqrt            .       .
+sqrt~           ~       ~
 stripnote       ..      ..
 struct          -       .
 sublist         .       .
@@ -134,7 +138,7 @@ tan             .       .
 textfile        .       ..
 template        -       .
 threshold~      ~.      ..
-throw~          -       ~
+throw~          ~       -
 timer           ..      .
 touchout        ..      -
 until           ..      .

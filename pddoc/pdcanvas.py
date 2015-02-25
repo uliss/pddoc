@@ -184,7 +184,6 @@ class PdCanvas(PdObject):
         elif self.type == self.TYPE_SUBPATCH:
             name = "Subpatch "
         else:
-            print self.name
             assert False
 
         name += u"\"{0:s}\"".format(self.name)
@@ -195,6 +194,30 @@ class PdCanvas(PdObject):
             res += "\n"
 
         return res
+
+    def gop_rect(self):
+        return self._gop['xoff'], self._gop['yoff'], self._gop['width'], self._gop['height']
+
+    def obj_is_gop(self, obj):
+        x, y, w, h = self.gop_rect()
+        left = x
+        right = x + w
+        top = y
+        bottom = y + h
+
+        if left <= obj.left and obj.right <= right and top <= obj.top and obj.bottom <= bottom:
+            return True
+
+        return False
+
+    def draw_gop(self, painter):
+        if self.type != self.TYPE_WINDOW:
+            return
+
+        painter.draw_canvas(self)
+        for obj in self._objects:
+            if self.obj_is_gop(obj):
+                obj.draw(painter)
 
     def draw(self, painter):
         if self.type == self.TYPE_NONE:

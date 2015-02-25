@@ -29,6 +29,7 @@ from pdgcanvas import PdGCanvas
 from pdnbx import PdNbx
 from pdvu import PdVu
 from pdsymbolatom import PdSymbolAtom
+from xletpatchlookup import XletPatchLookup
 import os
 import re
 import sys

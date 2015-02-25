@@ -206,6 +206,16 @@ class CairoPainter(PdPainter):
         self.draw_xlets(subpatch.inlets(), x, y, w)
         self.draw_xlets(subpatch.outlets(), x, y + h - self.style.xlet_msg_height, w)
 
+    def draw_gop(self, obj, gop_canvas):
+        assert isinstance(gop_canvas, PdCanvas)
+        x, y, w, h = gop_canvas.gop_rect()
+        self.cr.save()
+        self.draw_box(obj.x, obj.y, w, h)
+        self.cr.translate(obj.x - x, obj.y - y)
+        gop_canvas.draw_gop(self)
+        self.cr.restore()
+        pass
+
     def draw_object(self, obj):
         txt = obj.to_string()
         (x, y, width, height, dx, dy) = self.cr.text_extents(txt)

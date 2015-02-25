@@ -72,6 +72,10 @@ class XletPatchLookup(XletDatabase):
     def clean_name(self, name):
         return re.sub("/[\W]+/", '', name) + ".pd"
 
+    def get_object(self, name):
+        cleanName = self.clean_name(name)
+        return self._cache.get(cleanName)
+
     def has_object(self, name):
         cleanName = self.clean_name(name)
 

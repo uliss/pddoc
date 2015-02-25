@@ -10,7 +10,7 @@ def readme():
 
 
 setup(name='pddoc',
-      version='0.1.6',
+      version='0.1.7',
       description='PureData documentation tools',
       long_description=readme(),
       classifiers=[
@@ -32,7 +32,7 @@ setup(name='pddoc',
       test_suite='nose.collector',
       tests_require=['nose'],
       entry_points={
-          'console_scripts': ['pd2image=pddoc.pd2image:main']
+          'console_scripts': ['pd2image=pddoc.pd2image:main','pdobject2image=pddoc.pd_object2image:main']
       },
       include_package_data=True,
       zip_safe=False)

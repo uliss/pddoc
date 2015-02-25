@@ -54,6 +54,22 @@ def expr_tilde_args_parse(args):
                 res.append(XLET_MESSAGE)
         return res
 
+def func_list_in(args):
+    if not args:
+        return 2
+    if args[0] in ("trim", "length"):
+        return 1
+    else:
+        return 2
+
+def func_list_out(args):
+    if not args:
+        return 1
+    if args[0] == "split":
+        return 3
+    else:
+        return 1
+
 def fexpr_tilde_args_parse(args):
     if len(args) == 0:
         return []
@@ -167,8 +183,13 @@ _objects = {
     "polytouchin": (
         lambda args: [],
         lambda args: (3 if len(args) == 0 else 2) * [XLET_MESSAGE]
+    ),
+    "list": (
+        lambda args: func_list_in(args) * [XLET_MESSAGE],
+        lambda args: func_list_out(args) * [XLET_MESSAGE]
     )
 }
+
 
 
 def is_snd_math(name):

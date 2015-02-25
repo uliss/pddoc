@@ -24,8 +24,6 @@ import six
 from pdbaseobject import PdBaseObject
 from xletcalculator import XletCalculator
 from xletpatchlookup import XletPatchLookup
-import pdparser
-import pdcanvas
 import logging
 
 
@@ -65,6 +63,8 @@ class PdObject(PdBaseObject):
         else:
             # objname.pd patch found
             if self.xlet_patch_finder.has_object(self.name):
+                import pdparser
+
                 obj = self.xlet_patch_finder.get_object(self.name)
                 parser = pdparser.PdParser()
                 if not parser.parse(obj.path):

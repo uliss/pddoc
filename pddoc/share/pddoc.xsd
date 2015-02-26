@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="pddoc" type="RootElementType"/>
+
+    <xs:simpleType name="ObjectNameType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[^\s;]+"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="XletType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="bang"/>
+            <xs:enumeration value="float"/>
+            <xs:enumeration value="list"/>
+            <xs:enumeration value="any"/>
+            <xs:enumeration value="pointer"/>
+            <xs:enumeration value="sound"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="LabelPos">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="left"/>
+            <xs:enumeration value="right"/>
+            <xs:enumeration value="top"/>
+            <xs:enumeration value="bottom"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="HexColor">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="(#[0-9a-fA-F]{3}|#[0-9a-fA-F]{6})"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="PdXletType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="sound"/>
+            <xs:enumeration value="control"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="XletNumber">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="([\d]{1,2}|n)"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="RootElementType">
+        <xs:sequence>
+            <xs:element name="object" type="ObjectType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="version" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="[0-9.]+"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="ObjectType">
+        <xs:all>
+            <xs:element name="title"/>
+            <xs:element name="meta" type="MetaElementType"/>
+            <xs:element name="example" type="ExampleElementType" minOccurs="0"/>
+            <xs:element name="inlets" type="InletsElementType" minOccurs="0"/>
+            <xs:element name="outlets" type="OutletsElementType" minOccurs="0"/>
+            <xs:element name="arguments" type="ArgumentsElementType" minOccurs="0"/>
+            <xs:element name="info" type="InfoElementType" minOccurs="0"/>
+        </xs:all>
+        <xs:attribute name="name" use="required" type="ObjectNameType"/>
+    </xs:complexType>
+
+    <xs:complexType name="MetaElementType">
+        <xs:all>
+            <xs:element name="authors" type="AuthorsElementType"/>
+            <xs:element name="description"/>
+            <xs:element name="license" type="LicenseElementType"/>
+            <xs:element name="library" type="xs:string"/>
+            <xs:element name="contacts" type="xs:string" minOccurs="0"/>
+            <xs:element name="version" type="xs:string" minOccurs="0"/>
+            <xs:element name="website" type="xs:anyURI" minOccurs="0"/>
+            <xs:element name="keywords" type="xs:string" minOccurs="0"/>
+            <xs:element name="category" type="xs:string" minOccurs="0"/>
+            <xs:element name="aliases" type="AliasesElementType" minOccurs="0"/>
+            <xs:element name="also" type="AlsoElementType" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="AuthorsElementType">
+        <xs:sequence>
+            <xs:element name="author" minOccurs="1" maxOccurs="unbounded" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="LicenseElementType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="url" type="xs:anyURI" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="AliasesElementType">
+        <xs:sequence>
+            <xs:element name="alias" minOccurs="1" maxOccurs="unbounded" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AlsoElementType">
+        <xs:sequence>
+            <xs:element name="see" minOccurs="1" maxOccurs="unbounded" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ExampleElementType">
+        <xs:sequence>
+            <xs:element name="pdexample" type="PdExampleType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PdExampleType">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="col" minOccurs="0" maxOccurs="1" type="LayoutCol"/>
+                <xs:element name="row" minOccurs="0" maxOccurs="1" type="LayoutRow"/>
+            </xs:choice>
+            <xs:element name="pdconnect" type="PdConnectType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="width" use="optional" type="xs:unsignedShort"/>
+        <xs:attribute name="height" use="optional" type="xs:unsignedShort"/>
+        <xs:attribute name="file" use="optional" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="LayoutCol">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="row" type="LayoutRow"/>
+            <xs:element name="pdmessage"/>
+            <xs:element name="pdcomment" type="PdCommentElementType"/>
+            <xs:element name="pdobject" type="PdObjectElementType"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="LayoutRow">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="col" type="LayoutCol"/>
+            <xs:element name="pdmessage"/>
+            <xs:element name="pdcomment" type="PdCommentElementType"/>
+            <xs:element name="pdobject" type="PdObjectElementType"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:simpleType name="PdCommentElementType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+    <xs:complexType name="PdConnectType">
+        <xs:attribute name="src" use="required" type="xs:IDREF"/>
+        <xs:attribute name="src_out" use="required" type="xs:unsignedByte"/>
+        <xs:attribute name="dest" use="required" type="xs:IDREF"/>
+        <xs:attribute name="dest_in" use="required" type="xs:unsignedByte"/>
+    </xs:complexType>
+
+    <xs:complexType name="InletsElementType">
+        <xs:sequence>
+            <xs:element name="inlet" minOccurs="1" maxOccurs="unbounded" type="XletElementType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="OutletsElementType">
+        <xs:sequence>
+            <xs:element name="outlet" minOccurs="1" maxOccurs="unbounded" type="XletElementType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="XletElementType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="number" use="required" type="XletNumber"/>
+                <xs:attribute name="type" use="required" type="XletType"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="ArgumentsElementType">
+        <xs:sequence>
+            <xs:element name="argument" type="ArgumentElementType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ArgumentElementType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="type" use="required" type="XletType"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="InfoElementType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="text" type="MarkupText"/>
+            <xs:element name="itemize" type="MarkupItemize"/>
+            <xs:element name="pdobject" type="PdObjectElementType"/>
+            <xs:element name="pdsubpatch" type="PdObjectElementType"/>
+            <xs:element name="a" type="MarkupA" minOccurs="0"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="MarkupItemize">
+        <xs:sequence>
+            <xs:element name="item" minOccurs="1" maxOccurs="unbounded" type="MarkupItem"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MarkupText">
+        <xs:simpleContent>
+            <xs:extension base="xs:string"/>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="MarkupItem" mixed="true">
+        <xs:sequence>
+            <xs:element name="a" type="MarkupA" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MarkupA">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="href" use="required" type="xs:anyURI"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="PdObjectElementType">
+        <xs:sequence>
+            <xs:element name="pdinlet" type="PdXletElementType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="pdoutlet" minOccurs="0" maxOccurs="unbounded" type="PdXletElementType"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="name" type="ObjectNameType" use="required"/>
+        <xs:attribute name="args" type="xs:string" use="optional"/>
+        <xs:attribute name="comment" type="xs:string" use="optional"/>
+        <xs:attribute name="highlight" type="xs:boolean" use="optional"/>
+        <xs:attribute name="bg_color" type="HexColor" use="optional"/>
+        <xs:attribute name="offset" type="xs:decimal" use="optional"/>
+        <xs:attribute name="value" type="xs:string" use="optional"/>
+        <xs:attribute name="digits" type="xs:unsignedByte" use="optional"/>
+        <xs:attribute name="label" type="xs:string" use="optional"/>
+        <xs:attribute name="label_pos" type="LabelPos" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="PdXletElementType">
+        <xs:attribute name="type" type="PdXletType" use="required"/>
+    </xs:complexType>
+
+</xs:schema>

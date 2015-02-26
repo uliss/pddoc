@@ -7,6 +7,7 @@
             <!-- list of authors -->
             <authors>
                 <author>Miller Puckette</author>
+                <author>author 2</author>
             </authors>
             <!-- license information -->
             <license url="http://www.gnu.org/copyleft/gpl.html">GPL v3</license>
@@ -105,6 +106,9 @@
         </arguments>
         <!-- additional info -->
         <info>
+            <text>test para</text>
+            <text>another para</text>
+            <a href="http://github.com">github.com</a>
             <itemize>
                 <item>item no.1</item>
                 <item>
@@ -117,7 +121,7 @@
                     <a href="pddoc://symbol.pd">symbol</a>
                 </item>
             </itemize>
-            <pdobject id="f1" name="float" args="1 2 3" comment="float">
+            <pdobject id="fs1" name="float" args="1 2 3" comment="float">
                 <pdinlet type="control"/>
                 <pdinlet type="control"/>
                 <pdoutlet type="control"/>

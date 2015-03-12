@@ -23,12 +23,13 @@ import pdobject
 from xlettextdatabase import XletTextDatabase
 from xletcalcdatabase import XletCalcDatabase
 from xletpatchlookup import XletPatchLookup
+from . import EXTERNALS_DIR
 import os
 
 
 class XletCalculator(object):
     def __init__(self, dbname=None):
-        ext_dir = os.path.dirname(__file__) + "/../externals"
+        ext_dir = EXTERNALS_DIR
 
         self._dbs = []
         self._dbs.append(XletTextDatabase(os.path.join(ext_dir, 'core/pd_objects.db'), "core"))

@@ -19,6 +19,7 @@
 
 __author__ = 'Serge Poltavski'
 import re
+import os.path as path
 
 
 class PdBaseObject(object):

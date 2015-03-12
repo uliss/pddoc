@@ -21,9 +21,13 @@
 __author__ = 'Serge Poltavski'
 
 import logging
+import os.path as path
 from ..colorformatter import ColorizingStreamHandler
 
 root = logging.getLogger()
 root.setLevel(logging.DEBUG)
 root.addHandler(ColorizingStreamHandler())
+
+
+EXTERNALS_DIR = path.join(path.dirname(__file__), "externals")
 

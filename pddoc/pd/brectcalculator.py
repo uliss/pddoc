@@ -22,7 +22,6 @@ from pddrawstyle import *
 import cairo
 import textwrap
 from pdcomment import *
-from pdobject import *
 from pdmessage import *
 
 

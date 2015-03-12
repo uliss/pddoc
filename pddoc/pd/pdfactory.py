@@ -20,6 +20,7 @@
 __author__ = 'Serge Poltavski'
 
 from pdfloatatom import PdFloatAtom
+from . import EXTERNALS_DIR
 from pdobject import PdObject
 from pdbng import PdBng
 from pdtoggle import PdToggle
@@ -82,8 +83,9 @@ def find_external_object(name):
     if not rname.match(name):
         return False
 
-    mod_path = os.path.dirname(__file__) + "/../externals/" + name
+    mod_path = os.path.join(EXTERNALS_DIR, name)
     if not os.path.exists(mod_path + ".py"):
+        #  print mod_path + ".py"
         return False
 
     mod_dir = os.path.dirname(mod_path)

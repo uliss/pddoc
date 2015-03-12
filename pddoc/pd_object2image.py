@@ -19,10 +19,11 @@
 
 __author__ = 'Serge Poltavski'
 
-from cairopainter import *
-from pd.brectcalculator import *
 import argparse
 import os.path
+
+from cairopainter import *
+import pd
 
 
 def detect_format(args):
@@ -41,7 +42,7 @@ def detect_format(args):
     return ext
 
 def draw_object(object, fname, format, **kwargs):
-    w, h = BRectCalculator().object_brect(object)[2:]
+    w, h = pd.BRectCalculator().object_brect(object)[2:]
     pad = 1 # pixel
     w += pad
     h += pad
@@ -59,7 +60,7 @@ def main():
 
     args = vars(arg_parser.parse_args())
 
-    pdo = PdObject(args['name'])
+    pdo = pd.PdObject(args['name'])
 
     if not args['output']:
         if args['format']:

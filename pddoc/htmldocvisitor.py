@@ -20,11 +20,11 @@
 __author__ = 'Serge Poltavski'
 
 import os
-import pddrawer
-import pd.canvas as pdcanvas
-import pd.parser as pdparser
 import cairopainter
 from mako.template import Template
+
+import pddrawer
+import pd
 from docobject import *
 from pdlayout import *
 
@@ -101,14 +101,14 @@ class HtmlDocVisitor(object):
         self._image_counter += 1
         return self._image_counter, "image_{0:02d}.png".format(self._image_counter)
 
-    def pdexample_begin(self, pd):
-        if pd.file():
-            parser = pdparser.PdParser()
-            parser.parse(pd.file())
+    def pdexample_begin(self, pdexample):
+        if pdexample.file():
+            parser = pd.PdParser()
+            parser.parse(pdexample.file())
             self._layout.canvas = parser.canvas
         else:
-            self._layout.canvas = pdcanvas.PdCanvas(0, 0, 10, 10, name="10")
-            self._layout.canvas.type = pdcanvas.PdCanvas.TYPE_WINDOW
+            self._layout.canvas = pd.PdCanvas(0, 0, 10, 10, name="10")
+            self._layout.canvas.type =pd.PdCanvas.TYPE_WINDOW
 
     def pdexample_end(self, pd):
         w, h = self.draw_area_size(pd)

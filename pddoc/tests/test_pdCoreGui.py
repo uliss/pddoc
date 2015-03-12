@@ -23,23 +23,24 @@ __author__ = 'Serge Poltavski'
 
 from pddoc.cairopainter import *
 from pddoc.pddrawer import *
+import pddoc.pd as pd
 
 tgl = ['15', '0', 'empty', 'empty', 'empty', '17', '7', '0', '10', '-262144', '-1', '-1', '0', '1']
 
 class TestPdCoreGui(TestCase):
     def test_init(self):
-        pco = PdCoreGui("tgl", 0, 0, tgl)
-        self.assertEqual(pco.inlets(), [PdCoreGui.XLET_GUI])
-        self.assertEqual(pco.outlets(), [PdCoreGui.XLET_GUI])
+        pco = pd.PdCoreGui("tgl", 0, 0, tgl)
+        self.assertEqual(pco.inlets(), [pd.PdCoreGui.XLET_GUI])
+        self.assertEqual(pco.outlets(), [pd.PdCoreGui.XLET_GUI])
         self.assertEqual(pco.send, "empty")
         self.assertEqual(pco.receive, "empty")
 
     def test_str__(self):
-        pco = PdCoreGui("tgl", 5, 6, tgl)
+        pco = pd.PdCoreGui("tgl", 5, 6, tgl)
         self.assertEqual(str(pco), "[GUI:tgl]                                 {x:5,y:6,id:-1}")
 
     def test_draw(self):
-        p = PdParser()
+        p = pd.PdParser()
         p.parse("core_gui.pd")
         canvas = p.canvas
         self.assertTrue(canvas)

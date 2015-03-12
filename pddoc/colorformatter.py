@@ -1,6 +1,7 @@
 #
 # Copyright (C) 2010-2012 Vinay Sajip. All rights reserved. Licensed under the new BSD license.
 #
+
 import ctypes
 import logging
 import os

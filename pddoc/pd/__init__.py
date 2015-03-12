@@ -28,6 +28,12 @@ root = logging.getLogger()
 root.setLevel(logging.DEBUG)
 root.addHandler(ColorizingStreamHandler())
 
-
 EXTERNALS_DIR = path.join(path.dirname(__file__), "externals")
 
+from obj import PdObject
+from baseobject import PdBaseObject
+from canvas import PdCanvas
+from drawstyle import PdDrawStyle
+from parser import PdParser
+from brectcalculator import BRectCalculator
+from coregui import PdCoreGui

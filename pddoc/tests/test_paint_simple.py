@@ -19,17 +19,17 @@
 
 __author__ = 'Serge Poltavski'
 
-import sys
 import os
+import unittest
+
 from pddoc.cairopainter import *
 from pddoc.pddrawer import *
-import unittest
 
 
 class TestPaintSimple(unittest.TestCase):
     def test_simple(self):
         path = os.path.basename(__file__)
-        parser = PdParser()
+        parser = pd.PdParser()
         parser.parse("simple.pd")
 
         canvas = parser.canvas

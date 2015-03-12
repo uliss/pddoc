@@ -19,7 +19,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from pd.canvas import *
+import pd
 import textwrap
 
 
@@ -28,13 +28,13 @@ class PdExporter(object):
         self.result = []
 
     def visit_canvas_begin(self, cnv):
-        assert isinstance(cnv, PdCanvas)
+        assert isinstance(cnv, pd.PdCanvas)
 
-        if cnv.type == PdCanvas.TYPE_WINDOW:
+        if cnv.type == pd.PdCanvas.TYPE_WINDOW:
             line = "#N canvas {0:d} {1:d} {2:d} {3:d} {4:s};". \
                 format(cnv.x, cnv.y, cnv.width, cnv.height, cnv.name)
             self.result.append(line)
-        elif cnv.type == PdCanvas.TYPE_SUBPATCH:
+        elif cnv.type == pd.PdCanvas.TYPE_SUBPATCH:
             line = "#N canvas {0:d} {1:d} {2:d} {3:d} {4:s} 0;". \
                 format(cnv.x, cnv.y, cnv.width, cnv.height, cnv.name)
             self.result.append(line)
@@ -47,9 +47,9 @@ class PdExporter(object):
         pass
 
     def visit_canvas_end(self, cnv):
-        if cnv.type == PdCanvas.TYPE_WINDOW:
+        if cnv.type == pd.PdCanvas.TYPE_WINDOW:
             self.result.append("")
-        elif cnv.type == PdCanvas.TYPE_SUBPATCH:
+        elif cnv.type == pd.PdCanvas.TYPE_SUBPATCH:
             line = "#X restore {0:d} {1:d} pd {2:s};".format(cnv.x, cnv.y, cnv.name)
             self.result.append(line)
         else:

@@ -19,19 +19,18 @@
 
 __author__ = 'Serge Poltavski'
 
-from pd.baseobject import *
-from pdpainter import *
 import cairo
 import textwrap
-from pd.drawstyle import *
 from math import pi
-from pd.canvas import PdCanvas
+
+import pd
+from pdpainter import *
 
 
 class CairoPainter(PdPainter):
     def __init__(self, width, height, output, fmt="png", **kwargs):
         PdPainter.__init__(self)
-        self.style = PdDrawStyle()
+        self.style = pd.PdDrawStyle()
 
         self.st_font_slant = cairo.FONT_SLANT_NORMAL
         self.st_font_weight = cairo.FONT_WEIGHT_NORMAL
@@ -140,7 +139,7 @@ class CairoPainter(PdPainter):
 
             xlet = xlets[num]
 
-            if xlet in (PdBaseObject.XLET_MESSAGE, PdBaseObject.XLET_GUI):
+            if xlet in (pd.PdBaseObject.XLET_MESSAGE, pd.PdBaseObject.XLET_GUI):
                 self.set_src_color(self.style.xlet_msg_color)
             else:
                 self.set_src_color(self.style.xlet_snd_color)
@@ -154,7 +153,7 @@ class CairoPainter(PdPainter):
             self.cr.rectangle(inx, iny, self.style.xlet_width, self.xlet_height(xlet))
             self.cr.stroke_preserve()
 
-            if xlet == PdBaseObject.XLET_SOUND:
+            if xlet == pd.PdBaseObject.XLET_SOUND:
                 self.cr.fill()
                 self.cr.stroke()
             else:
@@ -163,7 +162,7 @@ class CairoPainter(PdPainter):
             num += 1
 
     def draw_subpatch(self, subpatch):
-        assert isinstance(subpatch, PdCanvas)
+        assert isinstance(subpatch, pd.PdCanvas)
 
         if subpatch.is_graph_on_parent():
             x = subpatch.x
@@ -176,7 +175,7 @@ class CairoPainter(PdPainter):
             self.cr.save()
             self.cr.set_matrix(m)
             for obj in subpatch.objects:
-                assert issubclass(obj.__class__, PdBaseObject)
+                assert issubclass(obj.__class__, pd.PdBaseObject)
                 if obj.draw_on_parent():
                     obj.draw(self)
 
@@ -207,7 +206,7 @@ class CairoPainter(PdPainter):
         self.draw_xlets(subpatch.outlets(), x, y + h - self.style.xlet_msg_height, w)
 
     def draw_gop(self, obj, gop_canvas):
-        assert isinstance(gop_canvas, PdCanvas)
+        assert isinstance(gop_canvas, pd.PdCanvas)
         x, y, w, h = gop_canvas.gop_rect()
         self.cr.save()
         self.draw_box(obj.x, obj.y, w, h)
@@ -276,7 +275,7 @@ class CairoPainter(PdPainter):
         self.draw_xlets(message.outlets(), x, y + h - self.style.xlet_msg_height, w)
 
     def xlet_height(self, t):
-        if t == PdBaseObject.XLET_GUI:
+        if t == pd.PdBaseObject.XLET_GUI:
             return self.style.xlet_gui_height
         else:
             return self.style.xlet_msg_height
@@ -301,7 +300,7 @@ class CairoPainter(PdPainter):
             xlet_space = (obj.width - len(outlets) * self.style.xlet_width) / float(len(outlets) - 1)
 
         x = obj.x + (xlet_space + self.style.xlet_width) * outlet_no + self.style.xlet_width / 2.0
-        if isinstance(obj, PdCanvas):
+        if isinstance(obj, pd.PdCanvas):
             if obj.is_graph_on_parent():
                 y = obj._gop['height'] + obj.y
             else:
@@ -331,7 +330,7 @@ class CairoPainter(PdPainter):
             # print sx, sy, "->", dx, dy
 
             self.cr.save()
-            if dest_inl_type == PdBaseObject.XLET_SOUND and src_outl_type == PdBaseObject.XLET_SOUND:
+            if dest_inl_type == pd.PdBaseObject.XLET_SOUND and src_outl_type == pd.PdBaseObject.XLET_SOUND:
                 self.cr.set_line_width(self.style.conn_snd_width)
                 self.set_src_color(self.style.conn_snd_color)
                 # pixel correction

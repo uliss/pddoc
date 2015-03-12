@@ -20,10 +20,11 @@
 
 __author__ = 'Serge Poltavski'
 
-from pd.parser import *
-from cairopainter import *
 import argparse
 import os.path
+
+import pd
+from cairopainter import *
 
 
 def detect_format(args):
@@ -53,7 +54,7 @@ def main():
 
     args = vars(arg_parser.parse_args())
 
-    pd_parser = PdParser()
+    pd_parser = pd.PdParser()
     pd_parser.parse(args['input'])
 
     width = pd_parser.canvas.width

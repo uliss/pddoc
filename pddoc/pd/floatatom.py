@@ -19,7 +19,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from pdcoregui import PdCoreGui
+from coregui import PdCoreGui
 from brectcalculator import BRectCalculator
 
 

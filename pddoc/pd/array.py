@@ -21,7 +21,7 @@
 __author__ = 'Serge Poltavski'
 
 
-from pdobject import PdObject
+from obj import PdObject
 
 
 class PdArray(PdObject):

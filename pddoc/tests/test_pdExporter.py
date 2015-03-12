@@ -21,7 +21,7 @@ __author__ = 'Serge Poltavski'
 
 from unittest import TestCase, expectedFailure
 from pddoc.pdexporter import *
-from pddoc.pd.pdparser import *
+from pddoc.pd.parser import *
 import difflib
 
 

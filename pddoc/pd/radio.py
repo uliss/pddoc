@@ -20,7 +20,7 @@
  
 __author__ = 'Serge Poltavski'
 
-from pdcoregui import *
+from coregui import *
 
 
 class PdRadio(PdCoreGui):

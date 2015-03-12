@@ -21,7 +21,7 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.pd.pdcomment import *
+from pddoc.pd.comment import *
 
 
 class TestPdComment(TestCase):

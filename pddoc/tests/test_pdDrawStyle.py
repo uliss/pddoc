@@ -20,7 +20,7 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.pd.pddrawstyle import *
+from pddoc.pd.drawstyle import *
 
 
 class TestPdDrawStyle(TestCase):

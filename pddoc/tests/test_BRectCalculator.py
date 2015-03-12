@@ -22,7 +22,7 @@ from unittest import TestCase
 __author__ = 'Serge Poltavski'
 
 from pddoc.pd.brectcalculator import *
-from pddoc.pd.pdparser import *
+from pddoc.pd.parser import *
 from pddoc.pddrawer import *
 from pddoc.cairopainter import *
 

@@ -19,7 +19,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from pdobject import *
+from obj import PdObject
 
 
 class PdMessage(PdObject):

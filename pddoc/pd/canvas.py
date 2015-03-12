@@ -20,8 +20,8 @@
 
 __author__ = 'Serge Poltavski'
 
-from pdobject import *
-from pdcomment import PdComment
+from obj import *
+from comment import PdComment
 import logging
 
 

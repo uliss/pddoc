@@ -22,12 +22,12 @@ __author__ = 'Serge Poltavski'
 
 from os import path
 import logging
-from pdcanvas import *
-from pdmessage import *
-from pdcomment import *
-from pdcoregui import *
-from pdarray import *
-import pdfactory
+from canvas import *
+from message import *
+from comment import *
+from coregui import *
+from array import *
+import factory
 
 
 class PdParser:
@@ -121,7 +121,7 @@ class PdParser:
         x = atoms[0]
         y = atoms[1]
 
-        obj = pdfactory.make(atoms[2:])
+        obj = factory.make(atoms[2:])
         obj.x = x
         obj.y = y
 
@@ -167,7 +167,7 @@ class PdParser:
             # end canvas definition
             self.parse_restore(atoms[1:])
         elif name in("floatatom", "symbolatom"):
-            obj = pdfactory.make(atoms)
+            obj = factory.make(atoms)
             self.current_canvas().append_object(obj)
         elif name == "array":
             self.parse_array(atoms)

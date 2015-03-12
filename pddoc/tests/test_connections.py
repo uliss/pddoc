@@ -18,7 +18,7 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from unittest import TestCase
-from pddoc.pd.pdparser import PdParser
+from pddoc.pd.parser import PdParser
 from pddoc.cairopainter import *
 from pddoc.pddrawer import *
  

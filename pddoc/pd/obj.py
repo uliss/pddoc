@@ -21,7 +21,7 @@ __author__ = 'Serge Poltavski'
 
 import six
 
-from pdbaseobject import PdBaseObject
+from baseobject import PdBaseObject
 from xletcalculator import XletCalculator
 from xletpatchlookup import XletPatchLookup
 import logging
@@ -63,10 +63,10 @@ class PdObject(PdBaseObject):
         else:
             # objname.pd patch found
             if self.xlet_patch_finder.has_object(self.name):
-                import pdparser
+                import parser
 
                 obj = self.xlet_patch_finder.get_object(self.name)
-                parser = pdparser.PdParser()
+                parser = parser.PdParser()
                 if not parser.parse(obj.path):
                     logging.error("can't parse patch: \"{0:s}\"".format(obj.path))
                     self._gop = False

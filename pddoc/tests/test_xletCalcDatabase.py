@@ -21,7 +21,7 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.pd.pdobject import *
+from pddoc.pd.obj import *
 
 
 def make_pdo(name):

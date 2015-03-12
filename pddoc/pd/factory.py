@@ -19,17 +19,17 @@
 
 __author__ = 'Serge Poltavski'
 
-from pdfloatatom import PdFloatAtom
+from floatatom import PdFloatAtom
 from . import EXTERNALS_DIR
-from pdobject import PdObject
-from pdbng import PdBng
-from pdtoggle import PdToggle
-from pdslider import PdSlider
-from pdradio import PdRadio
-from pdgcanvas import PdGCanvas
-from pdnbx import PdNbx
-from pdvu import PdVu
-from pdsymbolatom import PdSymbolAtom
+from obj import PdObject
+from bng import PdBng
+from toggle import PdToggle
+from slider import PdSlider
+from radio import PdRadio
+from gcanvas import PdGCanvas
+from nbx import PdNbx
+from vu import PdVu
+from symbolatom import PdSymbolAtom
 import os
 import re
 import sys

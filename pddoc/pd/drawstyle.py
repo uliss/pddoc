@@ -19,7 +19,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from pdbaseobject import PdBaseObject
+from baseobject import PdBaseObject
 from sys import platform as _platform
 
 

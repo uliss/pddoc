@@ -21,8 +21,8 @@ __author__ = 'Serge Poltavski'
 
 import os
 import pddrawer
-import pd.pdcanvas as pdcanvas
-import pd.pdparser as pdparser
+import pd.canvas as pdcanvas
+import pd.parser as pdparser
 import cairopainter
 from mako.template import Template
 from docobject import *
@@ -188,7 +188,7 @@ class HtmlDocVisitor(object):
         if os.path.exists(fname):
             return
 
-        pdo = pd.pdfactory.make_by_name(name)
+        pdo = pd.factory.make_by_name(name)
         brect = BRectCalculator().object_brect(pdo)
         pad = 1  # pixel
         painter = cairopainter.CairoPainter(int(brect[2]) + pad, int(brect[3]) + pad, fname, "png")

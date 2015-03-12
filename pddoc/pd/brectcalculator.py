@@ -18,11 +18,11 @@
 
 __author__ = 'Serge Poltavski'
 
-from pddrawstyle import *
+from drawstyle import *
 import cairo
 import textwrap
-from pdcomment import *
-from pdmessage import *
+from comment import *
+from message import PdMessage
 
 
 class BRectCalculator(object):
@@ -57,6 +57,7 @@ class BRectCalculator(object):
         return left, top, right - left, bottom - top
 
     def object_brect(self, obj):
+        from obj import PdObject
         assert isinstance(obj, PdObject)
         txt = obj.to_string()
         (x, y, width, height, dx, dy) = self._cr.text_extents(txt)

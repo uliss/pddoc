@@ -20,7 +20,7 @@
 __author__ = 'Serge Poltavski'
 
 
-import pdobject
+import obj
 from termcolor import colored
 import six
 import logging
@@ -128,11 +128,11 @@ def color_from_str(value):
     return c
 
 
-class PdCoreGui(pdobject.PdObject):
+class PdCoreGui(obj.PdObject):
     POS_LEFT, POS_RIGHT, POS_TOP, POS_BOTTOM = (0, 1, 2, 3)
 
     def __init__(self, name, x, y, args, **kwargs):
-        pdobject.PdObject.__init__(self, name, x, y, 0, 0, args)
+        obj.PdObject.__init__(self, name, x, y, 0, 0, args)
         self._send = kwargs.get("send", "empty")
         self._receive = kwargs.get("receive", "empty")
         self._label = kwargs.get("label", "empty")

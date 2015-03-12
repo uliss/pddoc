@@ -20,7 +20,7 @@
  
 __author__ = 'Serge Poltavski'
 
-from pdcoregui import PdCoreGui
+from coregui import PdCoreGui
 
 
 class PdGCanvas(PdCoreGui):

@@ -20,7 +20,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from pdbaseobject import *
+from baseobject import *
 
 
 class PdComment(PdBaseObject):

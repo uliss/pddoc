@@ -19,8 +19,8 @@
  
 __author__ = 'Serge Poltavski'
 
-from pd.pdcanvas import *
-import pd.pdfactory
+from pd.canvas import *
+import pd.factory
 from pd.brectcalculator import *
 from layout import *
 from docobject import DocPdobject, DocPdmessage
@@ -113,7 +113,7 @@ class PdLayout(object):
     def doc2obj(self, doc_obj):
         assert isinstance(doc_obj, DocPdobject)
         args = filter(None, doc_obj.args())
-        pd_obj = pd.pdfactory.make_by_name(doc_obj.name(), args, **doc_obj.attrs())
+        pd_obj = pd.factory.make_by_name(doc_obj.name(), args, **doc_obj.attrs())
         obj_bbox = list(self.calc_brect(pd_obj))
         litem = LayoutItem(doc_obj.offset(), 0, obj_bbox[2], obj_bbox[3])
         setattr(pd_obj, "layout", litem)

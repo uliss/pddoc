@@ -22,7 +22,7 @@ __author__ = 'Serge Poltavski'
 import re
 
 
-class PdBaseObject(object):
+class BaseObject(object):
     brect_calculator = None
 
     def __init__(self, x=0, y=0, w=0, h=0):

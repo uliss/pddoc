@@ -21,13 +21,13 @@ __author__ = 'Serge Poltavski'
 
 import six
 
-from baseobject import PdBaseObject
+from baseobject import BaseObject
 from xletcalculator import XletCalculator
 from xletpatchlookup import XletPatchLookup
 import logging
 
 
-class PdObject(PdBaseObject):
+class PdObject(BaseObject):
     xlet_calculator = XletCalculator()
     xlet_patch_finder = XletPatchLookup()
     # calculates xlets number
@@ -38,7 +38,7 @@ class PdObject(PdBaseObject):
     _patch_cache = {}
 
     def __init__(self, name, x=0, y=0, w=0, h=0, args=[]):
-        PdBaseObject.__init__(self, x, y, w, h)
+        BaseObject.__init__(self, x, y, w, h)
         assert isinstance(name, six.string_types)
         assert len(name) > 0
 

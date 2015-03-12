@@ -175,7 +175,7 @@ class CairoPainter(PdPainter):
             self.cr.save()
             self.cr.set_matrix(m)
             for obj in subpatch.objects:
-                assert issubclass(obj.__class__, pd.PdBaseObject)
+                assert issubclass(obj.__class__, pd.BaseObject)
                 if obj.draw_on_parent():
                     obj.draw(self)
 

@@ -32,7 +32,7 @@ EXTERNALS_DIR = path.join(path.dirname(__file__), "externals")
 XLET_MESSAGE, XLET_SOUND, XLET_GUI = range(0, 3)
 
 from obj import PdObject
-from baseobject import PdBaseObject
+from baseobject import BaseObject
 from canvas import PdCanvas
 from drawstyle import PdDrawStyle
 from parser import PdParser

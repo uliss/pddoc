@@ -89,7 +89,7 @@ class PdCanvas(PdObject):
 
     def append_object(self, obj):
         assert self != obj
-        assert issubclass(obj.__class__, PdBaseObject)
+        assert issubclass(obj.__class__, BaseObject)
 
         if obj in self._objects:
             logging.warning(u"object already on canvas: {0:s}".format(obj))

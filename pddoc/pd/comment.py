@@ -23,7 +23,7 @@ __author__ = 'Serge Poltavski'
 from baseobject import *
 
 
-class PdComment(PdBaseObject):
+class PdComment(BaseObject):
     def __init__(self, x, y, args):
         super(PdComment, self).__init__(x, y, 0, 0)
         self.args = args

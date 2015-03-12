@@ -21,6 +21,7 @@
 __author__ = 'Serge Poltavski'
 
 from coregui import PdCoreGui
+from . import XLET_GUI
 
 # [width]? - horizontal size of element
 # [height]? - vertical size of element
@@ -60,10 +61,10 @@ class PdVu(PdCoreGui):
                     scale=atoms[11])
 
     def inlets(self):
-        return [self.XLET_GUI] * 2
+        return [XLET_GUI] * 2
 
     def outlets(self):
-        return [self.XLET_GUI] * 2
+        return [XLET_GUI] * 2
 
     def get_width(self):
         return self._width + 2

@@ -21,6 +21,7 @@ __author__ = 'Serge Poltavski'
 
 from coregui import PdCoreGui
 from brectcalculator import BRectCalculator
+from . import XLET_MESSAGE
 
 
 class PdSymbolAtom(PdCoreGui):
@@ -88,10 +89,10 @@ class PdSymbolAtom(PdCoreGui):
         return self._label and self._label != "-"
 
     def outlets(self):
-        return [self.XLET_MESSAGE]
+        return [XLET_MESSAGE]
 
     def inlets(self):
-        return [self.XLET_MESSAGE]
+        return [XLET_MESSAGE]
 
     def _label_brect(self):
         if not self.has_label():

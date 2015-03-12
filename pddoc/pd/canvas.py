@@ -20,9 +20,10 @@
 
 __author__ = 'Serge Poltavski'
 
-from obj import *
-from comment import PdComment
 import logging
+
+from obj import *
+from . import XLET_MESSAGE, XLET_SOUND
 
 
 class PdCanvas(PdObject):
@@ -251,9 +252,9 @@ class PdCanvas(PdObject):
         for o in objects:
             if issubclass(o.__class__, PdObject):
                 if o.name == "inlet":
-                    res.append(self.XLET_MESSAGE)
+                    res.append(XLET_MESSAGE)
                 elif o.name == "inlet~":
-                    res.append(self.XLET_SOUND)
+                    res.append(XLET_SOUND)
 
         return res
 
@@ -265,9 +266,9 @@ class PdCanvas(PdObject):
         for o in objects:
             if issubclass(o.__class__, PdObject):
                 if o.name == "outlet":
-                    res.append(self.XLET_MESSAGE)
+                    res.append(XLET_MESSAGE)
                 elif o.name == "outlet~":
-                    res.append(self.XLET_SOUND)
+                    res.append(XLET_SOUND)
 
         return res
 

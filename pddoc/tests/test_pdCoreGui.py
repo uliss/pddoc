@@ -30,8 +30,8 @@ tgl = ['15', '0', 'empty', 'empty', 'empty', '17', '7', '0', '10', '-262144', '-
 class TestPdCoreGui(TestCase):
     def test_init(self):
         pco = pd.PdCoreGui("tgl", 0, 0, tgl)
-        self.assertEqual(pco.inlets(), [pd.PdCoreGui.XLET_GUI])
-        self.assertEqual(pco.outlets(), [pd.PdCoreGui.XLET_GUI])
+        self.assertEqual(pco.inlets(), [pd.XLET_GUI])
+        self.assertEqual(pco.outlets(), [pd.XLET_GUI])
         self.assertEqual(pco.send, "empty")
         self.assertEqual(pco.receive, "empty")
 

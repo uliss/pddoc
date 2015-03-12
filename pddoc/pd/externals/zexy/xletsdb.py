@@ -20,25 +20,50 @@
  
 __author__ = 'Serge Poltavski'
 
-import logging
-import os.path as path
-from ..colorformatter import ColorizingStreamHandler
+from pddoc.pd import XLET_SOUND, XLET_MESSAGE
 
-root = logging.getLogger()
-root.setLevel(logging.DEBUG)
-root.addHandler(ColorizingStreamHandler())
 
-EXTERNALS_DIR = path.join(path.dirname(__file__), "externals")
-XLET_MESSAGE, XLET_SOUND, XLET_GUI = range(0, 3)
+_objects = {
+    "mux~": (
+        lambda args: (2 if not args else len(args)) * [XLET_SOUND],
+        lambda args: [XLET_SOUND]
+    ),
+    "multiplex~": (
+        lambda args: (2 if not args else len(args)) * [XLET_SOUND],
+        lambda args: [XLET_SOUND]
+    ),
+    "mux": (
+        lambda args: (3 if len(args) < 3 else len(args) + 1) * [XLET_MESSAGE],
+        lambda args: [XLET_MESSAGE]
+    ),
+    "multiplex": (
+        lambda args: (3 if len(args) < 3 else len(args) + 1) * [XLET_MESSAGE],
+        lambda args: [XLET_MESSAGE]
+    ),
+    "demux": (
+        lambda args: 2 * [XLET_MESSAGE],
+        lambda args: (2 if len(args) < 3 else len(args)) * [XLET_MESSAGE]
+    ),
+    "demultiplex": (
+        lambda args: 2 * [XLET_MESSAGE],
+        lambda args: (2 if len(args) < 3 else len(args)) * [XLET_MESSAGE]
+    ),
+}
 
-from obj import PdObject
-from baseobject import PdBaseObject
-from canvas import PdCanvas
-from drawstyle import PdDrawStyle
-from parser import PdParser
-from brectcalculator import BRectCalculator
-from coregui import PdCoreGui
-from message import PdMessage
-from comment import PdComment
-from factory import make_by_name
-from xletcalculator import XletCalculator
+
+def has_object(name):
+    return name in _objects
+
+
+def inlets(name, args):
+    if name in _objects:
+        return _objects["mux~"][0](args)
+
+    return []
+
+
+def outlets(name, args):
+    if name in _objects:
+        return _objects["mux~"][1](args)
+
+    return []

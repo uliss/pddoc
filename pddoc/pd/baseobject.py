@@ -18,13 +18,12 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 __author__ = 'Serge Poltavski'
+
 import re
-import os.path as path
 
 
 class PdBaseObject(object):
     brect_calculator = None
-    XLET_MESSAGE, XLET_SOUND, XLET_GUI = range(0, 3)
 
     def __init__(self, x=0, y=0, w=0, h=0):
         self._id = -1

@@ -19,8 +19,9 @@
 
 __author__ = 'Serge Poltavski'
 
-from baseobject import PdBaseObject
 from sys import platform as _platform
+
+from . import XLET_MESSAGE, XLET_GUI, XLET_SOUND
 
 
 class PdDrawStyle(object):
@@ -65,11 +66,11 @@ class PdDrawStyle(object):
         return self.font_size + 5
 
     def xlet_height(self, t):
-        if t == PdBaseObject.XLET_MESSAGE:
+        if t == XLET_MESSAGE:
             return self.xlet_msg_height
-        elif t == PdBaseObject.XLET_GUI:
+        elif t == XLET_GUI:
             return self.xlet_gui_height
-        elif t == PdBaseObject.XLET_SOUND:
+        elif t == XLET_SOUND:
             return self.xlet_snd_height
         else:
             assert False

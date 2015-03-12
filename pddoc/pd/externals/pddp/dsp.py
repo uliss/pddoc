@@ -20,25 +20,38 @@
  
 __author__ = 'Serge Poltavski'
 
-import logging
-import os.path as path
-from ..colorformatter import ColorizingStreamHandler
 
-root = logging.getLogger()
-root.setLevel(logging.DEBUG)
-root.addHandler(ColorizingStreamHandler())
+from pddoc.pdobject import PdObject
+from pddoc.cairopainter import CairoPainter
 
-EXTERNALS_DIR = path.join(path.dirname(__file__), "externals")
-XLET_MESSAGE, XLET_SOUND, XLET_GUI = range(0, 3)
 
-from obj import PdObject
-from baseobject import PdBaseObject
-from canvas import PdCanvas
-from drawstyle import PdDrawStyle
-from parser import PdParser
-from brectcalculator import BRectCalculator
-from coregui import PdCoreGui
-from message import PdMessage
-from comment import PdComment
-from factory import make_by_name
-from xletcalculator import XletCalculator
+def create(atoms):
+    assert len(atoms)
+    return PddpDsp(atoms[0], atoms[1:])
+
+
+class PddpDsp(PdObject):
+    def __init__(self, name, args):
+        PdObject.__init__(self, name, 0, 0, 0, 0, args)
+
+    def inlets(self):
+        return ()
+
+    def outlets(self):
+        return ()
+
+    def url(self):
+        return self.args[0]
+
+    def get_height(self):
+        return 18
+
+    def get_width(self):
+        return 60
+
+    def draw(self, painter):
+        assert isinstance(painter, CairoPainter)
+        painter.draw_rect(self.x, self.y, self.width, self.height, color=(0, 0, 0), fill=(0.5, 1, 0.5), width=1)
+        line_x = int(self.left + 18)
+        painter.draw_line(line_x, self.top, line_x, self.bottom, color=(0, 0, 0), width=1)
+        painter.draw_text(line_x + 5, self.bottom - 3, "dsp", color=(0, 0, 0), font_size=14, font="Monospace")

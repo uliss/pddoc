@@ -139,7 +139,7 @@ class CairoPainter(PdPainter):
 
             xlet = xlets[num]
 
-            if xlet in (pd.PdBaseObject.XLET_MESSAGE, pd.PdBaseObject.XLET_GUI):
+            if xlet in (pd.XLET_MESSAGE, pd.XLET_GUI):
                 self.set_src_color(self.style.xlet_msg_color)
             else:
                 self.set_src_color(self.style.xlet_snd_color)
@@ -153,7 +153,7 @@ class CairoPainter(PdPainter):
             self.cr.rectangle(inx, iny, self.style.xlet_width, self.xlet_height(xlet))
             self.cr.stroke_preserve()
 
-            if xlet == pd.PdBaseObject.XLET_SOUND:
+            if xlet == pd.XLET_SOUND:
                 self.cr.fill()
                 self.cr.stroke()
             else:
@@ -275,7 +275,7 @@ class CairoPainter(PdPainter):
         self.draw_xlets(message.outlets(), x, y + h - self.style.xlet_msg_height, w)
 
     def xlet_height(self, t):
-        if t == pd.PdBaseObject.XLET_GUI:
+        if t == pd.XLET_GUI:
             return self.style.xlet_gui_height
         else:
             return self.style.xlet_msg_height
@@ -330,7 +330,7 @@ class CairoPainter(PdPainter):
             # print sx, sy, "->", dx, dy
 
             self.cr.save()
-            if dest_inl_type == pd.PdBaseObject.XLET_SOUND and src_outl_type == pd.PdBaseObject.XLET_SOUND:
+            if dest_inl_type == pd.XLET_SOUND and src_outl_type == pd.XLET_SOUND:
                 self.cr.set_line_width(self.style.conn_snd_width)
                 self.set_src_color(self.style.conn_snd_color)
                 # pixel correction

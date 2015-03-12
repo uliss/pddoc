@@ -17,14 +17,14 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-from unittest import TestCase
-
 __author__ = 'Serge Poltavski'
 
-from pddoc.pd.canvas import *
-from pddoc.pd.obj import *
+from unittest import TestCase
 import copy
 from nologging import NoLogging
+
+from pddoc.pd.canvas import *
+import pddoc.pd as pd
 
 
 class TestPdCanvas(TestCase):
@@ -134,9 +134,9 @@ class TestPdCanvas(TestCase):
         for o in (pdo1, pdo2, pdo3):
             cnv.append_object(o)
 
-        self.assertEqual(cnv.inlets(), [cnv.XLET_MESSAGE, cnv.XLET_SOUND, cnv.XLET_MESSAGE])
+        self.assertEqual(cnv.inlets(), [pd.XLET_MESSAGE, pd.XLET_SOUND, pd.XLET_MESSAGE])
         pdo1.x = 0
-        self.assertEqual(cnv.inlets(), [cnv.XLET_MESSAGE, cnv.XLET_MESSAGE, cnv.XLET_SOUND])
+        self.assertEqual(cnv.inlets(), [pd.XLET_MESSAGE, pd.XLET_MESSAGE, pd.XLET_SOUND])
 
     def test_outlets(self):
         cnv = PdCanvas(0, 0, 100, 50)
@@ -149,9 +149,9 @@ class TestPdCanvas(TestCase):
         for o in (pdo1, pdo2, pdo3):
             cnv.append_object(o)
 
-        self.assertEqual(cnv.outlets(), [cnv.XLET_MESSAGE, cnv.XLET_SOUND, cnv.XLET_MESSAGE])
+        self.assertEqual(cnv.outlets(), [pd.XLET_MESSAGE, pd.XLET_SOUND, pd.XLET_MESSAGE])
         pdo1.x = 0
-        self.assertEqual(cnv.outlets(), [cnv.XLET_MESSAGE, cnv.XLET_MESSAGE, cnv.XLET_SOUND])
+        self.assertEqual(cnv.outlets(), [pd.XLET_MESSAGE, pd.XLET_MESSAGE, pd.XLET_SOUND])
 
     def test_traverse(self):
         class T:

@@ -20,25 +20,34 @@
  
 __author__ = 'Serge Poltavski'
 
-import logging
-import os.path as path
-from ..colorformatter import ColorizingStreamHandler
+import pddoc.pd as pd
+from pddoc.cairopainter import CairoPainter
 
-root = logging.getLogger()
-root.setLevel(logging.DEBUG)
-root.addHandler(ColorizingStreamHandler())
 
-EXTERNALS_DIR = path.join(path.dirname(__file__), "externals")
-XLET_MESSAGE, XLET_SOUND, XLET_GUI = range(0, 3)
+def create(atoms):
+    assert len(atoms) > 1
+    return PddpLink(atoms[0], atoms[1:])
 
-from obj import PdObject
-from baseobject import PdBaseObject
-from canvas import PdCanvas
-from drawstyle import PdDrawStyle
-from parser import PdParser
-from brectcalculator import BRectCalculator
-from coregui import PdCoreGui
-from message import PdMessage
-from comment import PdComment
-from factory import make_by_name
-from xletcalculator import XletCalculator
+
+class PddpLink(pd.PdObject):
+    def __init__(self, name, args):
+        pd.PdObject.__init__(self, name, 0, 0, 0, 0, args)
+
+    def inlets(self):
+        return ()
+
+    def outlets(self):
+        return ()
+
+    def url(self):
+        return self.args[0]
+
+    def text(self):
+        if len(self.args) > 2:
+            return " ".join(self._args[2:])
+        else:
+            return self.url()
+
+    def draw(self, painter):
+        assert isinstance(painter, CairoPainter)
+        painter.draw_text(self.x + 4, self.y + 12, self.text(), color=(0, 0, 1))

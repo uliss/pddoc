@@ -25,6 +25,8 @@ from termcolor import colored
 import six
 import logging
 
+from . import XLET_GUI
+
 
 class PdColor:
     def __init__(self, r=0, g=0, b=0):
@@ -184,10 +186,10 @@ class PdCoreGui(obj.PdObject):
         return self._label_color.rgb_float()
 
     def inlets(self):
-        return [self.XLET_GUI]
+        return [XLET_GUI]
 
     def outlets(self):
-        return [self.XLET_GUI]
+        return [XLET_GUI]
 
     def traverse(self, visitor):
         visitor.visit_core_gui(self)

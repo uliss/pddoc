@@ -21,8 +21,10 @@
 __author__ = 'Serge Poltavski'
 
 import logging
-from xletdatabase import XletDatabase
 import re
+
+from . import XLET_MESSAGE, XLET_SOUND, XLET_GUI
+from xletdatabase import XletDatabase
 
 
 class XletTextDatabase(XletDatabase):
@@ -77,9 +79,9 @@ class XletTextDatabase(XletDatabase):
 
             for char in str:
                 if char == "~":
-                    res.append(self.XLET_SOUND)
+                    res.append(XLET_SOUND)
                 elif char == ".":
-                    res.append(self.XLET_MESSAGE)
+                    res.append(XLET_MESSAGE)
                 else:
                     logging.error("unknown char in inlet definition")
 

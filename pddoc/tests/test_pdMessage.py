@@ -21,13 +21,14 @@ from unittest import TestCase
 __author__ = 'Serge Poltavski'
 
 from pddoc.pd.message import *
+from pddoc.pd import XLET_MESSAGE
 
 
 class TestPdMessage(TestCase):
     def test_init(self):
         m = PdMessage(0, 0, "sample message".split())
         self.assertEqual(m.name, "msg")
-        self.assertEqual(m.outlets(), [PdObject.XLET_MESSAGE])
+        self.assertEqual(m.outlets(), [XLET_MESSAGE])
 
     def test_draw(self):
         class P:
@@ -65,8 +66,8 @@ class TestPdMessage(TestCase):
 
     def test_inlets(self):
         m = PdMessage(0, 0, "sample message".split())
-        self.assertEqual(m.inlets(), [PdObject.XLET_MESSAGE])
+        self.assertEqual(m.inlets(), [XLET_MESSAGE])
 
     def test_outlets(self):
         m = PdMessage(0, 0, "sample message".split())
-        self.assertEqual(m.outlets(), [PdObject.XLET_MESSAGE])
+        self.assertEqual(m.outlets(), [XLET_MESSAGE])

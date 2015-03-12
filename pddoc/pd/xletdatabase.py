@@ -20,13 +20,8 @@
  
 __author__ = 'Serge Poltavski'
 
-from baseobject import PdBaseObject
-
 
 class XletDatabase(object):
-    XLET_MESSAGE = PdBaseObject.XLET_MESSAGE
-    XLET_SOUND = PdBaseObject.XLET_SOUND
-
     def __init__(self, extname=None):
         self._extname = extname
 

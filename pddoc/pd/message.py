@@ -20,6 +20,7 @@
 __author__ = 'Serge Poltavski'
 
 from obj import PdObject
+from . import XLET_MESSAGE
 
 
 class PdMessage(PdObject):
@@ -37,10 +38,10 @@ class PdMessage(PdObject):
         painter.draw_message(self)
 
     def inlets(self):
-        return [self.XLET_MESSAGE]
+        return [XLET_MESSAGE]
 
     def outlets(self):
-        return [self.XLET_MESSAGE]
+        return [XLET_MESSAGE]
 
     def traverse(self, visitor):
         visitor.visit_message(self)

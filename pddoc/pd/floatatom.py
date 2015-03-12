@@ -21,6 +21,7 @@ __author__ = 'Serge Poltavski'
 
 from coregui import PdCoreGui
 from brectcalculator import BRectCalculator
+from . import XLET_MESSAGE
 
 
 class PdFloatAtom(PdCoreGui):
@@ -89,10 +90,10 @@ class PdFloatAtom(PdCoreGui):
         return self._label and self._label != "-"
 
     def outlets(self):
-        return [self.XLET_MESSAGE]
+        return [XLET_MESSAGE]
 
     def inlets(self):
-        return [self.XLET_MESSAGE]
+        return [XLET_MESSAGE]
 
     def _is_int(self):
         return abs(self._value - int(self._value)) < 0.001

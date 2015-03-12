@@ -28,7 +28,7 @@ import os
 
 class XletCalculator(object):
     def __init__(self, dbname=None):
-        ext_dir = os.path.dirname(__file__) + "/externals"
+        ext_dir = os.path.dirname(__file__) + "/../externals"
 
         self._dbs = []
         self._dbs.append(XletTextDatabase(os.path.join(ext_dir, 'core/pd_objects.db'), "core"))

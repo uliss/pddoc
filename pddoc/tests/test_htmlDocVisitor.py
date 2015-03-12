@@ -23,7 +23,6 @@ from unittest import TestCase
 __author__ = 'Serge Poltavski'
 
 from pddoc.htmldocvisitor import *
-from pddoc.pdcanvas import *
 from pddoc.pdlayout import *
 import os
 

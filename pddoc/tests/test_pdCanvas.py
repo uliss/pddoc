@@ -21,8 +21,8 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.pdcanvas import *
-from pddoc.pdobject import *
+from pddoc.pd.pdcanvas import *
+from pddoc.pd.pdobject import *
 import copy
 from nologging import NoLogging
 

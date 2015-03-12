@@ -21,7 +21,7 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.pdparser import *
+from pddoc.pd.pdparser import *
 from nologging import NoLogging
 
 

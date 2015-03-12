@@ -29,7 +29,6 @@ from pdgcanvas import PdGCanvas
 from pdnbx import PdNbx
 from pdvu import PdVu
 from pdsymbolatom import PdSymbolAtom
-from xletpatchlookup import XletPatchLookup
 import os
 import re
 import sys
@@ -83,7 +82,7 @@ def find_external_object(name):
     if not rname.match(name):
         return False
 
-    mod_path = os.path.dirname(__file__) + "/externals/" + name
+    mod_path = os.path.dirname(__file__) + "/../externals/" + name
     if not os.path.exists(mod_path + ".py"):
         return False
 

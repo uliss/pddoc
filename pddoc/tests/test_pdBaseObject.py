@@ -20,7 +20,7 @@
 __author__ = 'Serge Poltavski'
 
 import unittest
-from pddoc.pdbaseobject import *
+from pddoc.pd.pdbaseobject import *
 
 
 class TestPdBaseObject(unittest.TestCase):

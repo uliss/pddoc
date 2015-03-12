@@ -22,7 +22,7 @@ from unittest import TestCase
 __author__ = 'Serge Poltavski'
 
 
-from pddoc.xlettextdatabase import XletTextDatabase
+from pddoc.pd.xlettextdatabase import XletTextDatabase
 import pddoc
 import os
 from nologging import *

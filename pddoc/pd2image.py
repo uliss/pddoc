@@ -20,7 +20,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from pdparser import *
+from pd.pdparser import *
 from cairopainter import *
 import argparse
 import os.path

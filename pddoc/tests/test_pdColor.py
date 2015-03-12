@@ -21,7 +21,7 @@ import unittest
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.pdcoregui import *
+from pddoc.pd.pdcoregui import *
 
 
 class TestPdColor(unittest.TestCase):

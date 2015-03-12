@@ -21,8 +21,7 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.xletcalculator import *
-from pddoc.pdobject import *
+from pddoc.pd.pdobject import *
 
 
 def make_pdo(name):

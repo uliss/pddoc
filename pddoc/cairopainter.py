@@ -19,13 +19,13 @@
 
 __author__ = 'Serge Poltavski'
 
-from pdbaseobject import *
+from pd.pdbaseobject import *
 from pdpainter import *
 import cairo
 import textwrap
-from pddrawstyle import *
+from pd.pddrawstyle import *
 from math import pi
-from pdcanvas import PdCanvas
+from pd.pdcanvas import PdCanvas
 
 
 class CairoPainter(PdPainter):

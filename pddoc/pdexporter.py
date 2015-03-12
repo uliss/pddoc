@@ -19,7 +19,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from pdcanvas import *
+from pd.pdcanvas import *
 import textwrap
 
 

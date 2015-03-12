@@ -20,8 +20,7 @@
 __author__ = 'Serge Poltavski'
 
 from cairopainter import *
-from pdobject import *
-from brectcalculator import *
+from pd.brectcalculator import *
 import argparse
 import os.path
 

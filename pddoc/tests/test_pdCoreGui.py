@@ -21,8 +21,6 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.pdcoregui import *
-from pddoc.pdparser import *
 from pddoc.cairopainter import *
 from pddoc.pddrawer import *
 

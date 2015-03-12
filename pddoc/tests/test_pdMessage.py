@@ -20,7 +20,7 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.pdmessage import *
+from pddoc.pd.pdmessage import *
 
 
 class TestPdMessage(TestCase):

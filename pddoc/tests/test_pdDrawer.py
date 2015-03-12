@@ -23,14 +23,13 @@ __author__ = 'Serge Poltavski'
 
 from pddoc.pddrawer import *
 from pddoc.pdpainter import *
-from pddoc.pdcanvas import *
 import sys
 import StringIO
 
 
 class TestPdDrawer(TestCase):
     def test_draw(self):
-        # suppres output
+        # suppress output
         cout = sys.stdout
         sys.stdout = StringIO.StringIO()
 

@@ -37,3 +37,6 @@ from drawstyle import PdDrawStyle
 from parser import PdParser
 from brectcalculator import BRectCalculator
 from coregui import PdCoreGui
+from message import PdMessage
+from comment import PdComment
+from factory import make_by_name

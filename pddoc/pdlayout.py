@@ -19,9 +19,7 @@
  
 __author__ = 'Serge Poltavski'
 
-from pd.canvas import *
-import pd.factory
-from pd.brectcalculator import *
+import pd
 from layout import *
 from docobject import DocPdobject, DocPdmessage
 
@@ -32,7 +30,7 @@ class PdLayout(object):
         self._cur_layout = []
         self._example_brect = ()
         self._pdobj_id_map = {}
-        self._brect_calc = BRectCalculator()
+        self._brect_calc = pd.BRectCalculator()
         self._comment_xoffset = 2
         self._hlayout_space = 20
         self._vlayout_space = 25
@@ -49,7 +47,7 @@ class PdLayout(object):
 
     @canvas.setter
     def canvas(self, cnv):
-        assert isinstance(cnv, PdCanvas)
+        assert isinstance(cnv, pd.PdCanvas)
         self._canvas = cnv
 
     def update(self):
@@ -62,11 +60,11 @@ class PdLayout(object):
             pdo.y = litem.y()
 
     def calc_brect(self, obj):
-        if isinstance(obj, PdMessage):
+        if isinstance(obj, pd.PdMessage):
             return self._brect_calc.message_brect(obj)
-        elif isinstance(obj, PdObject):
+        elif isinstance(obj, pd.PdObject):
             return self._brect_calc.object_brect(obj)
-        elif isinstance(obj, PdComment):
+        elif isinstance(obj, pd.PdComment):
             return self._brect_calc.comment_brect(obj)
         else:
             assert False
@@ -96,7 +94,7 @@ class PdLayout(object):
         self._example_brect = lv.brect()
 
     def comment2pd_comment(self, txt):
-        pd_comment = PdComment(0, 0, txt.split(" "))
+        pd_comment = pd.PdComment(0, 0, txt.split(" "))
         cbbox = self.calc_brect(pd_comment)
         comment_litem = LayoutItem(0, 0, cbbox[2], cbbox[3])
         setattr(pd_comment, "layout", comment_litem)
@@ -104,7 +102,7 @@ class PdLayout(object):
 
     def doc2msg(self, doc_msg):
         assert isinstance(doc_msg, DocPdmessage)
-        pdm = PdMessage(0, 0, [doc_msg.text()])
+        pdm = pd.PdMessage(0, 0, [doc_msg.text()])
         obj_bbox = list(self.calc_brect(pdm))
         litem = LayoutItem(doc_msg.offset(), 0, obj_bbox[2], obj_bbox[3])
         setattr(pdm, "layout", litem)

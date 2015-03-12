@@ -188,8 +188,8 @@ class HtmlDocVisitor(object):
         if os.path.exists(fname):
             return
 
-        pdo = pd.factory.make_by_name(name)
-        brect = BRectCalculator().object_brect(pdo)
+        pdo = pd.make_by_name(name)
+        brect = pd.BRectCalculator().object_brect(pdo)
         pad = 1  # pixel
         painter = cairopainter.CairoPainter(int(brect[2]) + pad, int(brect[3]) + pad, fname, "png")
         pdo.draw(painter)

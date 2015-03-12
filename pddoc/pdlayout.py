@@ -47,7 +47,7 @@ class PdLayout(object):
 
     @canvas.setter
     def canvas(self, cnv):
-        assert isinstance(cnv, pd.PdCanvas)
+        assert isinstance(cnv, pd.Canvas)
         self._canvas = cnv
 
     def update(self):
@@ -60,11 +60,11 @@ class PdLayout(object):
             pdo.y = litem.y()
 
     def calc_brect(self, obj):
-        if isinstance(obj, pd.PdMessage):
+        if isinstance(obj, pd.Message):
             return self._brect_calc.message_brect(obj)
         elif isinstance(obj, pd.PdObject):
             return self._brect_calc.object_brect(obj)
-        elif isinstance(obj, pd.PdComment):
+        elif isinstance(obj, pd.Comment):
             return self._brect_calc.comment_brect(obj)
         else:
             assert False
@@ -94,7 +94,7 @@ class PdLayout(object):
         self._example_brect = lv.brect()
 
     def comment2pd_comment(self, txt):
-        pd_comment = pd.PdComment(0, 0, txt.split(" "))
+        pd_comment = pd.Comment(0, 0, txt.split(" "))
         cbbox = self.calc_brect(pd_comment)
         comment_litem = LayoutItem(0, 0, cbbox[2], cbbox[3])
         setattr(pd_comment, "layout", comment_litem)
@@ -102,7 +102,7 @@ class PdLayout(object):
 
     def doc2msg(self, doc_msg):
         assert isinstance(doc_msg, DocPdmessage)
-        pdm = pd.PdMessage(0, 0, [doc_msg.text()])
+        pdm = pd.Message(0, 0, [doc_msg.text()])
         obj_bbox = list(self.calc_brect(pdm))
         litem = LayoutItem(doc_msg.offset(), 0, obj_bbox[2], obj_bbox[3])
         setattr(pdm, "layout", litem)

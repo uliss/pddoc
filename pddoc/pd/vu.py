@@ -20,7 +20,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from coregui import PdCoreGui
+from coregui import CoreGui
 from . import XLET_GUI
 
 # [width]? - horizontal size of element
@@ -36,9 +36,9 @@ from . import XLET_GUI
 # [scale]? - when set the logarithmic scale is displayed
 # [?]? - unknown value, default is zero
 
-class PdVu(PdCoreGui):
+class PdVu(CoreGui):
     def __init__(self, x, y, **kwargs):
-        PdCoreGui.__init__(self, "vu", x, y, [], **kwargs)
+        CoreGui.__init__(self, "vu", x, y, [], **kwargs)
         self._width = int(kwargs.get("width", 15))  # number of digits the element displays
         self._height = int(kwargs.get("height", 120))  # vertical size of element in pixels
         self._scale = bool(int(kwargs.get("scale", 0)))  # when set the logarithmic scale is displayed

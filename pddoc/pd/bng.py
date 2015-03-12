@@ -24,12 +24,12 @@ from coregui import *
 import six
 
 
-class PdBng(PdCoreGui):
+class PdBng(CoreGui):
     # default arguments:
     # X obj 256 25 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1 -1;
 
     def __init__(self, x, y, **kwargs):
-        PdCoreGui.__init__(self, "bng", x, y, [], **kwargs)
+        CoreGui.__init__(self, "bng", x, y, [], **kwargs)
         self._size = int(kwargs.get("size", 15))
         assert self._size > 0
 

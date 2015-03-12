@@ -20,14 +20,14 @@
  
 __author__ = 'Serge Poltavski'
 
-from coregui import PdCoreGui
+from coregui import CoreGui
 
 
-class PdGCanvas(PdCoreGui):
+class GCanvas(CoreGui):
     # X [size]? [width]? [height]? [send]? [receive]? [label]?
     # [x_off]? [y_off]? [font]? [font_size]? [bg_color]? [label_color]? [?]?;\r\n
     def __init__(self, x, y, **kwargs):
-        PdCoreGui.__init__(self, "cnv", x, y, [], **kwargs)
+        CoreGui.__init__(self, "cnv", x, y, [], **kwargs)
         self._size = int(kwargs.get("size", 15))
         self.width = int(kwargs.get("width", 100))
         self.height = int(kwargs.get("height", 60))
@@ -35,7 +35,7 @@ class PdGCanvas(PdCoreGui):
     @staticmethod
     def from_atoms(atoms):
         assert len(atoms) == 13
-        return PdGCanvas(0, 0,
+        return GCanvas(0, 0,
                          size=atoms[0],
                          width=atoms[1],
                          height=atoms[2],

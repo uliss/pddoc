@@ -19,7 +19,7 @@
 
 __author__ = 'Serge Poltavski'
 
-import os
+import os.path
 import cairopainter
 from mako.template import Template
 
@@ -107,8 +107,8 @@ class HtmlDocVisitor(object):
             parser.parse(pdexample.file())
             self._layout.canvas = parser.canvas
         else:
-            self._layout.canvas = pd.PdCanvas(0, 0, 10, 10, name="10")
-            self._layout.canvas.type =pd.PdCanvas.TYPE_WINDOW
+            self._layout.canvas = pd.Canvas(0, 0, 10, 10, name="10")
+            self._layout.canvas.type =pd.Canvas.TYPE_WINDOW
 
     def pdexample_end(self, pd):
         w, h = self.draw_area_size(pd)

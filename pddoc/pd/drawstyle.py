@@ -24,7 +24,7 @@ from sys import platform as _platform
 from . import XLET_MESSAGE, XLET_GUI, XLET_SOUND
 
 
-class PdDrawStyle(object):
+class DrawStyle(object):
     fill_color = property(lambda self: (1, 1, 1))
     font_size = property(lambda self: 12)
 

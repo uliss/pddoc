@@ -33,12 +33,12 @@ XLET_MESSAGE, XLET_SOUND, XLET_GUI = range(0, 3)
 
 from obj import PdObject
 from baseobject import BaseObject
-from canvas import PdCanvas
-from drawstyle import PdDrawStyle
+from canvas import Canvas
+from drawstyle import DrawStyle
 from parser import PdParser
 from brectcalculator import BRectCalculator
-from coregui import PdCoreGui
-from message import PdMessage
-from comment import PdComment
+from coregui import CoreGui
+from message import Message
+from comment import Comment
 from factory import make_by_name
 from xletcalculator import XletCalculator

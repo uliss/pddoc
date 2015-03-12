@@ -23,9 +23,9 @@ from obj import PdObject
 from . import XLET_MESSAGE
 
 
-class PdMessage(PdObject):
+class Message(PdObject):
     def __init__(self, x, y, atoms):
-        super(PdMessage, self).__init__("msg", x, y, 0, 0, atoms)
+        super(Message, self).__init__("msg", x, y, 0, 0, atoms)
 
     def __str__(self):
         res = "[%-40s {x:%i,y:%i,id:%i}" % (self.args_to_string() + "(", self._x, self._y, self._id)

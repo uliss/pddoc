@@ -22,12 +22,12 @@ from drawstyle import *
 import cairo
 import textwrap
 from comment import *
-from message import PdMessage
+from message import Message
 
 
 class BRectCalculator(object):
     def __init__(self):
-        self._style = PdDrawStyle()
+        self._style = DrawStyle()
         self._ims = cairo.ImageSurface(cairo.FORMAT_ARGB32, 10, 10)
         self._cr = cairo.Context(self._ims)
 
@@ -82,11 +82,11 @@ class BRectCalculator(object):
         return 0, 0, maxwd, height
 
     def comment_brect(self, comment):
-        assert isinstance(comment, PdComment)
+        assert isinstance(comment, Comment)
         return self.text_brect(comment.text())
 
     def message_brect(self, message):
-        assert  isinstance(message, PdMessage)
+        assert  isinstance(message, Message)
         (x, y, width, height, dx, dy) = self._cr.text_extents(message.to_string())
         w = width + self._style.obj_pad_x * 4
         h = self._style.obj_height

@@ -29,14 +29,14 @@ tgl = ['15', '0', 'empty', 'empty', 'empty', '17', '7', '0', '10', '-262144', '-
 
 class TestPdCoreGui(TestCase):
     def test_init(self):
-        pco = pd.PdCoreGui("tgl", 0, 0, tgl)
+        pco = pd.CoreGui("tgl", 0, 0, tgl)
         self.assertEqual(pco.inlets(), [pd.XLET_GUI])
         self.assertEqual(pco.outlets(), [pd.XLET_GUI])
         self.assertEqual(pco.send, "empty")
         self.assertEqual(pco.receive, "empty")
 
     def test_str__(self):
-        pco = pd.PdCoreGui("tgl", 5, 6, tgl)
+        pco = pd.CoreGui("tgl", 5, 6, tgl)
         self.assertEqual(str(pco), "[GUI:tgl]                                 {x:5,y:6,id:-1}")
 
     def test_draw(self):

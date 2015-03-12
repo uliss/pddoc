@@ -60,14 +60,14 @@ class PdParser:
         if len(atoms) >= 4:
             kwargs['name'] = atoms[4]
 
-        c = PdCanvas(x, y, w, h, **kwargs)
+        c = Canvas(x, y, w, h, **kwargs)
 
         # root canvas
         if self.canvas is None:
-            c.type = PdCanvas.TYPE_WINDOW
+            c.type = Canvas.TYPE_WINDOW
             self.canvas = c
         else:
-            c.type = PdCanvas.TYPE_SUBPATCH
+            c.type = Canvas.TYPE_SUBPATCH
 
         self.canvas_stack.append(c)
 
@@ -88,19 +88,19 @@ class PdParser:
         atoms.pop(0)
         atoms.pop(0)
 
-        msg = PdMessage(x, y, atoms)
+        msg = Message(x, y, atoms)
         self.current_canvas().append_object(msg)
 
     def parse_comments(self, atoms):
         x = atoms[0]
         y = atoms[1]
-        comment = PdComment(x, y, atoms[2:])
+        comment = Comment(x, y, atoms[2:])
         self.current_canvas().append_object(comment)
 
     def parse_restore(self, atoms):
         cnv_type = atoms[2]
         if cnv_type == "graph":
-            self.current_canvas().type = PdCanvas.TYPE_GRAPH
+            self.current_canvas().type = Canvas.TYPE_GRAPH
             c = self.canvas_stack.pop()
             self._array.x = int(atoms[0])
             self._array.y = int(atoms[1])
@@ -108,7 +108,7 @@ class PdParser:
             self._array = None
         elif cnv_type == "pd":
             c = self.canvas_stack.pop()
-            c.type = PdCanvas.TYPE_SUBPATCH
+            c.type = Canvas.TYPE_SUBPATCH
             c.x = int(atoms[0])
             c.y = int(atoms[1])
             c._args = atoms[3:]
@@ -128,7 +128,7 @@ class PdParser:
         self.current_canvas().append_object(obj)
 
     def parse_array(self, atoms):
-        self._array = PdArray.from_atoms(atoms[1:])
+        self._array = Array.from_atoms(atoms[1:])
 
     def parse_array_content(self, atoms):
         assert self._array

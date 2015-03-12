@@ -26,7 +26,7 @@ from pddoc.pd import XLET_MESSAGE
 
 class TestPdMessage(TestCase):
     def test_init(self):
-        m = PdMessage(0, 0, "sample message".split())
+        m = Message(0, 0, "sample message".split())
         self.assertEqual(m.name, "msg")
         self.assertEqual(m.outlets(), [XLET_MESSAGE])
 
@@ -38,7 +38,7 @@ class TestPdMessage(TestCase):
             def draw_message(self, msg):
                 self.cnt += 1
 
-        m = PdMessage(0, 0, "sample message".split())
+        m = Message(0, 0, "sample message".split())
         p = P()
 
         self.assertEqual(p.cnt, 0)
@@ -53,7 +53,7 @@ class TestPdMessage(TestCase):
             def visit_message(self, msg):
                 self.cnt += 1
 
-        m = PdMessage(0, 0, "sample message".split())
+        m = Message(0, 0, "sample message".split())
         v = V()
 
         self.assertEqual(v.cnt, 0)
@@ -61,13 +61,13 @@ class TestPdMessage(TestCase):
         self.assertEqual(v.cnt, 1)
 
     def test_str__(self):
-        m = PdMessage(1, 1, "sample message".split())
+        m = Message(1, 1, "sample message".split())
         self.assertEqual(str(m), "[sample message(                          {x:1,y:1,id:-1}")
 
     def test_inlets(self):
-        m = PdMessage(0, 0, "sample message".split())
+        m = Message(0, 0, "sample message".split())
         self.assertEqual(m.inlets(), [XLET_MESSAGE])
 
     def test_outlets(self):
-        m = PdMessage(0, 0, "sample message".split())
+        m = Message(0, 0, "sample message".split())
         self.assertEqual(m.outlets(), [XLET_MESSAGE])

@@ -24,9 +24,9 @@ __author__ = 'Serge Poltavski'
 from coregui import *
 
 
-class PdSlider(PdCoreGui):
+class PdSlider(CoreGui):
     def __init__(self, name, x, y, **kwargs):
-        PdCoreGui.__init__(self, name, x, y, [], **kwargs)
+        CoreGui.__init__(self, name, x, y, [], **kwargs)
         self._min = float(kwargs.get("min", 0))
         self._max = float(kwargs.get("max", 127))
         assert self._min <= self._max

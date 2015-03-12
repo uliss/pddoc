@@ -19,16 +19,16 @@
 
 __author__ = 'Serge Poltavski'
 
-from coregui import PdCoreGui
+from coregui import CoreGui
 from brectcalculator import BRectCalculator
 from . import XLET_MESSAGE
 
 
-class PdFloatAtom(PdCoreGui):
+class FloatAtom(CoreGui):
     _bcalc = BRectCalculator()
 
     def __init__(self, x, y, **kwargs):
-        PdCoreGui.__init__(self, "floatatom", x, y, [])
+        CoreGui.__init__(self, "floatatom", x, y, [])
         self._digits = int(kwargs.get("digits", 5))
         assert self._digits >= 0
 
@@ -65,7 +65,7 @@ class PdFloatAtom(PdCoreGui):
         x = atoms[0]
         y = atoms[1]
 
-        return PdFloatAtom(x, y,
+        return FloatAtom(x, y,
                            digits=int(atoms[2]),
                            min=int(atoms[3]),
                            max=int(atoms[4]),

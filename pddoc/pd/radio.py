@@ -20,12 +20,12 @@
  
 __author__ = 'Serge Poltavski'
 
-from coregui import *
+from coregui import CoreGui
 
 
-class PdRadio(PdCoreGui):
+class Radio(CoreGui):
     def __init__(self, name, x, y, **kwargs):
-        PdCoreGui.__init__(self, name, x, y, [], **kwargs)
+        CoreGui.__init__(self, name, x, y, [], **kwargs)
         self._size = int(kwargs.get("size", 15))
         self._newold = int(kwargs.get("newold", 1))
         self._init = int(kwargs.get("init", 0))
@@ -74,9 +74,9 @@ class PdRadio(PdCoreGui):
                             label_color=atoms[14],
                             default_value=atoms[15])
 
-class PdHRadio(PdRadio):
+class PdHRadio(Radio):
     def __init__(self, x, y, **kwargs):
-        PdRadio.__init__(self, "hradio", x, y, **kwargs)
+        Radio.__init__(self, "hradio", x, y, **kwargs)
 
     def get_height(self):
         return self._size
@@ -104,9 +104,9 @@ class PdHRadio(PdRadio):
         self.draw_xlets(painter)
 
 
-class PdVRadio(PdRadio):
+class PdVRadio(Radio):
     def __init__(self, x, y, **kwargs):
-        PdRadio.__init__(self, "vradio", x, y, **kwargs)
+        Radio.__init__(self, "vradio", x, y, **kwargs)
 
     def get_width(self):
         return self._size

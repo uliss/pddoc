@@ -28,7 +28,7 @@ import logging
 from . import XLET_GUI
 
 
-class PdColor:
+class Color:
     def __init__(self, r=0, g=0, b=0):
         assert isinstance(r, float) or isinstance(r, int)
         assert isinstance(g, float) or isinstance(g, int)
@@ -39,11 +39,11 @@ class PdColor:
 
     @staticmethod
     def black():
-        return PdColor(0, 0, 0)
+        return Color(0, 0, 0)
 
     @staticmethod
     def white():
-        return PdColor(255, 255, 255)
+        return Color(255, 255, 255)
 
     def rgb(self):
         return self._r, self._g, self._b
@@ -64,7 +64,7 @@ class PdColor:
 
     @staticmethod
     def from_hex(hex_str):
-        c = PdColor()
+        c = Color()
 
         if hex_str[0] == '#':
             hex_str = hex_str[1:]
@@ -115,13 +115,13 @@ class PdColor:
 
 
 def color_from_str(value):
-    c = PdColor()
+    c = Color()
 
     if isinstance(value, int):
         c.from_pd(value)
     elif isinstance(value, six.string_types):
         if value[0] == '#':
-            return PdColor.from_hex(value)
+            return Color.from_hex(value)
         else:
             c.from_pd(value)
     else:
@@ -130,7 +130,7 @@ def color_from_str(value):
     return c
 
 
-class PdCoreGui(obj.PdObject):
+class CoreGui(obj.PdObject):
     POS_LEFT, POS_RIGHT, POS_TOP, POS_BOTTOM = (0, 1, 2, 3)
 
     def __init__(self, name, x, y, args, **kwargs):

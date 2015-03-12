@@ -19,17 +19,17 @@
 
 __author__ = 'Serge Poltavski'
 
-from coregui import PdCoreGui
+from coregui import CoreGui
 from brectcalculator import BRectCalculator
 from . import XLET_MESSAGE
 
 
-class PdSymbolAtom(PdCoreGui):
+class PdSymbolAtom(CoreGui):
     _bcalc = BRectCalculator()
     ATOM_HEIGHT = 17
 
     def __init__(self, x, y, **kwargs):
-        PdCoreGui.__init__(self, "symbolatom", x, y, [])
+        CoreGui.__init__(self, "symbolatom", x, y, [])
         self._digits = int(kwargs.get("digits", 5))
         assert self._digits >= 0
 

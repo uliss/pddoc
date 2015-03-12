@@ -19,15 +19,15 @@
 
 __author__ = 'Serge Poltavski'
 
-from floatatom import PdFloatAtom
+from floatatom import FloatAtom
 from . import EXTERNALS_DIR
 from obj import PdObject
 from bng import PdBng
 from toggle import PdToggle
 from slider import PdSlider
-from radio import PdRadio
-from gcanvas import PdGCanvas
-from nbx import PdNbx
+from radio import Radio
+from gcanvas import GCanvas
+from nbx import Nbx
 from vu import PdVu
 from symbolatom import PdSymbolAtom
 import os
@@ -43,7 +43,7 @@ def make(atoms):
     name = atoms[0]
 
     if name == "floatatom":
-        return PdFloatAtom.from_atoms(atoms[1:])
+        return FloatAtom.from_atoms(atoms[1:])
     elif name == "symbolatom":
         return PdSymbolAtom.from_atoms(atoms[1:])
     # elif name == "declare":
@@ -56,13 +56,13 @@ def make(atoms):
     elif name in ("hsl", "vsl"):
         return PdSlider.from_atoms(atoms)
     elif name in ("hradio", "vradio"):
-        return PdRadio.from_atoms(atoms)
+        return Radio.from_atoms(atoms)
     elif name == "cnv":
-        return PdGCanvas.from_atoms(atoms[1:])
+        return GCanvas.from_atoms(atoms[1:])
     elif name == "vu":
         return PdVu.from_atoms(atoms)
     elif name == "nbx":
-        return PdNbx.from_atoms(atoms)
+        return Nbx.from_atoms(atoms)
     elif find_external_object(name):
         return externals[name].create(atoms)
     else:
@@ -71,7 +71,7 @@ def make(atoms):
 
 def make_by_name(name, args=[], **kwargs):
     if name == "floatatom":
-        return PdFloatAtom(0, 0, **kwargs)
+        return FloatAtom(0, 0, **kwargs)
     elif name == "bng":
         return PdBng(0, 0, **kwargs)
     else:

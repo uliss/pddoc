@@ -24,7 +24,7 @@ __author__ = 'Serge Poltavski'
 from obj import PdObject
 
 
-class PdArray(PdObject):
+class Array(PdObject):
     def __init__(self, name, size, save=0):
         PdObject.__init__(self, name)
         self._size = int(size)
@@ -48,7 +48,7 @@ class PdArray(PdObject):
     @staticmethod
     def from_atoms(atoms):
         assert len(atoms) == 4
-        return PdArray(atoms[0], atoms[1], atoms[3])
+        return Array(atoms[0], atoms[1], atoms[3])
 
     def draw(self, painter):
         painter.draw_rect(*self.brect())

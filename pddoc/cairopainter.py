@@ -30,7 +30,7 @@ from pdpainter import *
 class CairoPainter(PdPainter):
     def __init__(self, width, height, output, fmt="png", **kwargs):
         PdPainter.__init__(self)
-        self.style = pd.PdDrawStyle()
+        self.style = pd.DrawStyle()
 
         self.st_font_slant = cairo.FONT_SLANT_NORMAL
         self.st_font_weight = cairo.FONT_WEIGHT_NORMAL
@@ -162,7 +162,7 @@ class CairoPainter(PdPainter):
             num += 1
 
     def draw_subpatch(self, subpatch):
-        assert isinstance(subpatch, pd.PdCanvas)
+        assert isinstance(subpatch, pd.Canvas)
 
         if subpatch.is_graph_on_parent():
             x = subpatch.x
@@ -206,7 +206,7 @@ class CairoPainter(PdPainter):
         self.draw_xlets(subpatch.outlets(), x, y + h - self.style.xlet_msg_height, w)
 
     def draw_gop(self, obj, gop_canvas):
-        assert isinstance(gop_canvas, pd.PdCanvas)
+        assert isinstance(gop_canvas, pd.Canvas)
         x, y, w, h = gop_canvas.gop_rect()
         self.cr.save()
         self.draw_box(obj.x, obj.y, w, h)
@@ -300,7 +300,7 @@ class CairoPainter(PdPainter):
             xlet_space = (obj.width - len(outlets) * self.style.xlet_width) / float(len(outlets) - 1)
 
         x = obj.x + (xlet_space + self.style.xlet_width) * outlet_no + self.style.xlet_width / 2.0
-        if isinstance(obj, pd.PdCanvas):
+        if isinstance(obj, pd.Canvas):
             if obj.is_graph_on_parent():
                 y = obj._gop['height'] + obj.y
             else:

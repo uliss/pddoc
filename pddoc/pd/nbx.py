@@ -23,9 +23,9 @@ __author__ = 'Serge Poltavski'
 from coregui import *
 
 
-class PdNbx(PdCoreGui):
+class Nbx(CoreGui):
     def __init__(self, x, y, **kwargs):
-        PdCoreGui.__init__(self, "nbx", x, y, [], **kwargs)
+        CoreGui.__init__(self, "nbx", x, y, [], **kwargs)
         self._digits = int(kwargs.get("digits", 5))  # number of digits the element displays
         self._height = int(kwargs.get("height", 14))  # vertical size of element in pixels
         self._min = float(kwargs.get("min", -1e+037))  # minimum value
@@ -40,7 +40,7 @@ class PdNbx(PdCoreGui):
         assert len(atoms) == 19
         assert atoms[0] == "nbx"
 
-        return PdNbx(0, 0, digits=atoms[1],
+        return Nbx(0, 0, digits=atoms[1],
                      height=atoms[2],
                      min=atoms[3],
                      max=atoms[4],

@@ -20,13 +20,11 @@
 
 __author__ = 'Serge Poltavski'
 
-import logging
-
 from obj import *
 from . import XLET_MESSAGE, XLET_SOUND
 
 
-class PdCanvas(PdObject):
+class Canvas(PdObject):
     TYPE_NONE, TYPE_WINDOW, TYPE_SUBPATCH, TYPE_GRAPH = range(0, 4)
 
     def __init__(self, x, y, w, h, **kwargs):
@@ -78,7 +76,7 @@ class PdCanvas(PdObject):
 
     def append_graph(self, obj):
         assert self != obj
-        assert isinstance(obj, PdCanvas)
+        assert isinstance(obj, Canvas)
         assert obj.type == self.TYPE_GRAPH
         self.append_object(obj)
 
@@ -153,7 +151,7 @@ class PdCanvas(PdObject):
                                    format(dest_obj.name, dinl, len(dest_obj.inlets())))
                     return False
 
-            ckey = PdCanvas.make_connection_key(sid, soutl, did, dinl)
+            ckey = Canvas.make_connection_key(sid, soutl, did, dinl)
             self._connections[ckey] = (src_obj, soutl, dest_obj, dinl)
             return True
         else:
@@ -172,7 +170,7 @@ class PdCanvas(PdObject):
 
     def append_subpatch(self, obj):
         assert self != obj
-        assert isinstance(obj, PdCanvas)
+        assert isinstance(obj, Canvas)
         assert obj.type == self.TYPE_SUBPATCH
         self.append_object(obj)
         return True

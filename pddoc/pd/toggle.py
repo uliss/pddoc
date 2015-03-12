@@ -20,9 +20,9 @@
  
 __author__ = 'Serge Poltavski'
 
-from coregui import PdCoreGui
+from coregui import CoreGui
 
-class PdToggle(PdCoreGui):
+class PdToggle(CoreGui):
     @staticmethod
     def from_atoms(atoms):
         return PdToggle(0, 0,
@@ -43,7 +43,7 @@ class PdToggle(PdCoreGui):
 
     def __init__(self, x, y, **kwargs):
         # tgl_defaults = ['15', '0', 'empty', 'empty', 'empty', '17', '7', '0', '10', '-262144', '-1', '-1', '0', '1']
-        PdCoreGui.__init__(self, "tgl", x, y, [], **kwargs)
+        CoreGui.__init__(self, "tgl", x, y, [], **kwargs)
         # square size of the gui element
         self._size = int(kwargs.get("size", 15))
         self._init = int(kwargs.get("init", 0))

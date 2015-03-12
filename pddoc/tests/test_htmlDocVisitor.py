@@ -54,7 +54,7 @@ class TestHtmlDocVisitor(TestCase):
 
     def test_place_pd_objects(self):
         v = PdLayout()
-        pd_canvas = pd.PdCanvas(0, 0, 100, 50, name="10")
+        pd_canvas = pd.Canvas(0, 0, 100, 50, name="10")
         v._canvas = pd_canvas
         pdo = pd.PdObject("float")
         pd_canvas.append_object(pdo)
@@ -116,7 +116,7 @@ class TestHtmlDocVisitor(TestCase):
     def test_comment2pd(self):
         v = PdLayout()
         pdc = v.comment2pd_comment("simple comment")
-        self.assertTrue(isinstance(pdc, pd.PdComment))
+        self.assertTrue(isinstance(pdc, pd.Comment))
 
         self.assertEqual(pdc.x, 0)
         self.assertEqual(pdc.y, 0)
@@ -130,7 +130,7 @@ class TestHtmlDocVisitor(TestCase):
         self.assertEqual(pdc.layout.height(), 12)
 
         pdc = v.comment2pd_comment(" ".join(["long comment"] * 40))
-        self.assertTrue(isinstance(pdc, pd.PdComment))
+        self.assertTrue(isinstance(pdc, pd.Comment))
         self.assertEqual(pdc.x, 0)
         self.assertEqual(pdc.y, 0)
         self.assertEqual(pdc.width, 0)

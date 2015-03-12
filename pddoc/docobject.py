@@ -495,7 +495,21 @@ class DocInfo(DocItem):
         DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
-        return tag_name in ("itemize", "p")
+        return tag_name in ("itemize", "p", "a")
+
+
+class DocA(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
+        self._url = None
+
+    @property
+    def url(self):
+        return self._url
+
+    def from_xml(self, xmlobj):
+        self._url = xmlobj.attrib["href"]
+        DocItem.from_xml(self, xmlobj)
 
 
 class DocItemize(DocItem):

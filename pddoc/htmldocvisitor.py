@@ -82,7 +82,7 @@ class HtmlDocVisitor(object):
         self._aliases += a.aliases()
 
     def license_begin(self, l):
-        self._license['url'] = l.url()
+        self._license['url'] = l.url
         self._license['name'] = l.name()
 
     def library_begin(self, lib):

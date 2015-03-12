@@ -16,6 +16,7 @@
             <xs:enumeration value="any"/>
             <xs:enumeration value="pointer"/>
             <xs:enumeration value="sound"/>
+            <xs:enumeration value="symbol"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -165,7 +166,7 @@
 
     <xs:complexType name="InletsElementType">
         <xs:sequence>
-            <xs:element name="inlet" minOccurs="1" maxOccurs="unbounded" type="XletElementType"/>
+            <xs:element name="inlet" minOccurs="1" maxOccurs="unbounded" type="InletElementType"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -173,6 +174,15 @@
         <xs:sequence>
             <xs:element name="outlet" minOccurs="1" maxOccurs="unbounded" type="XletElementType"/>
         </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="InletElementType">
+        <xs:complexContent>
+            <xs:extension base="XletElementType">
+                <xs:attribute name="minvalue" use="optional" type="xs:float"/>
+                <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="XletElementType">

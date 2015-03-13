@@ -20,45 +20,44 @@
 __author__ = 'Serge Poltavski'
 
 import argparse
+import logging
 
-from pddoc.cairopainter import *
+from pddoc.docobject import *
+from pddoc.htmldocvisitor import *
 from format import detect_format
 
-
-def draw_object(object, fname, format, **kwargs):
-    w, h = pd.BRectCalculator().object_brect(object)[2:]
-    pad = 1  # pixel
-    w += pad
-    h += pad
-
-    painter = CairoPainter(int(w), int(h), fname, format, **kwargs)
-    painter.draw_object(object)
-
-
 def main():
-    arg_parser = argparse.ArgumentParser(description='PureData patch to image converter')
-    arg_parser.add_argument('--format', '-f', metavar='format', nargs=1, choices=("png", "pdf", "svg"),
-                            help='output image format')
-    arg_parser.add_argument('name', metavar='OBJECT_NAME', help="PureData object name, for ex.: osc~")
+    arg_parser = argparse.ArgumentParser(description='PureData pddoc to html converter')
+    arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC format")
     arg_parser.add_argument('output', metavar='OUTNAME', nargs='?', default='',
-                            help="Image output name, for ex.: float.png")
+                            help="HTML output file name")
 
     args = vars(arg_parser.parse_args())
+    input = args['name']
+    output = args['output']
 
-    pdo = pd.PdObject(args['name'])
+    if not os.path.exists(input):
+        logging.error("File not exists: \"%s\"", input)
+        exit(1)
 
-    if not args['output']:
-        if args['format']:
-            output = "{0:s}.{1:s}".format(args['name'], args['format'][0].lower())
-        else:
-            output = args['name'] + ".png"
-            args['output'] = output
-    else:
-        output = args['output']
+    if not output:
+        output = os.path.splitext(input)[0] + ".html"
 
-    fmt = detect_format(args)
-    draw_object(pdo, output, fmt)
+    dobj = DocObject()
+    xml = ET.parse(input)
+    pddoc = xml.getroot()
+    for child in pddoc:
+        if child.tag == "object":
+            dobj.from_xml(child)
+            v = HtmlDocVisitor()
+            dobj.traverse(v)
+            v.generate_images()
 
+            s = v.render()
+            f = open(output, "w")
+            f.write(s)
+            f.close()
+            break
 
 if __name__ == '__main__':
     main()

@@ -25,22 +25,7 @@ import os.path
 import logging
 
 from pddoc.cairopainter import *
-
-
-def detect_format(args):
-    if args['format'] is None:
-        name, ext = os.path.splitext(args['output'].lower())
-        if len(ext) > 2:
-            ext = ext[1:]
-        else:
-            ext = None
-    else:
-        ext = args['format'][0].lower()
-
-    if ext not in ('png', 'pdf', 'svg'):
-        raise ValueError("output format not supported or can't be detected")
-
-    return ext
+from format import detect_format
 
 
 def main():

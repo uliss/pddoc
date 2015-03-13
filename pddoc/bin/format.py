@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-# Copyright (C) 2014 by Serge Poltavski                                 #
-# serge.poltavski@gmail.com                                             #
+#   Copyright (C) 2015 by Serge Poltavski                                 #
+#   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -17,29 +17,22 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-from unittest import TestCase, expectedFailure
-from pddoc.docobject import *
-from pddoc.htmldocvisitor import *
-
 __author__ = 'Serge Poltavski'
 
+import os.path
 
-class TestDocObject(TestCase):
-    def test_float_export(self):
-        dobj = DocObject()
 
-        xml = ET.parse("float.pddoc")
-        pddoc = xml.getroot()
-        for child in pddoc:
-            if child.tag == "object":
-                dobj.from_xml(child)
+def detect_format(args):
+    if args['format'] is None:
+        name, ext = os.path.splitext(args['output'].lower())
+        if len(ext) > 2:
+            ext = ext[1:]
+        else:
+            ext = None
+    else:
+        ext = args['format'][0].lower()
 
-                v = HtmlDocVisitor()
-                dobj.traverse(v)
-                v.generate_images()
+    if ext not in ('png', 'pdf', 'svg'):
+        raise ValueError("output format not supported or can't be detected")
 
-                s = v.render()
-                f = open("out/float.html", "w")
-                f.write(s)
-                f.close()
-                break
+    return ext

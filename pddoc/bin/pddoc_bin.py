@@ -21,10 +21,16 @@ __author__ = 'Serge Poltavski'
 
 import argparse
 import logging
+from lxml import etree
 
-from pddoc.docobject import *
 from pddoc.htmldocvisitor import *
-from format import detect_format
+
+
+def get_parser():
+    schema_root = etree.parse(os.path.join(os.path.dirname(__file__), '..', 'share', 'pddoc.xsd')).getroot()
+    schema = etree.XMLSchema(schema_root)
+    return etree.XMLParser(schema=schema)
+
 
 def main():
     arg_parser = argparse.ArgumentParser(description='PureData pddoc to html converter')
@@ -44,7 +50,13 @@ def main():
         output = os.path.splitext(input)[0] + ".html"
 
     dobj = DocObject()
-    xml = ET.parse(input)
+
+    try:
+        xml = ET.parse(input, get_parser())
+    except etree.XMLSyntaxError, e:
+        logging.error("XML syntax error:\n \"%s\"\n\twhile parsing file: \"%s\"", e, input)
+        exit(1)
+
     pddoc = xml.getroot()
     for child in pddoc:
         if child.tag == "object":

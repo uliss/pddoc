@@ -2,5 +2,11 @@
 <pddoc version="1.0">
     <object name="simple">
         <title>simple</title>
+        <meta>
+            <authors><author>unknown</author></authors>
+            <description>empty</description>
+            <license>GPL5</license>
+            <library>simple</library>
+        </meta>
     </object>
 </pddoc>

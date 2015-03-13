@@ -22,6 +22,7 @@ __author__ = 'Serge Poltavski'
 
 import argparse
 import os.path
+import logging
 
 from pddoc.cairopainter import *
 
@@ -54,7 +55,13 @@ def main():
     args = vars(arg_parser.parse_args())
 
     pd_parser = pd.PdParser()
-    pd_parser.parse(args['input'])
+
+    finput = args['input']
+    if not os.path.exists(finput):
+        logging.error("File not exists: \"%s\"", finput)
+        exit(1)
+
+    pd_parser.parse(finput)
 
     width = pd_parser.canvas.width
     height = pd_parser.canvas.height

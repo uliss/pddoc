@@ -18,12 +18,12 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from unittest import TestCase
+
 from pddoc.pd.parser import PdParser
 from pddoc.cairopainter import *
 from pddoc.pddrawer import *
  
 __author__ = 'Serge Poltavski'
-
 
 class TestConnections(TestCase):
     def test_connections0(self):

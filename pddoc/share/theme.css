@@ -1,0 +1,134 @@
+html, body, table, td, tr, thead, tbody {
+   font-family: "Verdana";
+   margin:0;
+   padding:0;
+   font-size:12px;
+}
+
+a:link, a:visited, a:active {
+   text-decoration:none;
+   color:#555;
+}
+
+a:hover {
+   color: #22A;
+   text-decoration:underline;
+}
+
+td.number {
+   vertical-align:top;
+}
+
+div.header {
+   background-color: #EED;
+   padding: 10px;
+   clear: both;
+   overflow: auto;
+}
+
+div.footer {
+   background-color: #EFD;
+   padding: 10px;
+}
+
+div.header h1 {
+   font-family: "Verdana";
+   font-size: 22px;
+   margin: 0 0 0 0;
+}
+
+div.header .description {
+   color: #000;
+   font-family: "Monaco";
+   font-size: 12px;
+   margin-left: 20px;
+   float: left;
+}
+
+div.header .aliases {
+   float: right;
+}
+
+div.header .aliases img {
+   vertical-align: middle;
+}
+
+div.header .aliases span {
+   display: block;
+}
+
+div.header .cleaner {
+   clean:both;
+}
+
+div.example img {
+   display:block;
+   margin: 10px;
+
+}
+
+div.inlets, div.outlets, div.arguments, div.also {
+   margin-top: 20px;
+   margin-left: 10px;
+   border-bottom: 1px dotted #ADE;
+   padding-bottom: 10px;
+}
+
+div.inlets h2,  div.outlets h2, div.arguments h2, div.also h2 {
+   font-weight: bold;
+   font-family: "Verdana";
+   font-size: 15px;
+   color: #777;
+   //float: left;
+   padding: 0 40px 0 0;
+   margin: 0;
+   width: 180px;
+}
+
+div.inlets table, div.outlets table {
+   border-spacing: 10px;
+   margin-left: 150px;
+}
+
+div.inlets td, div.outlets td {
+   padding: 1px;
+}
+
+div.inlets td.number, div.outlets td.number {
+   border-right:3px solid #AAA;
+   padding: 0;
+}
+
+div.inlets td.number span, div.outlets td.number span {
+   background-color: #EEE;
+   padding: 0px;
+}
+
+div.inlets .type, div.outlets .type {
+   width: 50px;
+}
+
+div.inlets .range, div.outlets .range {
+   width: 100px;
+}
+
+div.arguments ol {
+   margin-left: 150px;
+   padding: 0px;
+   list-style-position: inside;
+}
+
+div.arguments li {
+   margin: 0;
+   padding: 0 0 0 10px;
+}
+
+div.also .objects {
+   margin-left: 160px;
+}
+
+
+div.footer {
+   margin-top: 20px;
+}
+

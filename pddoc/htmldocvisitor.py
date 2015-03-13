@@ -51,7 +51,7 @@ class HtmlDocVisitor(object):
         self._css_theme = "../theme.css"
         self._img_output_dir = "./out"
         # template config
-        tmpl_path = "{0:s}/html_object.tmpl".format(os.path.dirname(__file__))
+        tmpl_path = "{0:s}/share/html_object.tmpl".format(os.path.dirname(__file__))
         # self._tmpl_lookup = TemplateLookup(directories=[os.path.dirname(__file__)])
         self._html_template = Template(filename=tmpl_path)
         self._layout = PdLayout()

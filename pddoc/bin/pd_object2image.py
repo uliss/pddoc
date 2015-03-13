@@ -22,8 +22,7 @@ __author__ = 'Serge Poltavski'
 import argparse
 import os.path
 
-from cairopainter import *
-import pd
+from pddoc.cairopainter import *
 
 
 def detect_format(args):

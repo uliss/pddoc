@@ -422,6 +422,20 @@ class CairoPainter(PdPainter):
         yoffset = self.style.xlet_height(outlets[0])
         self.draw_xlets(outlets, x, y - yoffset, width)
 
+    def draw_arc(self, x, y, radius, start_angle, end_angle, **kwargs):
+        self.cr.save()
+        if 'width' in kwargs:
+            self.cr.set_line_width(float(kwargs['width']))
+
+        self.cr.move_to(x, y)
+        self.cr.arc(x, y, radius, start_angle, end_angle)
+
+        if 'outline' in kwargs:
+            self.set_src_color(kwargs['outline'])
+
+        self.cr.stroke()
+        self.cr.restore()
+
     def draw_circle(self, x, y, radius, **kwargs):
         self.cr.save()
         self.cr.set_line_width(self.style.obj_line_width)

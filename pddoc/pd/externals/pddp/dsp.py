@@ -21,7 +21,7 @@
 __author__ = 'Serge Poltavski'
 
 
-from pddoc.pdobject import PdObject
+from pddoc.pd import PdObject
 from pddoc.cairopainter import CairoPainter
 
 

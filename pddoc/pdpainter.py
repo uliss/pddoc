@@ -60,6 +60,9 @@ class PdPainter(object):
     def draw_circle(self, x, y, width, **kwargs):
         print "Draw circle"
 
+    def draw_arc(self, x, y, radius, start_angle, end_angle, **kwargs):
+        print "Draw arc"
+
     def draw_line(self, x0, y0, x1, y1, **kwargs):
         print "Draw line"
 

@@ -98,6 +98,10 @@ class DocItem(object):
         self.read_xml_data(xmlobj)
 
         for child in xmlobj:
+            # skip XML comments
+            if callable(child.tag):
+                continue
+
             if not self.is_valid_tag(child.tag):
                 logging.warning("tag <%s> not allowed in <%s>" % (child.tag, xmlobj.tag))
                 continue

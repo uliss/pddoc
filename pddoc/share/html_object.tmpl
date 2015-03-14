@@ -136,7 +136,15 @@
         % endif
         <div class="version">Version: ${version | h}</div>
         % if license:
-        <div class="license">License: <a href="${license['url'] | h}">${license['name'] | h}</a></div>
+        <div class="license">License:
+            % if license['url']:
+            <a href="${license['url'] | h}">
+            % endif
+                ${license['name'] | h}
+            % if license['url']:
+                </a>
+            % endif
+        </div>
         % endif
         % if website:
         <div class="website">Website: <a href="${website | h}">${website | h}</a></div>

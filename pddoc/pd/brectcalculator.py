@@ -86,7 +86,7 @@ class BRectCalculator(object):
         return self.text_brect(comment.text())
 
     def message_brect(self, message):
-        assert  isinstance(message, Message)
+        assert isinstance(message, Message)
         (x, y, width, height, dx, dy) = self._cr.text_extents(message.to_string())
         w = width + self._style.obj_pad_x * 4
         h = self._style.obj_height

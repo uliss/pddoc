@@ -117,9 +117,21 @@
     </xs:complexType>
 
     <xs:complexType name="ExampleElementType">
-        <xs:sequence>
-            <xs:element name="pdexample" type="PdExampleType" minOccurs="1" maxOccurs="unbounded"/>
-        </xs:sequence>
+        <xs:all>
+            <xs:element name="pdexample" type="PdExampleType" minOccurs="0"/>
+            <xs:element name="pdinclude" type="PdIncludeType" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:simpleType name="PdAttrSize">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="auto"/>
+            <xs:enumeration value="canvas"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="PdIncludeType">
+        <xs:attribute name="file" use="required" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="PdExampleType">
@@ -130,9 +142,10 @@
             </xs:choice>
             <xs:element name="pdconnect" type="PdConnectType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
+        <xs:attribute name="title" type="xs:string" use="optional"/>
         <xs:attribute name="width" use="optional" type="xs:unsignedShort"/>
         <xs:attribute name="height" use="optional" type="xs:unsignedShort"/>
-        <xs:attribute name="file" use="optional" type="xs:string"/>
+        <xs:attribute name="size" use="optional" type="PdAttrSize"/>
     </xs:complexType>
 
     <xs:complexType name="LayoutCol">

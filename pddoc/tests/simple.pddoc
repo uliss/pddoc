@@ -8,5 +8,13 @@
             <license>GPL5</license>
             <library>simple</library>
         </meta>
+        <example>
+            <pdexample size="auto" title="sample">
+                <row>
+                   <pdobject name="osc~" id="osc1"/>
+                </row>
+            </pdexample>
+            <pdinclude file="comments.pd"/>
+        </example>
     </object>
 </pddoc>

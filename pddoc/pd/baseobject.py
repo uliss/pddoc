@@ -23,8 +23,6 @@ import re
 
 
 class BaseObject(object):
-    brect_calculator = None
-
     def __init__(self, x=0, y=0, w=0, h=0):
         self._id = -1
         self._x = int(x)
@@ -101,9 +99,6 @@ class BaseObject(object):
 
     def traverse(self, visitor):
         assert not "Not implemented"
-
-    def calc_brect(self):
-        self.brect_calculator.calc(self)
 
     @staticmethod
     def unescape(string):

@@ -24,11 +24,13 @@ import cairopainter
 from mako.template import Template
 
 import pddrawer
-import pd
 from docobject import *
 from pdlayout import *
 
+
 class HtmlDocVisitor(object):
+    image_output_dir = "./out"
+
     def __init__(self):
         self._title = ""
         self._description = ""
@@ -73,7 +75,7 @@ class HtmlDocVisitor(object):
         self._aliases += a.aliases()
 
     def license_begin(self, l):
-        self._license['url'] = l.url
+        self._license['url'] = l.url()
         self._license['name'] = l.name()
 
     def library_begin(self, lib):
@@ -99,34 +101,61 @@ class HtmlDocVisitor(object):
 
     def make_image_id_name(self):
         self._image_counter += 1
-        return self._image_counter, "image_{0:02d}.png".format(self._image_counter)
+        cnt = self._image_counter
+        path = os.path.join(HtmlDocVisitor.image_output_dir, "image_{0:02d}.png".format(self._image_counter))
+        return cnt, path
 
-    def pdexample_begin(self, pdexample):
-        if pdexample.file():
-            parser = pd.PdParser()
-            parser.parse(pdexample.file())
-            self._layout.canvas = parser.canvas
-        else:
-            self._layout.canvas = pd.Canvas(0, 0, 10, 10, name="10")
-            self._layout.canvas.type =pd.Canvas.TYPE_WINDOW
+    def pdexample_begin(self, tag):
+        self._layout.canvas = pd.Canvas(0, 0, 10, 10, name="10")
+        self._layout.canvas.type = pd.Canvas.TYPE_WINDOW
 
-    def pdexample_end(self, pd):
-        w, h = self.draw_area_size(pd)
-        img_id, img_fname = self.make_image_id_name()
+    def pdexample_end(self, tag):
+        img_id, img_path = self.make_image_id_name()
+        # append data to template renderer
+        self._pd_append_example(img_id, img_path, None, tag.title())
+        # update layout - place all objects
+        self._layout.update()
+        # draw image
+        w, h = self.draw_area_size(tag)
+        self._pd_draw(w, h, img_path)
 
-        example_dict = {'id' : img_id, 'image' : img_fname, 'title' : pd.title(), 'file' : pd.file() }
+    def pdinclude_begin(self, tag):
+        assert isinstance(tag, DocPdinclude)
 
-        if not pd.file():
-            self._layout.update()
+        if not os.path.exists(tag.file()):
+            logging.error("Error in tag <pdinclude>: file not exists: \"{0:s}\"".format(tag.file()))
+            return
+
+        parser = pd.PdParser()
+        if not parser.parse(tag.file()):
+            tag.set_invalid()
+            logging.error("Error in tag <pdexample>: can't process file: {0:s}".format(tag.file()))
+
+        self._layout.canvas = parser.canvas
+        img_id, img_path = self.make_image_id_name()
+        # append data to template renderer
+        self._pd_append_example(img_id, img_path, tag.file(), tag.file())
+
+        # TODO auto layout
+        w, h = self._layout.canvas_brect()[2:]
+        self._pd_draw(w, h, img_path)
+
+    def _pd_append_example(self, img_id, img_path, pd_path="", title=""):
+        example_dict = {
+            'id': img_id,
+            'image': img_path,
+            'title': title,
+            'file': pd_path
+        }
 
         self._examples.append(example_dict)
 
-        output_fname = "./out/" + img_fname
-        painter = cairopainter.CairoPainter(w, h, output_fname,
+    def _pd_draw(self, w, h, fname):
+        painter = cairopainter.CairoPainter(w, h, fname,
                                             xoffset=self._canvas_padding,
                                             yoffset=self._canvas_padding)
-        walker = pddrawer.PdDrawer()
-        walker.draw(self._layout.canvas, painter)
+        self._layout.canvas.draw(painter)
+        logging.info("image [{0:d}x{1:d}] saved to: \"{2:s}\"".format(w, h, fname))
 
     def pdcomment_begin(self, comment):
         self._layout.comment(comment)
@@ -149,18 +178,19 @@ class HtmlDocVisitor(object):
     def pdobject_begin(self, doc_obj):
         self._layout.object_begin(doc_obj)
 
-    def draw_area_size(self, pd):
-        assert isinstance(pd, DocPdexample)
+    def draw_area_size(self, pdxmpl):
+        assert isinstance(pdxmpl, DocPdexample)
+
         w = 0
         h = 0
 
-        if pd.file() and pd.size() == "canvas":
+        if pdxmpl.file() and pdxmpl.size() == "canvas":
             w, h = self._layout.canvas_brect()[2:]
-        elif pd.size() == "auto":
+        elif pdxmpl.size() == "auto":
             w, h = self._layout.layout_brect()[2:]
-        elif not pd.size():
-            w = pd.width()
-            h = pd.height()
+        elif not pdxmpl.size():
+            w = pdxmpl.width()
+            h = pdxmpl.height()
 
             if not w:
                 w = self._layout.layout_brect()[2]

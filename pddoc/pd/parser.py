@@ -98,12 +98,16 @@ class PdParser:
         self.current_canvas().append_object(comment)
 
     def parse_restore(self, atoms):
+        # restore X, Y, TYPE, ARGS
         cnv_type = atoms[2]
         if cnv_type == "graph":
-            self.current_canvas().type = Canvas.TYPE_GRAPH
-            c = self.canvas_stack.pop()
+            # self.current_canvas().type = Canvas.TYPE_GRAPH
+            # remove canvas from stack
+            self.canvas_stack.pop()
+
             self._array.x = int(atoms[0])
             self._array.y = int(atoms[1])
+            # put array instead
             self.current_canvas().append_object(self._array)
             self._array = None
         elif cnv_type == "pd":

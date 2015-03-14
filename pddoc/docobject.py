@@ -2,15 +2,15 @@
 # coding=utf-8
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
-#   serge.poltavski@gmail.com                                             #
-#                                                                         #
-#   This program is free software; you can redistribute it and/or modify  #
-#   it under the terms of the GNU General Public License as published by  #
-#   the Free Software Foundation; either version 3 of the License, or     #
-#   (at your option) any later version.                                   #
-#                                                                         #
-#   This program is distributed in the hope that it will be useful,       #
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+# serge.poltavski@gmail.com                                             #
+# #
+# This program is free software; you can redistribute it and/or modify  #
+# it under the terms of the GNU General Public License as published by  #
+# the Free Software Foundation; either version 3 of the License, or     #
+# (at your option) any later version.                                   #
+# #
+# This program is distributed in the hope that it will be useful,       #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 #   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
 #   GNU General Public License for more details.                          #
 #                                                                         #
@@ -28,18 +28,37 @@ def make_class_name(tag_name):
 
 
 def create_instance(tag_name, *args):
-    class_name = make_class_name(tag_name)
-    obj = globals()[class_name](args)
-    return obj
+    try:
+        class_name = make_class_name(tag_name)
+        obj = globals()[class_name](args)
+        return obj
+    except KeyError:
+        logging.error("Class not found: %s", class_name)
+        exit(1)
+
+
+class DocVisitorError(Exception):
+    def __init__(self, message):
+        self._msg = message
+
+    def __str__(self):
+        return "VisitorError: {0:s}".format(self._msg)
 
 
 class DocItem(object):
     def __init__(self, *args):
         self._elements = []
         self._text = ""
+        self._error = False
 
         if len(args) > 1:
             self._text = args[0]
+
+    def invalid(self):
+        return self._error
+
+    def set_invalid(self, v=True):
+        self._error = v
 
     def items(self):
         return self._elements
@@ -60,16 +79,20 @@ class DocItem(object):
         return len(self._elements)
 
     def traverse(self, visitor):
-        mname = self.__class__.__name__[3:].lower()
-        method = mname + "_begin"
-        if hasattr(visitor, method):
-            getattr(visitor, method)(self)
+        try:
+            mprefix = self.__class__.__name__[3:].lower()
+            method = mprefix + "_begin"
+            if hasattr(visitor, method):  # call element_begin() method
+                getattr(visitor, method)(self)
 
-        self.traverse_children(visitor)
+            self.traverse_children(visitor)
 
-        method = mname + "_end"
-        if hasattr(visitor, method):
-            getattr(visitor, method)(self)
+            method = mprefix + "_end"
+            if hasattr(visitor, method):  # call element_end() method
+                getattr(visitor, method)(self)
+
+        except DocVisitorError, e:
+            logging.error(e)
 
     def traverse_children(self, visitor):
         for e in self._elements:
@@ -180,7 +203,7 @@ class DocExample(DocItem):
         DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
-        return tag_name in ("pdexample",)
+        return tag_name in ("pdexample", "pdinclude")
 
 
 class DocPdobject(DocItem):
@@ -261,6 +284,27 @@ class DocPdmessage(DocPdobject):
 class DocPdinlet(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
+
+
+class DocPdinclude(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
+        self._file = None
+        self._size = "auto"
+
+    def file(self):
+        return self._file
+
+    def size(self):
+        return self._size
+
+    def from_xml(self, xmlobj):
+        try:
+            self._file = xmlobj.attrib['file']
+            self._size = xmlobj.attrib.get('size', 'auto')
+            assert self._size in ("auto", "canvas")
+        except KeyError, e:
+            logging.warning("attribute \"%s\" not found in <%s>", e.args[0], xmlobj.tag)
 
 
 class DocPdoutlet(DocItem):

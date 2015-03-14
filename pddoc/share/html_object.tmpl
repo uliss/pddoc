@@ -3,9 +3,14 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>PureData [${title | h}] object</title>
-    <link rel="stylesheet" type="text/css" href="${css_theme | h}"/>
+    <link rel="stylesheet" type="text/css" href="${css_file | h}"/>
     <meta name="description" content="${description | h}"/>
     <meta name="keywords" content="${' '.join(keywords) | h}"/>
+    % if css:
+    <script type="text/css">
+        ${css | h}
+    </script>
+    % endif
 </head>
 <body>
 <div class="header">

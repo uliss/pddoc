@@ -32,6 +32,7 @@ from pdlayout import *
 
 class HtmlDocVisitor(object):
     image_output_dir = "./out"
+    input_lookup_dir = ""
 
     def __init__(self):
         self._title = ""
@@ -53,7 +54,8 @@ class HtmlDocVisitor(object):
         self._inlet_counter = 0
         self._image_counter = 0
         self._image_prefix = ""
-        self._css_theme = "../theme.css"
+        self._css_file = "../theme.css"
+        self._css = ""
         # template config
         tmpl_path = "{0:s}/share/html_object.tmpl".format(os.path.dirname(__file__))
         # self._tmpl_lookup = TemplateLookup(directories=[os.path.dirname(__file__)])
@@ -62,10 +64,25 @@ class HtmlDocVisitor(object):
         self._canvas_padding = 10
 
     def image_prefix(self):
-        return self._image_prefix
+        if self._image_prefix:
+            return self._image_prefix + "_"
+        else:
+            return ""
 
     def set_image_prefix(self, prefix):
         self._image_prefix = re.sub('[^a-zA-Z0-9~]', '', prefix)
+
+    def css_file(self):
+        return self._css_file
+
+    def set_css_file(self, filename):
+        self._css_file = filename
+
+    def css(self):
+        return self._css
+
+    def set_css(self, content):
+        self._css = content
 
     def title_begin(self, t):
         self._title = t.text()
@@ -103,7 +120,7 @@ class HtmlDocVisitor(object):
 
     def see_begin(self, see):
         dict = {'name' : see.text()}
-        dict['image'] = "object_{0:s}.png".format(see.text())
+        dict['image'] = os.path.join(HtmlDocVisitor.image_output_dir, "object_{0:s}.png".format(see.text()))
         dict['link'] = "{0:s}.html".format(see.text())
         self._see_also.append(dict)
 
@@ -111,7 +128,7 @@ class HtmlDocVisitor(object):
         self._image_counter += 1
         cnt = self._image_counter
         path = os.path.join(HtmlDocVisitor.image_output_dir,
-                            "{1:s}image_{0:02d}.png".format(self._image_counter, self._image_prefix + "_"))
+                            "{1:s}image_{0:02d}.png".format(self._image_counter, self.image_prefix()))
         return cnt, path
 
     def pdexample_begin(self, tag):
@@ -131,19 +148,21 @@ class HtmlDocVisitor(object):
     def pdinclude_begin(self, tag):
         assert isinstance(tag, DocPdinclude)
 
-        if not os.path.exists(tag.file()):
-            logging.error("Error in tag <pdinclude>: file not exists: \"{0:s}\"".format(tag.file()))
+        pd_file_path = os.path.join(HtmlDocVisitor.input_lookup_dir, tag.file())
+
+        if not os.path.exists(pd_file_path):
+            logging.error("Error in tag <pdinclude>: file not exists: \"{0:s}\"".format(pd_file_path))
             return
 
         parser = pd.PdParser()
-        if not parser.parse(tag.file()):
-            tag.set_invalid()
-            logging.error("Error in tag <pdexample>: can't process file: {0:s}".format(tag.file()))
+        if not parser.parse(pd_file_path):
+            logging.error("Error in tag <pdexample>: can't process file: {0:s}".format(pd_file_path))
+            return
 
         self._layout.canvas = parser.canvas
         img_id, img_path = self.make_image_id_name()
         # append data to template renderer
-        self._pd_append_example(img_id, img_path, tag.file(), tag.file())
+        self._pd_append_example(img_id, img_path, pd_file_path, pd_file_path)
 
         # TODO auto layout
         w, h = self._layout.canvas_brect()[2:]
@@ -225,7 +244,7 @@ class HtmlDocVisitor(object):
     def generate_object_image(self, name):
         fname = os.path.join(HtmlDocVisitor.image_output_dir, "object_{0:s}.png".format(name))
         if os.path.exists(fname):
-            return
+            logging.warning("image exists: \"%s\"", fname)
 
         pdo = pd.make_by_name(name)
         brect = pd.BRectCalculator().object_brect(pdo)
@@ -257,7 +276,8 @@ class HtmlDocVisitor(object):
             description=self._description,
             keywords=self._keywords,
             image_dir='.',
-            css_theme=self._css_theme,
+            css_file=self._css_file,
+            css=self._css,
             aliases=[self._title] + self._aliases,
             license=self._license,
             version=self._version,

@@ -20,6 +20,7 @@
 __author__ = 'Serge Poltavski'
 
 import argparse
+import shutil
 import logging
 from lxml import etree
 
@@ -57,20 +58,31 @@ def main():
         logging.error("XML syntax error:\n \"%s\"\n\twhile parsing file: \"%s\"", e, input)
         exit(1)
 
+    HtmlDocVisitor.image_output_dir = "img"
+    HtmlDocVisitor.input_lookup_dir = os.path.dirname(input)
+    css_file = "theme.css"
+
     pddoc = xml.getroot()
     for child in pddoc:
         if child.tag == "object":
             dobj.from_xml(child)
             v = HtmlDocVisitor()
+            v.set_css_file(css_file)
             v.set_image_prefix(child.attrib["name"])
             dobj.traverse(v)
-            v.generate_images()
 
-            s = v.render()
+            # generate images
+            v.generate_images()
+            html_data = v.render()
             f = open(output, "w")
-            f.write(s)
+            f.write(html_data)
             f.close()
-            break
+
+    # copy css theme file to current folder
+    src_css = os.path.join(os.path.dirname(__file__), "../share", css_file)
+    shutil.copyfile(src_css, css_file)
+
+
 
 if __name__ == '__main__':
     main()

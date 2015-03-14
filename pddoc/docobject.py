@@ -49,16 +49,9 @@ class DocItem(object):
     def __init__(self, *args):
         self._elements = []
         self._text = ""
-        self._error = False
 
         if len(args) > 1:
             self._text = args[0]
-
-    def invalid(self):
-        return self._error
-
-    def set_invalid(self, v=True):
-        self._error = v
 
     def items(self):
         return self._elements

@@ -97,7 +97,15 @@ class HtmlDocVisitor(object):
         self._description = d.text()
 
     def aliases_begin(self, a):
-        self._aliases += a.aliases()
+        if not a.aliases():
+            return
+
+        for alias in a.aliases() + [self._title]:
+            element = {
+                'name': alias,
+                'image': os.path.join(HtmlDocVisitor.image_output_dir, "object_{0:s}.png".format(alias))
+            }
+            self._aliases.append(element)
 
     def license_begin(self, l):
         self._license['url'] = l.url()
@@ -119,10 +127,13 @@ class HtmlDocVisitor(object):
         self._contacts = cnt.text()
 
     def see_begin(self, see):
-        dict = {'name' : see.text()}
-        dict['image'] = os.path.join(HtmlDocVisitor.image_output_dir, "object_{0:s}.png".format(see.text()))
-        dict['link'] = "{0:s}.html".format(see.text())
-        self._see_also.append(dict)
+        element = {
+            'name': see.text(),
+            'image': os.path.join(HtmlDocVisitor.image_output_dir, "object_{0:s}.png".format(see.text())),
+            'link': "{0:s}.html".format(see.text())
+        }
+
+        self._see_also.append(element)
 
     def make_image_id_name(self):
         self._image_counter += 1
@@ -261,8 +272,8 @@ class HtmlDocVisitor(object):
                 raise RuntimeError("not a directory: %s".format(HtmlDocVisitor.image_output_dir))
 
             if self._aliases:
-                for a in [self._title] + self._aliases:
-                    self.generate_object_image(a)
+                for a in self._aliases:
+                    self.generate_object_image(a['name'])
 
             if self._see_also:
                 for sa in self._see_also:
@@ -275,10 +286,9 @@ class HtmlDocVisitor(object):
             title=self._title,
             description=self._description,
             keywords=self._keywords,
-            image_dir='.',
             css_file=self._css_file,
             css=self._css,
-            aliases=[self._title] + self._aliases,
+            aliases=self._aliases,
             license=self._license,
             version=self._version,
             examples=self._examples,

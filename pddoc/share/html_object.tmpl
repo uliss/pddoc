@@ -20,11 +20,11 @@
     <div class="aliases">
         % if len(aliases) > 1:
         <span>aliases:</span>
-        % for a in xrange(0, len(aliases)):
-        % if a != 0:
+        % for i, a in enumerate(aliases):
+        % if i != 0:
         or
         % endif
-        <img src="${image_dir}/object_${aliases[a]|h}.png" alt="[${aliases[a]|h}]"/>
+        <img src="${a['image'] | h}" alt="[${a['name']|h}]"/>
         % endfor
         % endif
     </div>

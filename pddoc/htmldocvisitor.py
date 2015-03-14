@@ -19,13 +19,11 @@
 
 __author__ = 'Serge Poltavski'
 
-import os.path
 import os
 import re
 import cairopainter
 from mako.template import Template
 
-import pddrawer
 from docobject import *
 from pdlayout import *
 
@@ -101,11 +99,14 @@ class HtmlDocVisitor(object):
             return
 
         for alias in a.aliases() + [self._title]:
-            element = {
-                'name': alias,
-                'image': os.path.join(HtmlDocVisitor.image_output_dir, "object_{0:s}.png".format(alias))
-            }
-            self._aliases.append(element)
+            self.add_alias(alias)
+
+    def add_alias(self, name):
+        element = {
+            'name': name,
+            'image': os.path.join(HtmlDocVisitor.image_output_dir, "object_{0:s}.png".format(name))
+        }
+        self._aliases.append(element)
 
     def license_begin(self, l):
         self._license['url'] = l.url()

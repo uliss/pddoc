@@ -44,14 +44,10 @@ class TestHtmlDocVisitor(TestCase):
 
     def test_generate_images(self):
         v = HtmlDocVisitor()
-        v._title = "testobj"
-        v._aliases.append("tobj")
+        v.add_alias("tobj")
         v.generate_images()
-        path1 = os.path.join(HtmlDocVisitor.image_output_dir, "object_testobj.png")
-        self.assertTrue(os.path.exists(path1))
         path2 = os.path.join(HtmlDocVisitor.image_output_dir, "object_tobj.png")
         self.assertTrue(os.path.exists(path2))
-        os.remove(path1)
         os.remove(path2)
 
     def test_place_pd_objects(self):

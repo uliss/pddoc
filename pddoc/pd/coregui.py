@@ -26,6 +26,7 @@ import six
 import logging
 
 from . import XLET_GUI
+from abstractvisitor import AbstractVisitor
 
 
 class Color:
@@ -192,6 +193,7 @@ class CoreGui(obj.PdObject):
         return [XLET_GUI]
 
     def traverse(self, visitor):
+        assert isinstance(visitor, AbstractVisitor)
         visitor.visit_core_gui(self)
 
     def draw_bbox(self, painter, **kwargs):

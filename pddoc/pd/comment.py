@@ -21,6 +21,7 @@
 __author__ = 'Serge Poltavski'
 
 from baseobject import *
+from abstractvisitor import AbstractVisitor
 
 
 class Comment(BaseObject):
@@ -61,4 +62,5 @@ class Comment(BaseObject):
         painter.draw_comment(self)
 
     def traverse(self, visitor):
+        assert isinstance(visitor, AbstractVisitor)
         visitor.visit_comment(self)

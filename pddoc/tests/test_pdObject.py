@@ -22,6 +22,7 @@ import unittest
 __author__ = 'Serge Poltavski'
 
 import pddoc.pd as pd
+from pddoc.pd.abstractvisitor import AbstractVisitor
 
 
 class TestPdObject(unittest.TestCase):
@@ -85,7 +86,7 @@ class TestPdObject(unittest.TestCase):
         self.assertEqual(hasattr(painter, "_o"), True)
 
     def test_traverse(self):
-        class T:
+        class T(AbstractVisitor):
             def visit_object(self, o):
                 self._o = o
 

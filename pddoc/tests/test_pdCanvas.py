@@ -154,7 +154,7 @@ class TestPdCanvas(TestCase):
         self.assertEqual(cnv.outlets(), [pd.XLET_MESSAGE, pd.XLET_MESSAGE, pd.XLET_SOUND])
 
     def test_traverse(self):
-        class T:
+        class T(AbstractVisitor):
             def __init__(self):
                 self.o = 0
                 self.cb = 0

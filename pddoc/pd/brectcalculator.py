@@ -18,14 +18,16 @@
 
 __author__ = 'Serge Poltavski'
 
-from drawstyle import *
 import cairo
 import textwrap
+
+from drawstyle import *
 from comment import *
 from message import Message
+from abstractvisitor import AbstractVisitor
 
 
-class BRectCalculator(object):
+class BRectCalculator(AbstractVisitor):
     def __init__(self):
         self._style = DrawStyle()
         self._ims = cairo.ImageSurface(cairo.FORMAT_ARGB32, 10, 10)
@@ -115,4 +117,10 @@ class BRectCalculator(object):
         pass
 
     def visit_connection(self, c):
+        pass
+
+    def visit_canvas_end(self, canvas):
+        pass
+
+    def visit_canvas_begin(self, canvas):
         pass

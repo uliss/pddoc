@@ -20,11 +20,13 @@
 __author__ = 'Serge Poltavski'
 
 import six
+import logging
 
 from baseobject import BaseObject
 from xletcalculator import XletCalculator
 from xletpatchlookup import XletPatchLookup
-import logging
+from abstractvisitor import AbstractVisitor
+
 
 
 class PdObject(BaseObject):
@@ -154,4 +156,5 @@ class PdObject(BaseObject):
             return []
 
     def traverse(self, visitor):
+        assert isinstance(visitor, AbstractVisitor)
         visitor.visit_object(self)

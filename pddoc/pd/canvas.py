@@ -271,6 +271,8 @@ class Canvas(PdObject):
         return res
 
     def traverse(self, visitor):
+        assert isinstance(visitor, AbstractVisitor)
+
         if hasattr(visitor, 'visit_canvas_begin'):
             visitor.visit_canvas_begin(self)
 

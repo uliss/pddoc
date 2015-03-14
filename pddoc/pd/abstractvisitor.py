@@ -41,3 +41,21 @@ class AbstractVisitor(object):
 
     def visit_connection(self, conn):
         raise NotImplementedError
+
+    def skip_comment(self, comment):
+        return False
+
+    def skip_object(self, obj):
+        return False
+
+    def skip_message(self, msg):
+        return False
+
+    def skip_connection(self, conn):
+        return False
+
+    def skip_core_gui(self, conn):
+        return False
+
+    def skip_canvas(self, cnv):
+        return False

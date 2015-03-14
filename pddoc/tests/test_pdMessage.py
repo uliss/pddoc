@@ -46,7 +46,7 @@ class TestPdMessage(TestCase):
         self.assertEqual(p.cnt, 1)
 
     def test_visitor(self):
-        class V:
+        class V(AbstractVisitor):
             def __init__(self):
                 self.cnt = 0
 

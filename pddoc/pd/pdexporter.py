@@ -19,11 +19,13 @@
 
 __author__ = 'Serge Poltavski'
 
-import pd
+import pddoc.pd as pd
 import textwrap
 
+from abstractvisitor import AbstractVisitor
 
-class PdExporter(object):
+
+class PdExporter(AbstractVisitor):
     def __init__(self):
         self.result = []
 

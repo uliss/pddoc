@@ -195,6 +195,12 @@ class IDocObjectVisitor(object):
     def pdobject_end(self, pdobj):
         pass
 
+    def row_begin(self, row):
+        pass
+
+    def row_end(self, row):
+        pass
+
     def see_begin(self, see):
         pass
 
@@ -218,3 +224,6 @@ class IDocObjectVisitor(object):
 
     def website_end(self, ws):
         pass
+
+    def render(self):
+        raise NotImplementedError

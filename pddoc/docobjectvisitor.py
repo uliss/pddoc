@@ -19,8 +19,109 @@
 
 __author__ = 'Serge Poltavski'
 
+import pddoc.pd as pd
+from pdlayout import PdLayout
 from idocobjectvisitor import IDocObjectVisitor
 
 
 class DocObjectVisitor(IDocObjectVisitor):
-    pass
+    def __init__(self):
+        self._title = ""
+        self._description = ""
+        self._keywords = []
+        self._website = ""
+        self._library = ""
+        self._category = ""
+        self._version = ""
+        self._license = {}
+        self._aliases = []
+        self._see_also = []
+        self._examples = []
+        self._authors = []
+        self._contacts = ""
+        self._inlets = {}
+        self._outlets = {}
+        self._arguments = []
+        self._inlet_counter = 0
+        self._image_counter = 0
+        self._image_prefix = ""
+        self._layout = PdLayout()
+        self._canvas_padding = 10
+
+    def title_begin(self, t):
+        self._title = t.text()
+
+    def website_begin(self, w):
+        self._website = w.text()
+
+    def keywords_begin(self, k):
+        self._keywords = k.keywords()
+
+    def description_begin(self, d):
+        self._description = d.text()
+
+    def license_begin(self, l):
+        self._license['url'] = l.url()
+        self._license['name'] = l.name()
+
+    def library_begin(self, lib):
+        self._library = lib.text()
+
+    def category_begin(self, cat):
+        self._category = cat.text()
+
+    def version_begin(self, v):
+        self._version = v.text()
+
+    def author_begin(self, author):
+        self._authors.append(author.text())
+
+    def contacts_begin(self, cnt):
+        self._contacts = cnt.text()
+
+    def pdexample_begin(self, tag):
+        self._layout.canvas = pd.Canvas(0, 0, 10, 10, name="10")
+        self._layout.canvas.type = pd.Canvas.TYPE_WINDOW
+
+    def pdexample_end(self, tag):
+        img_id, img_path = self.make_image_id_name()
+        # append data to template renderer
+        self._pd_append_example(img_id, img_path, None, tag.title())
+        # update layout - place all objects
+        self._layout.update()
+        # draw image
+        w, h = self.draw_area_size(tag)
+        self._pd_draw(w, h, img_path)
+
+    def pdcomment_begin(self, comment):
+        self._layout.comment(comment)
+
+    def row_begin(self, row):
+        self._layout.row_begin()
+
+    def row_end(self, row):
+        self._layout.row_end()
+
+    def col_begin(self, col):
+        self._layout.col_begin()
+
+    def col_end(self, col):
+        self._layout.col_end()
+
+    def pdmessage_begin(self, msg_obj):
+        self._layout.message_begin(msg_obj)
+
+    def pdobject_begin(self, doc_obj):
+        self._layout.object_begin(doc_obj)
+
+    def pdconnect_begin(self, c):
+        self._layout.connect_begin(c)
+
+    def inlets_begin(self, inlets):
+        self._inlets = inlets.inlet_dict()
+
+    def outlets_begin(self, outlets):
+        self._outlets = outlets.outlet_dict()
+
+    def arguments_begin(self, args):
+        self._arguments = args.items()

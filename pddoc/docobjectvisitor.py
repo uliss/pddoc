@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-# Copyright (C) 2014 by Serge Poltavski                                 #
-# serge.poltavski@gmail.com                                             #
+#   Copyright (C) 2015 by Serge Poltavski                                 #
+#   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -17,30 +17,10 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-import lxml.etree as ET
-
-from unittest import TestCase, expectedFailure
-from pddoc.htmldocvisitor import *
-
 __author__ = 'Serge Poltavski'
 
+from idocobjectvisitor import IDocObjectVisitor
 
-class TestDocObject(TestCase):
-    def test_float_export(self):
-        dobj = DocObject()
 
-        xml = ET.parse("float.pddoc")
-        pddoc = xml.getroot()
-        for child in pddoc:
-            if child.tag == "object":
-                dobj.from_xml(child)
-
-                v = HtmlDocVisitor()
-                dobj.traverse(v)
-                v.generate_images()
-
-                s = v.render()
-                f = open("out/float.html", "w")
-                f.write(s)
-                f.close()
-                break
+class DocObjectVisitor(IDocObjectVisitor):
+    pass

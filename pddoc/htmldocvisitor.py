@@ -26,9 +26,10 @@ from mako.template import Template
 
 from docobject import *
 from pdlayout import *
+from docobjectvisitor import DocObjectVisitor
 
 
-class HtmlDocVisitor(object):
+class HtmlDocVisitor(DocObjectVisitor):
     image_output_dir = "./out"
     input_lookup_dir = ""
 

@@ -20,7 +20,8 @@
 __author__ = 'Serge Poltavski'
 
 import logging
-import xml.etree.ElementTree as ET
+
+from idocobjectvisitor import IDocObjectVisitor
 
 
 def make_class_name(tag_name):
@@ -72,17 +73,21 @@ class DocItem(object):
         return len(self._elements)
 
     def traverse(self, visitor):
+        assert isinstance(visitor, IDocObjectVisitor)
+
         try:
             mprefix = self.__class__.__name__[3:].lower()
             method = mprefix + "_begin"
-            if hasattr(visitor, method):  # call element_begin() method
-                getattr(visitor, method)(self)
+            getattr(visitor, method)(self)
+            # if hasattr(visitor, method):  # call element_begin() method
+            #     getattr(visitor, method)(self)
 
             self.traverse_children(visitor)
 
             method = mprefix + "_end"
-            if hasattr(visitor, method):  # call element_end() method
-                getattr(visitor, method)(self)
+            # if hasattr(visitor, method):  # call element_end() method
+            #     getattr(visitor, method)(self)
+            getattr(visitor, method)(self)
 
         except DocVisitorError, e:
             logging.error(e)

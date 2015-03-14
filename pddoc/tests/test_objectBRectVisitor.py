@@ -42,7 +42,7 @@ class TestObjectBRectVisitor(TestCase):
         self.assertFalse(pd.is_null())
 
     def test_visit_canvas(self):
-        p = pd.PdParser()
+        p = pd.Parser()
         self.assertTrue(p.parse('misc.pd'))
         ov = ObjectBRectVisitor()
 

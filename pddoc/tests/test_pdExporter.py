@@ -44,7 +44,7 @@ class TestPdExporter(TestCase):
         return ln != 0
 
     def reexport(self, fname1, fname2):
-        parser = PdParser()
+        parser = Parser()
         self.assertTrue(parser.parse(fname1))
         exp = PdExporter()
         parser.canvas.traverse(exp)

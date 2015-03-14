@@ -53,7 +53,8 @@ def main():
     dobj = DocObject()
 
     try:
-        xml = ET.parse(input, get_parser())
+        xml = etree.parse(input, get_parser())
+        xml.xinclude()
     except etree.XMLSyntaxError, e:
         logging.error("XML syntax error:\n \"%s\"\n\twhile parsing file: \"%s\"", e, input)
         exit(1)

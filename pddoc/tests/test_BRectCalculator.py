@@ -29,7 +29,7 @@ from pddoc.cairopainter import *
 
 class TestBRectCalculator(TestCase):
     def test_calc_brect(self):
-        p = PdParser()
+        p = Parser()
         p.parse("objects.pd")
         self.assertTrue(p.canvas)
 
@@ -52,7 +52,7 @@ class TestBRectCalculator(TestCase):
         self.assertEqual(br.text_brect("test; line break"), (0, 0, 60, 24))
 
     def test_comment(self):
-        p = PdParser()
+        p = Parser()
         p.parse("comments.pd")
         self.assertTrue(p.canvas)
 

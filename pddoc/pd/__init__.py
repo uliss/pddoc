@@ -35,7 +35,7 @@ from obj import PdObject
 from baseobject import BaseObject
 from canvas import Canvas
 from drawstyle import DrawStyle
-from parser import PdParser
+from parser import Parser
 from brectcalculator import BRectCalculator
 from coregui import CoreGui
 from message import Message

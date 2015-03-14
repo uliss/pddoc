@@ -68,7 +68,7 @@ class PdObject(BaseObject):
                 import parser
 
                 obj = self.xlet_patch_finder.get_object(self.name)
-                parser = parser.PdParser()
+                parser = parser.Parser()
                 if not parser.parse(obj.path):
                     logging.error("can't parse patch: \"{0:s}\"".format(obj.path))
                     self._gop = False

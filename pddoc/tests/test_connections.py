@@ -19,7 +19,7 @@
 
 from unittest import TestCase
 
-from pddoc.pd.parser import PdParser
+from pddoc.pd.parser import Parser
 from pddoc.cairopainter import *
 from pddoc.pddrawer import *
  
@@ -27,7 +27,7 @@ __author__ = 'Serge Poltavski'
 
 class TestConnections(TestCase):
     def test_connections0(self):
-        parser = PdParser()
+        parser = Parser()
         parser.parse("connections.pd")
 
         canvas = parser.canvas
@@ -37,7 +37,7 @@ class TestConnections(TestCase):
         drawer.draw(canvas, cp)
 
     def test_connections1(self):
-        parser = PdParser()
+        parser = Parser()
         parser.parse("connections1.pd")
 
         canvas = parser.canvas

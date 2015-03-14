@@ -39,7 +39,7 @@ def main():
 
     args = vars(arg_parser.parse_args())
 
-    pd_parser = pd.PdParser()
+    pd_parser = pd.Parser()
 
     finput = args['input']
     if not os.path.exists(finput):

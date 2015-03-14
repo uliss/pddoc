@@ -166,7 +166,7 @@ class HtmlDocVisitor(object):
             logging.error("Error in tag <pdinclude>: file not exists: \"{0:s}\"".format(pd_file_path))
             return
 
-        parser = pd.PdParser()
+        parser = pd.Parser()
         if not parser.parse(pd_file_path):
             logging.error("Error in tag <pdexample>: can't process file: {0:s}".format(pd_file_path))
             return

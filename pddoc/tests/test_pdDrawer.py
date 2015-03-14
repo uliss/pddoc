@@ -34,7 +34,7 @@ class TestPdDrawer(TestCase):
         cout = sys.stdout
         sys.stdout = StringIO.StringIO()
 
-        parser = pd.PdParser()
+        parser = pd.Parser()
         parser.parse("simple.pd")
 
         painter = PdPainter()

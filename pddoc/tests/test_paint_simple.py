@@ -29,7 +29,7 @@ from pddoc.pddrawer import *
 class TestPaintSimple(unittest.TestCase):
     def test_simple(self):
         path = os.path.basename(__file__)
-        parser = pd.PdParser()
+        parser = pd.Parser()
         parser.parse("simple.pd")
 
         canvas = parser.canvas

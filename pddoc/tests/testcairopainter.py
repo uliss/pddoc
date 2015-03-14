@@ -28,7 +28,7 @@ import unittest
 
 class TestCairoPainter(unittest.TestCase):
     def test_simple(self):
-        parser = pd.PdParser()
+        parser = pd.Parser()
         # f = "/Applications/Pd-extended.app/Contents/Resources/doc/5.reference/float-help.pd"
         f = "/Applications/Pd-extended.app/Contents/Resources/doc/5.reference/intro-help.pd"
         parser.parse(f)

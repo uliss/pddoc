@@ -21,7 +21,6 @@
 __author__ = 'Serge Poltavski'
 
 from os import path
-import logging
 from canvas import *
 from message import *
 from comment import *
@@ -30,7 +29,7 @@ from array import *
 import factory
 
 
-class PdParser:
+class Parser:
     lines_re = re.compile("^(#(.*?)[^\\\])\r?\n?;\r?\n", re.MULTILINE | re.DOTALL)
     split_re = re.compile(" |\r\n?|\n", re.MULTILINE)
 

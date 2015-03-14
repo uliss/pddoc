@@ -40,7 +40,7 @@ class TestPdCoreGui(TestCase):
         self.assertEqual(str(pco), "[GUI:tgl]                                 {x:5,y:6,id:-1}")
 
     def test_draw(self):
-        p = pd.PdParser()
+        p = pd.Parser()
         p.parse("core_gui.pd")
         canvas = p.canvas
         self.assertTrue(canvas)

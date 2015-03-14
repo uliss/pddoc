@@ -21,6 +21,7 @@ __author__ = 'Serge Poltavski'
 
 import os.path
 import os
+import re
 import cairopainter
 from mako.template import Template
 
@@ -51,6 +52,7 @@ class HtmlDocVisitor(object):
         self._arguments = []
         self._inlet_counter = 0
         self._image_counter = 0
+        self._image_prefix = ""
         self._css_theme = "../theme.css"
         # template config
         tmpl_path = "{0:s}/share/html_object.tmpl".format(os.path.dirname(__file__))
@@ -58,6 +60,12 @@ class HtmlDocVisitor(object):
         self._html_template = Template(filename=tmpl_path)
         self._layout = PdLayout()
         self._canvas_padding = 10
+
+    def image_prefix(self):
+        return self._image_prefix
+
+    def set_image_prefix(self, prefix):
+        self._image_prefix = re.sub('[^a-zA-Z0-9~]', '', prefix)
 
     def title_begin(self, t):
         self._title = t.text()
@@ -102,7 +110,8 @@ class HtmlDocVisitor(object):
     def make_image_id_name(self):
         self._image_counter += 1
         cnt = self._image_counter
-        path = os.path.join(HtmlDocVisitor.image_output_dir, "image_{0:02d}.png".format(self._image_counter))
+        path = os.path.join(HtmlDocVisitor.image_output_dir,
+                            "{1:s}image_{0:02d}.png".format(self._image_counter, self._image_prefix + "_"))
         return cnt, path
 
     def pdexample_begin(self, tag):

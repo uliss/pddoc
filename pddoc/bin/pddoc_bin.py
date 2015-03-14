@@ -47,7 +47,7 @@ def main():
         exit(1)
 
     if not output:
-        output = os.path.splitext(input)[0] + ".html"
+        output = os.path.splitext(os.path.basename(input))[0] + ".html"
 
     dobj = DocObject()
 
@@ -62,6 +62,7 @@ def main():
         if child.tag == "object":
             dobj.from_xml(child)
             v = HtmlDocVisitor()
+            v.set_image_prefix(child.attrib["name"])
             dobj.traverse(v)
             v.generate_images()
 

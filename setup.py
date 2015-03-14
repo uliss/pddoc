@@ -32,7 +32,9 @@ setup(name='pddoc',
       test_suite='nose.collector',
       tests_require=['nose'],
       entry_points={
-          'console_scripts': ['pd2image=pddoc.bin.pd2image:main','pdobject2image=pddoc.bin.pd_object2image:main']
+          'console_scripts': ['pd2image=pddoc.bin.pd2image:main',
+                              'pdobject2image=pddoc.bin.pd_object2image:main',
+                              'pddoc=pddoc.bin.pddoc_bin:main']
       },
       include_package_data=True,
       zip_safe=False)

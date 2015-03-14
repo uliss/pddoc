@@ -273,6 +273,9 @@ class Canvas(PdObject):
     def traverse(self, visitor):
         assert isinstance(visitor, AbstractVisitor)
 
+        if visitor.skip_canvas(self):
+            return
+
         if hasattr(visitor, 'visit_canvas_begin'):
             visitor.visit_canvas_begin(self)
 
@@ -280,7 +283,8 @@ class Canvas(PdObject):
             o.traverse(visitor)
 
         for k, conn in self._connections.items():
-            visitor.visit_connection(conn)
+            if not visitor.skip_connection(conn):
+                visitor.visit_connection(conn)
 
         if hasattr(visitor, 'visit_canvas_end'):
             visitor.visit_canvas_end(self)

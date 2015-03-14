@@ -157,4 +157,8 @@ class PdObject(BaseObject):
 
     def traverse(self, visitor):
         assert isinstance(visitor, AbstractVisitor)
+
+        if visitor.skip_object(self):
+            return
+
         visitor.visit_object(self)

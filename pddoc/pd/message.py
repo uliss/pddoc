@@ -46,4 +46,8 @@ class Message(PdObject):
 
     def traverse(self, visitor):
         assert isinstance(visitor, AbstractVisitor)
+
+        if visitor.skip_message(self):
+            return
+
         visitor.visit_message(self)

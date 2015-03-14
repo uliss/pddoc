@@ -194,6 +194,10 @@ class CoreGui(obj.PdObject):
 
     def traverse(self, visitor):
         assert isinstance(visitor, AbstractVisitor)
+
+        if visitor.skip_core_gui(self):
+            return
+
         visitor.visit_core_gui(self)
 
     def draw_bbox(self, painter, **kwargs):

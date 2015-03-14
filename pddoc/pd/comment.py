@@ -63,4 +63,8 @@ class Comment(BaseObject):
 
     def traverse(self, visitor):
         assert isinstance(visitor, AbstractVisitor)
+
+        if visitor.skip_comment(self):
+            return
+
         visitor.visit_comment(self)

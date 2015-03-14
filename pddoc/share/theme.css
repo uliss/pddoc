@@ -20,18 +20,19 @@ td.number {
 }
 
 div.header {
-   background-color: #EED;
+   background-color: #CACEC8;
    padding: 10px;
    clear: both;
    overflow: auto;
 }
 
 div.footer {
-   background-color: #EFD;
+   background-color: #CACEC8;
    padding: 10px;
 }
 
 div.header h1 {
+   color: #FFCC7F
    font-family: "Verdana";
    font-size: 22px;
    margin: 0 0 0 0;
@@ -78,7 +79,7 @@ div.inlets h2,  div.outlets h2, div.arguments h2, div.also h2 {
    font-weight: bold;
    font-family: "Verdana";
    font-size: 15px;
-   color: #777;
+   color: #555;
    //float: left;
    padding: 0 40px 0 0;
    margin: 0;

@@ -102,18 +102,30 @@ class ObjectBRectVisitor(AbstractVisitor):
 
         self.add_brect(msg.brect())
 
+    def skip_children(self, cnv):
+        assert isinstance(cnv, Canvas)
+
+        if cnv.type != Canvas.TYPE_WINDOW:
+            return True
+
+    def skip_connection(self, conn):
+        return True
+
     def visit_canvas_begin(self, canvas):
         assert isinstance(canvas, Canvas)
-        if self._vis_only and canvas.type == Canvas.TYPE_SUBPATCH:
+        if canvas.type != Canvas.TYPE_SUBPATCH:
             return
+
+        # subpatch only
+        # if not canvas.width or not canvas.height:
+        br = ObjectBRectVisitor.brect_calc.subpatch_brect(canvas)
+        canvas.set_width(br[2])
+        canvas.set_height(br[3])
+
+        self.add_brect(canvas.brect())
 
     def visit_canvas_end(self, canvas):
         assert isinstance(canvas, Canvas)
-        if self._vis_only and canvas.type == Canvas.TYPE_SUBPATCH:
-            return
 
     def visit_core_gui(self, gui):
         self.add_brect(gui.brect())
-
-    def visit_connection(self, conn):
-        pass

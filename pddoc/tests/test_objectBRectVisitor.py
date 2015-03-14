@@ -20,9 +20,11 @@
 __author__ = 'Serge Poltavski'
 
 from unittest import TestCase
+
 from pddoc.pd.objetcbrectvisitor import ObjectBRectVisitor
 from pddoc.pd import PdObject
 import pddoc.pd as pd
+from pddoc.cairopainter import CairoPainter
 
 
 class TestObjectBRectVisitor(TestCase):
@@ -44,5 +46,10 @@ class TestObjectBRectVisitor(TestCase):
         self.assertTrue(p.parse('misc.pd'))
         ov = ObjectBRectVisitor()
 
-        # p.canvas.traverse_visible(ov)
+        p.canvas.traverse(ov)
         # self.assertEqual(ov.brect(), (31, 25, 755, 207))
+
+        painter = CairoPainter(p.canvas.width, p.canvas.height, "out/TestObjectBRectVisitor.png")
+        p.canvas.draw(painter)
+        x, y, w, h = ov.brect()
+        painter.draw_rect(x, y, w, h, color=(1, 0, 0))

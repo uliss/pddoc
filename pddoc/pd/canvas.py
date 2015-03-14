@@ -279,8 +279,9 @@ class Canvas(PdObject):
         if hasattr(visitor, 'visit_canvas_begin'):
             visitor.visit_canvas_begin(self)
 
-        for o in self.objects:
-            o.traverse(visitor)
+        if not visitor.skip_children(self):
+            for o in self.objects:
+                o.traverse(visitor)
 
         for k, conn in self._connections.items():
             if not visitor.skip_connection(conn):

@@ -59,3 +59,6 @@ class AbstractVisitor(object):
 
     def skip_canvas(self, cnv):
         return False
+
+    def skip_children(self, obj):
+        return False

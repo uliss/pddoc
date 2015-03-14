@@ -1,0 +1,24 @@
+#N canvas 0 22 547 286 10;
+#X declare -lib zexy;
+#X obj 192 151 line~;
+#X obj 177 176 *~;
+#X msg 192 115 \$1 10;
+#X obj 195 85 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X obj 107 107 osc~ 440;
+#X obj 177 215 dac~;
+#X obj 397 25 import zexy;
+#X obj 334 174 zl;
+#X obj 391 121 knob 32 32 0 127 0 0 empty empty empty 0 -8 0 8 -262144
+-1 -1 0 1;
+#X floatatom 242 152 5 0 0 0 - - -;
+#X text 31 35 Test comment;
+#N canvas 470 224 450 300 sub 1;
+#X obj 10 7 inlet;
+#X restore 438 224 pd sub;
+#X connect 0 0 1 1;
+#X connect 1 0 5 0;
+#X connect 2 0 0 0;
+#X connect 2 0 9 0;
+#X connect 3 0 2 0;
+#X connect 4 0 1 0;

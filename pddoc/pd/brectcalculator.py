@@ -22,8 +22,9 @@ import cairo
 import textwrap
 
 from drawstyle import *
-from comment import *
+from comment import Comment
 from message import Message
+from canvas import Canvas
 from abstractvisitor import AbstractVisitor
 
 
@@ -86,6 +87,17 @@ class BRectCalculator(AbstractVisitor):
     def comment_brect(self, comment):
         assert isinstance(comment, Comment)
         return self.text_brect(comment.text())
+
+    def subpatch_brect(self, cnv):
+        assert isinstance(cnv, Canvas)
+        assert cnv.type == Canvas.TYPE_SUBPATCH
+
+        txt = "pd " + cnv.to_string()
+        (x, y, width, height, dx, dy) = self._cr.text_extents(txt)
+
+        w = max(width + self._style.obj_pad_x * 2, self._style.obj_min_width)
+        h = self._style.obj_height
+        return cnv.x, cnv.y, w, h
 
     def message_brect(self, message):
         assert isinstance(message, Message)

@@ -20,6 +20,7 @@
 __author__ = 'Serge Poltavski'
 
 import os.path
+import os
 import cairopainter
 from mako.template import Template
 
@@ -51,7 +52,6 @@ class HtmlDocVisitor(object):
         self._inlet_counter = 0
         self._image_counter = 0
         self._css_theme = "../theme.css"
-        self._img_output_dir = "./out"
         # template config
         tmpl_path = "{0:s}/share/html_object.tmpl".format(os.path.dirname(__file__))
         # self._tmpl_lookup = TemplateLookup(directories=[os.path.dirname(__file__)])
@@ -214,7 +214,7 @@ class HtmlDocVisitor(object):
         self._arguments = args.items()
 
     def generate_object_image(self, name):
-        fname = "out/object_{0:s}.png".format(name)
+        fname = os.path.join(HtmlDocVisitor.image_output_dir, "object_{0:s}.png".format(name))
         if os.path.exists(fname):
             return
 
@@ -225,13 +225,22 @@ class HtmlDocVisitor(object):
         pdo.draw(painter)
 
     def generate_images(self):
-        if self._aliases:
-            for a in [self._title] + self._aliases:
-                self.generate_object_image(a)
+        try:
+            if not os.path.exists(HtmlDocVisitor.image_output_dir):
+                os.makedirs(HtmlDocVisitor.image_output_dir)
 
-        if self._see_also:
-            for sa in self._see_also:
-                self.generate_object_image(sa['name'])
+            if not os.path.isdir(HtmlDocVisitor.image_output_dir):
+                raise RuntimeError("not a directory: %s".format(HtmlDocVisitor.image_output_dir))
+
+            if self._aliases:
+                for a in [self._title] + self._aliases:
+                    self.generate_object_image(a)
+
+            if self._see_also:
+                for sa in self._see_also:
+                    self.generate_object_image(sa['name'])
+        except Exception, e:
+            logging.error("Error while generating images: %s", e)
 
     def render(self):
         return self._html_template.render(

@@ -259,8 +259,9 @@ class DocObjectVisitor(IDocObjectVisitor):
 
         pdo = pd.make_by_name(name)
         x, y, w, h = pd.BRectCalculator().object_brect(pdo)
-        pad = 1  # padding around object to 1 pixel
-        painter = self.make_image_painter(int(w + pad), int(y + pad), fname)
+        w = int(w + self._canvas_padding * 2)
+        h = int(h + self._canvas_padding * 2)
+        painter = self.make_image_painter(w, h, fname)
         pdo.draw(painter)
 
     def generate_images(self):

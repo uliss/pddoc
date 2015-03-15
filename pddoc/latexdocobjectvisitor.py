@@ -44,6 +44,7 @@ class LatexDocObjectVisitor(DocObjectVisitor):
     def render(self):
         return self._latex_template.render(
             title=self._title,
+            title_image=self.image_pdobject_fname(self._title),
             description=self._description,
             keywords=self._keywords,
             aliases=self._aliases,

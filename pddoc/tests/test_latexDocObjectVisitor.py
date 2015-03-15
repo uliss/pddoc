@@ -36,6 +36,7 @@ class TestLatexDocObjectVisitor(TestCase):
                 dobj.from_xml(child)
                 lv = LatexDocObjectVisitor()
                 dobj.traverse(lv)
+                lv.generate_images()
 
                 latex_data = lv.render()
                 f = open("float.tex", "w")

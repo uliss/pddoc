@@ -19,6 +19,10 @@
 
 __author__ = 'Serge Poltavski'
 
+import re
+import os
+import logging
+
 import pddoc.pd as pd
 from pdlayout import PdLayout
 from idocobjectvisitor import IDocObjectVisitor
@@ -45,8 +49,25 @@ class DocObjectVisitor(IDocObjectVisitor):
         self._inlet_counter = 0
         self._image_counter = 0
         self._image_prefix = ""
+        self._image_extension = ""
+        self._image_output_dir = ""
+        self._search_dir = ""
         self._layout = PdLayout()
         self._canvas_padding = 10
+
+    def aliases_begin(self, a):
+        if not a.aliases():
+            return
+
+        for alias in a.aliases() + [self._title]:
+            self.add_alias(alias)
+
+    def add_alias(self, name):
+        element = {
+            'name': name,
+            'image': self.image_pdobject_fname(name)
+        }
+        self._aliases.append(element)
 
     def title_begin(self, t):
         self._title = t.text()
@@ -83,24 +104,41 @@ class DocObjectVisitor(IDocObjectVisitor):
         self._layout.canvas = pd.Canvas(0, 0, 10, 10, name="10")
         self._layout.canvas.type = pd.Canvas.TYPE_WINDOW
 
-    def _pd_append_example(self, img_id, img_path, pd_path="", title=""):
-        example_dict = {
-            'id': img_id,
-            'image': img_path,
-            'title': title,
-            'file': pd_path
-        }
-
-        self._examples.append(example_dict)
-
-    def make_image_id_name(self):
-        self._image_counter += 1
-        cnt = self._image_counter
-        path = "image_{0:02d}.png".format(self._image_counter)
-        return cnt, path
+    def pdexample_end(self, tag):
+        img_id, img_path = self.make_image_id_name()
+        # append data to template renderer
+        self._pd_append_example(img_id, img_path, None, tag.title())
+        # update layout - place all objects
+        self._layout.update()
+        # draw image
+        w, h = self._pd_layout_size(tag)
+        self._pd_draw(w, h, img_path)
 
     def pdcomment_begin(self, comment):
         self._layout.comment(comment)
+
+    def pdinclude_begin(self, tag):
+        # assert isinstance(tag, DocPdinclude)
+
+        pd_file_path = os.path.join(self._search_dir, tag.file())
+
+        if not os.path.exists(pd_file_path):
+            logging.error("Error in tag <pdinclude>: file not exists: \"{0:s}\"".format(pd_file_path))
+            return
+
+        parser = pd.Parser()
+        if not parser.parse(pd_file_path):
+            logging.error("Error in tag <pdexample>: can't process file: {0:s}".format(pd_file_path))
+            return
+
+        self._layout.canvas = parser.canvas
+        img_id, img_path = self.make_image_id_name()
+        # append data to template renderer
+        self._pd_append_example(img_id, img_path, pd_file_path, pd_file_path)
+
+        # TODO auto layout
+        w, h = self._layout.canvas_brect()[2:]
+        self._pd_draw(w, h, img_path)
 
     def row_begin(self, row):
         self._layout.row_begin()
@@ -131,3 +169,110 @@ class DocObjectVisitor(IDocObjectVisitor):
 
     def arguments_begin(self, args):
         self._arguments = args.items()
+
+    def see_begin(self, see):
+        element = {
+            'name': see.text(),
+            'image': self.image_pdobject_fname(see.text())
+        }
+
+        self._see_also.append(element)
+
+    def set_image_prefix(self, prefix):
+        self._image_prefix = re.sub('[^a-zA-Z0-9~]', '', prefix)
+
+    def image_prefix(self):
+        if self._image_prefix:
+            return self._image_prefix + "_"
+        else:
+            return ""
+
+    def image_output_dir(self):
+        return self._image_output_dir
+
+    def set_image_output_dir(self, path):
+        self._image_output_dir = path
+
+    def search_dir(self):
+        return self._search_dir
+
+    def set_search_dir(self, path):
+        self._search_dir = path
+
+    def image_pdobject_fname(self, name):
+        return os.path.join(self._image_output_dir,
+                            "object_{0:s}.{1:s}".format(name, self._image_extension))
+
+    def create_image_output_dir(self):
+        try:
+            if not os.path.exists(self._image_output_dir):
+                os.makedirs(self._image_output_dir)
+
+            if not os.path.isdir(self._image_output_dir):
+                raise RuntimeError("not a directory: %s".format(self._image_output_dir))
+        except Exception, e:
+            raise RuntimeError(e.message)
+
+    def make_image_id_name(self):
+        self._image_counter += 1
+        cnt = self._image_counter
+        path = os.path.join(self._image_output_dir,
+                            "{1:s}image_{0:02d}.{2:s}".format(self._image_counter,
+                                                              self.image_prefix(),
+                                                              self._image_extension))
+        return cnt, path
+
+    def make_image_painter(self, w, h, fname):
+        return None
+
+    def _pd_draw(self, w, h, fname):
+        self.create_image_output_dir()
+
+        painter = self.make_image_painter(w, h, fname)
+        self._layout.canvas.draw(painter)
+        logging.info("image [{0:d}x{1:d}] saved to: \"{2:s}\"".format(w, h, fname))
+
+    def _pd_layout_size(self, tag):
+        w = tag.width()
+        h = tag.height()
+        if not w:
+            w = self._layout.layout_brect()[2]
+        if not h:
+            h = self._layout.layout_brect()[3]
+
+        return int(w + 2 * self._canvas_padding), int(h + 2 * self._canvas_padding)
+
+    def _pd_append_example(self, img_id, img_path, pd_path="", title=""):
+        example_dict = {
+            'id': img_id,
+            'image': img_path,
+            'title': title,
+            'file': pd_path
+        }
+
+        self._examples.append(example_dict)
+
+    def generate_object_image(self, name):
+        fname = self.image_pdobject_fname(name)
+        if os.path.exists(fname):
+            logging.warning("image exists: \"%s\"", fname)
+
+        pdo = pd.make_by_name(name)
+        x, y, w, h = pd.BRectCalculator().object_brect(pdo)
+        pad = 1  # padding around object to 1 pixel
+        painter = self.make_image_painter(int(w + pad), int(y + pad), fname)
+        pdo.draw(painter)
+
+    def generate_images(self):
+        try:
+            self.create_image_output_dir()
+
+            if self._aliases:
+                for a in self._aliases:
+                    self.generate_object_image(a['name'])
+
+            if self._see_also:
+                for sa in self._see_also:
+                    self.generate_object_image(sa['name'])
+        except Exception, e:
+            logging.error("Error while generating images: %s", e)

@@ -36,8 +36,8 @@ class TestHtmlDocVisitor(TestCase):
         self.assertTrue(v.render())
 
     def test_generate_object_image(self):
-        PATH = HtmlDocVisitor.image_output_dir + "/object_undefined~.png"
         v = HtmlDocVisitor()
+        PATH = v.image_output_dir() + "/object_undefined~.png"
         v.generate_object_image("undefined~")
         self.assertTrue(os.path.exists(PATH))
         os.remove(PATH)
@@ -46,7 +46,7 @@ class TestHtmlDocVisitor(TestCase):
         v = HtmlDocVisitor()
         v.add_alias("tobj")
         v.generate_images()
-        path2 = os.path.join(HtmlDocVisitor.image_output_dir, "object_tobj.png")
+        path2 = os.path.join(v.image_output_dir(), "object_tobj.png")
         self.assertTrue(os.path.exists(path2))
         os.remove(path2)
 

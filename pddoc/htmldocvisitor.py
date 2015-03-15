@@ -20,35 +20,25 @@
 __author__ = 'Serge Poltavski'
 
 import os
-import re
-import cairopainter
+
 from mako.template import Template
 
-from docobject import *
-from pdlayout import *
+import cairopainter
 from docobjectvisitor import DocObjectVisitor
 
 
 class HtmlDocVisitor(DocObjectVisitor):
-    image_output_dir = "./out"
-    input_lookup_dir = ""
-
     def __init__(self):
         DocObjectVisitor.__init__(self)
-        self._css_file = "../theme.css"
+        self._image_output_dir = HtmlDocVisitor.image_output_dir
+        self._image_extension = "png"
+        self._image_output_dir = "img"
+
+        self._css_file = ""
         self._css = ""
         # template config
         tmpl_path = "{0:s}/share/html_object.tmpl".format(os.path.dirname(__file__))
         self._html_template = Template(filename=tmpl_path)
-
-    def image_prefix(self):
-        if self._image_prefix:
-            return self._image_prefix + "_"
-        else:
-            return ""
-
-    def set_image_prefix(self, prefix):
-        self._image_prefix = re.sub('[^a-zA-Z0-9~]', '', prefix)
 
     def css_file(self):
         return self._css_file
@@ -62,127 +52,10 @@ class HtmlDocVisitor(DocObjectVisitor):
     def set_css(self, content):
         self._css = content
 
-    def aliases_begin(self, a):
-        if not a.aliases():
-            return
-
-        for alias in a.aliases() + [self._title]:
-            self.add_alias(alias)
-
-    def add_alias(self, name):
-        element = {
-            'name': name,
-            'image': os.path.join(HtmlDocVisitor.image_output_dir, "object_{0:s}.png".format(name))
-        }
-        self._aliases.append(element)
-
-    def see_begin(self, see):
-        element = {
-            'name': see.text(),
-            'image': os.path.join(HtmlDocVisitor.image_output_dir, "object_{0:s}.png".format(see.text())),
-            'link': "{0:s}.html".format(see.text())
-        }
-
-        self._see_also.append(element)
-
-    def make_image_id_name(self):
-        self._image_counter += 1
-        cnt = self._image_counter
-        path = os.path.join(HtmlDocVisitor.image_output_dir,
-                            "{1:s}image_{0:02d}.png".format(self._image_counter, self.image_prefix()))
-        return cnt, path
-
-    def pdexample_end(self, tag):
-        img_id, img_path = self.make_image_id_name()
-        # append data to template renderer
-        self._pd_append_example(img_id, img_path, None, tag.title())
-        # update layout - place all objects
-        self._layout.update()
-        # draw image
-        w, h = self.draw_area_size(tag)
-        self._pd_draw(w, h, img_path)
-
-    def pdinclude_begin(self, tag):
-        assert isinstance(tag, DocPdinclude)
-
-        pd_file_path = os.path.join(HtmlDocVisitor.input_lookup_dir, tag.file())
-
-        if not os.path.exists(pd_file_path):
-            logging.error("Error in tag <pdinclude>: file not exists: \"{0:s}\"".format(pd_file_path))
-            return
-
-        parser = pd.Parser()
-        if not parser.parse(pd_file_path):
-            logging.error("Error in tag <pdexample>: can't process file: {0:s}".format(pd_file_path))
-            return
-
-        self._layout.canvas = parser.canvas
-        img_id, img_path = self.make_image_id_name()
-        # append data to template renderer
-        self._pd_append_example(img_id, img_path, pd_file_path, pd_file_path)
-
-        # TODO auto layout
-        w, h = self._layout.canvas_brect()[2:]
-        self._pd_draw(w, h, img_path)
-
-    def _pd_draw(self, w, h, fname):
-        painter = cairopainter.CairoPainter(w, h, fname,
-                                            xoffset=self._canvas_padding,
-                                            yoffset=self._canvas_padding)
-        self._layout.canvas.draw(painter)
-        logging.info("image [{0:d}x{1:d}] saved to: \"{2:s}\"".format(w, h, fname))
-
-    def draw_area_size(self, pdxmpl):
-        assert isinstance(pdxmpl, DocPdexample)
-
-        w = 0
-        h = 0
-
-        if pdxmpl.file() and pdxmpl.size() == "canvas":
-            w, h = self._layout.canvas_brect()[2:]
-        elif pdxmpl.size() == "auto":
-            w, h = self._layout.layout_brect()[2:]
-        elif not pdxmpl.size():
-            w = pdxmpl.width()
-            h = pdxmpl.height()
-
-            if not w:
-                w = self._layout.layout_brect()[2]
-            if not h:
-                h = self._layout.layout_brect()[3]
-        else:
-            w, h = self._layout.layout_brect()[2:]
-
-        return int(w + 2 * self._canvas_padding), int(h + 2 * self._canvas_padding)
-
-    def generate_object_image(self, name):
-        fname = os.path.join(HtmlDocVisitor.image_output_dir, "object_{0:s}.png".format(name))
-        if os.path.exists(fname):
-            logging.warning("image exists: \"%s\"", fname)
-
-        pdo = pd.make_by_name(name)
-        brect = pd.BRectCalculator().object_brect(pdo)
-        pad = 1  # pixel
-        painter = cairopainter.CairoPainter(int(brect[2]) + pad, int(brect[3]) + pad, fname, "png")
-        pdo.draw(painter)
-
-    def generate_images(self):
-        try:
-            if not os.path.exists(HtmlDocVisitor.image_output_dir):
-                os.makedirs(HtmlDocVisitor.image_output_dir)
-
-            if not os.path.isdir(HtmlDocVisitor.image_output_dir):
-                raise RuntimeError("not a directory: %s".format(HtmlDocVisitor.image_output_dir))
-
-            if self._aliases:
-                for a in self._aliases:
-                    self.generate_object_image(a['name'])
-
-            if self._see_also:
-                for sa in self._see_also:
-                    self.generate_object_image(sa['name'])
-        except Exception, e:
-            logging.error("Error while generating images: %s", e)
+    def make_image_painter(self, w, h, fname):
+        return cairopainter.CairoPainter(w, h, fname, "png",
+                                         xoffset=self._canvas_padding,
+                                         yoffset=self._canvas_padding)
 
     def render(self):
         return self._html_template.render(

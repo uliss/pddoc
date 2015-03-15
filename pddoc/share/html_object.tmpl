@@ -126,7 +126,7 @@
     <h2>See Also:</h2>
     <div class="objects">
     % for obj in see_also:
-        <a href="${obj['link']}"><img src="${obj['image']|h}" alt="${obj['name'] | h}"/></a>
+        <a href="${obj['name']|h}.html"><img src="${obj['image']|h}" alt="${obj['name']|h}"/></a>
     % endfor
     </div>
 </div>

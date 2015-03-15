@@ -21,6 +21,7 @@ import lxml.etree as ET
 
 from unittest import TestCase, expectedFailure
 from pddoc.htmldocvisitor import *
+from pddoc.docobject import DocObject
 
 __author__ = 'Serge Poltavski'
 

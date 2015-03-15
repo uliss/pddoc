@@ -22,9 +22,11 @@ __author__ = 'Serge Poltavski'
 import argparse
 import shutil
 import logging
+import os
 from lxml import etree
 
-from pddoc.htmldocvisitor import *
+from pddoc.htmldocvisitor import HtmlDocVisitor
+from pddoc.docobject import DocObject
 
 
 def get_parser():
@@ -50,8 +52,6 @@ def main():
     if not output:
         output = os.path.splitext(os.path.basename(input))[0] + ".html"
 
-    dobj = DocObject()
-
     try:
         xml = etree.parse(input, get_parser())
         xml.xinclude()
@@ -59,21 +59,25 @@ def main():
         logging.error("XML syntax error:\n \"%s\"\n\twhile parsing file: \"%s\"", e, input)
         exit(1)
 
-    HtmlDocVisitor.image_output_dir = "img"
-    HtmlDocVisitor.input_lookup_dir = os.path.dirname(input)
     css_file = "theme.css"
 
     pddoc = xml.getroot()
-    for child in pddoc:
-        if child.tag == "object":
-            dobj.from_xml(child)
+    for child_tag in pddoc:
+        if child_tag.tag == "object":
+            dobj = DocObject()
+            dobj.from_xml(child_tag)
+
             v = HtmlDocVisitor()
             v.set_css_file(css_file)
-            v.set_image_prefix(child.attrib["name"])
+            v.set_image_prefix(child_tag.attrib["name"])
+            v.set_search_dir(os.path.dirname(input))
+
+            # traverse doc
             dobj.traverse(v)
 
             # generate images
             v.generate_images()
+
             html_data = v.render()
             f = open(output, "w")
             f.write(html_data)
@@ -82,7 +86,6 @@ def main():
     # copy css theme file to current folder
     src_css = os.path.join(os.path.dirname(__file__), "../share", css_file)
     shutil.copyfile(src_css, css_file)
-
 
 
 if __name__ == '__main__':

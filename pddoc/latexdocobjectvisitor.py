@@ -22,15 +22,24 @@ __author__ = 'Serge Poltavski'
 import os.path
 from mako.template import Template
 
+import cairopainter
 from docobjectvisitor import DocObjectVisitor
 
 
 class LatexDocObjectVisitor(DocObjectVisitor):
     def __init__(self):
         DocObjectVisitor.__init__(self)
+        self._image_extension = "pdf"
+        self._image_output_dir = "pdf"
+        self._includegraphics_scale = 0.7
         # template config
         tmpl_path = "{0:s}/share/latex_object_tmpl.tex".format(os.path.dirname(__file__))
         self._latex_template = Template(filename=tmpl_path)
+
+    def make_image_painter(self, w, h, fname):
+        return cairopainter.CairoPainter(w, h, fname, "pdf",
+                                         xoffset=self._canvas_padding,
+                                         yoffset=self._canvas_padding)
 
     def render(self):
         return self._latex_template.render(
@@ -49,4 +58,5 @@ class LatexDocObjectVisitor(DocObjectVisitor):
             authors=self._authors,
             contacts=self._contacts,
             library=self._library,
-            category=self._category)
+            category=self._category,
+            graphics_scale=self._includegraphics_scale)

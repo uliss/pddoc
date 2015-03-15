@@ -3,6 +3,7 @@
 \usepackage[english]{babel}
 \usepackage{hyperref}
 \usepackage{graphicx}
+\usepackage{float}
 
 \title{PureData {\tt [\raisebox{0.05em}{${title}}]} documentation}
 \author{${", ".join(authors)}}
@@ -17,12 +18,18 @@
 
 ${description}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%             INLETS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Inlets}
 
 \begin{table}[h]
 \def\arraystretch{1.4}
-\begin{tabular}{c|c|l|p{6cm}}
-{ \bf inlet \break number } & {\bf inlet type} & {\bf inlet range} & {\bf inlet description} \\ \hline
+\begin{tabular}{p{2cm}|c|l|p{0.6\textwidth}}
+{ \bf inlet  number } & {\bf type} & {\bf range} & {\bf description} \\\
+
+\hline \
 % for inlet_number in sorted(inlets):
         <%
         inlet_list = inlets[inlet_number]
@@ -30,33 +37,78 @@ ${description}
         inlet_list_count = col_span
         range_str = lambda x: ("--".join(map(str, x))) if (len(x) > 1) else "~"
         %>
-
     % for inlet in inlet_list:
         % if col_span == inlet_list_count:
 \hline
-\multirow{${col_span}}{*}{${inlet_number}}
-        % endif
 
-        <% col_span -= 1 %>
-        & {\tt ${inlet.type()}} & ${range_str(inlet.range())} & ${inlet.text()}  \\\
-
+\multirow{${col_span}}{*}{${inlet_number}} \
+    % endif
+& {\tt ${inlet.type()}} & ${range_str(inlet.range())} & ${inlet.text()}  \\\
+            <% col_span -= 1 %>
     % endfor
 % endfor
 
 \end{tabular}
 \end{table}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%             OUTLETS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Outlets}
 
+\begin{table}[h]
+\def\arraystretch{1.4}
+\begin{tabular}{p{2cm}|c|l|p{0.6\textwidth}}
+{ \bf outlet  number } & {\bf type} & {\bf range} & {\bf description} \\\
+
+\hline \
+% for outlet_number in sorted(outlets):
+        <%
+        outlet_list = outlets[outlet_number]
+        col_span = len(outlet_list)
+        outlet_list_count = col_span
+        range_str = lambda x: ("--".join(map(str, x))) if (len(x) > 1) else "~"
+        %>
+    % for outlet in outlet_list:
+        % if col_span == outlet_list_count:
+\hline
+
+\multirow{${col_span}}{*}{${outlet_number}} \
+    % endif
+& {\tt ${outlet.type()}} & ${range_str(outlet.range())} & ${outlet.text()}  \\\
+            <% col_span -= 1 %>
+    % endfor
+% endfor
+
+\end{tabular}
+\end{table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%             ARGUMENTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Arguments}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%            EXAMPLES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Examples}
 
 % for ex in examples:
-    \includegraphics[]{${ex['image']}}
+\begin{figure}[H]
+    \centering
+    % if ex['title']:
+    \caption{${ex['title']}}
+    % endif
+    \includegraphics[scale=${graphics_scale}]{${ex['image']}}
+\end{figure}
+
 % endfor
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%             INFORMATION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Information}
 
 \begin{quotation}

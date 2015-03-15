@@ -1,0 +1,80 @@
+\documentclass[12pt]{article}
+\usepackage{multirow}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+\title{PureData {\tt [\raisebox{0.05em}{${title}}]} documentation}
+\author{${", ".join(authors)}}
+
+\begin{document}
+    \pagenumbering{gobble}
+    \maketitle
+    \newpage
+    \pagenumbering{arabic}
+
+\section{\tt ${title}}
+
+${description}
+
+\subsection{Inlets}
+
+\begin{table}[h]
+\def\arraystretch{1.4}
+\begin{tabular}{c|c|l|p{6cm}}
+{ \bf inlet \break number } & {\bf inlet type} & {\bf inlet range} & {\bf inlet description} \\ \hline
+% for inlet_number in sorted(inlets):
+        <%
+        inlet_list = inlets[inlet_number]
+        col_span = len(inlet_list)
+        inlet_list_count = col_span
+        range_str = lambda x: ("--".join(map(str, x))) if (len(x) > 1) else "~"
+        %>
+
+    % for inlet in inlet_list:
+        % if col_span == inlet_list_count:
+\hline
+\multirow{${col_span}}{*}{${inlet_number}}
+        % endif
+
+        <% col_span -= 1 %>
+        & {\tt ${inlet.type()}} & ${range_str(inlet.range())} & ${inlet.text()}  \\\
+
+    % endfor
+% endfor
+
+\end{tabular}
+\end{table}
+
+\subsection{Outlets}
+
+\subsection{Arguments}
+
+\subsection{Examples}
+
+% for ex in examples:
+    \includegraphics[]{${ex['image']}}
+% endfor
+
+
+\subsection{Information}
+
+\begin{quotation}
+\begin{table}[h]
+\begin{tabular}{l l}
+library: & ${library} \\\
+
+version: & ${version} \\\
+
+license: & \href{ ${license['url']}}{${license['name']}} \\\
+
+website: & \href{ ${website} }{${website}} \\\
+
+authors: & ${", ".join(authors)} \\\
+
+\end{tabular}
+\end{table}
+\end{quotation}
+
+
+\end{document}

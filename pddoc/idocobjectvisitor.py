@@ -177,6 +177,12 @@ class IDocObjectVisitor(object):
     def pdconnect_end(self, pdconn):
         pass
 
+    def pdexample_begin(self, pdexample):
+        pass
+
+    def pdexample_end(self, pdexample):
+        pass
+
     def pdinclude_begin(self, pdinc):
         pass
 

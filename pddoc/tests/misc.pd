@@ -10,12 +10,14 @@
 #X obj 397 25 import zexy;
 #X obj 334 174 zl;
 #X obj 391 121 flatgui/knob 32 32 0 127 0 0 empty empty test 0 -8 0
-10 -262144 -260097 -4160 0 1;
+10 -4034 -260097 -4160 0 1;
 #X floatatom 242 152 5 0 0 0 - - -;
 #X text 31 35 Test comment;
 #N canvas 470 224 450 300 sub 0;
 #X obj 10 7 inlet;
 #X restore 438 224 pd sub;
+#X obj 187 26 capture~;
+#X obj 251 43 delta~;
 #X connect 0 0 1 1;
 #X connect 1 0 5 0;
 #X connect 2 0 0 0;

@@ -39,7 +39,6 @@ class HtmlDocVisitor(DocObjectVisitor):
         self._css = ""
         # template config
         tmpl_path = "{0:s}/share/html_object.tmpl".format(os.path.dirname(__file__))
-        # self._tmpl_lookup = TemplateLookup(directories=[os.path.dirname(__file__)])
         self._html_template = Template(filename=tmpl_path)
 
     def image_prefix(self):
@@ -93,6 +92,16 @@ class HtmlDocVisitor(DocObjectVisitor):
                             "{1:s}image_{0:02d}.png".format(self._image_counter, self.image_prefix()))
         return cnt, path
 
+    def pdexample_end(self, tag):
+        img_id, img_path = self.make_image_id_name()
+        # append data to template renderer
+        self._pd_append_example(img_id, img_path, None, tag.title())
+        # update layout - place all objects
+        self._layout.update()
+        # draw image
+        w, h = self.draw_area_size(tag)
+        self._pd_draw(w, h, img_path)
+
     def pdinclude_begin(self, tag):
         assert isinstance(tag, DocPdinclude)
 
@@ -115,16 +124,6 @@ class HtmlDocVisitor(DocObjectVisitor):
         # TODO auto layout
         w, h = self._layout.canvas_brect()[2:]
         self._pd_draw(w, h, img_path)
-
-    def _pd_append_example(self, img_id, img_path, pd_path="", title=""):
-        example_dict = {
-            'id': img_id,
-            'image': img_path,
-            'title': title,
-            'file': pd_path
-        }
-
-        self._examples.append(example_dict)
 
     def _pd_draw(self, w, h, fname):
         painter = cairopainter.CairoPainter(w, h, fname,

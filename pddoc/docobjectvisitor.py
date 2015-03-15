@@ -83,15 +83,21 @@ class DocObjectVisitor(IDocObjectVisitor):
         self._layout.canvas = pd.Canvas(0, 0, 10, 10, name="10")
         self._layout.canvas.type = pd.Canvas.TYPE_WINDOW
 
-    def pdexample_end(self, tag):
-        img_id, img_path = self.make_image_id_name()
-        # append data to template renderer
-        self._pd_append_example(img_id, img_path, None, tag.title())
-        # update layout - place all objects
-        self._layout.update()
-        # draw image
-        w, h = self.draw_area_size(tag)
-        self._pd_draw(w, h, img_path)
+    def _pd_append_example(self, img_id, img_path, pd_path="", title=""):
+        example_dict = {
+            'id': img_id,
+            'image': img_path,
+            'title': title,
+            'file': pd_path
+        }
+
+        self._examples.append(example_dict)
+
+    def make_image_id_name(self):
+        self._image_counter += 1
+        cnt = self._image_counter
+        path = "image_{0:02d}.png".format(self._image_counter)
+        return cnt, path
 
     def pdcomment_begin(self, comment):
         self._layout.comment(comment)

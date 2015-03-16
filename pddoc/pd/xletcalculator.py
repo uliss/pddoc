@@ -55,7 +55,7 @@ class XletCalculator(object):
             return []
 
         if self.has_ext_prefix(obj):
-            ext, name = obj.name.split("/")
+            ext, name = obj.name.split("/")[:2]
             return self.search_in_named_ext(ext, name, obj.args)[0]
 
         for db in self._dbs:
@@ -70,7 +70,7 @@ class XletCalculator(object):
             return []
 
         if self.has_ext_prefix(obj):
-            ext, name = obj.name.split("/")
+            ext, name = obj.name.split("/")[:2]
             return self.search_in_named_ext(ext, name, obj.args)[1]
 
         for db in self._dbs:

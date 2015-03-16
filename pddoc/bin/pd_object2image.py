@@ -28,11 +28,12 @@ from format import detect_format
 
 def draw_object(object, fname, format, **kwargs):
     w, h = BRectCalculator().object_brect(object)[2:]
-    pad = 1  # pixel
-    w += pad
-    h += pad
 
-    painter = CairoPainter(int(w), int(h), fname, format, **kwargs)
+    pad = kwargs['pad'][0]
+    w += pad * 2
+    h += pad * 2
+
+    painter = CairoPainter(int(w), int(h), fname, format, xoffset=pad, yoffset=pad)
     painter.draw_object(object)
 
 
@@ -40,6 +41,8 @@ def main():
     arg_parser = argparse.ArgumentParser(description='PureData patch to image converter')
     arg_parser.add_argument('--format', '-f', metavar='format', nargs=1, choices=("png", "pdf", "svg"),
                             help='output image format')
+    arg_parser.add_argument('--pad', '-p', metavar='padding', nargs=1, type=int, default=[1],
+                            help="adds padding around object")
     arg_parser.add_argument('name', metavar='OBJECT_NAME', help="PureData object name, for ex.: osc~")
     arg_parser.add_argument('output', metavar='OUTNAME', nargs='?', default='',
                             help="Image output name, for ex.: float.png")
@@ -58,7 +61,7 @@ def main():
         output = args['output']
 
     fmt = detect_format(args)
-    draw_object(pdo, output, fmt)
+    draw_object(pdo, output, fmt, pad=args['pad'])
 
 
 if __name__ == '__main__':

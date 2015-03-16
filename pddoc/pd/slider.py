@@ -43,6 +43,10 @@ class PdSlider(CoreGui):
         else:
             return 3
 
+    def slider_pos(self):
+        assert self._value <= self._max
+        return (self._value - self._min) / (self._max - self._min)
+
     @staticmethod
     def from_atoms(atoms):
         assert isinstance(atoms, list) and len(atoms) == 19
@@ -100,7 +104,7 @@ class PdHSlider(PdSlider):
         self.draw_bbox(painter)
         self.draw_label(painter)
 
-        xoff = self._value / self._max
+        xoff = self.slider_pos()
         x = int(self.left + self._pad + (self.width - self._pad) * xoff)
         painter.draw_line(x, self.top, x, self.bottom, color=self.fgcolor(), width=self.slider_width())
 
@@ -118,9 +122,7 @@ class PdVSlider(PdSlider):
         self.draw_bbox(painter)
         self.draw_label(painter)
 
-        assert self._value < self._max
-
-        yoff = self._value / self._max
+        yoff = self.slider_pos()
         y = int(self.bottom - self._pad - (self.height - self._pad) * yoff)
         painter.draw_line(self.left, y, self.right, y, color=self.fgcolor(), width=self.slider_width())
 

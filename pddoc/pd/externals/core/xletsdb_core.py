@@ -37,20 +37,21 @@ def expr_args_parse(args):
 def expr_tilde_args_parse(args):
     if len(args) == 0:
         return []
-    inlets = list(set(re.findall("(\$[fsiv][0-9])", " ".join(args))))
-    if len(inlets) == 0:
+    inl = list(set(re.findall("(\$[fsiv][0-9])", " ".join(args))))
+    if len(inl) == 0:
         return []
     else:
-        inlets.sort(key=lambda x: int(x[2:]))
+        inl.sort(key=lambda x: int(x[2:]))
         res = []
-        for i in inlets:
+        for i in inl:
             if i == "$v1":
                 continue
             if i[1] == 'v':
-                res.append(pd.XLET_SOUND)
+                res.append(XLET_SOUND)
             else:
-                res.append(pd.XLET_MESSAGE)
+                res.append(XLET_MESSAGE)
         return res
+
 
 def func_list_in(args):
     if not args:
@@ -60,6 +61,7 @@ def func_list_in(args):
     else:
         return 2
 
+
 def func_list_out(args):
     if not args:
         return 1
@@ -68,16 +70,17 @@ def func_list_out(args):
     else:
         return 1
 
+
 def fexpr_tilde_args_parse(args):
     if len(args) == 0:
         return []
-    inlets = list(set(re.findall("(\$[fsixy][0-9])", " ".join(args))))
-    if len(inlets) == 0:
+    inl = list(set(re.findall("(\$[fsixy][0-9])", " ".join(args))))
+    if len(inl) == 0:
         return []
     else:
-        inlets.sort(key=lambda x: int(x[2:]))
+        inl.sort(key=lambda x: int(x[2:]))
         res = []
-        for i in inlets:
+        for i in inl:
             if i == "$x1":
                 continue
             if i[1] == 'x':
@@ -189,7 +192,6 @@ _objects = {
 }
 
 
-
 def is_snd_math(name):
     return name in ("+~", "*~", "-~", "/~", "max~", "min~")
 
@@ -202,7 +204,6 @@ def inlets(name, args):
     # digits float object [2], [3] and others
     if is_digit_object(name):
         return [XLET_MESSAGE]
-
 
     if is_snd_math(name):
 

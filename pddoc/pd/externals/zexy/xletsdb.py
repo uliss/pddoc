@@ -48,6 +48,14 @@ _objects = {
         lambda args: 2 * [XLET_MESSAGE],
         lambda args: (2 if len(args) < 3 else len(args)) * [XLET_MESSAGE]
     ),
+    "demultiplex~": (
+        lambda args: [XLET_SOUND],
+        lambda args: (2 if not args else len(args)) * [XLET_SOUND]
+    ),
+    "demux~": (
+        lambda args: [XLET_SOUND],
+        lambda args: (2 if not args else len(args)) * [XLET_SOUND]
+    )
 }
 
 

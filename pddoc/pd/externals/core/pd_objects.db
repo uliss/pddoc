@@ -3,6 +3,7 @@ atan            .       .
 atan2           .       .
 abs             .       .
 abs~            ~       ~
+arraysize       ..      .
 bag             ..      .
 bang,b          .       .
 bang~           .       .
@@ -32,6 +33,7 @@ div             ..      .
 drawcurve       .       -
 drawnumber      .       -
 drawpolygon     .       -
+dollarg         .       ..
 element         ..      .
 env~            ~       .
 exp             .       .
@@ -124,6 +126,7 @@ swap,fswap      ..      ..
 switch~         .       -
 symbol          ..      .
 sysexin         -       ..
+system          .       -
 tabosc4~        ~.      ~
 tabplay~        .       ~.
 tabread         .       .

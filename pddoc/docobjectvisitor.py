@@ -54,6 +54,7 @@ class DocObjectVisitor(IDocObjectVisitor):
         self._search_dir = ""
         self._layout = PdLayout()
         self._canvas_padding = 10
+        self._image_object_padding = 4
 
     def aliases_begin(self, a):
         if not a.aliases():
@@ -259,9 +260,12 @@ class DocObjectVisitor(IDocObjectVisitor):
 
         pdo = pd.make_by_name(name)
         x, y, w, h = pd.BRectCalculator().object_brect(pdo)
-        w = int(w + self._canvas_padding * 2)
-        h = int(h + self._canvas_padding * 2)
+        w = int(w + self._image_object_padding * 2)
+        h = int(h + self._image_object_padding * 2)
+        old_pad = self._canvas_padding
+        self._canvas_padding = self._image_object_padding
         painter = self.make_image_painter(w, h, fname)
+        self._canvas_padding = old_pad
         pdo.draw(painter)
 
     def generate_images(self):

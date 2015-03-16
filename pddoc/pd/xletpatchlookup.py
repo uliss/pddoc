@@ -25,6 +25,8 @@ import os
 import re
 import logging
 
+from . import XLET_MESSAGE, XLET_SOUND
+
 
 class ObjectRecord(object):
     def __init__(self, path, inlets=None, outlets=None):
@@ -133,18 +135,18 @@ class XletPatchLookup(XletDatabase):
                     if atoms[1] == "obj":
                         x = lambda: int(atoms[2])
                         if atoms[4] == "inlet":
-                            inlets_coords.append((self.XLET_MESSAGE, x()))
+                            inlets_coords.append((XLET_MESSAGE, x()))
                         if atoms[4] == "inlet~":
-                            inlets_coords.append((self.XLET_SOUND, x()))
+                            inlets_coords.append((XLET_SOUND, x()))
                         if atoms[4] == "outlet":
-                            outlets_coords.append((self.XLET_MESSAGE, x()))
+                            outlets_coords.append((XLET_MESSAGE, x()))
                         if atoms[4] == "outlet~":
-                            outlets_coords.append((self.XLET_SOUND, x()))
+                            outlets_coords.append((XLET_SOUND, x()))
 
                 if atoms[0] == "#X" and atoms[1] == "restore":
                     subpatch_counter -= 1
 
-        except IOError, e:
+        except IOError:
             logging.error("can't open file: {0:s}".format(object_info.path))
 
         inlets_coords.sort(key=lambda el: el[1])

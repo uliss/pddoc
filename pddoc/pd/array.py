@@ -27,7 +27,7 @@ from obj import PdObject
 class Array(PdObject):
     def __init__(self, name, size, save=0):
         PdObject.__init__(self, name)
-        self._size = int(size)
+        self._size = int(float(size))
         self._save = save
         self._data = []
         self._xrange = (0, self._size)

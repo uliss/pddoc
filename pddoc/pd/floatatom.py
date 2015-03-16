@@ -65,8 +65,8 @@ class FloatAtom(CoreGui):
 
         return FloatAtom(x, y,
                            digits=int(atoms[2]),
-                           min=int(atoms[3]),
-                           max=int(atoms[4]),
+                           min=float(atoms[3]),
+                           max=float(atoms[4]),
                            label_pos=int(atoms[5]),
                            label=atoms[6],
                            send=atoms[7],

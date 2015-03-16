@@ -15,6 +15,7 @@ catch~          -       ~
 change          .       .
 clip            ...     .
 clip~           ~..     ~
+comport         .       ..
 cos             .       .
 cos~            ~       ~
 cpole~          ~~~~    ~~

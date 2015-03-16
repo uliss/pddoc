@@ -55,6 +55,10 @@ _objects = {
     "demux~": (
         lambda args: [XLET_SOUND],
         lambda args: (2 if not args else len(args)) * [XLET_SOUND]
+    ),
+    "limiter~": (
+        lambda args: [XLET_SOUND],
+        lambda args: (1 if not args else len(args)) * [XLET_SOUND]
     )
 }
 

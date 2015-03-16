@@ -57,13 +57,13 @@ def has_object(name):
 
 def inlets(name, args):
     if name in _objects:
-        return _objects["mux~"][0](args)
+        return _objects[name][0](args)
 
     return []
 
 
 def outlets(name, args):
     if name in _objects:
-        return _objects["mux~"][1](args)
+        return _objects[name][1](args)
 
     return []

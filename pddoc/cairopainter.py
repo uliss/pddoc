@@ -22,15 +22,18 @@ __author__ = 'Serge Poltavski'
 import cairo
 import textwrap
 from math import pi
+import logging
 
-import pd
-from pdpainter import *
+from .pdpainter import PdPainter
+from .pd import XLET_GUI, XLET_SOUND, XLET_MESSAGE, Canvas
 
 
 class CairoPainter(PdPainter):
     def __init__(self, width, height, output, fmt="png", **kwargs):
         PdPainter.__init__(self)
-        self.style = pd.DrawStyle()
+
+        from pd.drawstyle import DrawStyle
+        self.style = DrawStyle()
 
         self.st_font_slant = cairo.FONT_SLANT_NORMAL
         self.st_font_weight = cairo.FONT_WEIGHT_NORMAL
@@ -45,8 +48,6 @@ class CairoPainter(PdPainter):
         assert fmt
         fmt = fmt.lower()
         self.format = fmt
-
-        assert output
         self.output = output
 
         if fmt == 'png':
@@ -57,6 +58,10 @@ class CairoPainter(PdPainter):
         elif fmt == 'svg':
             assert self.output
             self.ims = cairo.SVGSurface(self.output, self.width, self.height)
+        else:
+            msg = "unsupported format: \"{0:s}\"".format(fmt)
+            logging.error(msg)
+            raise RuntimeError(msg)
 
         self.cr = cairo.Context(self.ims)
 
@@ -75,6 +80,10 @@ class CairoPainter(PdPainter):
             matrix.translate(0, kwargs['yoffset'])
 
         self.cr.set_matrix(matrix)
+
+    def __del__(self):
+        if self.format == 'png' and self.output:
+            self.ims.write_to_png(self.output)
 
     def draw_rect(self, x, y, w, h, **kwargs):
         self.cr.save()
@@ -104,10 +113,6 @@ class CairoPainter(PdPainter):
         elif len(rgb) == 3:
             self.cr.set_source_rgb(rgb[0], rgb[1], rgb[2])
 
-    def __del__(self):
-        if self.format == 'png':
-            self.ims.write_to_png(self.output)
-
     def draw_box(self, x, y, w, h):
         self.cr.save()
         self.cr.set_line_width(self.style.obj_line_width)
@@ -119,10 +124,12 @@ class CairoPainter(PdPainter):
         self.cr.restore()
 
     def draw_txt(self, x, y, txt):
-        (tx, ty, width, height, dx, dy) = self.cr.text_extents(txt)
+        ascent, descent, height, ax, ay = self.cr.font_extents()
+        self.cr.save()
         self.set_src_color(self.style.obj_text_color)
-        self.cr.move_to(x + self.style.obj_pad_x, y + height + self.style.obj_pad_y)
+        self.cr.move_to(x, y + ascent)
         self.cr.show_text(txt)
+        self.cr.restore()
 
     def draw_xlets(self, xlets, x, y, obj_width):
         if not xlets:
@@ -139,7 +146,7 @@ class CairoPainter(PdPainter):
 
             xlet = xlets[num]
 
-            if xlet in (pd.XLET_MESSAGE, pd.XLET_GUI):
+            if xlet in (XLET_MESSAGE, XLET_GUI):
                 self.set_src_color(self.style.xlet_msg_color)
             else:
                 self.set_src_color(self.style.xlet_snd_color)
@@ -153,7 +160,7 @@ class CairoPainter(PdPainter):
             self.cr.rectangle(inx, iny, self.style.xlet_width, self.xlet_height(xlet))
             self.cr.stroke_preserve()
 
-            if xlet == pd.XLET_SOUND:
+            if xlet == XLET_SOUND:
                 self.cr.fill()
                 self.cr.stroke()
             else:
@@ -162,8 +169,6 @@ class CairoPainter(PdPainter):
             num += 1
 
     def draw_subpatch(self, subpatch):
-        assert isinstance(subpatch, pd.Canvas)
-
         if subpatch.is_graph_on_parent():
             x = subpatch.x
             y = subpatch.y
@@ -175,7 +180,6 @@ class CairoPainter(PdPainter):
             self.cr.save()
             self.cr.set_matrix(m)
             for obj in subpatch.objects:
-                assert issubclass(obj.__class__, pd.BaseObject)
                 if obj.draw_on_parent():
                     obj.draw(self)
 
@@ -191,22 +195,10 @@ class CairoPainter(PdPainter):
             self.draw_xlets(subpatch.inlets(), x, y, w)
             self.draw_xlets(subpatch.outlets(), x, y + h - self.style.xlet_msg_height, w)
             return
-
-        txt = "pd " + subpatch.args_to_string()
-        (x, y, width, height, dx, dy) = self.cr.text_extents(txt)
-        x = subpatch.x
-        y = subpatch.y
-        w = width + self.style.obj_pad_x * 2
-        h = self.style.obj_height
-
-        self.draw_box(x, y, w, h)
-        self.draw_txt(x, y, txt)
-
-        self.draw_xlets(subpatch.inlets(), x, y, w)
-        self.draw_xlets(subpatch.outlets(), x, y + h - self.style.xlet_msg_height, w)
+        else:
+            self.draw_object_txt(subpatch, "pd " + subpatch.args_to_string())
 
     def draw_gop(self, obj, gop_canvas):
-        assert isinstance(gop_canvas, pd.Canvas)
         x, y, w, h = gop_canvas.gop_rect()
         self.cr.save()
         self.draw_box(obj.x, obj.y, w, h)
@@ -215,67 +207,99 @@ class CairoPainter(PdPainter):
         self.cr.restore()
         pass
 
+    def text_size(self, txt):
+        self.cr.save()
+        self.cr.select_font_face(self.style.font_family)
+        w = self.cr.text_extents(txt)[2]
+        h = self.cr.font_extents()[2]
+        self.cr.restore()
+        return w, h
+
+    def box_size(self, txt):
+        w, h = self.text_size(txt)
+        # box padding
+        w += self.style.obj_pad_x * 3  # set by empirical way
+        h += self.style.obj_pad_y * 2
+
+        # objects have minimal width. otherwise such objects as [*] could be too narrow
+        w = max(w, self.style.obj_min_width)
+        return w, h
+
+    def draw_hightlight(self, x, y, w, h):
+        self.cr.save()
+        pad = self.style.highlight_padding
+        self.cr.rectangle(x + 0.5 - pad, y + 0.5 - pad, w + pad*2, h + pad*2)
+        self.set_src_color(self.style.highlight_color)
+        self.cr.fill()
+        self.cr.restore()
+
     def draw_object(self, obj):
-        txt = obj.to_string()
-        (x, y, width, height, dx, dy) = self.cr.text_extents(txt)
+        self.draw_object_txt(obj, obj.to_string())
+
+    def draw_object_txt(self, obj, txt):
+        self.cr.save()
+        self.cr.select_font_face(self.style.font_family)
+
         x = obj.x
         y = obj.y
-        w = max(width + self.style.obj_pad_x * 2, self.style.obj_min_width)
-        h = self.style.obj_height
+        w, h = self.box_size(txt)
+
         obj.set_width(w)
         obj.set_height(h)
 
         if hasattr(obj, "highlight"):
-            pad = self.style.highlight_padding
-            self.cr.rectangle(x + 0.5 - pad, y + 0.5 - pad, w + pad*2, h + pad*2)
-            self.set_src_color(self.style.highlight_color)
-            self.cr.fill()
+            self.draw_hightlight(x, y, w, h)
 
-        self.cr.set_line_width(self.style.obj_line_width)
         self.draw_box(x, y, w, h)
-        self.draw_txt(x, y, txt)
+        self.draw_txt(x + self.style.obj_pad_x, y + self.style.obj_pad_y + 1, txt)
         self.draw_xlets(obj.inlets(), x, y, w)
         self.draw_xlets(obj.outlets(), x, y + h - self.style.xlet_msg_height, w)
+        self.cr.restore()
 
-    def draw_message(self, message):
-        txt = message.to_string()
-        (x, y, width, height, dx, dy) = self.cr.text_extents(txt)
-        x = message.x
-        y = message.y
-        w = width + self.style.obj_pad_x * 4
-        h = self.style.obj_height
-        message.set_height(h)
-        message.set_width(w)
-
-        # draw message box
-        cr = self.cr
-        self.set_src_color(self.style.obj_border_color)
+    def draw_message_box(self, x, y, w, h):
         edge_w = 8
         edge_h = 10
 
-        cr.save()
-        cr.set_line_width(self.style.obj_line_width)
+        self.cr.save()
+        self.set_src_color(self.style.obj_border_color)
+        self.cr.set_line_width(self.style.obj_line_width)
         tx = x + 0.5
         ty = y + 0.5
-        cr.move_to(tx, ty)
-        cr.line_to(tx, ty + h)
-        cr.line_to(tx + w, ty + h)
-        cr.line_to(tx + w - edge_w / 2.0, ty + (h + edge_h) / 2.0)
-        cr.line_to(tx + w - edge_w / 2.0, ty + (h - edge_h) / 2.0)
-        cr.line_to(tx + w, ty)
-        cr.line_to(tx, ty)
-        cr.stroke_preserve()
+        self.cr.move_to(tx, ty)
+        self.cr.line_to(tx, ty + h)
+        self.cr.line_to(tx + w, ty + h)
+        self.cr.line_to(tx + w - edge_w / 2.0, ty + (h + edge_h) / 2.0)
+        self.cr.line_to(tx + w - edge_w / 2.0, ty + (h - edge_h) / 2.0)
+        self.cr.line_to(tx + w, ty)
+        self.cr.line_to(tx, ty)
+        self.cr.stroke_preserve()
         self.set_src_color(self.style.msg_fill_color)
-        cr.fill()
-        cr.stroke()
-        cr.restore()
+        self.cr.fill()
+        self.cr.stroke()
+        self.cr.restore()
 
-        self.draw_txt(x, y, txt)
+    def message_size(self, txt):
+        w, h = self.box_size(txt)
+        # increase width for message rightmost curved tail: [msg(
+        w += self.style.obj_pad_y * 2
+        return w, h
+
+    def draw_message(self, message):
+        txt = message.to_string()
+        x = message.x
+        y = message.y
+        w, h = self.message_size(txt)
+
+        message.set_height(h)
+        message.set_width(w)
+
+        self.draw_message_box(x, y, w, h)
+        self.draw_txt(x + self.style.obj_pad_x, y + self.style.obj_pad_y + 1, txt)
         self.draw_xlets(message.inlets(), x, y, w)
         self.draw_xlets(message.outlets(), x, y + h - self.style.xlet_msg_height, w)
 
     def xlet_height(self, t):
-        if t == pd.XLET_GUI:
+        if t == XLET_GUI:
             return self.style.xlet_gui_height
         else:
             return self.style.xlet_msg_height
@@ -300,7 +324,7 @@ class CairoPainter(PdPainter):
             xlet_space = (obj.width - len(outlets) * self.style.xlet_width) / float(len(outlets) - 1)
 
         x = obj.x + (xlet_space + self.style.xlet_width) * outlet_no + self.style.xlet_width / 2.0
-        if isinstance(obj, pd.Canvas):
+        if isinstance(obj, Canvas):
             if obj.is_graph_on_parent():
                 y = obj._gop['height'] + obj.y
             else:
@@ -330,7 +354,7 @@ class CairoPainter(PdPainter):
             # print sx, sy, "->", dx, dy
 
             self.cr.save()
-            if dest_inl_type == pd.XLET_SOUND and src_outl_type == pd.XLET_SOUND:
+            if dest_inl_type == XLET_SOUND and src_outl_type == XLET_SOUND:
                 self.cr.set_line_width(self.style.conn_snd_width)
                 self.set_src_color(self.style.conn_snd_color)
                 # pixel correction
@@ -365,12 +389,13 @@ class CairoPainter(PdPainter):
         lines = textwrap.wrap(txt, 59)
 
         self.set_src_color(self.style.comment_color)
+        line_height = self.cr.font_extents()[2]
         lnum = 0
         for line in lines:
             line = ";\n".join(line.split(";")).split("\n")
             for subl in line:
                 subl = subl.strip()
-                self.draw_txt(comment.x, comment.y + lnum * self.style.font_size, subl)
+                self.draw_txt(comment.x, comment.y + lnum * line_height, subl)
                 lnum += 1
 
     def draw_poly(self, vertexes, **kwargs):

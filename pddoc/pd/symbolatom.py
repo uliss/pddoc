@@ -25,7 +25,6 @@ from . import XLET_MESSAGE
 
 
 class PdSymbolAtom(CoreGui):
-    _bcalc = BRectCalculator()
     ATOM_HEIGHT = 17
 
     def __init__(self, x, y, **kwargs):
@@ -97,7 +96,7 @@ class PdSymbolAtom(CoreGui):
     def _label_brect(self):
         if not self.has_label():
             return 0, 0, 0, 0
-        return self._bcalc.text_brect(self._label)
+        return self.brect_calc().text_brect(self._label)
 
     def draw(self, painter):
         vertexes = (

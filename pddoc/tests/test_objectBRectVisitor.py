@@ -35,11 +35,11 @@ class TestObjectBRectVisitor(TestCase):
         ov.add_brect((10, 10, 20, 30))
         self.assertEqual(ov.brect(), (10, 10, 20, 30))
         ov.clean()
-        pd = PdObject("osc~")
-        self.assertTrue(pd.is_null())
-        ov.visit_object(pd)
-        self.assertEqual(ov.brect(), (0, 0, 29, 17))
-        self.assertFalse(pd.is_null())
+        pdo = PdObject("osc~")
+        self.assertTrue(pdo.is_null())
+        ov.visit_object(pdo)
+        self.assertEqual(ov.brect(), (0, 0, 35, 17))
+        self.assertFalse(pdo.is_null())
 
     def test_visit_canvas(self):
         p = pd.Parser()

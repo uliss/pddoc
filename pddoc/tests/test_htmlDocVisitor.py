@@ -88,7 +88,7 @@ class TestHtmlDocVisitor(TestCase):
         self.assertTrue(hasattr(pdo, "layout"))
         self.assertEqual(pdo.layout.x(), 10)
         self.assertEqual(pdo.layout.y(), 0)
-        self.assertEqual(pdo.layout.width(), 95.0)
+        self.assertEqual(pdo.layout.width(), 113)
         self.assertEqual(pdo.layout.height(), 17)
 
     def test_doc2msg(self):
@@ -108,7 +108,7 @@ class TestHtmlDocVisitor(TestCase):
         self.assertTrue(hasattr(pdm, "layout"))
         self.assertEqual(pdm.layout.x(), 10)
         self.assertEqual(pdm.layout.y(), 0)
-        self.assertEqual(pdm.layout.width(), 52.0)
+        self.assertEqual(pdm.layout.width(), 60)
         self.assertEqual(pdm.layout.height(), 17)
 
     def test_comment2pd(self):
@@ -124,8 +124,8 @@ class TestHtmlDocVisitor(TestCase):
         self.assertTrue(hasattr(pdc, "layout"))
         self.assertEqual(pdc.layout.x(), 0)
         self.assertEqual(pdc.layout.y(), 0)
-        self.assertEqual(pdc.layout.width(), 84.0)
-        self.assertEqual(pdc.layout.height(), 12)
+        self.assertEqual(pdc.layout.width(), 98)
+        self.assertEqual(pdc.layout.height(), 13)
 
         pdc = v.comment2pd_comment(" ".join(["long comment"] * 40))
         self.assertTrue(isinstance(pdc, pd.Comment))
@@ -136,5 +136,5 @@ class TestHtmlDocVisitor(TestCase):
         self.assertTrue(hasattr(pdc, "layout"))
         self.assertEqual(pdc.layout.x(), 0)
         self.assertEqual(pdc.layout.y(), 0)
-        self.assertEqual(pdc.layout.width(), 354.0)
-        self.assertEqual(pdc.layout.height(), 12 * 9)
+        self.assertEqual(pdc.layout.width(), 423)
+        self.assertEqual(pdc.layout.height(), 125)

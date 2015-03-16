@@ -33,7 +33,7 @@ class DrawStyle(object):
     obj_border_color = property(lambda self: (0.2, 0.2, 0.2))
     obj_line_width = property(lambda self: 1)
     obj_pad_x = property(lambda self: 2.5)
-    obj_pad_y = property(lambda self: 1)
+    obj_pad_y = property(lambda self: 2)
     obj_min_width = property(lambda self: 22)
 
     msg_fill_color = property(lambda self: 0.94)
@@ -78,7 +78,7 @@ class DrawStyle(object):
     @property
     def font_family(self):
         # FIXME
-        return "terminus"
+        return "Menlo"
 
         if _platform == "darwin":
             return "Menlo"

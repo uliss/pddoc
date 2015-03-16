@@ -18,28 +18,17 @@
 
 __author__ = 'Serge Poltavski'
 
-import cairo
 import textwrap
 
-from drawstyle import *
-from comment import Comment
-from message import Message
-from canvas import Canvas
-from abstractvisitor import AbstractVisitor
+from .message import Message
+from .canvas import Canvas
+from .abstractvisitor import AbstractVisitor
 
 
 class BRectCalculator(AbstractVisitor):
     def __init__(self):
-        self._style = DrawStyle()
-        self._ims = cairo.ImageSurface(cairo.FORMAT_ARGB32, 10, 10)
-        self._cr = cairo.Context(self._ims)
-
-        self.st_font_slant = cairo.FONT_SLANT_NORMAL
-        self.st_font_weight = cairo.FONT_WEIGHT_NORMAL
-        self.st_line_join = cairo.LINE_JOIN_ROUND
-        self._cr.select_font_face(self._style.font_family, self.st_font_slant, self.st_font_weight)
-        self._cr.set_font_size(self._style.font_size)
-
+        from pddoc.cairopainter import CairoPainter
+        self._cairo = CairoPainter(1, 1, None, "png")
         self._bboxes = []
 
     def clear(self):
@@ -60,14 +49,8 @@ class BRectCalculator(AbstractVisitor):
         return left, top, right - left, bottom - top
 
     def object_brect(self, obj):
-        from obj import PdObject
-        assert isinstance(obj, PdObject)
-        txt = obj.to_string()
-        (x, y, width, height, dx, dy) = self._cr.text_extents(txt)
-
-        w = max(width + self._style.obj_pad_x * 2, self._style.obj_min_width)
-        h = self._style.obj_height
-        return obj.x, obj.y, w, h
+        w, h = self._cairo.box_size(obj.to_string())
+        return obj.x, obj.y, int(w), int(h)
 
     def text_brect(self, text):
         lines = []
@@ -77,34 +60,30 @@ class BRectCalculator(AbstractVisitor):
                 if subl:
                     lines.append(subl.strip())
 
-        maxwd = 0
+        max_w = 0
+        max_h = 0
         for line in lines:
-            maxwd = max(maxwd, self._cr.text_extents(line)[2])
+            w, h = self._cairo.text_size(line)
+            max_w = max(max_w, w)
+            max_h = max(max_h, h)
 
-        height = len(lines) * self._style.font_size
-        return 0, 0, maxwd, height
+        return 0, 0, int(max_w), int(len(lines) * max_h)
 
     def comment_brect(self, comment):
-        assert isinstance(comment, Comment)
         return self.text_brect(comment.text())
 
     def subpatch_brect(self, cnv):
         assert isinstance(cnv, Canvas)
         assert cnv.type == Canvas.TYPE_SUBPATCH
 
-        txt = "pd " + cnv.to_string()
-        (x, y, width, height, dx, dy) = self._cr.text_extents(txt)
-
-        w = max(width + self._style.obj_pad_x * 2, self._style.obj_min_width)
-        h = self._style.obj_height
-        return cnv.x, cnv.y, w, h
+        txt = "pd " + cnv.args_to_string()
+        w, h = self._cairo.box_size(txt)
+        return cnv.x, cnv.y, int(w), int(h)
 
     def message_brect(self, message):
         assert isinstance(message, Message)
-        (x, y, width, height, dx, dy) = self._cr.text_extents(message.to_string())
-        w = width + self._style.obj_pad_x * 4
-        h = self._style.obj_height
-        return message.x, message.y, w, h
+        w, h = self._cairo.message_size(message.to_string())
+        return message.x, message.y, int(w), int(h)
 
     def visit_object(self, obj):
         bbox = self.object_brect(obj)

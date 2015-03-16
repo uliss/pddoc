@@ -25,6 +25,7 @@ import os.path
 import logging
 
 from pddoc.cairopainter import *
+from pddoc.pd import Parser
 from format import detect_format
 
 
@@ -39,7 +40,7 @@ def main():
 
     args = vars(arg_parser.parse_args())
 
-    pd_parser = pd.Parser()
+    pd_parser = Parser()
 
     finput = args['input']
     if not os.path.exists(finput):

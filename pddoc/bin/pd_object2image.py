@@ -22,11 +22,12 @@ __author__ = 'Serge Poltavski'
 import argparse
 
 from pddoc.cairopainter import *
+from pddoc.pd import PdObject, BRectCalculator
 from format import detect_format
 
 
 def draw_object(object, fname, format, **kwargs):
-    w, h = pd.BRectCalculator().object_brect(object)[2:]
+    w, h = BRectCalculator().object_brect(object)[2:]
     pad = 1  # pixel
     w += pad
     h += pad
@@ -45,7 +46,7 @@ def main():
 
     args = vars(arg_parser.parse_args())
 
-    pdo = pd.PdObject(args['name'])
+    pdo = PdObject(args['name'])
 
     if not args['output']:
         if args['format']:

@@ -28,7 +28,6 @@ from xletpatchlookup import XletPatchLookup
 from abstractvisitor import AbstractVisitor
 
 
-
 class PdObject(BaseObject):
     xlet_calculator = XletCalculator()
     xlet_patch_finder = XletPatchLookup()
@@ -38,6 +37,8 @@ class PdObject(BaseObject):
     XMETHOD_EXPLICIT = 1
     # cache for external patches
     _patch_cache = {}
+    # brect calc
+    _brect_calc = None
 
     def __init__(self, name, x=0, y=0, w=0, h=0, args=[]):
         BaseObject.__init__(self, x, y, w, h)
@@ -65,10 +66,10 @@ class PdObject(BaseObject):
         else:
             # objname.pd patch found
             if self.xlet_patch_finder.has_object(self.name):
-                import parser
+                import parser as pd
 
                 obj = self.xlet_patch_finder.get_object(self.name)
-                parser = parser.Parser()
+                parser = pd.Parser()
                 if not parser.parse(obj.path):
                     logging.error("can't parse patch: \"{0:s}\"".format(obj.path))
                     self._gop = False
@@ -102,6 +103,15 @@ class PdObject(BaseObject):
 
     def append_arg(self, a):
         self._args.append(a)
+
+    @staticmethod
+    def brect_calc():
+        import brectcalculator
+
+        if not PdObject._brect_calc:
+            PdObject._brect_calc = brectcalculator.BRectCalculator()
+
+        return PdObject._brect_calc
 
     def num_args(self):
         return len(self._args)

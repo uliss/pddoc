@@ -20,15 +20,13 @@
 __author__ = 'Serge Poltavski'
 
 from coregui import CoreGui
-from brectcalculator import BRectCalculator
 from . import XLET_MESSAGE
 
 
 class FloatAtom(CoreGui):
-    _bcalc = BRectCalculator()
-
     def __init__(self, x, y, **kwargs):
         CoreGui.__init__(self, "floatatom", x, y, [])
+
         self._digits = int(kwargs.get("digits", 5))
         assert self._digits >= 0
 
@@ -107,7 +105,7 @@ class FloatAtom(CoreGui):
     def _label_brect(self):
         if not self.has_label():
             return 0, 0, 0, 0
-        return self._bcalc.text_brect(self._label)
+        return self.brect_calc().text_brect(self._label)
 
     def draw(self, painter):
         vertexes = (

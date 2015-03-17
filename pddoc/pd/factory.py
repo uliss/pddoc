@@ -120,7 +120,10 @@ def _find_in_imports(name):
 
 
 def find_external_object(name):
-    rname = re.compile(r"^([-a-z0-9~/*~=+><!_%|&]+)$")
+    if name in externals:
+        return True
+
+    rname = re.compile(r"^([-a-zA-Z0-9~/*~=+><!_%|&.]+)$")
     if not rname.match(name):
         logging.warning("name contains invalid characters: [%s]", name)
         return False

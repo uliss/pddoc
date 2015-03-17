@@ -19,6 +19,11 @@
 
 __author__ = 'Serge Poltavski'
 
+import os
+import re
+import sys
+import logging
+
 from floatatom import FloatAtom
 from . import EXTERNALS_DIR
 from obj import PdObject
@@ -30,11 +35,10 @@ from gcanvas import GCanvas
 from nbx import Nbx
 from vu import PdVu
 from symbolatom import PdSymbolAtom
-import os
-import re
-import sys
 
 externals = {}
+not_found = set()
+imports = []
 
 
 def make(atoms):
@@ -63,10 +67,29 @@ def make(atoms):
         return PdVu.from_atoms(atoms)
     elif name == "nbx":
         return Nbx.from_atoms(atoms)
-    elif find_external_object(name):
-        return externals[name].create(atoms)
+    elif name not in not_found:
+        if find_external_object(name):
+            return externals[name].create(atoms)
     else:
-        return PdObject(name, 0, 0, 0, 0, atoms[1:])
+        pass
+
+    # handle import
+    if name == "import":
+        add_import(atoms[1])
+
+    return PdObject(name, 0, 0, 0, 0, atoms[1:])
+
+
+def add_import(name):
+    import_path = os.path.join(EXTERNALS_DIR, name)
+    if import_path in imports:
+        return
+
+    if os.path.exists(import_path):
+        logging.debug("import path added: \"%s\"", import_path)
+        imports.append(import_path)
+    else:
+        logging.warning("import path not found: \"%s\"", name)
 
 
 def make_by_name(name, args=[], **kwargs):
@@ -78,14 +101,35 @@ def make_by_name(name, args=[], **kwargs):
         return PdObject(name, 0, 0, 0, 0, args)
 
 
+def _find_in_externals(name):
+    mod_path = os.path.join(EXTERNALS_DIR, name)
+    if os.path.exists(mod_path + ".py"):
+        return mod_path
+    else:
+        return None
+
+
+def _find_in_imports(name):
+    for path in imports:
+        mod_path = os.path.join(path, name)
+        # print mod_path
+        if os.path.exists(mod_path + ".py"):
+            return mod_path
+
+    return None
+
+
 def find_external_object(name):
-    rname = re.compile(r"^([a-z0-9~/]+)$")
+    rname = re.compile(r"^([-a-z0-9~/*~=+><!_%|&]+)$")
     if not rname.match(name):
+        logging.warning("name contains invalid characters: [%s]", name)
         return False
 
-    mod_path = os.path.join(EXTERNALS_DIR, name)
-    if not os.path.exists(mod_path + ".py"):
-        #  print mod_path + ".py"
+    mod_path = _find_in_externals(name)
+    if not mod_path:
+        mod_path = _find_in_imports(name)
+    if not mod_path:
+        not_found.add(name)
         return False
 
     mod_dir = os.path.dirname(mod_path)
@@ -96,6 +140,9 @@ def find_external_object(name):
     try:
         mod = __import__(mod_name)
         externals[name] = mod
+        logging.debug("module \"%s.py\" imported from \"%s\"", mod_name, mod_dir)
         return True
     except ImportError:
+        logging.error("error while importing extension: %s", mod_name)
+        not_found.add(name)
         return None

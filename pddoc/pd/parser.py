@@ -195,6 +195,13 @@ class Parser:
         else:
             logging.info("unknown token: {0:s}".format(atoms[0]))
 
+    def parse_imports(self, lines):
+        for found in self.lines_re.finditer(lines):
+            line = found.group(1)
+            atoms = self.split_re.split(line)
+            if atoms[0] == "#X" and atoms[1] == "obj" and atoms[4] == "import":
+                factory.add_import(atoms[5])
+
     def parse(self, file_name):
         if not path.exists(file_name):
             logging.warning(u"File not exists: \"{0:s}\"".format(file_name))
@@ -204,6 +211,8 @@ class Parser:
         f = open(file_name, "r")
         lines = f.read()
         f.close()
+
+        self.parse_imports(lines)
 
         for found in self.lines_re.finditer(lines):
             line = found.group(1)

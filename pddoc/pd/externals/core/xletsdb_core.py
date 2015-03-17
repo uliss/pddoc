@@ -121,9 +121,9 @@ _objects = {
         lambda args: [XLET_SOUND]
     ),
     "sprintf": (
-        lambda args: (1 if not len(args) else len([a for a in args if a[0] == "%" and a[0:2] != "%%"])) * [
+        lambda args: (1 if not len(args) else (len(" ".join(args).replace("%%", "").split("%")) - 1)) * [
             XLET_MESSAGE],
-        lambda args: [XLET_MESSAGE]
+        lambda args: (1 if " ".join(args).replace("%%", "").count("%") > 0 else 0) * [XLET_MESSAGE]
     ),
     "select": (
         lambda args: (2 if len(args) < 2 else 1) * [XLET_MESSAGE],

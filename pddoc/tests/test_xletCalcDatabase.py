@@ -83,6 +83,10 @@ class TestXletCalcDatabase(TestCase):
         self.assertEqual(xd.inlets(pdo), [0] * 1)
         pdo.append_arg("%s")
         self.assertEqual(xd.inlets(pdo), [0] * 2)
+        pdo.append_arg("%02d")
+        self.assertEqual(xd.inlets(pdo), [0] * 3)
+        pdo.append_arg("%%")
+        self.assertEqual(xd.inlets(pdo), [0] * 3)
 
     def test_outlets(self):
         xd = pd.XletCalculator()
@@ -94,9 +98,17 @@ class TestXletCalcDatabase(TestCase):
         pdo.name = "writesf~"
         pdo.append_arg("1")
         self.assertEqual(xd.outlets(pdo), [])
+
         pdo.name = "sprintf"
         pdo._args = []
+        self.assertEqual(xd.outlets(pdo), [0] * 0)
+        pdo._args = ["test"]
+        self.assertEqual(xd.outlets(pdo), [0] * 0)
+        pdo._args = ["%%"]
+        self.assertEqual(xd.outlets(pdo), [0] * 0)
+        pdo._args = ["%02d"]
         self.assertEqual(xd.outlets(pdo), [0] * 1)
+
         pdo.name = "expr"
         pdo._args = ["$f1"]
         self.assertEqual(xd.outlets(pdo), [0] * 1)

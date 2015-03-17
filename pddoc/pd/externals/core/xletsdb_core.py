@@ -110,7 +110,7 @@ _objects = {
     ),
     "expr": (
         lambda args: expr_args_parse(args) * [XLET_MESSAGE],
-        lambda args: [XLET_MESSAGE]
+        lambda args: len(filter(None, " ".join(args).split(";"))) * [XLET_MESSAGE]
     ),
     "expr~": (
         lambda args: [XLET_SOUND] + expr_tilde_args_parse(args),

@@ -39,10 +39,12 @@ element         ..      .
 env~            ~       .
 exp             .       .
 fft~            ~~      ~~
+fiddle~         ~       ....
 filledcurve     .       -
 filledpolygon   .       -
 float,f         ..      .
 framp~          ~~      ~~
+freeverb~       ~~      ~~
 ftom            .       .
 ftom~           ~       ~
 getsize         .       .

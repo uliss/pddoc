@@ -142,13 +142,17 @@ class Parser:
         c.connect(atoms)
 
     def parse_coords(self, atoms):
+        # syntax
+        #X coords [x_from]? [y_to]? [x_to]? [y_from]? [width]? [heigth]? [graph_on_parent]?;\r\n
+
         if not self._array:
-            self.current_canvas().set_graph_on_parent(True,
-                                                      width=atoms[5],
-                                                      height=atoms[6],
-                                                      xoff=atoms[8],
-                                                      yoff=atoms[9],
-                                                      hide_args=(atoms[7] == 2))
+            if int(atoms[7]) > 0:
+                self.current_canvas().set_graph_on_parent(True,
+                                                          width=int(atoms[5]),
+                                                          height=int(atoms[6]),
+                                                          xoff=atoms[8],
+                                                          yoff=atoms[9],
+                                                          hide_args=(int(atoms[7]) == 2))
             return
 
         self._array.set_xrange(float(atoms[1]), float(atoms[3]))

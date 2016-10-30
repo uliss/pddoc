@@ -25,7 +25,7 @@ setup(name='pddoc',
       author_email='serge.poltavski@gmail.com',
       keywords='puredata documentation',
       license='GPLv3',
-      packages=['pddoc'],
+      packages=['pddoc', 'pddoc.bin', 'pddoc.pd'],
       install_requires=[
           'termcolor', 'colorama', 'six', 'mako', 'argparse', 'lxml'
       ],

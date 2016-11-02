@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
+from canvas import Canvas
+import textwrap
+from abstractvisitor import AbstractVisitor
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -19,24 +22,19 @@
 
 __author__ = 'Serge Poltavski'
 
-import pddoc.pd as pd
-import textwrap
-
-from abstractvisitor import AbstractVisitor
-
 
 class PdExporter(AbstractVisitor):
     def __init__(self):
         self.result = []
 
     def visit_canvas_begin(self, cnv):
-        assert isinstance(cnv, pd.Canvas)
+        assert isinstance(cnv, Canvas)
 
-        if cnv.type == pd.Canvas.TYPE_WINDOW:
+        if cnv.type == Canvas.TYPE_WINDOW:
             line = "#N canvas {0:d} {1:d} {2:d} {3:d} {4:s};". \
                 format(cnv.x, cnv.y, cnv.width, cnv.height, cnv.name)
             self.result.append(line)
-        elif cnv.type == pd.Canvas.TYPE_SUBPATCH:
+        elif cnv.type == Canvas.TYPE_SUBPATCH:
             line = "#N canvas {0:d} {1:d} {2:d} {3:d} {4:s} 0;". \
                 format(cnv.x, cnv.y, cnv.width, cnv.height, cnv.name)
             self.result.append(line)
@@ -49,9 +47,9 @@ class PdExporter(AbstractVisitor):
         pass
 
     def visit_canvas_end(self, cnv):
-        if cnv.type == pd.Canvas.TYPE_WINDOW:
+        if cnv.type == Canvas.TYPE_WINDOW:
             self.result.append("")
-        elif cnv.type == pd.Canvas.TYPE_SUBPATCH:
+        elif cnv.type == Canvas.TYPE_SUBPATCH:
             line = "#X restore {0:d} {1:d} pd {2:s};".format(cnv.x, cnv.y, cnv.name)
             self.result.append(line)
         else:

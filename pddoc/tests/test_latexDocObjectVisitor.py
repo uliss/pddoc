@@ -42,6 +42,6 @@ class TestLatexDocObjectVisitor(TestCase):
                 lv.generate_images()
 
                 latex_data = lv.render()
-                f = open("float.tex", "w")
+                f = open("out/float.tex", "w")
                 f.write(latex_data)
                 f.close()

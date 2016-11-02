@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
+import copy
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                            #
@@ -18,8 +19,6 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 __author__ = 'Serge Poltavski'
-
-import copy
 
 
 class LayoutItem(object):
@@ -212,18 +211,18 @@ class Layout(object):
 
             s = s.strip()
             res += "-" * (len(s) + 4)
-            res += "\n| %s |\n" % (s)
+            res += "\n| {0:s} |\n".format(s)
             res += "-" * (len(s) + 4)
         elif self._dir == self.VERTICAL:
             col_len = 0
             els = []
             for item in self._elements:
-                els.append("[%i:%ix%i]" % (item.y(), item.width(), item.height))
+                els.append("[%i:%ix%i]" % (item.y(), item.width(), item.height()))
                 col_len = max(col_len, len(els[-1]))
 
             res += "-" * (col_len + 4)
             res += "\n"
-            fmt = u"| %{0:d}s |\n".format(col_len)
+            fmt = "| %{0:d}s |\n".format(col_len)
             for e in els:
                 res += fmt % (e)
             res += "-" * (col_len + 4)

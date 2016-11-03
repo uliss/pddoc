@@ -162,13 +162,12 @@ class Parser(object):
         for n in filter(lambda x: x.is_object(), self.nodes):
             if n.type == 'OBJECT':
                 m = re.match(lex.r_OBJECT, n.value)
-                atoms = filter(lambda a: len(a) > 0, m.group(1).split(' '))
+                # filter spaces and #ID values
+                atoms = filter(lambda a: len(a) > 0 and (not a.startswith('#')), m.group(1).split(' '))
                 assert len(atoms) > 0
                 name = atoms[0]
                 args = atoms[1:]
                 n.pd_object = factory.make_by_name(name, args)
-                assert n.pd_object
-                # print(n.width)
             elif n.type == 'MESSAGE':
                 m = re.match(lex.r_MESSAGE, n.value)
                 args = m.group(1).split(' ')

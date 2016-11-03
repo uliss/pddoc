@@ -102,11 +102,11 @@ class ColorizingStreamHandler(logging.StreamHandler):
                             elif 30 <= p <= 37:
                                 color |= self.nt_color_map[p - 30]
                             elif p == 1:
-                                color |= 0x08 # foreground intensity on
-                            elif p == 0: # reset to default color
+                                color |= 0x08  # foreground intensity on
+                            elif p == 0:  # reset to default color
                                 color = 0x07
                             else:
-                                pass # error condition ignored
+                                pass  # error condition ignored
                         ctypes.windll.kernel32.SetConsoleTextAttribute(h, color)
 
     def colorize(self, message, record):

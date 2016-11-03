@@ -23,12 +23,13 @@ __author__ = 'Serge Poltavski'
 import logging
 import re
 
-from . import XLET_MESSAGE, XLET_SOUND, XLET_GUI
+from . import XLET_MESSAGE, XLET_SOUND
 from xletdatabase import XletDatabase
 
 
 class XletTextDatabase(XletDatabase):
     def __init__(self, fname, extname):
+        super(XletTextDatabase, self).__init__(extname)
         self._extname = extname
         self._fname = None
         self._objects = {}
@@ -46,24 +47,28 @@ class XletTextDatabase(XletDatabase):
             for line in lines:
                 self.parse(line)
 
-        except IOError, e:
+        except IOError as e:
             logging.error("Load failed: {0:s}".format(fname))
             raise e
 
-    def inlets(self, objname, args=[]):
+    def inlets(self, objname, args=None):
+        if args is None:
+            args = []
         if not self.has_object(objname):
             return []
 
         return self._objects[objname][0]
 
-    def outlets(self, objname, args=[]):
+    def outlets(self, objname, args=None):
+        if args is None:
+            args = []
         if not self.has_object(objname):
             return []
 
         return self._objects[objname][1]
 
     def parse(self, line):
-        if line and line[0] == "#": #  comment
+        if line and line[0] == "#":  # comment
             return
 
         atoms = re.split("\s+", line)
@@ -72,12 +77,12 @@ class XletTextDatabase(XletDatabase):
             logging.error("line skip: " + line)
             return
 
-        def parse_xlet(str):
+        def parse_xlet(data_str):
             res = []
-            if str[0] == '-':
+            if data_str[0] == '-':
                 return res
 
-            for char in str:
+            for char in data_str:
                 if char == "~":
                     res.append(XLET_SOUND)
                 elif char == ".":

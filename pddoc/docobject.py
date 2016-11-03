@@ -29,6 +29,7 @@ def make_class_name(tag_name):
 
 
 def create_instance(tag_name, *args):
+    class_name = None
     try:
         class_name = make_class_name(tag_name)
         obj = globals()[class_name](args)
@@ -89,7 +90,7 @@ class DocItem(object):
             #     getattr(visitor, method)(self)
             getattr(visitor, method)(self)
 
-        except DocVisitorError, e:
+        except DocVisitorError as e:
             logging.error(e)
 
     def traverse_children(self, visitor):
@@ -250,7 +251,7 @@ class DocPdobject(DocItem):
                     self._attrs[k] = v
 
             DocItem.from_xml(self, xmlobj)
-        except KeyError, e:
+        except KeyError as e:
             logging.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
 
     @property
@@ -279,7 +280,7 @@ class DocPdmessage(DocPdobject):
             DocItem.from_xml(self, xmlobj)
             # after parent method
             self._text = xmlobj.attrib["text"]
-        except KeyError, e:
+        except KeyError as e:
             logging.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
 
 
@@ -305,7 +306,7 @@ class DocPdinclude(DocItem):
             self._file = xmlobj.attrib['file']
             self._size = xmlobj.attrib.get('size', 'auto')
             assert self._size in ("auto", "canvas")
-        except KeyError, e:
+        except KeyError as e:
             logging.warning("attribute \"%s\" not found in <%s>", e.args[0], xmlobj.tag)
 
 

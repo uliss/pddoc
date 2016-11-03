@@ -28,10 +28,14 @@ class XletDatabase(object):
     def has_object(self, name):
         return False
 
-    def inlets(self, name, args=[]):
+    def inlets(self, name, args=None):
+        if args is None:
+            args = []
         return []
 
-    def outlets(self, name, args=[]):
+    def outlets(self, name, args=None):
+        if args is None:
+            args = []
         return []
 
     @property

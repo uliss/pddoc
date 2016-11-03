@@ -85,5 +85,3 @@ class TestTxtParser(TestCase):
         pd_exporter = PdExporter()
         cnv.traverse(pd_exporter)
         pd_exporter.save("out/ascii.pd")
-
-

@@ -159,7 +159,7 @@ class Parser(object):
             self.nodes.append(n)
 
     def parse_nodes(self):
-        for n in filter(lambda n: n.is_object(), self.nodes):
+        for n in filter(lambda x: x.is_object(), self.nodes):
             if n.type == 'OBJECT':
                 m = re.match(lex.r_OBJECT, n.value)
                 atoms = filter(lambda a: len(a) > 0, m.group(1).split(' '))

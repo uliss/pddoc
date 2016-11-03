@@ -17,6 +17,8 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
+from __future__ import print_function
+
 __author__ = 'Serge Poltavski'
 
 import cairo
@@ -139,7 +141,7 @@ class CairoPainter(PdPainter):
         if len(xlets) > 1:
             inlet_space = (obj_width - len(xlets) * self.style.xlet_width) / (len(xlets) - 1)
 
-        for num in xrange(0, len(xlets)):
+        for num in range(0, len(xlets)):
             inx = x + num * inlet_space
             if num != 0:
                 inx += num * self.style.xlet_width
@@ -228,7 +230,7 @@ class CairoPainter(PdPainter):
     def draw_hightlight(self, x, y, w, h):
         self.cr.save()
         pad = self.style.highlight_padding
-        self.cr.rectangle(x + 0.5 - pad, y + 0.5 - pad, w + pad*2, h + pad*2)
+        self.cr.rectangle(x + 0.5 - pad, y + 0.5 - pad, w + pad * 2, h + pad * 2)
         self.set_src_color(self.style.highlight_color)
         self.cr.fill()
         self.cr.restore()
@@ -464,7 +466,7 @@ class CairoPainter(PdPainter):
     def draw_circle(self, x, y, radius, **kwargs):
         self.cr.save()
         self.cr.set_line_width(self.style.obj_line_width)
-        self.cr.arc(x, y, radius, 0, 2*pi)
+        self.cr.arc(x, y, radius, 0, 2 * pi)
         if 'fill' in kwargs:
             self.set_src_color(kwargs['fill'])
             self.cr.fill_preserve()
@@ -496,4 +498,4 @@ class CairoPainter(PdPainter):
         self.cr.restore()
 
     def draw_graph(self, graph):
-        print graph
+        print(graph)

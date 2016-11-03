@@ -65,8 +65,10 @@ class XletPatchLookup(XletDatabase):
     lines_re = re.compile("(#(.*?)[^\\\])\r?\n?;\r?\n", re.MULTILINE | re.DOTALL)
     split_re = re.compile(" |\r\n?|\n", re.MULTILINE)
 
-    def __init__(self, dirs=[]):
+    def __init__(self, dirs=None):
         XletDatabase.__init__(self, "pdpatch")
+        if dirs is None:
+            dirs = []
         self._dirs = dirs
         self._dirs.append(os.getcwd())
         self._cache = {}
@@ -92,7 +94,9 @@ class XletPatchLookup(XletDatabase):
 
         return False
 
-    def inlets(self, name, args=[]):
+    def inlets(self, name, args=None):
+        if args is None:
+            args = []
         cname = self.clean_name(name)
         if cname not in self._cache:
             return []
@@ -102,7 +106,9 @@ class XletPatchLookup(XletDatabase):
 
         return self._cache[cname].inlets
 
-    def outlets(self, name, args=[]):
+    def outlets(self, name, args=None):
+        if args is None:
+            args = []
         cname = self.clean_name(name)
         if cname not in self._cache:
             return []

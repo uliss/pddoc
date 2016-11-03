@@ -17,6 +17,8 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
+from __future__ import print_function
+
 __author__ = 'Serge Poltavski'
 
 
@@ -25,46 +27,46 @@ class PdPainter(object):
         pass
 
     def draw_comment(self, comment):
-        print "Draw comment: #", comment.text()
+        print("Draw comment: #", comment.text())
 
     def draw_message(self, message):
-        print "Draw message [id:%i]: %s" % (message.id, message.to_string())
+        print("Draw message [id:%i]: %s" % (message.id, message.to_string()))
 
     def draw_object(self, obj):
-        print "Draw object: [id:%i] [%s]" % (obj.id, " ".join(obj.args))
+        print("Draw object: [id:%i] [%s]" % (obj.id, " ".join(obj.args)))
 
     def draw_core_gui(self, gui):
-        print "Draw core GUI: [id:%i] [%s]" % (gui.id, gui.name)
+        print("Draw core GUI: [id:%i] [%s]" % (gui.id, gui.name))
 
     def draw_subpatch(self, subpatch):
-        print u"Draw subpatch: [pd {0:s}]".format(subpatch.name)
+        print("Draw subpatch: [pd {0:s}]".format(subpatch.name))
 
     def draw_graph(self, graph):
-        print "Draw graph "
+        print("Draw graph ")
 
     def draw_connections(self, canvas):
-        print "Draw connections "
+        print("Draw connections ")
 
     def draw_poly(self, vertexes, **kwargs):
-        print "Draw poly:", vertexes
+        print("Draw poly:", vertexes)
 
     def draw_text(self, x, y, text, **kwargs):
-        print "Draw text:", text
+        print("Draw text:", text)
 
     def draw_inlets(self, inlets, x, y, width):
-        print "Draw inlets:", inlets
+        print("Draw inlets:", inlets)
 
     def draw_outlets(self, outlets, x, y, width):
-        print "Draw outlets:", outlets
+        print("Draw outlets:", outlets)
 
     def draw_circle(self, x, y, width, **kwargs):
-        print "Draw circle"
+        print("Draw circle")
 
     def draw_arc(self, x, y, radius, start_angle, end_angle, **kwargs):
-        print "Draw arc"
+        print("Draw arc")
 
     def draw_line(self, x0, y0, x1, y1, **kwargs):
-        print "Draw line"
+        print("Draw line")
 
     def draw_rect(self, x, y, w, h, **kwargs):
-        print "Draw rect"
+        print("Draw rect")

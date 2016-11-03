@@ -16,12 +16,13 @@
 #                                                                         #
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
- 
+
 __author__ = 'Serge Poltavski'
 
 import pd
 from layout import *
 from docobject import DocPdobject, DocPdmessage
+import logging
 
 
 class PdLayout(object):
@@ -129,9 +130,9 @@ class PdLayout(object):
             dest_in = c._dest_in
 
             self._canvas.add_connection(src_id, src_out, dest_id, dest_in)
-        except KeyError, e:
+        except KeyError as e:
             logging.warning("connection not found: {0:s}:{1:s} => {2:s}:{3:s}".
-                           format(c.src_id(), src_out, c.dest_id(), dest_in))
+                            format(c.src_id(), src_out, c.dest_id(), dest_in))
 
     def message_begin(self, msg_obj):
         pd_msg = self.doc2msg(msg_obj)

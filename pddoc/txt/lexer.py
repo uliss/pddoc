@@ -17,6 +17,7 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
+from __future__ import print_function
 import ply.lex as lex
 from ply.lex import TOKEN
 import re
@@ -37,15 +38,15 @@ r_OBJECT = r'\[((?:[^\[\\]|\\.)+)\]'
 r_MESSAGE = r'\[((?:[^\(\\]|\\.)+)\('
 r_COMMENT = r'/\*(.+)\*/'
 r_NEWLINE = r'\n+'
-t_CONNECTION = r'\^*\|\.*' # ^^|.. connection
-t_CONNECTION_RIGHT = r'\^*\\_*\.*' # ^^\______..
-t_CONNECTION_LEFT  = r'\.*_*/\^*' # ^^\______..
+t_CONNECTION = r'\^*\|\.*'          # ^^|.. connection
+t_CONNECTION_RIGHT = r'\^*\\_*\.*'  # ^^\______..
+t_CONNECTION_LEFT = r'\.*_*/\^*'    # ^^\______..
 t_CONNECTION_X = r'(x|X)'
 t_ignore = ' \r\t\f'
 
 
 def t_error(t):
-    print "Illegal character '%s'" % t.value[0]
+    print("Illegal character '{0:s}'".format(t.value[0]))
     t.lexer.skip(1)
 
 
@@ -71,4 +72,3 @@ def t_COMMENT(t):
 
 def lexer():
     return lex.lex(reflags=re.UNICODE)
-

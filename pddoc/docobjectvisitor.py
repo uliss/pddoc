@@ -211,7 +211,7 @@ class DocObjectVisitor(IDocObjectVisitor):
 
             if not os.path.isdir(self._image_output_dir):
                 raise RuntimeError("not a directory: %s".format(self._image_output_dir))
-        except Exception, e:
+        except Exception as e:
             raise RuntimeError(e.message)
 
     def make_image_id_name(self):
@@ -279,5 +279,5 @@ class DocObjectVisitor(IDocObjectVisitor):
             if self._see_also:
                 for sa in self._see_also:
                     self.generate_object_image(sa['name'])
-        except Exception, e:
+        except Exception as e:
             logging.error("Error while generating images: %s", e)

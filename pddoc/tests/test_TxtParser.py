@@ -50,11 +50,11 @@ class TestTxtParser(TestCase):
         self.p.parse_file(TEST_FILE)
 
         self.assertEqual(self.p.num_lines(), 9)
-        # self.assertEqual(len(self.p.nodes), 14)
-        self.assertEqual(self.p.num_elements('OBJECT'), 4)
+        self.assertEqual(len(self.p.nodes), 20)
+        self.assertEqual(self.p.num_elements('OBJECT'), 6)
         self.assertEqual(self.p.num_elements('MESSAGE'), 2)
         self.assertEqual(self.p.num_elements('COMMENT'), 1)
-        self.assertEqual(self.p.num_elements('CONNECTION'), 7)
+        self.assertEqual(self.p.num_elements('CONNECTION'), 9)
 
     def test_parse(self):
         pass
@@ -66,7 +66,7 @@ class TestTxtParser(TestCase):
 
     def test_elements_in_line(self):
         self.p.parse_file(TEST_FILE)
-        self.assertEqual(len(self.p.elements_in_line('OBJECT', 3)), 2)
+        self.assertEqual(len(self.p.elements_in_line('OBJECT', 3)), 3)
         self.assertEqual(len(self.p.elements_in_line('MESSAGE', 0)), 1)
         self.assertEqual(len(self.p.elements_in_line('COMMENT', 0)), 1)
 
@@ -79,7 +79,7 @@ class TestTxtParser(TestCase):
         cnv.type = Canvas.TYPE_WINDOW
         self.p.export(cnv)
 
-        painter = CairoPainter(400, 500, "out/ascii.png", "png")
+        painter = CairoPainter(500, 400, "out/ascii.png", "png")
         cnv.draw(painter)
 
         pd_exporter = PdExporter()

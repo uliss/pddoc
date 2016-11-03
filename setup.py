@@ -10,7 +10,7 @@ def readme():
 
 
 setup(name='pddoc',
-      version='0.2.0',
+      version='0.2.3',
       description='PureData documentation tools',
       long_description=readme(),
       classifiers=[
@@ -25,7 +25,7 @@ setup(name='pddoc',
       author_email='serge.poltavski@gmail.com',
       keywords='puredata documentation',
       license='GPLv3',
-      packages=['pddoc', 'pddoc.bin', 'pddoc.pd'],
+      packages=['pddoc', 'pddoc.bin', 'pddoc.pd', 'pddoc.txt'],
       install_requires=[
           'termcolor', 'colorama', 'six', 'mako', 'argparse', 'lxml', 'ply'
       ],
@@ -34,7 +34,8 @@ setup(name='pddoc',
       entry_points={
           'console_scripts': ['pd2image=pddoc.bin.pd2image:main',
                               'pdobject2image=pddoc.bin.pd_object2image:main',
-                              'pddoc=pddoc.bin.pddoc_bin:main']
+                              'pddoc=pddoc.bin.pddoc_bin:main',
+                              'pdascii=pddoc.bin.pdascii:main']
       },
       include_package_data=True,
       zip_safe=False)

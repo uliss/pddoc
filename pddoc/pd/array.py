@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
+from obj import PdObject
 
 #   Copyright (C) 2015 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -21,9 +22,6 @@
 __author__ = 'Serge Poltavski'
 
 
-from obj import PdObject
-
-
 class Array(PdObject):
     def __init__(self, name, size, save=0):
         PdObject.__init__(self, name)
@@ -39,11 +37,11 @@ class Array(PdObject):
         for a in atoms:
             self._data.append(float(a))
 
-    def set_xrange(self, min, max):
-        self._xrange = (min, max)
+    def set_xrange(self, min_x, max_x):
+        self._xrange = (min_x, max_x)
 
-    def set_yrange(self, min, max):
-        self._yrange = (min, max)
+    def set_yrange(self, min_y, max_y):
+        self._yrange = (min_y, max_y)
 
     @staticmethod
     def from_atoms(atoms):
@@ -60,7 +58,7 @@ class Array(PdObject):
         swd = self.width / self._size
         yrange = self._yrange[1] - self._yrange[0]
         sht = self.height / yrange
-        for idx in xrange(0, self._size):
+        for idx in range(0, self._size):
             x0 = self.left + swd * idx
             x1 = x0 + swd
             y = self.top + sht * self._data[idx] + (self.height * self._yrange[1])/yrange

@@ -20,7 +20,6 @@
 __author__ = 'Serge Poltavski'
 
 from coregui import CoreGui
-from brectcalculator import BRectCalculator
 from . import XLET_MESSAGE
 
 

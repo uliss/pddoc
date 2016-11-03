@@ -46,7 +46,7 @@ class Parser:
     def parse_canvas(self, atoms):
         # get positions
         values = []
-        for i in xrange(3, -1, -1):
+        for i in range(3, -1, -1):
             if len(atoms) > i:
                 values.insert(0, int(atoms[i]))
             else:
@@ -117,7 +117,7 @@ class Parser:
             c._args = atoms[3:]
             self.current_canvas().append_subpatch(c)
         else:
-            logging.warning(u"unknown canvas type: {0:s}".format(cnv_type))
+            logging.warning("unknown canvas type: {0:s}".format(cnv_type))
             assert False
 
     def parse_obj(self, atoms):
@@ -204,7 +204,7 @@ class Parser:
 
     def parse(self, file_name):
         if not path.exists(file_name):
-            logging.warning(u"File not exists: \"{0:s}\"".format(file_name))
+            logging.warning("File not exists: \"{0:s}\"".format(file_name))
             return False
 
         self._fname = file_name

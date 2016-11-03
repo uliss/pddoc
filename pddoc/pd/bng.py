@@ -83,4 +83,3 @@ class PdBng(CoreGui):
 
         self.draw_label(painter)
         self.draw_xlets(painter)
-

@@ -19,7 +19,6 @@
 
 __author__ = 'Serge Poltavski'
 
-
 import obj
 from termcolor import colored
 import six
@@ -225,7 +224,7 @@ class CoreGui(obj.PdObject):
     def draw_label(self, painter):
         if not self.no_label():
             lx, ly = self._get_label_xy()
-            ly += self._font_size/2  # TODO hardcoded
+            ly += self._font_size / 2  # TODO hardcoded
             painter.draw_text(lx, ly, self.label,
                               color=self.lbcolor(),
                               font_size=self._font_size,  # FIXME! hardcoded font family
@@ -245,7 +244,7 @@ class CoreGui(obj.PdObject):
 
             return pos
         elif isinstance(pos, six.string_types):
-            lmap = { "left": self.POS_LEFT,
+            lmap = {"left": self.POS_LEFT,
                     "right": self.POS_RIGHT,
                     "top": self.POS_TOP,
                     "bottom": self.POS_BOTTOM}

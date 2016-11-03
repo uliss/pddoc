@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
-
+from __future__ import print_function
 #   Copyright (C) 2014 by Serge Poltavski                                 #
 # serge.poltavski@gmail.com                                             #
 #                                                                         #
@@ -16,7 +16,6 @@
 #                                                                         #
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
-
 
 __author__ = 'Serge Poltavski'
 
@@ -90,7 +89,7 @@ class Canvas(PdObject):
         assert issubclass(obj.__class__, BaseObject)
 
         if obj in self._objects:
-            logging.warning(u"object already on canvas: {0:s}".format(obj))
+            logging.warning("object already on canvas: {0:s}".format(obj))
             return False
 
         obj.id = self.gen_object_id()
@@ -130,10 +129,10 @@ class Canvas(PdObject):
         assert sid >= 0 and did >= 0 and soutl >= 0 and dinl >= 0
 
         def str_bbox(obj, xlet):
-                if obj:
-                    return "[%s:%d]" % (obj.name, xlet)
-                else:
-                    return "[?:%d]" % xlet
+            if obj:
+                return "[%s:%d]" % (obj.name, xlet)
+            else:
+                return "[?:%d]" % xlet
 
         src_obj = self.find_object_by_id(sid)
         dest_obj = self.find_object_by_id(did)
@@ -142,13 +141,13 @@ class Canvas(PdObject):
 
             if check_xlets:
                 if soutl >= len(src_obj.outlets()):
-                    logging.warning(u"[{0:s}] invalid outlet number: {1:d}, total outlets: {2:d}".
-                                   format(src_obj.name, soutl, len(src_obj.outlets())))
+                    logging.warning("[{0:s}] invalid outlet number: {1:d}, total outlets: {2:d}".
+                                    format(src_obj.name, soutl, len(src_obj.outlets())))
                     return False
 
                 if dinl >= len(dest_obj.inlets()):
-                    logging.warning(u"[{0:s}] invalid inlet number: {1:d}, total inlets: {2:d}".
-                                   format(dest_obj.name, dinl, len(dest_obj.inlets())))
+                    logging.warning("[{0:s}] invalid inlet number: {1:d}, total inlets: {2:d}".
+                                    format(dest_obj.name, dinl, len(dest_obj.inlets())))
                     return False
 
             ckey = Canvas.make_connection_key(sid, soutl, did, dinl)
@@ -185,7 +184,7 @@ class Canvas(PdObject):
         else:
             assert False
 
-        name += u"\"{0:s}\"".format(self.name)
+        name += "\"{0:s}\"".format(self.name)
 
         res = "%-30s (%i,%i %ix%i id:%i)\n" % (name, self._x, self._y, self._width, self._height, self.id)
         for obj in self.objects:
@@ -292,5 +291,5 @@ class Canvas(PdObject):
 
     def _print_connections(self):
         for k, v in self.connections.items():
-            print "[%s:%d (%d,%d)] => [%s:%d (%d,%d)]" % (v[0].name, v[1], v[0].x, v[0].y,
-                                                          v[2].name, v[3], v[2].x, v[2].y)
+            print("[{0:s}:{1:d} ({2:d},{3:d})] => [{4:s}:{5:d} ({6:d},{7:d})]".format(v[0].name, v[1], v[0].x, v[0].y,
+                                                                                      v[2].name, v[3], v[2].x, v[2].y))

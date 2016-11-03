@@ -17,7 +17,7 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
- 
+
 __author__ = 'Serge Poltavski'
 
 from coregui import CoreGui
@@ -36,18 +36,18 @@ class GCanvas(CoreGui):
     def from_atoms(atoms):
         assert len(atoms) == 13
         return GCanvas(0, 0,
-                         size=atoms[0],
-                         width=atoms[1],
-                         height=atoms[2],
-                         send=atoms[3],
-                         receive=atoms[4],
-                         label=atoms[5],
-                         label_xoff=atoms[6],
-                         label_yoff=atoms[7],
-                         font_type=atoms[8],
-                         font_size=atoms[9],
-                         bg_color=atoms[10],
-                         label_color=atoms[11])
+                       size=atoms[0],
+                       width=atoms[1],
+                       height=atoms[2],
+                       send=atoms[3],
+                       receive=atoms[4],
+                       label=atoms[5],
+                       label_xoff=atoms[6],
+                       label_yoff=atoms[7],
+                       font_type=atoms[8],
+                       font_size=atoms[9],
+                       bg_color=atoms[10],
+                       label_color=atoms[11])
 
     def draw(self, painter):
         painter.draw_rect(self.x, self.y, self.width, self.height, fill=self.bgcolor())

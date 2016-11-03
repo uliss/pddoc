@@ -36,6 +36,7 @@ from . import XLET_GUI
 # [scale]? - when set the logarithmic scale is displayed
 # [?]? - unknown value, default is zero
 
+
 class PdVu(CoreGui):
     def __init__(self, x, y, **kwargs):
         CoreGui.__init__(self, "vu", x, y, [], **kwargs)
@@ -89,5 +90,3 @@ class PdVu(CoreGui):
 
         if self._scale:
             self.draw_scale(painter)
-
-

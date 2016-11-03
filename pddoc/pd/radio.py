@@ -74,6 +74,7 @@ class Radio(CoreGui):
                             label_color=atoms[14],
                             default_value=atoms[15])
 
+
 class PdHRadio(Radio):
     def __init__(self, x, y, **kwargs):
         Radio.__init__(self, "hradio", x, y, **kwargs)

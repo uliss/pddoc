@@ -41,25 +41,25 @@ class Nbx(CoreGui):
         assert atoms[0] == "nbx"
 
         return Nbx(0, 0, digits=atoms[1],
-                     height=atoms[2],
-                     min=atoms[3],
-                     max=atoms[4],
-                     log=atoms[5],
-                     init=atoms[6],
-                     send=atoms[7],
-                     receive=atoms[8],
-                     label=atoms[9],
-                     label_xoff=atoms[10],
-                     label_yoff=atoms[11],
-                     font_type=atoms[12],
-                     font_size=atoms[13],
-                     bg_color=atoms[14],
-                     fg_color=atoms[15],
-                     label_color=atoms[16],
-                     log_height=atoms[18])
+                   height=atoms[2],
+                   min=atoms[3],
+                   max=atoms[4],
+                   log=atoms[5],
+                   init=atoms[6],
+                   send=atoms[7],
+                   receive=atoms[8],
+                   label=atoms[9],
+                   label_xoff=atoms[10],
+                   label_yoff=atoms[11],
+                   font_type=atoms[12],
+                   font_size=atoms[13],
+                   bg_color=atoms[14],
+                   fg_color=atoms[15],
+                   label_color=atoms[16],
+                   log_height=atoms[18])
 
     def get_width(self):
-        return (self._digits+1) * self._font_size * 0.85
+        return (self._digits + 1) * self._font_size * 0.85
 
     def get_height(self):
         return self._height

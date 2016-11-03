@@ -64,13 +64,13 @@ class FloatAtom(CoreGui):
         y = atoms[1]
 
         return FloatAtom(x, y,
-                           digits=int(atoms[2]),
-                           min=float(atoms[3]),
-                           max=float(atoms[4]),
-                           label_pos=int(atoms[5]),
-                           label=atoms[6],
-                           send=atoms[7],
-                           receive=atoms[8])
+                         digits=int(atoms[2]),
+                         min=float(atoms[3]),
+                         max=float(atoms[4]),
+                         label_pos=int(atoms[5]),
+                         label=atoms[6],
+                         send=atoms[7],
+                         receive=atoms[8])
 
     def get_height(self):
         return 17

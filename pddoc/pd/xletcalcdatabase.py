@@ -30,20 +30,25 @@ class XletCalcDatabase(XletDatabase):
     _counter = 0
 
     def __init__(self, path, extname):
+        super(XletCalcDatabase, self).__init__(extname)
         self._extname = extname
         XletCalcDatabase._counter += 1
         self._module = None
 
         try:
             self._module = imp.load_source("plugin{0:d}".format(XletCalcDatabase._counter), path)
-        except IOError, e:
+        except IOError as e:
             logging.error("Plugin not found: {0:s}".format(path))
             raise e
 
-    def outlets(self, name, args=[]):
+    def outlets(self, name, args=None):
+        if args is None:
+            args = []
         return self._module.outlets(name, args)
 
-    def inlets(self, name, args=[]):
+    def inlets(self, name, args=None):
+        if args is None:
+            args = []
         return self._module.inlets(name, args)
 
     def has_object(self, name):

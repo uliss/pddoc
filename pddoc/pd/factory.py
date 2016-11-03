@@ -92,7 +92,9 @@ def add_import(name):
         logging.warning("import path not found: \"%s\"", name)
 
 
-def make_by_name(name, args=[], **kwargs):
+def make_by_name(name, args=None, **kwargs):
+    if args is None:
+        args = []
     if name == "floatatom":
         return FloatAtom(0, 0, **kwargs)
     elif name == "bng":
@@ -123,7 +125,7 @@ def find_external_object(name):
     if name in externals:
         return True
 
-    rname = re.compile(r"^([-a-zA-Z0-9~/*~=+><!_%|&.]+)$")
+    rname = re.compile(r"^([-a-zA-Z0-9~/*=+><!_%|&.]+)$")
     if not rname.match(name):
         logging.warning("name contains invalid characters: [%s]", name)
         return False

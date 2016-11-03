@@ -22,6 +22,7 @@ __author__ = 'Serge Poltavski'
 
 from coregui import CoreGui
 
+
 class PdToggle(CoreGui):
     @staticmethod
     def from_atoms(atoms):

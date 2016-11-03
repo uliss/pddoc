@@ -14,7 +14,7 @@ setup(name='pddoc',
       description='PureData documentation tools',
       long_description=readme(),
       classifiers=[
-          'Development Status :: 2 - Pre-Alpha',
+          'Development Status :: 3 - Alpha',
           'Topic :: Software Development :: Documentation',
           'Topic :: Multimedia :: Sound/Audio',
           'Programming Language :: Python :: 2.7',

@@ -175,12 +175,23 @@ class Parser(object):
             self.process_connection(c)
 
     def find_connection(self, line, char_pos):
+        """
+        :type line: int
+        :type char_pos: list
+        """
         return next(ifilter(
-            lambda x: x.line_pos == line
-                      and any(map(lambda c: x.contains(c), char_pos)), self.nodes), None)
+            lambda x:
+            x.line_pos == line and any(map(lambda c: x.contains(c), char_pos)), self.nodes), None)
 
     def process_connection(self, c):
-        src = self.find_connection(c.line_pos - 1, [c.char_pos])
+        conn_start = []
+        if c.type == 'CONNECTION_LEFT':
+            conn_start = [c.char_pos + c.tok.value.index('/')]
+        else:
+            conn_start = [c.char_pos]
+
+        # find object on previous line
+        src = self.find_connection(c.line_pos - 1, conn_start)
         if src is None:
             print("connection source is not found for: {0:s}".format(c))
             return
@@ -192,6 +203,7 @@ class Parser(object):
             c.conn_src_outlet = src.conn_src_outlet
             src.connected = False
 
+        # find on next line
         dest = self.find_connection(c.line_pos + 1, [c.char_pos, c.char_pos + c.width])
         if dest is None:
             print("connection destination is not found for: {0:s}".format(c.tok.value))
@@ -239,4 +251,3 @@ class Parser(object):
                     c.conn_src_outlet,
                     dest.pd_object.id,
                     c.conn_dest_inlet)
-

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
+import os.path
 
 #   Copyright (C) 2015 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -18,8 +19,6 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 __author__ = 'Serge Poltavski'
-
-import os.path
 
 
 def detect_format(args):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-# Copyright (C) 2016 by Serge Poltavski                                 #
+#   Copyright (C) 2016 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -18,6 +18,7 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from __future__ import print_function
+from itertools import ifilter
 import lexer as lex
 import re
 from pddoc.pd import Message, Comment, Canvas
@@ -36,6 +37,15 @@ class Node(object):
         self.conn_dest_inlet = 0
         self.connected = False
 
+        if self.tok and self.is_connection():
+            # calc connection source outlet
+            self.conn_src_outlet = self.tok.value.count('^')
+            self.conn_dest_inlet = self.tok.value.count('.')
+
+            # only single \
+            if self.tok.value == '\\':
+                self.conn_dest_inlet += 1
+
     def group(self, n=1):
         return self.tok.lexmatch.group(n)
 
@@ -46,7 +56,7 @@ class Node(object):
         return self.tok.type in ('OBJECT', 'MESSAGE', 'COMMENT')
 
     def is_connection(self):
-        return self.tok.type == 'CONNECTION' and self.connected
+        return self.tok.type in ('CONNECTION', 'CONNECTION_LEFT', 'CONNECTION_RIGHT')
 
     @property
     def id(self):
@@ -161,39 +171,33 @@ class Parser(object):
                 print("Unknown type {0:s}".format(n.type))
 
     def parse_connections(self):
-        for c in self.elements('CONNECTION'):
+        for c in filter(lambda n: n.is_connection(), self.nodes):
             self.process_connection(c)
 
-    def process_connection(self, c):
-        src = None
-        dest = None
-        for el in filter(lambda x: x.line_pos == (c.line_pos - 1), self.nodes):
-            if el.contains(c.char_pos):
-                src = el
-                break
+    def find_connection(self, line, char_pos):
+        return next(ifilter(
+            lambda x: x.line_pos == line
+                      and any(map(lambda c: x.contains(c), char_pos)), self.nodes), None)
 
+    def process_connection(self, c):
+        src = self.find_connection(c.line_pos - 1, [c.char_pos])
         if src is None:
             print("connection source is not found for: {0:s}".format(c))
             return
 
         c.conn_src_id = src.id
-        c.conn_src_outlet = c.tok.value.count('^')
         if src.is_connection():
+            # multiline connection
             c.conn_src_id = src.conn_src_id
             c.conn_src_outlet = src.conn_src_outlet
             src.connected = False
 
-        for el in filter(lambda x: x.line_pos == (c.line_pos + 1), self.nodes):
-            if el.contains(c.char_pos) or el.contains(c.char_pos + c.width):
-                dest = el
-                break
-
+        dest = self.find_connection(c.line_pos + 1, [c.char_pos, c.char_pos + c.width])
         if dest is None:
             print("connection destination is not found for: {0:s}".format(c.tok.value))
             return
 
         c.conn_dest_id = dest.id
-        c.conn_dest_inlet = c.tok.value.count('.')
         c.connected = True
 
     def layout_nodes(self):
@@ -223,7 +227,7 @@ class Parser(object):
         for n in filter(lambda x: x.is_object(), self.nodes):
             cnv.append_object(n.pd_object)
 
-        for c in filter(lambda x: x.is_connection(), self.nodes):
+        for c in filter(lambda x: x.is_connection() and x.connected, self.nodes):
             # print("connection %s -> %s" % (c.conn_src_id, c.conn_dest_id))
             src = self.node_by_id(c.conn_src_id)
             dest = self.node_by_id(c.conn_dest_id)

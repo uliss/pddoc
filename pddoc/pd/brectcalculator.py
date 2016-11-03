@@ -102,7 +102,7 @@ class BRectCalculator(AbstractVisitor):
         self._bboxes.append((comment.x, comment.y, w, h))
 
     def visit_core_gui(self, gui):
-        pass
+        self._bboxes.append((gui.x, gui.y, gui.width, gui.height))
 
     def visit_graph(self, g):
         pass

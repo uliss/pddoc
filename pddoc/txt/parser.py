@@ -92,14 +92,17 @@ class Node(object):
 
 
 class Parser(object):
-    tokens = []
-    lexer = None
-    lines = []
-    lines_len = []
-    nodes = []
+    X_PAD = 20
+    Y_PAD = 20
+    X_SPACE = 8
+    Y_SPACE = 12
 
     def __init__(self):
-        self.clear()
+        self.lines = []
+        self.lines_len = []
+        self.tokens = []
+        self.nodes = []
+        self.lexer = lex.lexer()
 
     def clear(self):
         self.lines = []
@@ -258,14 +261,10 @@ class Parser(object):
         c.connected = True
 
     def layout_nodes(self):
-        X_OFF = 20
-        Y_OFF = 20
-        X_SPACE = 10
-        Y_SPACE = 20
         obj = filter(lambda x: x.is_object(), self.nodes)
         for n in obj:
-            n.pd_object.x = n.char_pos * X_SPACE + X_OFF
-            n.pd_object.y = n.line_pos * Y_SPACE + Y_OFF
+            n.pd_object.x = n.char_pos * self.X_SPACE + self.X_PAD
+            n.pd_object.y = n.line_pos * self.Y_SPACE + self.Y_PAD
 
     def num_lines(self):
         return len(self.lines)

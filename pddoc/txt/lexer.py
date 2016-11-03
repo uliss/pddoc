@@ -26,7 +26,9 @@ tokens = (
     'OBJECT',
     'MESSAGE',
     'COMMENT',
-    'CONNECTION'
+    'CONNECTION',
+    'CONNECTION_RIGHT',
+    'CONNECTION_LEFT'
 )
 
 # token regexp
@@ -34,7 +36,9 @@ r_OBJECT = r'\[((?:[^\[\\]|\\.)+)\]'
 r_MESSAGE = r'\[((?:[^\(\\]|\\.)+)\('
 r_COMMENT = r'/\*(.+)\*/'
 r_NEWLINE = r'\n+'
-t_CONNECTION = r'([\.\^])*(\| | \\ | \/(?!\*))(\{\d?->(\d|(\#[A-Za-z]))(\.\d+)\})?([\.\^])*'
+t_CONNECTION = r'\^*\|\.*' # ^^|.. connection
+t_CONNECTION_RIGHT = r'\^*\\_*\.*' # ^^\______..
+t_CONNECTION_LEFT  = r'\.*_*/\^*' # ^^\______..
 t_ignore = ' \r\t\f'
 
 

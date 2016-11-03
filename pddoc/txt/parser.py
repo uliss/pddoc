@@ -30,6 +30,11 @@ class Node(object):
         self.tok = tok
         self.char_pos_ = char_pos
         self.pd_object = None
+        self.conn_src_id = None
+        self.conn_src_outlet = 0
+        self.conn_dest_id = None
+        self.conn_dest_inlet = 0
+        self.connected = False
 
     def group(self, n=1):
         return self.tok.lexmatch.group(n)
@@ -41,7 +46,7 @@ class Node(object):
         return self.tok.type in ('OBJECT', 'MESSAGE', 'COMMENT')
 
     def is_connection(self):
-        return self.tok.type == 'CONNECTION'
+        return self.tok.type == 'CONNECTION' and self.connected
 
     @property
     def id(self):
@@ -95,6 +100,13 @@ class Parser(object):
         with open(fname) as f:
             self.parse(f.read())
 
+    def node_by_id(self, id):
+        res = filter(lambda n: id == n.id, self.nodes)
+        if len(res) < 1:
+            return None
+
+        return res[0]
+
     def parse(self, string):
         assert isinstance(string, string_types)
 
@@ -103,6 +115,7 @@ class Parser(object):
         self.lexer.input(string)
         self.parse_tokens()
         self.parse_nodes()
+        self.parse_connections()
         self.layout_nodes()
 
     def token_line_lex_pos(self, lexline, lexpos):
@@ -126,17 +139,16 @@ class Parser(object):
             self.nodes.append(n)
 
     def parse_nodes(self):
-        for n in self.nodes:
-            if not n.is_object():
-                continue
-
+        for n in filter(lambda n: n.is_object(), self.nodes):
             if n.type == 'OBJECT':
                 m = re.match(lex.r_OBJECT, n.value)
-                atoms = m.group(1).split(' ')
+                atoms = filter(lambda a: len(a) > 0, m.group(1).split(' '))
                 assert len(atoms) > 0
                 name = atoms[0]
                 args = atoms[1:]
                 n.pd_object = factory.make_by_name(name, args)
+                assert n.pd_object
+                # print(n.width)
             elif n.type == 'MESSAGE':
                 m = re.match(lex.r_MESSAGE, n.value)
                 args = m.group(1).split(' ')
@@ -146,7 +158,43 @@ class Parser(object):
                 txt = m.group(1).replace(';', ' \;').replace(',', ' \,')
                 n.pd_object = Comment(0, 0, txt.split(' '))
             else:
-                print(u"Unknown type {0:s}".format(n.type))
+                print("Unknown type {0:s}".format(n.type))
+
+    def parse_connections(self):
+        for c in self.elements('CONNECTION'):
+            self.process_connection(c)
+
+    def process_connection(self, c):
+        src = None
+        dest = None
+        for el in filter(lambda x: x.line_pos == (c.line_pos - 1), self.nodes):
+            if el.contains(c.char_pos):
+                src = el
+                break
+
+        if src is None:
+            print("connection source is not found for: {0:s}".format(c))
+            return
+
+        c.conn_src_id = src.id
+        c.conn_src_outlet = c.tok.value.count('^')
+        if src.is_connection():
+            c.conn_src_id = src.conn_src_id
+            c.conn_src_outlet = src.conn_src_outlet
+            src.connected = False
+
+        for el in filter(lambda x: x.line_pos == (c.line_pos + 1), self.nodes):
+            if el.contains(c.char_pos) or el.contains(c.char_pos + c.width):
+                dest = el
+                break
+
+        if dest is None:
+            print("connection destination is not found for: {0:s}".format(c.tok.value))
+            return
+
+        c.conn_dest_id = dest.id
+        c.conn_dest_inlet = c.tok.value.count('.')
+        c.connected = True
 
     def layout_nodes(self):
         X_OFF = 20
@@ -174,4 +222,17 @@ class Parser(object):
         assert isinstance(cnv, Canvas)
         for n in filter(lambda x: x.is_object(), self.nodes):
             cnv.append_object(n.pd_object)
+
+        for c in filter(lambda x: x.is_connection(), self.nodes):
+            # print("connection %s -> %s" % (c.conn_src_id, c.conn_dest_id))
+            src = self.node_by_id(c.conn_src_id)
+            dest = self.node_by_id(c.conn_dest_id)
+
+            if src and dest:
+                # print("add connection: {0:d}-> {1:d}".format(src.pd_object.id, dest.pd_object.id))
+                cnv.add_connection(
+                    src.pd_object.id,
+                    c.conn_src_outlet,
+                    dest.pd_object.id,
+                    c.conn_dest_inlet)
 

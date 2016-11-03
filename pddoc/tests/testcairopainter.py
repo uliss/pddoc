@@ -19,16 +19,16 @@
 
 __author__ = 'Serge Poltavski'
 
-import sys
-import os
-from pddoc.cairopainter import *
-from pddoc.pddrawer import *
 import unittest
+
+from pddoc.cairopainter import CairoPainter
+from pddoc.pddrawer import PdDrawer
+import pddoc.pd as pd
 
 
 class TestCairoPainter(unittest.TestCase):
     def test_simple(self):
-        parser = PdParser()
+        parser = pd.Parser()
         # f = "/Applications/Pd-extended.app/Contents/Resources/doc/5.reference/float-help.pd"
         f = "/Applications/Pd-extended.app/Contents/Resources/doc/5.reference/intro-help.pd"
         parser.parse(f)

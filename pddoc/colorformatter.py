@@ -1,6 +1,7 @@
 #
 # Copyright (C) 2010-2012 Vinay Sajip. All rights reserved. Licensed under the new BSD license.
 #
+
 import ctypes
 import logging
 import os
@@ -31,7 +32,7 @@ class ColorizingStreamHandler(logging.StreamHandler):
     else:
         level_map = {
             logging.DEBUG: (None, 'blue', False),
-            logging.INFO: (None, 'black', False),
+            logging.INFO: (None, None, False),
             logging.WARNING: (None, 'yellow', False),
             logging.ERROR: (None, 'red', False),
             logging.CRITICAL: ('red', 'white', True),
@@ -101,11 +102,11 @@ class ColorizingStreamHandler(logging.StreamHandler):
                             elif 30 <= p <= 37:
                                 color |= self.nt_color_map[p - 30]
                             elif p == 1:
-                                color |= 0x08 # foreground intensity on
-                            elif p == 0: # reset to default color
+                                color |= 0x08  # foreground intensity on
+                            elif p == 0:  # reset to default color
                                 color = 0x07
                             else:
-                                pass # error condition ignored
+                                pass  # error condition ignored
                         ctypes.windll.kernel32.SetConsoleTextAttribute(h, color)
 
     def colorize(self, message, record):

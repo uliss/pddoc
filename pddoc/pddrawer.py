@@ -19,8 +19,6 @@
 
 __author__ = 'Serge Poltavski'
 
-from pdparser import *
-from pdpainter import *
 
 class PdDrawer:
     def __init__(self):

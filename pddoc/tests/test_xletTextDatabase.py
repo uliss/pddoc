@@ -22,14 +22,12 @@ from unittest import TestCase
 __author__ = 'Serge Poltavski'
 
 
-from pddoc.xlettextdatabase import XletTextDatabase
-import pddoc
+from pddoc.pd.xlettextdatabase import XletTextDatabase
+from pddoc.pd import EXTERNALS_DIR
 import os
 from nologging import *
 
-pddoc_path = os.path.dirname(pddoc.__file__)
-pddoc_db = pddoc_path + '/externals/core/pd_objects.db'
-
+pddoc_db = os.path.join(EXTERNALS_DIR, 'core/pd_objects.db')
 
 class TestXletTextDatabase(TestCase):
     def test_load(self):

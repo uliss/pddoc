@@ -17,16 +17,16 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
+import lxml.etree as ET
+
 from unittest import TestCase, expectedFailure
-from pddoc.docobject import *
 from pddoc.htmldocvisitor import *
+from pddoc.docobject import DocObject
 
 __author__ = 'Serge Poltavski'
 
 
 class TestDocObject(TestCase):
-    pass
-
     def test_float_export(self):
         dobj = DocObject()
 

@@ -23,7 +23,6 @@ from unittest import TestCase
 __author__ = 'Serge Poltavski'
 
 from pddoc.htmldocvisitor import *
-from pddoc.pdcanvas import *
 from pddoc.pdlayout import *
 import os
 
@@ -37,27 +36,25 @@ class TestHtmlDocVisitor(TestCase):
         self.assertTrue(v.render())
 
     def test_generate_object_image(self):
-        PATH = "out/object_undefined~.png"
         v = HtmlDocVisitor()
+        PATH = v.image_output_dir() + "/object_undefined~.png"
         v.generate_object_image("undefined~")
         self.assertTrue(os.path.exists(PATH))
         os.remove(PATH)
 
     def test_generate_images(self):
         v = HtmlDocVisitor()
-        v._title = "testobj"
-        v._aliases.append("tobj")
+        v.add_alias("tobj")
         v.generate_images()
-        self.assertTrue(os.path.exists("out/object_testobj.png"))
-        self.assertTrue(os.path.exists("out/object_tobj.png"))
-        os.remove("out/object_testobj.png")
-        os.remove("out/object_tobj.png")
+        path2 = os.path.join(v.image_output_dir(), "object_tobj.png")
+        self.assertTrue(os.path.exists(path2))
+        os.remove(path2)
 
     def test_place_pd_objects(self):
         v = PdLayout()
-        pd_canvas = PdCanvas(0, 0, 100, 50, name="10")
+        pd_canvas = pd.Canvas(0, 0, 100, 50, name="10")
         v._canvas = pd_canvas
-        pdo = PdObject("float")
+        pdo = pd.PdObject("float")
         pd_canvas.append_object(pdo)
         self.assertEqual(pdo.x, 0)
         self.assertEqual(pdo.y, 0)
@@ -91,7 +88,7 @@ class TestHtmlDocVisitor(TestCase):
         self.assertTrue(hasattr(pdo, "layout"))
         self.assertEqual(pdo.layout.x(), 10)
         self.assertEqual(pdo.layout.y(), 0)
-        self.assertEqual(pdo.layout.width(), 95.0)
+        self.assertEqual(pdo.layout.width(), 113)
         self.assertEqual(pdo.layout.height(), 17)
 
     def test_doc2msg(self):
@@ -111,13 +108,13 @@ class TestHtmlDocVisitor(TestCase):
         self.assertTrue(hasattr(pdm, "layout"))
         self.assertEqual(pdm.layout.x(), 10)
         self.assertEqual(pdm.layout.y(), 0)
-        self.assertEqual(pdm.layout.width(), 52.0)
+        self.assertEqual(pdm.layout.width(), 60)
         self.assertEqual(pdm.layout.height(), 17)
 
     def test_comment2pd(self):
         v = PdLayout()
         pdc = v.comment2pd_comment("simple comment")
-        self.assertTrue(isinstance(pdc, PdComment))
+        self.assertTrue(isinstance(pdc, pd.Comment))
 
         self.assertEqual(pdc.x, 0)
         self.assertEqual(pdc.y, 0)
@@ -127,11 +124,11 @@ class TestHtmlDocVisitor(TestCase):
         self.assertTrue(hasattr(pdc, "layout"))
         self.assertEqual(pdc.layout.x(), 0)
         self.assertEqual(pdc.layout.y(), 0)
-        self.assertEqual(pdc.layout.width(), 84.0)
-        self.assertEqual(pdc.layout.height(), 12)
+        self.assertEqual(pdc.layout.width(), 98)
+        self.assertEqual(pdc.layout.height(), 13)
 
         pdc = v.comment2pd_comment(" ".join(["long comment"] * 40))
-        self.assertTrue(isinstance(pdc, PdComment))
+        self.assertTrue(isinstance(pdc, pd.Comment))
         self.assertEqual(pdc.x, 0)
         self.assertEqual(pdc.y, 0)
         self.assertEqual(pdc.width, 0)
@@ -139,5 +136,5 @@ class TestHtmlDocVisitor(TestCase):
         self.assertTrue(hasattr(pdc, "layout"))
         self.assertEqual(pdc.layout.x(), 0)
         self.assertEqual(pdc.layout.y(), 0)
-        self.assertEqual(pdc.layout.width(), 354.0)
-        self.assertEqual(pdc.layout.height(), 12 * 9)
+        self.assertEqual(pdc.layout.width(), 423)
+        self.assertEqual(pdc.layout.height(), 125)

@@ -20,12 +20,12 @@
 __author__ = 'Serge Poltavski'
 
 import unittest
-from pddoc.pdbaseobject import *
+from pddoc.pd.baseobject import *
 
 
 class TestPdBaseObject(unittest.TestCase):
     def test_init(self):
-        pbo = PdBaseObject()
+        pbo = BaseObject()
         self.assertEqual(pbo.is_null(), True)
         self.assertEqual(pbo.x, 0)
         self.assertEqual(pbo.get_x(), 0)
@@ -33,7 +33,7 @@ class TestPdBaseObject(unittest.TestCase):
 
         del (pbo)
 
-        pbo = PdBaseObject(1, 2, 3, 4)
+        pbo = BaseObject(1, 2, 3, 4)
         self.assertEqual(pbo.left, 1)
         self.assertEqual(pbo.right, 4)
         self.assertEqual(pbo.top, 2)
@@ -45,14 +45,14 @@ class TestPdBaseObject(unittest.TestCase):
         self.assertEqual(pbo.height, 10)
 
     def test_x(self):
-        pbo = PdBaseObject(2)
+        pbo = BaseObject(2)
         self.assertEqual(pbo.x, 2)
         pbo.x = 3
         self.assertEqual(pbo.x, 3)
         self.assertEqual(pbo.get_x(), 3)
 
     def test_override(self):
-        class A(PdBaseObject):
+        class A(BaseObject):
             def get_x(self):
                 return 44
 
@@ -65,25 +65,25 @@ class TestPdBaseObject(unittest.TestCase):
         self.assertEqual(pbo.x, 44)
 
     def test_brect(self):
-        pbo = PdBaseObject(10, 20, 30, 40)
+        pbo = BaseObject(10, 20, 30, 40)
         self.assertEqual(pbo.brect(), (10, 20, 30, 40))
         pbo.move_by(2, 3)
         self.assertEqual(pbo.brect(), (12, 23, 30, 40))
 
     def test_xlets(self):
-        pbo = PdBaseObject(10, 20, 30, 40)
+        pbo = BaseObject(10, 20, 30, 40)
         self.assertEqual(len(pbo.inlets()), 0)
         self.assertEqual(len(pbo.outlets()), 0)
 
     @unittest.expectedFailure
     def test_draw(self):
-        pbo = PdBaseObject()
+        pbo = BaseObject()
         pbo.draw(None)
 
     @unittest.expectedFailure
     def test_traverse(self):
-        pbo = PdBaseObject()
+        pbo = BaseObject()
         pbo.traverse(None)
 
     def test_unescape(self):
-        self.assertEqual(PdBaseObject.unescape("\\;\\,\\$"), ";,$")
+        self.assertEqual(BaseObject.unescape("\\;\\,\\$"), ";,$")

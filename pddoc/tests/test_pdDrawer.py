@@ -18,23 +18,23 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from unittest import TestCase
+import sys
+import StringIO
 
 __author__ = 'Serge Poltavski'
 
 from pddoc.pddrawer import *
 from pddoc.pdpainter import *
-from pddoc.pdcanvas import *
-import sys
-import StringIO
+import pddoc.pd as pd
 
 
 class TestPdDrawer(TestCase):
     def test_draw(self):
-        # suppres output
+        # suppress output
         cout = sys.stdout
         sys.stdout = StringIO.StringIO()
 
-        parser = PdParser()
+        parser = pd.Parser()
         parser.parse("simple.pd")
 
         painter = PdPainter()

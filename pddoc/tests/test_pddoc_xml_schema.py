@@ -22,6 +22,7 @@ __author__ = 'Serge Poltavski'
 from unittest import TestCase, expectedFailure
 from lxml import etree
 
+
 class TestPddocXmlSchema(TestCase):
     schema_root = etree.parse('../share/pddoc.xsd').getroot()
     schema = etree.XMLSchema(schema_root)

@@ -17,7 +17,7 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 from unittest import TestCase
-from pddoc.pdfactory import find_external_object, make
+from pddoc.pd.factory import find_external_object, make
 
 __author__ = 'Serge Poltavski'
 

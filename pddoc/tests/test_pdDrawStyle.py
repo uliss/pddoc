@@ -20,11 +20,11 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.pddrawstyle import *
+from pddoc.pd.drawstyle import *
 
 
 class TestPdDrawStyle(TestCase):
     def test_init(self):
-        st = PdDrawStyle()
+        st = DrawStyle()
         self.assertEqual(st.fill_color, (1, 1, 1))
         self.assertEqual(st.obj_height, 17)

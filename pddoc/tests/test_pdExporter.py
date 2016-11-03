@@ -20,17 +20,16 @@
 __author__ = 'Serge Poltavski'
 
 from unittest import TestCase, expectedFailure
-from pddoc.pdexporter import *
-from pddoc.pdcanvas import *
-from pddoc.pdparser import *
+from pddoc.pd.pdexporter import *
+from pddoc.pd.parser import *
 import difflib
 
 
 class TestPdExporter(TestCase):
     def test_init(self):
         exp = PdExporter()
-        c = PdCanvas(0, 0, 200, 100)
-        c.type = PdCanvas.TYPE_WINDOW
+        c = Canvas(0, 0, 200, 100)
+        c.type = Canvas.TYPE_WINDOW
         c.traverse(exp)
 
     def diff(self, fname1, fname2):
@@ -45,7 +44,7 @@ class TestPdExporter(TestCase):
         return ln != 0
 
     def reexport(self, fname1, fname2):
-        parser = PdParser()
+        parser = Parser()
         self.assertTrue(parser.parse(fname1))
         exp = PdExporter()
         parser.canvas.traverse(exp)

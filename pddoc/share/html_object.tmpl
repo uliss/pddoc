@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>PureData [${title | h}] object</title>
+    <link rel="stylesheet" type="text/css" href="${css_file | h}"/>
+    <meta name="description" content="${description | h}"/>
+    <meta name="keywords" content="${' '.join(keywords) | h}"/>
+    % if css:
+    <script type="text/css">
+        ${css | h}
+    </script>
+    % endif
+</head>
+<body>
+<div class="header">
+    <h1>[${title | h}]</h1>
+
+    <div class="description">${description|h}</div>
+    <div class="aliases">
+        % if len(aliases) > 1:
+        <span>aliases:</span>
+        % for i, a in enumerate(aliases):
+        % if i != 0:
+        or
+        % endif
+        <img src="${a['image'] | h}" alt="[${a['name']|h}]"/>
+        % endfor
+        % endif
+    </div>
+</div>
+
+<div class="example">
+% for ex in examples:
+    % if ex['file']:
+    <a href="${ex['file'] | u}">
+    % endif
+    <img src="${ex['image'] | h}" alt="example ${ex['id'] | h}" title="${ex['title'] | h}"/>
+    % if ex['file']:
+    </a>
+    % endif
+% endfor
+</div>
+
+% if inlets:
+<div class="inlets">
+    <h2>Inlets:</h2>
+    <table>
+        % for inlet_number in sorted(inlets):
+        <%
+        inlet_list = inlets[inlet_number]
+        col_span = len(inlet_list)
+        inlet_list_count = col_span
+        range_str = lambda x: ("&ndash;".join(map(str, x))) if (len(x) > 1) else "&nbsp;"
+        %>
+
+        % for inlet in inlet_list:
+        <tr>
+            % if col_span == inlet_list_count:
+            <td rowspan="${col_span}" class="number" title="inlet number"><span>${inlet_number|h}</span></td>
+            % endif
+            <td class="type" title="inlet type">
+                % if inlet.type() in ("bang", "float", "list", "symbol", "any", "pointer"):
+                    <a href="http://puredata.info/wiki/${inlet.type() | u}">${inlet.type() | h}</a>
+                % else :
+                    ${inlet.type() | h}
+                % endif
+            </td>
+            <td class="range" title="value range">${range_str(inlet.range())}</td>
+            <td class="description">&ndash; ${inlet.text()|h}</td>
+            <% col_span -= 1 %>
+        </tr>
+        % endfor
+        % endfor
+    </table>
+</div>
+% endif
+
+% if outlets:
+<div class="outlets">
+    <h2>Outlets:</h2>
+    <table>
+        % for outlet_number in sorted(outlets):
+        <%
+        outlet_list = outlets[outlet_number]
+        col_span = len(outlet_list)
+        outlet_list_count = col_span
+        range_str = lambda x: ("&ndash;".join(map(str, x))) if (len(x) > 1) else "&nbsp;"
+        %>
+
+        % for outlet in outlet_list:
+        <tr>
+            % if col_span == outlet_list_count:
+            <td rowspan="${col_span}" class="number" title="outlet number"><span>${outlet_number|h}</span></td>
+            % endif
+            <td class="type" title="outlet type">
+                % if outlet.type() in ("bang", "float", "list", "symbol", "any", "pointer"):
+                    <a href="http://puredata.info/wiki/${inlet.type() | u}" title="outlet type">${outlet.type() | h}</a>
+                % else:
+                    ${outlet.type() | h}
+                % endif
+            </td>
+            <td class="range" title="value range">${range_str(outlet.range())}</td>
+            <td class="description">&ndash; ${outlet.text()|h}</td>
+            <% col_span -= 1 %>
+        </tr>
+        % endfor
+        % endfor
+    </table>
+</div>
+% endif
+
+% if arguments:
+<div class="arguments">
+    <h2>Arguments:</h2>
+    <ol>
+        % for arg in arguments:
+        <li>${arg.text() | h}</li>
+        % endfor
+    </ol>
+</div>
+% endif
+
+% if see_also:
+<div class="also">
+    <h2>See Also:</h2>
+    <div class="objects">
+    % for obj in see_also:
+        <a href="${obj['name']|h}.html"><img src="${obj['image']|h}" alt="${obj['name']|h}"/></a>
+    % endfor
+    </div>
+</div>
+% endif
+
+
+<div class="footer">
+    <div class="about">
+        <div class="library">Library: ${library | h}</div>
+        % if category:
+        <div class="category">Category: ${category | h}</div>
+        % endif
+        <div class="version">Version: ${version | h}</div>
+        % if license:
+        <div class="license">License:
+            % if license['url']:
+            <a href="${license['url'] | h}">
+            % endif
+                ${license['name'] | h}
+            % if license['url']:
+                </a>
+            % endif
+        </div>
+        % endif
+        % if website:
+        <div class="website">Website: <a href="${website | h}">${website | h}</a></div>
+        % endif
+        % if authors:
+        <div class="authors">Authors: ${", ".join(authors) | h}</div>
+        % endif
+        % if contacts:
+        <div class="contacts">Contacts: ${contacts | h}</div>
+        % endif
+    </div>
+</div>
+</body>
+</html>

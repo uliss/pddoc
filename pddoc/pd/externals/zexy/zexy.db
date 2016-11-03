@@ -1,0 +1,9 @@
+list2symbol,l2s         ..      .
+nop                     .       .
+nop~                    ~       ~
+time                    .       ....
+date                    .       ......
+z~                      ~.      ~
+strcmp                  ..      .
+repack                  ..      .
+makesymbol              ..      .

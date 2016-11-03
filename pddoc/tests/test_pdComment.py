@@ -21,15 +21,15 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.pdcomment import *
+from pddoc.pd.comment import *
 
 
 class TestPdComment(TestCase):
     def test_unescape(self):
-        self.assertEqual(PdComment.unescape("a\n\rb"), "ab")
-        self.assertEqual(PdComment.unescape('\\,'), ',')
-        self.assertEqual(PdComment.unescape("\\;"), ";")
+        self.assertEqual(Comment.unescape("a\n\rb"), "ab")
+        self.assertEqual(Comment.unescape('\\,'), ',')
+        self.assertEqual(Comment.unescape("\\;"), ";")
 
     def test_text(self):
-        c = PdComment(0, 0, ['test', 'message', 'with', '\\,', '\\;', ' special', 'chars'])
+        c = Comment(0, 0, ['test', 'message', 'with', '\\,', '\\;', ' special', 'chars'])
         self.assertEqual(c.text(), 'test message with,; special chars')

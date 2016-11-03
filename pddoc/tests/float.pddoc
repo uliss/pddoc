@@ -85,7 +85,7 @@
                 <pdconnect src="bng2" src_out="0" dest="o21" dest_in="0"/>
                 <pdconnect src="o21" src_out="0" dest="fatom3" dest_in="0"/>
             </pdexample>
-            <pdexample width="10" height="10" file="objects.pd"/>
+            <pdinclude file="objects.pd"/>
         </example>
         <!-- inlets documentation -->
         <inlets>

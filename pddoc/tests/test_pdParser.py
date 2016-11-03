@@ -21,18 +21,18 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.pdparser import *
+from pddoc.pd.parser import *
 from nologging import NoLogging
 
 
 class TestPdParser(TestCase):
     def test_init(self):
-        p = PdParser()
+        p = Parser()
         nout = NoLogging()
         self.assertFalse(p.parse(""))
 
     def test_parse_file(self):
-        pd_parser = PdParser()
+        pd_parser = Parser()
         pd_parser.parse("simple.pd")
         self.assertTrue(pd_parser.canvas is not None)
 
@@ -67,26 +67,26 @@ class TestPdParser(TestCase):
     #     self.fail()
 
     def test_parse_objects(self):
-        p = PdParser()
+        p = Parser()
         self.assertTrue(p.parse("objects.pd"))
         cnv = p.canvas
         self.assertEqual(len(cnv.objects), 24)
 
     def test_parse_comments(self):
-        p = PdParser()
+        p = Parser()
         self.assertTrue(p.parse("comments.pd"))
         cnv = p.canvas
         self.assertEqual(len(cnv.objects), 3)
 
     def test_parse_connections(self):
-        p = PdParser()
+        p = Parser()
         self.assertTrue(p.parse("connections.pd"))
         cnv = p.canvas
         self.assertEqual(len(cnv.objects), 12)
         self.assertEqual(len(cnv.connections), 12)
 
     def test_parse_core_gui(self):
-        p = PdParser()
+        p = Parser()
         self.assertTrue(p.parse("core_gui.pd"))
         cnv = p.canvas
         self.assertEqual(len(cnv.objects), 18)

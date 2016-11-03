@@ -21,22 +21,22 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.brectcalculator import *
-from pddoc.pdparser import *
+from pddoc.pd.brectcalculator import BRectCalculator
+from pddoc.pd.parser import *
 from pddoc.pddrawer import *
 from pddoc.cairopainter import *
 
 
 class TestBRectCalculator(TestCase):
     def test_calc_brect(self):
-        p = PdParser()
+        p = Parser()
         p.parse("objects.pd")
         self.assertTrue(p.canvas)
 
         br = BRectCalculator()
 
         p.canvas.traverse(br)
-        self.assertEqual(br.brect(), (26, 23, 366, 227))
+        self.assertEqual(br.brect(), (26, 23, 384, 227))
 
         pnt = CairoPainter(223, 227, "out/objects.png", "png", xoffset=-26, yoffset=-23)
         d = PdDrawer()
@@ -48,19 +48,17 @@ class TestBRectCalculator(TestCase):
 
     def test_comment_brect(self):
         br = BRectCalculator()
-        self.assertEqual(br.text_brect("test"), (0, 0, 24, 12))
-        self.assertEqual(br.text_brect("test; line break"), (0, 0, 60, 24))
+        self.assertEqual(br.text_brect("test"), (0, 0, 26, 13))
+        self.assertEqual(br.text_brect("test; line break"), (0, 0, 70, 27))
 
     def test_comment(self):
-        p = PdParser()
+        p = Parser()
         p.parse("comments.pd")
         self.assertTrue(p.canvas)
 
         br = BRectCalculator()
 
         p.canvas.traverse(br)
-        self.assertEqual(br.brect(), (67, 35, 348.0, 110))
-
         pnt = CairoPainter(p.canvas.width, p.canvas.height, "out/comments.png", "png")
         d = PdDrawer()
         d.draw(p.canvas, pnt)
@@ -72,3 +70,5 @@ class TestBRectCalculator(TestCase):
         bbox = br.brect()
         p = 5
         pnt.draw_rect(bbox[0] - p, bbox[1] - p, bbox[2] + p * 2, bbox[3] + p * 2, color=(0, 0, 1))
+
+        self.assertEqual(br.brect(), (67, 35, 417, 117))

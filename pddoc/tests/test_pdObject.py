@@ -21,21 +21,22 @@ import unittest
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.pdobject import *
+import pddoc.pd as pd
+from pddoc.pd.abstractvisitor import AbstractVisitor
 
 
 class TestPdObject(unittest.TestCase):
     def test_init(self):
-        po = PdObject("pd")
+        po = pd.PdObject("pd")
         self.assertEqual(po.id, -1)
         self.assertEqual(len(po.args), 0)
 
     @unittest.expectedFailure
     def test_init_fail(self):
-        po = PdObject("")
+        po = pd.PdObject("")
 
     def test_id(self):
-        po = PdObject("pd")
+        po = pd.PdObject("pd")
         self.assertEqual(po.id, -1)
         po.id = "5"
         self.assertEqual(po.id, 5)
@@ -43,41 +44,41 @@ class TestPdObject(unittest.TestCase):
         self.assertEqual(po.id, 2)
 
     def test_name(self):
-        po = PdObject("pd")
+        po = pd.PdObject("pd")
         self.assertEqual(po.name, "pd")
         po.name = "import"
         self.assertEqual(po.name, "import")
 
     def test_args_to_string(self):
-        po = PdObject("pd")
+        po = pd.PdObject("pd")
         self.assertEqual(po.args_to_string(), "")
         del (po)
-        po = PdObject("tabread", 0, 0, 0, 0, ['\\$0-file', '1', '0', '-123'])
+        po = pd.PdObject("tabread", 0, 0, 0, 0, ['\\$0-file', '1', '0', '-123'])
         self.assertEqual(po.args_to_string(), "$0-file 1 0 -123")
 
     def test_str__(self):
-        po = PdObject("pd")
+        po = pd.PdObject("pd")
         self.assertEqual(str(po), "[pd]                                      {x:0,y:0,id:-1}")
         del po
-        po = PdObject("s", 10, 0, 20, 16, ["\\$0-out"])
+        po = pd.PdObject("s", 10, 0, 20, 16, ["\\$0-out"])
         po.id = 1
         self.assertEqual(str(po), "[s $0-out]                                {x:10,y:0,id:1}")
 
     def test_inlets(self):
-        po = PdObject("float")
-        po._inlets.append(PdObject.XLET_MESSAGE)
-        self.assertEqual(po.inlets(), [PdObject.XLET_MESSAGE] * 2)
+        po = pd.PdObject("float")
+        po._inlets.append(pd.XLET_MESSAGE)
+        self.assertEqual(po.inlets(), [pd.XLET_MESSAGE] * 2)
         po._xlets_method = None
         self.assertEqual(po.inlets(), [])
-        po._xlets_method = PdObject.XMETHOD_EXPLICIT
-        self.assertEqual(po.inlets(), [PdObject.XLET_MESSAGE])
+        po._xlets_method = pd.PdObject.XMETHOD_EXPLICIT
+        self.assertEqual(po.inlets(), [pd.XLET_MESSAGE])
 
     def test_draw(self):
         class P:
             def draw_object(self, o):
                 self._o = o
 
-        po = PdObject("float")
+        po = pd.PdObject("float")
         painter = P()
 
         self.assertEqual(hasattr(painter, "_o"), False)
@@ -85,11 +86,11 @@ class TestPdObject(unittest.TestCase):
         self.assertEqual(hasattr(painter, "_o"), True)
 
     def test_traverse(self):
-        class T:
+        class T(AbstractVisitor):
             def visit_object(self, o):
                 self._o = o
 
-        po = PdObject("float")
+        po = pd.PdObject("float")
         visitor = T()
 
         self.assertEqual(hasattr(visitor, "_o"), False)

@@ -28,7 +28,8 @@ tokens = (
     'COMMENT',
     'CONNECTION',
     'CONNECTION_RIGHT',
-    'CONNECTION_LEFT'
+    'CONNECTION_LEFT',
+    'CONNECTION_X'
 )
 
 # token regexp
@@ -39,6 +40,7 @@ r_NEWLINE = r'\n+'
 t_CONNECTION = r'\^*\|\.*' # ^^|.. connection
 t_CONNECTION_RIGHT = r'\^*\\_*\.*' # ^^\______..
 t_CONNECTION_LEFT  = r'\.*_*/\^*' # ^^\______..
+t_CONNECTION_X = r'(x|X)'
 t_ignore = ' \r\t\f'
 
 

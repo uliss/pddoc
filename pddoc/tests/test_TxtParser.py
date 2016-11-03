@@ -49,9 +49,9 @@ class TestTxtParser(TestCase):
     def test_parse_file(self):
         self.p.parse_file(TEST_FILE)
 
-        self.assertEqual(self.p.num_lines(), 9)
-        self.assertEqual(len(self.p.nodes), 20)
-        self.assertEqual(self.p.num_elements('OBJECT'), 6)
+        self.assertEqual(self.p.num_lines(), 11)
+        self.assertEqual(len(self.p.nodes), 23)
+        self.assertEqual(self.p.num_elements('OBJECT'), 8)
         self.assertEqual(self.p.num_elements('MESSAGE'), 2)
         self.assertEqual(self.p.num_elements('COMMENT'), 1)
         self.assertEqual(self.p.num_elements('CONNECTION'), 9)

@@ -29,8 +29,8 @@ from . import EXTERNALS_DIR
 from obj import PdObject
 from bng import PdBng
 from toggle import PdToggle
-from slider import PdSlider
-from radio import Radio
+from slider import PdSlider, PdHSlider, PdVSlider
+from radio import Radio, PdVRadio, PdHRadio
 from gcanvas import GCanvas
 from nbx import Nbx
 from vu import PdVu
@@ -97,8 +97,24 @@ def make_by_name(name, args=None, **kwargs):
         args = []
     if name == "floatatom":
         return FloatAtom(0, 0, **kwargs)
+    elif name == "symbolatom":
+        return PdSymbolAtom(0, 0, **kwargs)
     elif name == "bng":
         return PdBng(0, 0, **kwargs)
+    elif name == "tgl":
+        return PdToggle(0, 0, **kwargs)
+    elif name == "nbx":
+        return Nbx(0, 0, **kwargs)
+    elif name == "hsl":
+        return PdHSlider(0, 0, **kwargs)
+    elif name == "vsl":
+        return PdVSlider(0, 0, **kwargs)
+    elif name == "hradio":
+        return PdHRadio(0, 0, **kwargs)
+    elif name == "vradio":
+        return PdVRadio(0, 0, **kwargs)
+    elif name == "vu":
+        return PdVu(0, 0, **kwargs)
     else:
         return PdObject(name, 0, 0, 0, 0, args)
 

@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 # coding=utf-8
+import argparse
+import os.path
+
+from pddoc.cairopainter import *
+from pddoc.pd import Parser
+from format import detect_format
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -19,14 +25,6 @@
 
 
 __author__ = 'Serge Poltavski'
-
-import argparse
-import os.path
-import logging
-
-from pddoc.cairopainter import *
-from pddoc.pd import Parser
-from format import detect_format
 
 
 def main():

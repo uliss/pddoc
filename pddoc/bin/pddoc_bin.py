@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # coding=utf-8
+import argparse
+import shutil
+import logging
+import os
+from lxml import etree
 
+from pddoc.htmldocvisitor import HtmlDocVisitor
+from pddoc.docobject import DocObject
 #   Copyright (C) 2015 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
@@ -19,15 +26,6 @@
 
 __author__ = 'Serge Poltavski'
 
-import argparse
-import shutil
-import logging
-import os
-from lxml import etree
-
-from pddoc.htmldocvisitor import HtmlDocVisitor
-from pddoc.docobject import DocObject
-
 
 def get_parser():
     schema_root = etree.parse(os.path.join(os.path.dirname(__file__), '..', 'share', 'pddoc.xsd')).getroot()
@@ -42,21 +40,22 @@ def main():
                             help="HTML output file name")
 
     args = vars(arg_parser.parse_args())
-    input = args['name']
+    in_file = args['name']
     output = args['output']
 
-    if not os.path.exists(input):
-        logging.error("File not exists: \"%s\"", input)
+    if not os.path.exists(in_file):
+        logging.error("File not exists: \"%s\"", in_file)
         exit(1)
 
     if not output:
-        output = os.path.splitext(os.path.basename(input))[0] + ".html"
+        output = os.path.splitext(os.path.basename(in_file))[0] + ".html"
 
+    xml = None
     try:
-        xml = etree.parse(input, get_parser())
+        xml = etree.parse(in_file, get_parser())
         xml.xinclude()
-    except etree.XMLSyntaxError, e:
-        logging.error("XML syntax error:\n \"%s\"\n\twhile parsing file: \"%s\"", e, input)
+    except etree.XMLSyntaxError as e:
+        logging.error("XML syntax error:\n \"%s\"\n\twhile parsing file: \"%s\"", e, in_file)
         exit(1)
 
     css_file = "theme.css"
@@ -70,7 +69,7 @@ def main():
             v = HtmlDocVisitor()
             v.set_css_file(css_file)
             v.set_image_prefix(child_tag.attrib["name"])
-            v.set_search_dir(os.path.dirname(input))
+            v.set_search_dir(os.path.dirname(in_file))
 
             # traverse doc
             dobj.traverse(v)

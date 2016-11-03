@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 # coding=utf-8
+import argparse
+
+from pddoc.cairopainter import *
+from pddoc.pd import PdObject, BRectCalculator
+from format import detect_format
 
 #   Copyright (C) 2015 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -19,22 +24,16 @@
 
 __author__ = 'Serge Poltavski'
 
-import argparse
 
-from pddoc.cairopainter import *
-from pddoc.pd import PdObject, BRectCalculator
-from format import detect_format
-
-
-def draw_object(object, fname, format, **kwargs):
-    w, h = BRectCalculator().object_brect(object)[2:]
+def draw_object(obj, fname, fmt, **kwargs):
+    w, h = BRectCalculator().object_brect(obj)[2:]
 
     pad = kwargs['pad'][0]
     w += pad * 2
     h += pad * 2
 
-    painter = CairoPainter(int(w), int(h), fname, format, xoffset=pad, yoffset=pad)
-    painter.draw_object(object)
+    painter = CairoPainter(int(w), int(h), fname, fmt, xoffset=pad, yoffset=pad)
+    painter.draw_object(obj)
 
 
 def main():

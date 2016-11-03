@@ -24,6 +24,7 @@ import re
 from pddoc.pd import Message, Comment, Canvas
 from six import string_types
 from pddoc.pd import factory
+import copy
 
 
 class Node(object):
@@ -36,6 +37,7 @@ class Node(object):
         self.conn_dest_id = None
         self.conn_dest_inlet = 0
         self.connected = False
+        self.obj_line_index = -1
 
         if self.tok and self.is_connection():
             # calc connection source outlet
@@ -56,7 +58,7 @@ class Node(object):
         return self.tok.type in ('OBJECT', 'MESSAGE', 'COMMENT')
 
     def is_connection(self):
-        return self.tok.type in ('CONNECTION', 'CONNECTION_LEFT', 'CONNECTION_RIGHT')
+        return self.tok.type in ('CONNECTION', 'CONNECTION_LEFT', 'CONNECTION_RIGHT', 'CONNECTION_X')
 
     @property
     def id(self):
@@ -125,6 +127,7 @@ class Parser(object):
         self.lexer.input(string)
         self.parse_tokens()
         self.parse_nodes()
+        self.enumerate_objects()
         self.parse_connections()
         self.layout_nodes()
 
@@ -134,6 +137,13 @@ class Parser(object):
         assert lexline < len(self.lines_len)
 
         return lexpos - sum(self.lines_len[0:lexline]) - lexline
+
+    def enumerate_objects(self):
+        for l in range(0, self.num_lines()):
+            idx = 0
+            for o in filter(lambda x: x.line_pos == l, self.nodes):
+                o.obj_line_index = idx
+                idx += 1
 
     def parse_tokens(self):
         while True:
@@ -183,7 +193,43 @@ class Parser(object):
             lambda x:
             x.line_pos == line and any(map(lambda c: x.contains(c), char_pos)), self.nodes), None)
 
+    def find_by_line_idx(self, line, idx):
+        return next((ifilter(lambda n: n.line_pos == line and n.obj_line_index == idx, self.nodes)), None)
+
+    def process_cross_connection(self, conn):
+        assert isinstance(conn, Node)
+        line = conn.line_pos
+        src_idx = conn.obj_line_index - 1
+        dest_idx = conn.obj_line_index + 1
+
+        src = self.find_by_line_idx(line, src_idx)
+        dest = self.find_by_line_idx(line, dest_idx)
+
+        if src and dest:
+            c1 = copy.deepcopy(conn)
+            c1.tok.type = 'CONNECTION'
+            c1.conn_src_id = src.id
+            c1.conn_dest_id = dest.id
+            c1.conn_dest_inlet = 0
+            c1.conn_src_outlet = len(src.pd_object.outlets()) - 1
+            c1.connected = True
+
+            c2 = copy.deepcopy(conn)
+            c2.tok.type = 'CONNECTION'
+            c2.conn_src_id = dest.id
+            c2.conn_dest_id = src.id
+            c2.conn_src_outlet = 0
+            c2.conn_dest_inlet = len(src.pd_object.inlets()) - 1
+            c2.connected = True
+
+            self.nodes.append(c1)
+            self.nodes.append(c2)
+
     def process_connection(self, c):
+        if c.type == 'CONNECTION_X':
+            self.process_cross_connection(c)
+            return
+
         conn_start = []
         if c.type == 'CONNECTION_LEFT':
             conn_start = [c.char_pos + c.tok.value.index('/')]

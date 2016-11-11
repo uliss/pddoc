@@ -46,6 +46,9 @@ class XletCalculator(object):
 
         self._dbs.append(XletPatchLookup())
 
+    def add_db(self, path, name='user'):
+        self._dbs.append(XletTextDatabase(path, name))
+
     def has_ext_prefix(self, obj):
         return "/" in obj.name and obj.name not in ("/", "/~")
 
@@ -58,10 +61,12 @@ class XletCalculator(object):
             ext, name = obj.name.split("/")[:2]
             return self.search_in_named_ext(ext, name, obj.args)[0]
 
-        for db in self._dbs:
-            if db.has_object(obj.name):
-                return db.inlets(obj.name, obj.args)
+        return self.inlets_by_name(obj.name, obj.args)
 
+    def inlets_by_name(self, name, args=None):
+        for db in self._dbs:
+            if db.has_object(name):
+                return db.inlets(name, args)
         return []
 
     def outlets(self, obj):
@@ -73,9 +78,12 @@ class XletCalculator(object):
             ext, name = obj.name.split("/")[:2]
             return self.search_in_named_ext(ext, name, obj.args)[1]
 
+        return self.outlets_by_name(obj.name, obj.args)
+
+    def outlets_by_name(self, name, args=None):
         for db in self._dbs:
-            if db.has_object(obj.name):
-                return db.outlets(obj.name, obj.args)
+            if db.has_object(name):
+                return db.outlets(name, args)
 
         return []
 

@@ -24,20 +24,23 @@ import logging
 import os
 
 from pddoc.txt import Parser
-from pddoc.pd import Canvas, PdExporter
+from pddoc.pd import Canvas, PdExporter, PdObject
 from pddoc import CairoPainter
 
 
 def main():
+    fmt_list = ("png", "pdf", "svg", "pd")
     arg_parser = argparse.ArgumentParser(description='PureData ascii doc to Pd/PDF/SVG converter')
     arg_parser.add_argument('--auto', '-a', help='calculate output image size', action='store_true')
-    arg_parser.add_argument('--format', '-f', metavar='format', nargs=1, choices=("png", "pdf", "svg", "pd"),
-                            help='output format', default="pd")
-    arg_parser.add_argument('--width', '-wd', metavar='px', type=int, nargs=1,
+    arg_parser.add_argument('--format', '-f', metavar='FMT', nargs=1, choices=fmt_list,
+                            help='output format ({0})'.format(",".join(fmt_list)), default=["pd"])
+    arg_parser.add_argument('--width', '-wd', metavar='X', type=int, nargs=1,
                             help='image width in pixels', default=400)
-    arg_parser.add_argument('--height', '-ht', metavar='px', type=int, nargs=1,
+    arg_parser.add_argument('--height', '-ht', metavar='X', type=int, nargs=1,
                             help='image height in pixels', default=300)
-    arg_parser.add_argument('input', metavar='PD_ASCII', help="Documentation file in pd ascii format")
+    arg_parser.add_argument('--xlet-db', metavar='PATH', action='append',
+                            help='inlet/outlet database file path')
+    arg_parser.add_argument('input', metavar='INPUT', help="Documentation file in pd ascii format")
     arg_parser.add_argument('output', metavar='OUTPUT', nargs='?', default='',
                             help="output file name")
 
@@ -51,6 +54,12 @@ def main():
     if not os.path.exists(in_file):
         logging.error("File not exists: \"%s\"", in_file)
         exit(1)
+
+    for db_path in args['xlet_db']:
+        if not os.path.exists(db_path):
+            logging.warning("xlet database file not found: '%s'. skipping...", db_path)
+        else:
+            PdObject.xlet_calculator.add_db(db_path)
 
     if not output:
         output = os.path.splitext(os.path.basename(in_file))[0] + "." + fmt

@@ -4,6 +4,7 @@ atan2           .       .
 abs             .       .
 abs~            ~       ~
 arraysize       ..      .
+append          .       .
 bag             ..      .
 bang,b          .       .
 bang~           .       .
@@ -97,6 +98,7 @@ pvu~            ~       ..
 q8_sqrt~        ~       ~
 q8_rsqrt~       ~       ~
 qlist           .       ..
+prepend         .       .
 random          ..      .
 realtime        ..      .
 receive,r       -       .

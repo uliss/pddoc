@@ -164,13 +164,10 @@ def p_error(p):
     print('Unexpected token:', p)
 
 
-def parse_string(data, func=print):
+def parse_string(data):
     parser = yacc.yacc()
-    res = parser.parse(data)
-    if func:
-        func(res)
-
-    return doc
+    txt = parser.parse(data)
+    return txt, doc
 
 
 def do_lex(data, func=print):
@@ -186,7 +183,7 @@ def do_lex(data, func=print):
 
 
 if __name__ == '__main__':
-    data = '''
+    test_data = '''
 
 /**
  *  tanh -- hyperbolic tangent function
@@ -219,5 +216,5 @@ if __name__ == '__main__':
 
     '''
 
-    do_lex(data, None)
-    print(parse_string(data))
+    do_lex(test_data, None)
+    print(parse_string(test_data))

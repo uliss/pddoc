@@ -61,9 +61,12 @@ def extract_doc_example(data):
 
 
 def graph_source(data):
+    if len(data) < 2:
+        return ''
+    
     res = list()
-    for line in data:
-        res.append(re.sub(r'\s*\/{3}\s+', '', line))
+    for line in data[1:-1]:
+        res.append(re.sub(r'\s*\/{2,3}\s+', '', line))
     return ''.join(res)
 
 

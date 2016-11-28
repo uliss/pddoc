@@ -99,7 +99,7 @@ def global_tags(name, value):
 
 
 def p_pddoc(p):
-    '''pddoc : eol pddoc eol
+    '''pddoc : pddoc eol
              | COMMENT_START pdbody COMMENT_END'''
     # javaDoc ::=  <COMMENT_START > asteriskFound (eol(line)? ) * < COMMENT_END >
     if len(p) == 3:
@@ -165,6 +165,7 @@ def p_error(p):
 
 
 def parse_string(data):
+    do_lex(data, None)
     parser = yacc.yacc()
     txt = parser.parse(data)
     return txt, doc
@@ -183,9 +184,7 @@ def do_lex(data, func=print):
 
 
 if __name__ == '__main__':
-    test_data = '''
-
-/**
+    test_data = '''/**
  *  tanh -- hyperbolic tangent function
  *  it contains
  *
@@ -216,5 +215,4 @@ if __name__ == '__main__':
 
     '''
 
-    do_lex(test_data, None)
     print(parse_string(test_data))

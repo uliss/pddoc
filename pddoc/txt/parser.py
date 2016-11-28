@@ -19,7 +19,7 @@
 
 from __future__ import print_function
 from itertools import ifilter
-import lexer as lex
+import graph_lexer as lex
 import re
 from pddoc.pd import Message, Comment, Canvas
 from six import string_types

@@ -3,7 +3,7 @@ Created by PLY version 3.6 (http://www.dabeaz.com/ply)
 Grammar
 
 Rule 0     S' -> pddoc
-Rule 1     pddoc -> eol pddoc eol
+Rule 1     pddoc -> pddoc eol
 Rule 2     pddoc -> COMMENT_START pdbody COMMENT_END
 Rule 3     pdbody -> pdcontent
 Rule 4     pdcontent -> line
@@ -27,7 +27,7 @@ error                :
 
 Nonterminals, with rules where they appear
 
-eol                  : 1 1 8
+eol                  : 1 8
 line                 : 4 5
 pdbody               : 2
 pdcontent            : 3 5
@@ -39,36 +39,14 @@ Parsing method: LALR
 state 0
 
     (0) S' -> . pddoc
-    (1) pddoc -> . eol pddoc eol
+    (1) pddoc -> . pddoc eol
     (2) pddoc -> . COMMENT_START pdbody COMMENT_END
-    (11) eol -> . EOL
 
-    COMMENT_START   shift and go to state 3
-    EOL             shift and go to state 1
+    COMMENT_START   shift and go to state 1
 
     pddoc                          shift and go to state 2
-    eol                            shift and go to state 4
 
 state 1
-
-    (11) eol -> EOL .
-
-    ASTERISK        reduce using rule 11 (eol -> EOL .)
-    WORD            reduce using rule 11 (eol -> EOL .)
-    TAG             reduce using rule 11 (eol -> EOL .)
-    EOL             reduce using rule 11 (eol -> EOL .)
-    COMMENT_END     reduce using rule 11 (eol -> EOL .)
-    $end            reduce using rule 11 (eol -> EOL .)
-    COMMENT_START   reduce using rule 11 (eol -> EOL .)
-
-
-state 2
-
-    (0) S' -> pddoc .
-
-
-
-state 3
 
     (2) pddoc -> COMMENT_START . pdbody COMMENT_END
     (3) pdbody -> . pdcontent
@@ -81,31 +59,28 @@ state 3
     (10) rest_of_line -> . TAG rest_of_line
     (11) eol -> . EOL
 
-    ASTERISK        shift and go to state 8
-    WORD            shift and go to state 5
-    TAG             shift and go to state 11
-    EOL             shift and go to state 1
+    ASTERISK        shift and go to state 6
+    WORD            shift and go to state 3
+    TAG             shift and go to state 9
+    EOL             shift and go to state 11
 
-    pdcontent                      shift and go to state 7
-    eol                            shift and go to state 10
-    line                           shift and go to state 12
-    pdbody                         shift and go to state 9
-    rest_of_line                   shift and go to state 6
+    pdcontent                      shift and go to state 5
+    eol                            shift and go to state 8
+    line                           shift and go to state 10
+    pdbody                         shift and go to state 7
+    rest_of_line                   shift and go to state 4
 
-state 4
+state 2
 
-    (1) pddoc -> eol . pddoc eol
-    (1) pddoc -> . eol pddoc eol
-    (2) pddoc -> . COMMENT_START pdbody COMMENT_END
+    (0) S' -> pddoc .
+    (1) pddoc -> pddoc . eol
     (11) eol -> . EOL
 
-    COMMENT_START   shift and go to state 3
-    EOL             shift and go to state 1
+    EOL             shift and go to state 11
 
-    pddoc                          shift and go to state 13
-    eol                            shift and go to state 4
+    eol                            shift and go to state 12
 
-state 5
+state 3
 
     (9) rest_of_line -> WORD . rest_of_line
     (8) rest_of_line -> . eol
@@ -113,14 +88,14 @@ state 5
     (10) rest_of_line -> . TAG rest_of_line
     (11) eol -> . EOL
 
-    WORD            shift and go to state 5
-    TAG             shift and go to state 11
-    EOL             shift and go to state 1
+    WORD            shift and go to state 3
+    TAG             shift and go to state 9
+    EOL             shift and go to state 11
 
-    eol                            shift and go to state 10
-    rest_of_line                   shift and go to state 14
+    eol                            shift and go to state 8
+    rest_of_line                   shift and go to state 13
 
-state 6
+state 4
 
     (6) line -> rest_of_line .
 
@@ -131,14 +106,14 @@ state 6
     COMMENT_END     reduce using rule 6 (line -> rest_of_line .)
 
 
-state 7
+state 5
 
     (3) pdbody -> pdcontent .
 
     COMMENT_END     reduce using rule 3 (pdbody -> pdcontent .)
 
 
-state 8
+state 6
 
     (7) line -> ASTERISK . rest_of_line
     (8) rest_of_line -> . eol
@@ -146,21 +121,21 @@ state 8
     (10) rest_of_line -> . TAG rest_of_line
     (11) eol -> . EOL
 
-    WORD            shift and go to state 5
-    TAG             shift and go to state 11
-    EOL             shift and go to state 1
+    WORD            shift and go to state 3
+    TAG             shift and go to state 9
+    EOL             shift and go to state 11
 
-    eol                            shift and go to state 10
-    rest_of_line                   shift and go to state 15
+    eol                            shift and go to state 8
+    rest_of_line                   shift and go to state 14
 
-state 9
+state 7
 
     (2) pddoc -> COMMENT_START pdbody . COMMENT_END
 
-    COMMENT_END     shift and go to state 16
+    COMMENT_END     shift and go to state 15
 
 
-state 10
+state 8
 
     (8) rest_of_line -> eol .
 
@@ -171,7 +146,7 @@ state 10
     COMMENT_END     reduce using rule 8 (rest_of_line -> eol .)
 
 
-state 11
+state 9
 
     (10) rest_of_line -> TAG . rest_of_line
     (8) rest_of_line -> . eol
@@ -179,14 +154,14 @@ state 11
     (10) rest_of_line -> . TAG rest_of_line
     (11) eol -> . EOL
 
-    WORD            shift and go to state 5
-    TAG             shift and go to state 11
-    EOL             shift and go to state 1
+    WORD            shift and go to state 3
+    TAG             shift and go to state 9
+    EOL             shift and go to state 11
 
-    eol                            shift and go to state 10
-    rest_of_line                   shift and go to state 17
+    eol                            shift and go to state 8
+    rest_of_line                   shift and go to state 16
 
-state 12
+state 10
 
     (4) pdcontent -> line .
     (5) pdcontent -> line . pdcontent
@@ -200,26 +175,37 @@ state 12
     (11) eol -> . EOL
 
     COMMENT_END     reduce using rule 4 (pdcontent -> line .)
-    ASTERISK        shift and go to state 8
-    WORD            shift and go to state 5
-    TAG             shift and go to state 11
-    EOL             shift and go to state 1
+    ASTERISK        shift and go to state 6
+    WORD            shift and go to state 3
+    TAG             shift and go to state 9
+    EOL             shift and go to state 11
 
-    line                           shift and go to state 12
-    eol                            shift and go to state 10
-    pdcontent                      shift and go to state 18
-    rest_of_line                   shift and go to state 6
+    line                           shift and go to state 10
+    eol                            shift and go to state 8
+    pdcontent                      shift and go to state 17
+    rest_of_line                   shift and go to state 4
+
+state 11
+
+    (11) eol -> EOL .
+
+    ASTERISK        reduce using rule 11 (eol -> EOL .)
+    WORD            reduce using rule 11 (eol -> EOL .)
+    TAG             reduce using rule 11 (eol -> EOL .)
+    EOL             reduce using rule 11 (eol -> EOL .)
+    COMMENT_END     reduce using rule 11 (eol -> EOL .)
+    $end            reduce using rule 11 (eol -> EOL .)
+
+
+state 12
+
+    (1) pddoc -> pddoc eol .
+
+    EOL             reduce using rule 1 (pddoc -> pddoc eol .)
+    $end            reduce using rule 1 (pddoc -> pddoc eol .)
+
 
 state 13
-
-    (1) pddoc -> eol pddoc . eol
-    (11) eol -> . EOL
-
-    EOL             shift and go to state 1
-
-    eol                            shift and go to state 19
-
-state 14
 
     (9) rest_of_line -> WORD rest_of_line .
 
@@ -230,7 +216,7 @@ state 14
     COMMENT_END     reduce using rule 9 (rest_of_line -> WORD rest_of_line .)
 
 
-state 15
+state 14
 
     (7) line -> ASTERISK rest_of_line .
 
@@ -241,7 +227,7 @@ state 15
     COMMENT_END     reduce using rule 7 (line -> ASTERISK rest_of_line .)
 
 
-state 16
+state 15
 
     (2) pddoc -> COMMENT_START pdbody COMMENT_END .
 
@@ -249,7 +235,7 @@ state 16
     $end            reduce using rule 2 (pddoc -> COMMENT_START pdbody COMMENT_END .)
 
 
-state 17
+state 16
 
     (10) rest_of_line -> TAG rest_of_line .
 
@@ -260,17 +246,9 @@ state 17
     COMMENT_END     reduce using rule 10 (rest_of_line -> TAG rest_of_line .)
 
 
-state 18
+state 17
 
     (5) pdcontent -> line pdcontent .
 
     COMMENT_END     reduce using rule 5 (pdcontent -> line pdcontent .)
-
-
-state 19
-
-    (1) pddoc -> eol pddoc eol .
-
-    EOL             reduce using rule 1 (pddoc -> eol pddoc eol .)
-    $end            reduce using rule 1 (pddoc -> eol pddoc eol .)
 

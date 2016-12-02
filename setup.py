@@ -10,7 +10,7 @@ def readme():
 
 
 setup(name='pddoc',
-      version='0.2.7',
+      version='0.2.8',
       description='PureData documentation tools',
       long_description=readme(),
       classifiers=[
@@ -35,7 +35,8 @@ setup(name='pddoc',
           'console_scripts': ['pd2image=pddoc.bin.pd2image:main',
                               'pdobject2image=pddoc.bin.pd_object2image:main',
                               'pddoc=pddoc.bin.pddoc_bin:main',
-                              'pdascii=pddoc.bin.pdascii:main']
+                              'pdascii=pddoc.bin.pdascii:main',
+                              'pdcommentdoc=pddoc.txt.extract:main']
       },
       include_package_data=True,
       zip_safe=False)

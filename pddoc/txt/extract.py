@@ -17,6 +17,7 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
+from __future__ import print_function
 from ext_lexer import parse_string
 import os
 import re
@@ -26,6 +27,7 @@ from mako.template import Template
 from pddoc.txt import Parser
 from pddoc.pd import Canvas, PdExporter, PdObject
 from pddoc import CairoPainter
+import argparse
 
 
 def extract_doc_comment(data):
@@ -76,6 +78,7 @@ def graph_source(data):
 
 def process_file(fname):
     if not os.path.exists(fname):
+        print("file not exists: \"{0}\"".format(fname), file=sys.stderr)
         return None
 
     with open(fname, 'r') as myfile:
@@ -189,7 +192,7 @@ def generate_pddoc(data):
                 elif i['type'] == 'sound':
                     str += '~'
                 else:
-                    print "unknown inlet type: {0}".format(i['type'])
+                    print("unknown inlet type: {0}".format(i['type']))
         else:
             str += '-'
 
@@ -202,7 +205,7 @@ def generate_pddoc(data):
                 elif i['type'] == 'sound':
                     str += '~'
                 else:
-                    print "unknown outlet type: {0}".format(i['type'])
+                    print("unknown outlet type: {0}".format(i['type']))
         else:
             str += '-'
 
@@ -213,33 +216,31 @@ def generate_pddoc(data):
     if 'see' in doc:
         template_data['see_also'] = doc['see'].split(',')
 
-    # description = self._description,
     # keywords = self._keywords,
     # css_file = self._css_file,
     # css = self._css,
     # aliases = self._aliases,
-    # license = self._license,
     # version = self._version,
-    # examples = self._examples,
     # inlets = self._inlets,
     # outlets = self._outlets,
     # arguments = self._arguments,
-    # see_also = self._see_also,
-    # website = self._website,
-    # authors = self._authors,
     # contacts = self._contacts,
-    # library = self._library,
-    # category = self._category
 
     return pddoc_template.render(**template_data)
 
 
+def main():
+    arg_parser = argparse.ArgumentParser(description='PureData C/C++ comment extractor')
+    arg_parser.add_argument('input', metavar='SOURCE', help="C/C++ extension source file")
+    args = vars(arg_parser.parse_args())
+
+    res = process_file(args['input'])
+    if not res:
+        sys.exit(1)
+
+    print(generate_pddoc(res))
+
+
 if __name__ == '__main__':
-    if len(sys.argv) == 2:
-        # print "Extracting from: ", sys.argv[1]
-        res = process_file(sys.argv[1])
-        if res:
-            # pprint.pprint(res)
-            print generate_pddoc(res)
-        else:
-            print "error"
+    main()
+

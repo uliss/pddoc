@@ -23,6 +23,9 @@ import re
 import sys
 import pprint
 from mako.template import Template
+from pddoc.txt import Parser
+from pddoc.pd import Canvas, PdExporter, PdObject
+from pddoc import CairoPainter
 
 
 def extract_doc_comment(data):
@@ -119,12 +122,97 @@ def generate_sphynx(data):
 
 def generate_pddoc(data):
     # template config
-    tmpl_path = "{0:s}/../share/extract.pddoc".format(os.path.dirname(__file__))
+    tmpl_path = "{0:s}/../share/extract.pddoc".format(os.path.dirname(os.path.abspath(__file__)))
     pddoc_template = Template(filename=tmpl_path)
-
+    doc = data['doc'][1]
+    example = data.get('example')
 
     template_data = {}
-    template_data['title'] = data['title']
+    template_data['name'] = doc['name']
+    template_data['description'] = doc.get('brief')
+    template_data['license'] = doc.get('license', 'Unknown')
+    template_data['library'] = doc.get('library', 'misc')
+    template_data['version'] = doc.get('version', '0.0.0')
+    template_data['category'] = doc.get('category', '')
+    template_data['website'] = doc.get('website', '')
+    template_data['authors'] = doc['author'].split(',')
+
+    if 'inlet' in doc:
+        PdObject.xlet_calculator.mem_db.add_object(doc['name'], [0], [0])
+        # print PdObject.xlet_calculator.mem_db.inlets('is_any')
+        # print PdObject.xlet_calculator.inlets_by_name('is_any')
+        pass
+
+
+    if example:
+        ext_name = doc.get('name', 'unknown')
+        example_file_ascii = "example_{0}.txt".format(ext_name)
+        example_file_pd = "example_{0}.pd".format(ext_name)
+        example_file_img = "example_{0}.png".format(ext_name)
+        xlet_db = "xlet_{0}.db".format(ext_name)
+        with open(example_file_ascii, 'w') as f_txt:
+            f_txt.write(example)
+
+        p = Parser()
+        p.parse_file(example_file_ascii)
+
+        cnv = Canvas(0, 0, 300, 500)
+        cnv.type = Canvas.TYPE_WINDOW
+        p.export(cnv)
+
+        # save as pd
+        br_calc = cnv.brect_calc()
+        cnv.traverse(br_calc)
+        bbox = br_calc.brect()
+        wd = bbox[2] + Parser.X_PAD * 2
+        ht = bbox[3] + Parser.Y_PAD * 2
+        cnv.height = ht
+        cnv.width = wd
+        pd_exporter = PdExporter()
+        cnv.traverse(pd_exporter)
+        pd_exporter.save(example_file_pd)
+
+        # save as image
+        painter = CairoPainter(wd, ht, example_file_img, 'png')
+        cnv.draw(painter)
+
+        template_data['example'] = example_file_pd
+
+    # save xlet db
+    with open(xlet_db, 'w') as db:
+        str = doc['name'] + "\t"
+
+        if doc['inlet']:
+            for i in doc['inlet']:
+                if i['type'] == 'control':
+                    str += '.'
+                elif i['type'] == 'sound':
+                    str += '~'
+                else:
+                    print "unknown inlet type: {0}".format(i['type'])
+        else:
+            str += '-'
+
+        str += '\t'
+
+        if doc['outlet']:
+            for i in doc['inlet']:
+                if i['type'] == 'control':
+                    str += '.'
+                elif i['type'] == 'sound':
+                    str += '~'
+                else:
+                    print "unknown outlet type: {0}".format(i['type'])
+        else:
+            str += '-'
+
+        str += '\n'
+
+        db.write(str)
+
+    if 'see' in doc:
+        template_data['see_also'] = doc['see'].split(',')
+
     # description = self._description,
     # keywords = self._keywords,
     # css_file = self._css_file,
@@ -143,15 +231,15 @@ def generate_pddoc(data):
     # library = self._library,
     # category = self._category
 
-    return pddoc_template.render(template_data)
+    return pddoc_template.render(**template_data)
 
 
 if __name__ == '__main__':
     if len(sys.argv) == 2:
-        print "Extracting from: ", sys.argv[1]
+        # print "Extracting from: ", sys.argv[1]
         res = process_file(sys.argv[1])
         if res:
-            pprint.pprint(res)
+            # pprint.pprint(res)
             print generate_pddoc(res)
         else:
             print "error"

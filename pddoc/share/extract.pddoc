@@ -4,9 +4,9 @@
         <title>${name | h}</title>
         <meta>
             <authors>
-        % for a in authors:
-            <author>${a}</author>
-        % endfor
+            % for a in authors:
+                <author>${a}</author>
+            % endfor
             </authors>
             <description>${description}</description>
             <license>${license}</license>

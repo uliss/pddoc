@@ -5,9 +5,9 @@ _tabversion = '3.5'
 
 _lr_method = 'LALR'
 
-_lr_signature = '84EB8463EBE7543D7CB15A7F8FFD82CC'
+_lr_signature = '3A8AA5E183808CC0D0C28612A84394BB'
     
-_lr_action_items = {'WORD':([1,3,4,6,8,9,10,11,13,14,16,],[3,3,-6,3,-8,3,3,-11,-9,-7,-10,]),'ASTERISK':([1,4,8,10,11,13,14,16,],[6,-6,-8,6,-11,-9,-7,-10,]),'EOL':([1,2,3,4,6,8,9,10,11,12,13,14,15,16,],[11,11,11,-6,11,-8,11,11,-11,-1,-9,-7,-2,-10,]),'COMMENT_END':([4,5,7,8,10,11,13,14,16,17,],[-6,-3,15,-8,-4,-11,-9,-7,-10,-5,]),'TAG':([1,3,4,6,8,9,10,11,13,14,16,],[9,9,-6,9,-8,9,9,-11,-9,-7,-10,]),'COMMENT_START':([0,],[1,]),'$end':([2,11,12,15,],[0,-11,-1,-2,]),}
+_lr_action_items = {'WORD':([1,3,4,6,8,9,10,11,13,14,15,17,19,],[3,3,-6,3,-8,3,3,-12,-9,3,-7,-11,-10,]),'ASTERISK':([1,3,4,6,8,9,10,11,13,14,15,17,19,],[6,14,-6,14,-8,14,6,-12,-9,14,-7,-11,-10,]),'EOL':([1,2,3,4,6,8,9,10,11,12,13,14,15,16,17,19,],[11,11,11,-6,11,-8,11,11,-12,-1,-9,11,-7,-2,-11,-10,]),'COMMENT_END':([4,5,7,8,10,11,13,15,17,18,19,],[-6,-3,16,-8,-4,-12,-9,-7,-11,-5,-10,]),'TAG':([1,3,4,6,8,9,10,11,13,14,15,17,19,],[9,9,-6,9,-8,9,9,-12,-9,9,-7,-11,-10,]),'COMMENT_START':([0,],[1,]),'$end':([2,11,12,16,],[0,-12,-1,-2,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -16,7 +16,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'rest_of_line':([1,3,6,9,10,],[4,13,14,16,4,]),'pdcontent':([1,10,],[5,17,]),'pdbody':([1,],[7,]),'eol':([1,2,3,6,9,10,],[8,12,8,8,8,8,]),'pddoc':([0,],[2,]),'line':([1,10,],[10,10,]),}
+_lr_goto_items = {'rest_of_line':([1,3,6,9,10,14,],[4,13,15,17,4,19,]),'pdcontent':([1,10,],[5,18,]),'pdbody':([1,],[7,]),'eol':([1,2,3,6,9,10,14,],[8,12,8,8,8,8,8,]),'pddoc':([0,],[2,]),'line':([1,10,],[10,10,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -35,6 +35,7 @@ _lr_productions = [
   ('line -> ASTERISK rest_of_line','line',2,'p_line','ext_lexer.py',130),
   ('rest_of_line -> eol','rest_of_line',1,'p_rest_of_line','ext_lexer.py',136),
   ('rest_of_line -> WORD rest_of_line','rest_of_line',2,'p_rest_of_line','ext_lexer.py',137),
-  ('rest_of_line -> TAG rest_of_line','rest_of_line',2,'p_rest_of_line','ext_lexer.py',138),
-  ('eol -> EOL','eol',1,'p_eol','ext_lexer.py',160),
+  ('rest_of_line -> ASTERISK rest_of_line','rest_of_line',2,'p_rest_of_line','ext_lexer.py',138),
+  ('rest_of_line -> TAG rest_of_line','rest_of_line',2,'p_rest_of_line','ext_lexer.py',139),
+  ('eol -> EOL','eol',1,'p_eol','ext_lexer.py',161),
 ]

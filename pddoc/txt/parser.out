@@ -12,16 +12,17 @@ Rule 6     line -> rest_of_line
 Rule 7     line -> ASTERISK rest_of_line
 Rule 8     rest_of_line -> eol
 Rule 9     rest_of_line -> WORD rest_of_line
-Rule 10    rest_of_line -> TAG rest_of_line
-Rule 11    eol -> EOL
+Rule 10    rest_of_line -> ASTERISK rest_of_line
+Rule 11    rest_of_line -> TAG rest_of_line
+Rule 12    eol -> EOL
 
 Terminals, with rules where they appear
 
-ASTERISK             : 7
+ASTERISK             : 7 10
 COMMENT_END          : 2
 COMMENT_START        : 2
-EOL                  : 11
-TAG                  : 10
+EOL                  : 12
+TAG                  : 11
 WORD                 : 9
 error                : 
 
@@ -32,7 +33,7 @@ line                 : 4 5
 pdbody               : 2
 pdcontent            : 3 5
 pddoc                : 1 0
-rest_of_line         : 6 7 9 10
+rest_of_line         : 6 7 9 10 11
 
 Parsing method: LALR
 
@@ -56,8 +57,9 @@ state 1
     (7) line -> . ASTERISK rest_of_line
     (8) rest_of_line -> . eol
     (9) rest_of_line -> . WORD rest_of_line
-    (10) rest_of_line -> . TAG rest_of_line
-    (11) eol -> . EOL
+    (10) rest_of_line -> . ASTERISK rest_of_line
+    (11) rest_of_line -> . TAG rest_of_line
+    (12) eol -> . EOL
 
     ASTERISK        shift and go to state 6
     WORD            shift and go to state 3
@@ -74,7 +76,7 @@ state 2
 
     (0) S' -> pddoc .
     (1) pddoc -> pddoc . eol
-    (11) eol -> . EOL
+    (12) eol -> . EOL
 
     EOL             shift and go to state 11
 
@@ -85,10 +87,12 @@ state 3
     (9) rest_of_line -> WORD . rest_of_line
     (8) rest_of_line -> . eol
     (9) rest_of_line -> . WORD rest_of_line
-    (10) rest_of_line -> . TAG rest_of_line
-    (11) eol -> . EOL
+    (10) rest_of_line -> . ASTERISK rest_of_line
+    (11) rest_of_line -> . TAG rest_of_line
+    (12) eol -> . EOL
 
     WORD            shift and go to state 3
+    ASTERISK        shift and go to state 14
     TAG             shift and go to state 9
     EOL             shift and go to state 11
 
@@ -116,23 +120,26 @@ state 5
 state 6
 
     (7) line -> ASTERISK . rest_of_line
+    (10) rest_of_line -> ASTERISK . rest_of_line
     (8) rest_of_line -> . eol
     (9) rest_of_line -> . WORD rest_of_line
-    (10) rest_of_line -> . TAG rest_of_line
-    (11) eol -> . EOL
+    (10) rest_of_line -> . ASTERISK rest_of_line
+    (11) rest_of_line -> . TAG rest_of_line
+    (12) eol -> . EOL
 
     WORD            shift and go to state 3
+    ASTERISK        shift and go to state 14
     TAG             shift and go to state 9
     EOL             shift and go to state 11
 
     eol                            shift and go to state 8
-    rest_of_line                   shift and go to state 14
+    rest_of_line                   shift and go to state 15
 
 state 7
 
     (2) pddoc -> COMMENT_START pdbody . COMMENT_END
 
-    COMMENT_END     shift and go to state 15
+    COMMENT_END     shift and go to state 16
 
 
 state 8
@@ -148,18 +155,20 @@ state 8
 
 state 9
 
-    (10) rest_of_line -> TAG . rest_of_line
+    (11) rest_of_line -> TAG . rest_of_line
     (8) rest_of_line -> . eol
     (9) rest_of_line -> . WORD rest_of_line
-    (10) rest_of_line -> . TAG rest_of_line
-    (11) eol -> . EOL
+    (10) rest_of_line -> . ASTERISK rest_of_line
+    (11) rest_of_line -> . TAG rest_of_line
+    (12) eol -> . EOL
 
     WORD            shift and go to state 3
+    ASTERISK        shift and go to state 14
     TAG             shift and go to state 9
     EOL             shift and go to state 11
 
     eol                            shift and go to state 8
-    rest_of_line                   shift and go to state 16
+    rest_of_line                   shift and go to state 17
 
 state 10
 
@@ -171,8 +180,9 @@ state 10
     (7) line -> . ASTERISK rest_of_line
     (8) rest_of_line -> . eol
     (9) rest_of_line -> . WORD rest_of_line
-    (10) rest_of_line -> . TAG rest_of_line
-    (11) eol -> . EOL
+    (10) rest_of_line -> . ASTERISK rest_of_line
+    (11) rest_of_line -> . TAG rest_of_line
+    (12) eol -> . EOL
 
     COMMENT_END     reduce using rule 4 (pdcontent -> line .)
     ASTERISK        shift and go to state 6
@@ -182,19 +192,19 @@ state 10
 
     line                           shift and go to state 10
     eol                            shift and go to state 8
-    pdcontent                      shift and go to state 17
+    pdcontent                      shift and go to state 18
     rest_of_line                   shift and go to state 4
 
 state 11
 
-    (11) eol -> EOL .
+    (12) eol -> EOL .
 
-    ASTERISK        reduce using rule 11 (eol -> EOL .)
-    WORD            reduce using rule 11 (eol -> EOL .)
-    TAG             reduce using rule 11 (eol -> EOL .)
-    EOL             reduce using rule 11 (eol -> EOL .)
-    COMMENT_END     reduce using rule 11 (eol -> EOL .)
-    $end            reduce using rule 11 (eol -> EOL .)
+    ASTERISK        reduce using rule 12 (eol -> EOL .)
+    WORD            reduce using rule 12 (eol -> EOL .)
+    TAG             reduce using rule 12 (eol -> EOL .)
+    EOL             reduce using rule 12 (eol -> EOL .)
+    COMMENT_END     reduce using rule 12 (eol -> EOL .)
+    $end            reduce using rule 12 (eol -> EOL .)
 
 
 state 12
@@ -218,16 +228,45 @@ state 13
 
 state 14
 
-    (7) line -> ASTERISK rest_of_line .
+    (10) rest_of_line -> ASTERISK . rest_of_line
+    (8) rest_of_line -> . eol
+    (9) rest_of_line -> . WORD rest_of_line
+    (10) rest_of_line -> . ASTERISK rest_of_line
+    (11) rest_of_line -> . TAG rest_of_line
+    (12) eol -> . EOL
 
+    WORD            shift and go to state 3
+    ASTERISK        shift and go to state 14
+    TAG             shift and go to state 9
+    EOL             shift and go to state 11
+
+    eol                            shift and go to state 8
+    rest_of_line                   shift and go to state 19
+
+state 15
+
+    (7) line -> ASTERISK rest_of_line .
+    (10) rest_of_line -> ASTERISK rest_of_line .
+
+  ! reduce/reduce conflict for ASTERISK resolved using rule 7 (line -> ASTERISK rest_of_line .)
+  ! reduce/reduce conflict for WORD resolved using rule 7 (line -> ASTERISK rest_of_line .)
+  ! reduce/reduce conflict for TAG resolved using rule 7 (line -> ASTERISK rest_of_line .)
+  ! reduce/reduce conflict for EOL resolved using rule 7 (line -> ASTERISK rest_of_line .)
+  ! reduce/reduce conflict for COMMENT_END resolved using rule 7 (line -> ASTERISK rest_of_line .)
     ASTERISK        reduce using rule 7 (line -> ASTERISK rest_of_line .)
     WORD            reduce using rule 7 (line -> ASTERISK rest_of_line .)
     TAG             reduce using rule 7 (line -> ASTERISK rest_of_line .)
     EOL             reduce using rule 7 (line -> ASTERISK rest_of_line .)
     COMMENT_END     reduce using rule 7 (line -> ASTERISK rest_of_line .)
 
+  ! ASTERISK        [ reduce using rule 10 (rest_of_line -> ASTERISK rest_of_line .) ]
+  ! WORD            [ reduce using rule 10 (rest_of_line -> ASTERISK rest_of_line .) ]
+  ! TAG             [ reduce using rule 10 (rest_of_line -> ASTERISK rest_of_line .) ]
+  ! EOL             [ reduce using rule 10 (rest_of_line -> ASTERISK rest_of_line .) ]
+  ! COMMENT_END     [ reduce using rule 10 (rest_of_line -> ASTERISK rest_of_line .) ]
 
-state 15
+
+state 16
 
     (2) pddoc -> COMMENT_START pdbody COMMENT_END .
 
@@ -235,20 +274,36 @@ state 15
     $end            reduce using rule 2 (pddoc -> COMMENT_START pdbody COMMENT_END .)
 
 
-state 16
-
-    (10) rest_of_line -> TAG rest_of_line .
-
-    ASTERISK        reduce using rule 10 (rest_of_line -> TAG rest_of_line .)
-    WORD            reduce using rule 10 (rest_of_line -> TAG rest_of_line .)
-    TAG             reduce using rule 10 (rest_of_line -> TAG rest_of_line .)
-    EOL             reduce using rule 10 (rest_of_line -> TAG rest_of_line .)
-    COMMENT_END     reduce using rule 10 (rest_of_line -> TAG rest_of_line .)
-
-
 state 17
+
+    (11) rest_of_line -> TAG rest_of_line .
+
+    ASTERISK        reduce using rule 11 (rest_of_line -> TAG rest_of_line .)
+    WORD            reduce using rule 11 (rest_of_line -> TAG rest_of_line .)
+    TAG             reduce using rule 11 (rest_of_line -> TAG rest_of_line .)
+    EOL             reduce using rule 11 (rest_of_line -> TAG rest_of_line .)
+    COMMENT_END     reduce using rule 11 (rest_of_line -> TAG rest_of_line .)
+
+
+state 18
 
     (5) pdcontent -> line pdcontent .
 
     COMMENT_END     reduce using rule 5 (pdcontent -> line pdcontent .)
 
+
+state 19
+
+    (10) rest_of_line -> ASTERISK rest_of_line .
+
+    ASTERISK        reduce using rule 10 (rest_of_line -> ASTERISK rest_of_line .)
+    WORD            reduce using rule 10 (rest_of_line -> ASTERISK rest_of_line .)
+    TAG             reduce using rule 10 (rest_of_line -> ASTERISK rest_of_line .)
+    EOL             reduce using rule 10 (rest_of_line -> ASTERISK rest_of_line .)
+    COMMENT_END     reduce using rule 10 (rest_of_line -> ASTERISK rest_of_line .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: reduce/reduce conflict in state 15 resolved using rule (line -> ASTERISK rest_of_line)
+WARNING: rejected rule (rest_of_line -> ASTERISK rest_of_line) in state 15

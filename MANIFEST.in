@@ -3,6 +3,7 @@ include pddoc/share/html_object.tmpl
 include pddoc/share/pddoc.xsd
 include pddoc/share/latex_object_tmpl.tex
 include pddoc/share/theme.css
+include pddoc/share/extract.pddoc
 recursive-include pddoc/pd/externals *.py
 recursive-include pddoc/pd/externals *.db
 

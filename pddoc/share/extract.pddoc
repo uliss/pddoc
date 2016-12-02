@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pddoc version="1.0">
+    <object name="${name | h}">
+        <title>${name | h}</title>
+        <meta>
+            <authors><author>unknown</author></authors>
+            <description>${brief}</description>
+            <license>${license}</license>
+            <library>${library}</library>
+        </meta>
+        <example>
+            <pdexample size="auto" title="sample">
+                <row>
+                   <pdobject name="osc~" id="osc1"/>
+                </row>
+            </pdexample>
+            <pdinclude file="comments.pd"/>
+        </example>
+    </object>
+</pddoc>

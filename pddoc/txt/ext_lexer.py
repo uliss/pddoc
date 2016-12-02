@@ -59,7 +59,7 @@ doc = {}
 
 def global_tags(name, value):
     name = name[1:]
-    if name in ('version', 'license', 'brief', 'author', 'depends', 'see', 'library'):
+    if name in ('version', 'license', 'brief', 'author', 'depends', 'see', 'library', 'name'):
         doc[name] = value
 
     if name == 'inlet':
@@ -135,6 +135,7 @@ def p_line(p):
 def p_rest_of_line(p):
     '''rest_of_line : eol
                     | WORD rest_of_line
+                    | ASTERISK rest_of_line
                     | TAG rest_of_line'''
 
     ln = filter(None, p[1:])

@@ -41,3 +41,32 @@ class XletDatabase(object):
     @property
     def extname(self):
         return self._extname
+
+
+class XletMemoryDatabase(XletDatabase):
+    def __init__(self, extname):
+        super(XletMemoryDatabase, self).__init__(extname)
+        self._extname = extname
+        self._objects = {}
+
+    def has_object(self, objname):
+        return objname in self._objects
+
+    def inlets(self, objname, args=None):
+        if args is None:
+            args = []
+        if not self.has_object(objname):
+            return []
+
+        return self._objects[objname][0]
+
+    def outlets(self, objname, args=None):
+        if args is None:
+            args = []
+        if not self.has_object(objname):
+            return []
+
+        return self._objects[objname][1]
+
+    def add_object(self, name, inlets, outlets):
+        self._objects[name] = (inlets, outlets)

@@ -59,7 +59,7 @@ doc = {}
 
 def global_tags(name, value):
     name = name[1:]
-    if name in ('version', 'license', 'brief', 'author', 'depends', 'see', 'library', 'name'):
+    if name in ('version', 'license', 'brief', 'author', 'depends', 'see', 'library', 'name', 'category'):
         doc[name] = value
 
     if name == 'inlet':

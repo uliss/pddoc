@@ -3,18 +3,28 @@
     <object name="${name | h}">
         <title>${name | h}</title>
         <meta>
-            <authors><author>unknown</author></authors>
-            <description>${brief}</description>
+            <authors>
+        % for a in authors:
+            <author>${a}</author>
+        % endfor
+            </authors>
+            <description>${description}</description>
             <license>${license}</license>
             <library>${library}</library>
+            <category>${category}</category>
+            <website>${website}</website>
+        % if see_also:
+            <also>
+            % for a in see_also:
+                <see>${a}</see>
+            % endfor
+            </also>
+        % endif
         </meta>
+        % if example:
         <example>
-            <pdexample size="auto" title="sample">
-                <row>
-                   <pdobject name="osc~" id="osc1"/>
-                </row>
-            </pdexample>
-            <pdinclude file="comments.pd"/>
+            <pdinclude file="${example}"/>
         </example>
+        % endif
     </object>
 </pddoc>

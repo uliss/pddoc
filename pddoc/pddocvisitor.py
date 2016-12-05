@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-# Copyright (C) 2016 by Serge Poltavski                                 #
-#   serge.poltavski@gmail.com                                            #
+# Copyright (C) 2016 by Serge Poltavski                                   #
+#   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -30,6 +30,7 @@ from pd.obj import PdObject
 from pd.factory import make_by_name
 import logging
 import os
+import re
 
 
 class PdDocVisitor(DocObjectVisitor):
@@ -37,7 +38,9 @@ class PdDocVisitor(DocObjectVisitor):
     PD_HEADER_FONT_SIZE = 20
     PD_HEADER_COLOR = Color(0, 255, 255)
     PD_HEADER_BG_COLOR = Color(100, 100, 100)
-    PD_EXAMPLE_YOFFSET = 40
+    PD_EXAMPLE_YOFFSET = 30
+    PD_FOOTER_HEIGHT = 45
+    PD_FOOTER_COLOR = Color(180, 180, 180)
 
     def __init__(self):
         DocObjectVisitor.__init__(self)
@@ -70,6 +73,7 @@ class PdDocVisitor(DocObjectVisitor):
             self._cnv.add_connection(conn[0].id, conn[1], conn[2].id, conn[3])
 
         self.current_yoff += cnv.height
+        self.current_yoff += self.PD_EXAMPLE_YOFFSET
 
     # def pdinclude_begin(self, t):
     #     db_path = os.path.splitext(t.file())[0] + '.db'
@@ -96,17 +100,39 @@ class PdDocVisitor(DocObjectVisitor):
     def inlets_begin(self, inlets):
         super(self.__class__, self).inlets_begin(inlets)
         self.add_section(self.current_yoff, "inlets:")
+        inlets.enumerate()
+
+    def inlets_end(self, inlets):
+        self.current_yoff += 10
+
+    def inlet_begin(self, inlet):
+        self.add_text(140, self.current_yoff, "{0}.".format(inlet.number()))
+
+    def xinfo_begin(self, xinfo):
+        self.add_text(160, self.current_yoff,
+                      "if *{0}* - {1}".format(xinfo.on(), xinfo.text()))
         self.current_yoff += 20
 
     def outlets_begin(self, outlets):
         super(self.__class__, self).outlets_begin(outlets)
         self.add_section(self.current_yoff, "outlets:")
+        outlets.enumerate()
+
+    def outlets_end(self, outlets):
+        self.current_yoff += 10
+
+    def outlet_begin(self, outlet):
+        self.add_text(140, self.current_yoff, "{0}.".format(outlet.number()))
+        self.add_text(200, self.current_yoff, outlet.text())
         self.current_yoff += 20
 
     def substitute(self, str):
         str = str.replace("@{LIBRARY}@", self._library)
         str = str.replace("@{CATEGORY}@", self._category)
         return str
+
+    def object_end(self, obj):
+        self.add_footer()
 
     def render(self):
         pd_exporter = PdExporter()
@@ -132,12 +158,22 @@ class PdDocVisitor(DocObjectVisitor):
         #     library=self._library,
         #     category=self._category)
 
+    def add_text(self, x, y, txt):
+        txt = re.sub(' +', ' ', txt)
+        txt = txt.replace('.', '\\.')
+        c = Comment(x, y, txt.split(' '))
+        self._cnv.append_object(c)
+
+    def add_link(self, x, y, name, url):
+        lnk = PdObject("pddplink", x, y, args=[url, "-text", name])
+        self._cnv.append_object(lnk)
+
     def add_delimiter(self, y):
-        delim = GCanvas(20, y, width=480, height=1, size=1)
+        delim = GCanvas(20, y, width=580, height=1, size=1)
         delim._bg_color = Color(200, 200, 200)
         self._cnv.append_object(delim)
 
-    def add_text(self, x, y, txt, **kwargs):
+    def add_label(self, x, y, txt, **kwargs):
         obj = GCanvas(x, y, **kwargs)
         obj._font_size = int(kwargs.get("font_size", 12))
         obj._label_xoff = int(kwargs.get("x_off", 0))
@@ -149,10 +185,10 @@ class PdDocVisitor(DocObjectVisitor):
     def add_section(self, y, txt):
         self.add_delimiter(y)
 
-        lbl = GCanvas(20, y + 5, width=100, height=20, size=10, label=txt, font_size=14)
+        lbl = GCanvas(20, y + 10, width=100, height=20, size=10, label=txt, font_size=14)
         lbl._label_color = Color(50, 50, 50)
         self._cnv.append_object(lbl)
-        self.current_yoff += 16
+        self.current_yoff += 10
 
     def add_header(self):
         lbl = GCanvas(1, 1, width=self._width - 3, height=self.PD_HEADER_HEIGHT, size=10,
@@ -171,5 +207,19 @@ class PdDocVisitor(DocObjectVisitor):
         example_obj.y = y
 
         self._cnv.append_object(example_obj)
+
+    def add_footer(self):
+        y = self._cnv.height - self.PD_FOOTER_HEIGHT - 2
+        bg = GCanvas(1, y, width=self._width-3, height=self.PD_FOOTER_HEIGHT)
+        bg._bg_color = self.PD_FOOTER_COLOR
+        self._cnv.append_object(bg)
+
+        self.add_text(10, y + 5, "library:")
+        if self._website:
+            self.add_link(70, y + 5, self._library, self._website)
+        else:
+            self.add_text(70, y + 5, self._library)
+
+        self.add_text(10, y + 20, "version: {0}".format(self._version))
 
 

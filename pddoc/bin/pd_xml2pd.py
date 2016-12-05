@@ -59,16 +59,17 @@ def main():
             dobj.traverse(x)
 
             v = PdDocVisitor()
-            dobj.traverse(v)
 
             if 'version' in args:
-                v._version = args['version']
+                v._version = args['version'][0]
 
             if 'license' in args:
-                v._license = args['license']
+                v._license['name'] = args['license']
 
             if 'URL' in args:
                 v._website = args['URL']
+
+            dobj.traverse(v)
 
             patch_data = v.render()
             print("\n".join(map(str, patch_data[:-1])))

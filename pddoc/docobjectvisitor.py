@@ -60,6 +60,8 @@ class DocObjectVisitor(IDocObjectVisitor):
         self._canvas_padding = 10
         self._image_object_padding = 4
         self._pdascii = ""
+        self._inlet_idx = 0
+        self._outlet_idx = 0
 
     def aliases_begin(self, a):
         if not a.aliases():

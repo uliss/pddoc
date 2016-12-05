@@ -468,6 +468,11 @@ class DocXlets(DocItem):
     def pd_type_list(self):
         return map(lambda x: x.pd_type(), self.items())
 
+    def enumerate(self):
+        # enumerate
+        for n in range(len(self.items())):
+            self.items()[n].enumerate(n + 1)
+
 
 class DocInlets(DocXlets):
     def __init__(self, *args):
@@ -508,11 +513,18 @@ class DocTypeElement(DocItem):
 class DocXlet(DocTypeElement):
     def __init__(self, *args):
         DocTypeElement.__init__(self, *args)
-        self._type = ""
+        self._number = ""
 
     def from_xml(self, xmlobj):
-        self._type = xmlobj.attrib.get("type", "control")
         DocTypeElement.from_xml(self, xmlobj)
+        self._number = xmlobj.get("number", "")
+
+    def enumerate(self, n):
+        if self._number == "":
+            self._number = n
+
+    def number(self):
+        return self._number
 
 
 class DocInlet(DocXlet):
@@ -541,6 +553,9 @@ class DocXinfo(DocItem):
             return ()
 
         return float(self._minvalue), float(self._maxvalue)
+
+    def on(self):
+        return self._on
 
 
 class DocOutlets(DocXlets):

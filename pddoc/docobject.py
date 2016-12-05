@@ -206,7 +206,7 @@ class DocExample(DocItem):
         DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
-        return tag_name in ("pdexample", "pdinclude")
+        return tag_name in ("pdexample", "pdinclude", "pdascii")
 
 
 class DocPdobject(DocItem):
@@ -288,7 +288,6 @@ class DocPdinlet(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
 
-
 class DocPdinclude(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
@@ -306,6 +305,37 @@ class DocPdinclude(DocItem):
             self._file = xmlobj.attrib['file']
             self._size = xmlobj.attrib.get('size', 'auto')
             assert self._size in ("auto", "canvas")
+        except KeyError as e:
+            logging.warning("attribute \"%s\" not found in <%s>", e.args[0], xmlobj.tag)
+
+
+class DocPdascii(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
+        self._x_pad = 0
+        self._y_pad = 0
+        self._x_space = 0
+        self._y_space = 0
+
+    def x_pad(self):
+        return self._x_pad
+
+    def y_pad(self):
+        return self._y_pad
+
+    def x_space(self):
+        return self._x_space
+
+    def y_space(self):
+        return self._y_space
+
+    def from_xml(self, xmlobj):
+        self.read_xml_data(xmlobj)
+        try:
+            self._x_pad = xmlobj.attrib.get('x-pad', 20)
+            self._y_pad = xmlobj.attrib.get('y-pad', 20)
+            self._x_space = xmlobj.attrib.get('x-space', 1.2)
+            self._y_space = xmlobj.attrib.get('y-space', 1.2)
         except KeyError as e:
             logging.warning("attribute \"%s\" not found in <%s>", e.args[0], xmlobj.tag)
 
@@ -435,16 +465,8 @@ class DocXlets(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
 
-    def xlet_dict(self):
-        res = {}
-        for inl in self.items():
-            n = inl.number()
-            if n not in res:
-                res[n] = []
-
-            res[n].append(inl)
-
-        return res
+    def pd_type_list(self):
+        return map(lambda x: x.pd_type(), self.items())
 
 
 class DocInlets(DocXlets):
@@ -454,16 +476,13 @@ class DocInlets(DocXlets):
     def is_valid_tag(self, tag_name):
         return tag_name == "inlet"
 
-    def inlet_dict(self):
-        return self.xlet_dict()
 
-
-class DoxTypeElement(DocItem):
-    allowed_types = ("bang", "float", "list", "symbol", "pointer", "any")
+class DocTypeElement(DocItem):
+    allowed_types = ("control", "audio", "gui")
 
     def __init__(self, *args):
         DocItem.__init__(self, args)
-        self._type = ""
+        self._type = "control"
 
     def is_valid_type(self, t):
         return t in self.allowed_types
@@ -472,36 +491,56 @@ class DoxTypeElement(DocItem):
         return self._type
 
     def from_xml(self, xmlobj):
-        self._type = xmlobj.attrib["type"]
+        self._type = xmlobj.get("type", "control")
         DocItem.from_xml(self, xmlobj)
 
+    def pd_type(self):
+        if self._type == "control":
+            return 0
+        elif self._type == "audio":
+            return 1
+        elif self._type == "gui":
+            return 2
+        else:
+            return -1
 
-class DocXlet(DoxTypeElement):
+
+class DocXlet(DocTypeElement):
     def __init__(self, *args):
-        DoxTypeElement.__init__(self, *args)
+        DocTypeElement.__init__(self, *args)
+        self._type = ""
+
+    def from_xml(self, xmlobj):
+        self._type = xmlobj.attrib.get("type", "control")
+        DocTypeElement.from_xml(self, xmlobj)
+
+
+class DocInlet(DocXlet):
+    def __init__(self, *args):
+        DocXlet.__init__(self, args)
+
+    def is_valid_tag(self, tag_name):
+        return tag_name == "xinfo"
+
+
+class DocXinfo(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
         self._maxvalue = ""
         self._minvalue = ""
-        self._number = ""
-
-    def number(self):
-        return int(self._number)
+        self._on = ""
 
     def from_xml(self, xmlobj):
         self._maxvalue = xmlobj.attrib.get("maxvalue", "")
         self._minvalue = xmlobj.attrib.get("minvalue", "")
-        self._number = xmlobj.attrib["number"]
-        DoxTypeElement.from_xml(self, xmlobj)
+        self._on = xmlobj.attrib.get("on", "")
+        DocItem.from_xml(self, xmlobj)
 
     def range(self):
         if not self._minvalue and not self._maxvalue:
             return ()
 
         return float(self._minvalue), float(self._maxvalue)
-
-
-class DocInlet(DocXlet):
-    def __init__(self, *args):
-        DocXlet.__init__(self, args)
 
 
 class DocOutlets(DocXlets):
@@ -520,9 +559,9 @@ class DocOutlet(DocXlet):
         DocXlet.__init__(self, args)
 
 
-class DocArgument(DoxTypeElement):
+class DocArgument(DocTypeElement):
     def __init__(self, *args):
-        DoxTypeElement.__init__(self, args)
+        DocTypeElement.__init__(self, args)
 
 
 class DocArguments(DocItem):
@@ -577,3 +616,10 @@ class DocObject(DocItem):
     def from_xml(self, xobj):
         self._name = xobj.attrib["name"]
         DocItem.from_xml(self, xobj)
+
+    def name(self):
+        return self._name
+
+    def traverse(self, visitor):
+        visitor.name = self._name
+        DocItem.traverse(self, visitor)

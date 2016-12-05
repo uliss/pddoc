@@ -26,6 +26,10 @@ import logging
 import pddoc.pd as pd
 from pdlayout import PdLayout
 from idocobjectvisitor import IDocObjectVisitor
+from txt.parser import Parser
+from pd.canvas import Canvas
+from pd.pdexporter import PdExporter
+from pd.obj import PdObject
 
 
 class DocObjectVisitor(IDocObjectVisitor):
@@ -55,6 +59,7 @@ class DocObjectVisitor(IDocObjectVisitor):
         self._layout = PdLayout()
         self._canvas_padding = 10
         self._image_object_padding = 4
+        self._pdascii = ""
 
     def aliases_begin(self, a):
         if not a.aliases():
@@ -153,6 +158,37 @@ class DocObjectVisitor(IDocObjectVisitor):
     def col_end(self, col):
         self._layout.col_end()
 
+    def pdascii_begin(self, pdascii):
+        self._pdascii = pdascii.text()
+
+        p = Parser()
+        p.X_PAD = pdascii.x_pad()
+        p.Y_PAD = pdascii.y_pad()
+        p.X_SPACE *= pdascii.x_space()
+        p.Y_SPACE *= pdascii.y_space()
+        if not p.parse(self._pdascii):
+            logging.info("<pdascii> parse failed: {0}".format(self._pdascii))
+
+        cnv = Canvas(0, 0, 300, 500)
+        cnv.type = Canvas.TYPE_WINDOW
+        p.export(cnv)
+
+        # save as pd
+        br_calc = cnv.brect_calc()
+        cnv.traverse(br_calc)
+        bbox = br_calc.brect()
+        wd = bbox[2] + Parser.X_PAD * 2
+        ht = bbox[3] + Parser.Y_PAD * 2
+        cnv.height = ht
+        cnv.width = wd
+        pd_exporter = PdExporter()
+        cnv.traverse(pd_exporter)
+
+        pd_name_template = "{0}-example.pd".format(self.name)
+        pd_exporter.save(pd_name_template)
+
+        return cnv
+
     def pdmessage_begin(self, msg_obj):
         self._layout.message_begin(msg_obj)
 
@@ -161,12 +197,6 @@ class DocObjectVisitor(IDocObjectVisitor):
 
     def pdconnect_begin(self, c):
         self._layout.connect_begin(c)
-
-    def inlets_begin(self, inlets):
-        self._inlets = inlets.inlet_dict()
-
-    def outlets_begin(self, outlets):
-        self._outlets = outlets.outlet_dict()
 
     def arguments_begin(self, args):
         self._arguments = args.items()

@@ -52,3 +52,9 @@ class GCanvas(CoreGui):
     def draw(self, painter):
         painter.draw_rect(self.x, self.y, self.width, self.height, fill=self.bgcolor())
         self.draw_label(painter)
+
+    def to_atoms(self):
+        return ["#X", "obj", self.x, self.y, "cnv", self._size, self.width, self.height,
+                self.send, self.receive,
+                self.label, self._label_xoff, self._label_yoff,
+                self._font_type, self._font_size, self._bg_color.to_pd(), self._label_color.to_pd(), 0]

@@ -10,7 +10,7 @@ def readme():
 
 
 setup(name='pddoc',
-      version='0.2.8',
+      version='0.2.9',
       description='PureData documentation tools',
       long_description=readme(),
       classifiers=[
@@ -32,11 +32,12 @@ setup(name='pddoc',
       test_suite='nose.collector',
       tests_require=['nose'],
       entry_points={
-          'console_scripts': ['pd2image=pddoc.bin.pd2image:main',
-                              'pdobject2image=pddoc.bin.pd_object2image:main',
-                              'pddoc=pddoc.bin.pddoc_bin:main',
-                              'pdascii=pddoc.bin.pdascii:main',
-                              'pdcommentdoc=pddoc.txt.extract:main']
+          'console_scripts': ['pd_patch2image=pddoc.bin.pd2image:main',
+                              'pd_object2image=pddoc.bin.pd_object2image:main',
+                              'pd_xml2html=pddoc.bin.pddoc_bin:main',
+                              'pd_xml2pd=pddoc.bin.pd_xml2pd:main',
+                              'pd_ascii2pd=pddoc.bin.pdascii:main',
+                              'pd_comment2xml=pddoc.txt.extract:main']
       },
       include_package_data=True,
       zip_safe=False)

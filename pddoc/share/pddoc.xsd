@@ -10,13 +10,20 @@
 
     <xs:simpleType name="XletType">
         <xs:restriction base="xs:string">
+            <xs:enumeration value="audio"/>
+            <xs:enumeration value="control"/>
+            <xs:enumeration value="gui"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="ControlDataType">
+        <xs:restriction base="xs:string">
             <xs:enumeration value="bang"/>
             <xs:enumeration value="float"/>
             <xs:enumeration value="list"/>
-            <xs:enumeration value="any"/>
-            <xs:enumeration value="pointer"/>
-            <xs:enumeration value="sound"/>
             <xs:enumeration value="symbol"/>
+            <xs:enumeration value="pointer"/>
+            <xs:enumeration value="any"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -69,6 +76,7 @@
             <xs:element name="inlets" type="InletsElementType" minOccurs="0"/>
             <xs:element name="outlets" type="OutletsElementType" minOccurs="0"/>
             <xs:element name="arguments" type="ArgumentsElementType" minOccurs="0"/>
+            <!--<xs:element name="methods" type="MethodsElementType" minOccurs="0"/>-->
             <xs:element name="info" type="InfoElementType" minOccurs="0"/>
         </xs:all>
         <xs:attribute name="name" use="required" type="ObjectNameType"/>
@@ -120,6 +128,7 @@
         <xs:all>
             <xs:element name="pdexample" type="PdExampleType" minOccurs="0"/>
             <xs:element name="pdinclude" type="PdIncludeType" minOccurs="0"/>
+            <xs:element name="pdascii" type="PdAsciiType" minOccurs="0"/>
         </xs:all>
     </xs:complexType>
 
@@ -132,6 +141,17 @@
 
     <xs:complexType name="PdIncludeType">
         <xs:attribute name="file" use="required" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="PdAsciiType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="x-pad" use="optional" type="xs:unsignedShort" default="20"/>
+                <xs:attribute name="y-pad" use="optional" type="xs:unsignedShort" default="20"/>
+                <xs:attribute name="x-space" use="optional" type="xs:float" default="1.2"/>
+                <xs:attribute name="y-space" use="optional" type="xs:float" default="1.2"/>
+            </xs:extension>
+        </xs:simpleContent>
     </xs:complexType>
 
     <xs:complexType name="PdExampleType">
@@ -179,30 +199,39 @@
 
     <xs:complexType name="InletsElementType">
         <xs:sequence>
-            <xs:element name="inlet" minOccurs="1" maxOccurs="unbounded" type="InletElementType"/>
+            <xs:element name="inlet" minOccurs="0" maxOccurs="unbounded" type="InletElementType"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="OutletsElementType">
         <xs:sequence>
-            <xs:element name="outlet" minOccurs="1" maxOccurs="unbounded" type="XletElementType"/>
+            <xs:element name="outlet" minOccurs="0" maxOccurs="unbounded" type="OutletElementType"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="InletElementType">
-        <xs:complexContent>
-            <xs:extension base="XletElementType">
+        <xs:sequence>
+            <xs:element name="xinfo" type="InletInfoType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="type" use="optional" type="XletType" default="control"/>
+    </xs:complexType>
+
+    <xs:complexType name="InletInfoType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="on" use="optional" type="ControlDataType"/>
                 <xs:attribute name="minvalue" use="optional" type="xs:float"/>
                 <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
             </xs:extension>
-        </xs:complexContent>
+        </xs:simpleContent>
     </xs:complexType>
 
-    <xs:complexType name="XletElementType">
+    <xs:complexType name="OutletElementType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="number" use="required" type="XletNumber"/>
-                <xs:attribute name="type" use="required" type="XletType"/>
+                <xs:attribute name="type" use="optional" type="XletType" default="control"/>
+                <xs:attribute name="minvalue" use="optional" type="xs:float"/>
+                <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -216,7 +245,7 @@
     <xs:complexType name="ArgumentElementType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="type" use="required" type="XletType"/>
+                <xs:attribute name="type" use="required" type="ControlDataType"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>

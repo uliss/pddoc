@@ -123,12 +123,12 @@ def generate_sphynx(data):
     return res
 
 
-def generate_pddoc(data):
+def generate_pddoc(data, args):
     # template config
     tmpl_path = "{0:s}/../share/extract.pddoc".format(os.path.dirname(os.path.abspath(__file__)))
     pddoc_template = Template(filename=tmpl_path)
     doc = data['doc'][1]
-    example = data.get('example')
+
 
     template_data = {}
     template_data['name'] = doc['name']
@@ -139,47 +139,13 @@ def generate_pddoc(data):
     template_data['category'] = doc.get('category', '')
     template_data['website'] = doc.get('website', '')
     template_data['authors'] = doc['author'].split(',')
+    template_data['example'] = data.get('example')
 
     if 'inlet' in doc:
         PdObject.xlet_calculator.mem_db.add_object(doc['name'], [0], [0])
-        # print PdObject.xlet_calculator.mem_db.inlets('is_any')
-        # print PdObject.xlet_calculator.inlets_by_name('is_any')
-        pass
 
-
-    if example:
-        ext_name = doc.get('name', 'unknown')
-        example_file_ascii = "example_{0}.txt".format(ext_name)
-        example_file_pd = "example_{0}.pd".format(ext_name)
-        example_file_img = "example_{0}.png".format(ext_name)
-        xlet_db = "xlet_{0}.db".format(ext_name)
-        with open(example_file_ascii, 'w') as f_txt:
-            f_txt.write(example)
-
-        p = Parser()
-        p.parse_file(example_file_ascii)
-
-        cnv = Canvas(0, 0, 300, 500)
-        cnv.type = Canvas.TYPE_WINDOW
-        p.export(cnv)
-
-        # save as pd
-        br_calc = cnv.brect_calc()
-        cnv.traverse(br_calc)
-        bbox = br_calc.brect()
-        wd = bbox[2] + Parser.X_PAD * 2
-        ht = bbox[3] + Parser.Y_PAD * 2
-        cnv.height = ht
-        cnv.width = wd
-        pd_exporter = PdExporter()
-        cnv.traverse(pd_exporter)
-        pd_exporter.save(example_file_pd)
-
-        # save as image
-        painter = CairoPainter(wd, ht, example_file_img, 'png')
-        cnv.draw(painter)
-
-        template_data['example'] = example_file_pd
+    ext_name = doc.get('name', 'unknown')
+    xlet_db = "example_{0}.db".format(ext_name)
 
     # save xlet db
     with open(xlet_db, 'w') as db:
@@ -231,6 +197,10 @@ def generate_pddoc(data):
 
 def main():
     arg_parser = argparse.ArgumentParser(description='PureData C/C++ comment extractor')
+    arg_parser.add_argument('--xdens', metavar='xdens', default=1, type=float,
+                            help="horizontal space between objects")
+    arg_parser.add_argument('--ydens', metavar='ydens', default=1, type=float,
+                            help="vertical space between objects")
     arg_parser.add_argument('input', metavar='SOURCE', help="C/C++ extension source file")
     args = vars(arg_parser.parse_args())
 
@@ -238,7 +208,7 @@ def main():
     if not res:
         sys.exit(1)
 
-    print(generate_pddoc(res))
+    print(generate_pddoc(res, args))
 
 
 if __name__ == '__main__':

@@ -70,3 +70,12 @@ class XletMemoryDatabase(XletDatabase):
 
     def add_object(self, name, inlets, outlets):
         self._objects[name] = (inlets, outlets)
+
+    def remove_object(self, name):
+        del self._objects[name]
+
+    def set_inlets(self, name, inlets):
+        self._objects[name][0] = inlets
+
+    def set_outlets(self, name, outlets):
+        self._objects[name][1] = outlets

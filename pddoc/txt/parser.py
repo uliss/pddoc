@@ -133,6 +133,7 @@ class Parser(object):
         self.enumerate_objects()
         self.parse_connections()
         self.layout_nodes()
+        return True
 
     def token_line_lex_pos(self, lexline, lexpos):
         assert lexpos >= 0

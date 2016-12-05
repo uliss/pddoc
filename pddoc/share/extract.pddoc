@@ -21,10 +21,23 @@
             </also>
         % endif
         </meta>
+
         % if example:
         <example>
-            <pdinclude file="${example}"/>
+            <pdascii>
+                <![CDATA[
+${example}
+                ]]>
+            </pdascii>
         </example>
+        % endif
+
+        % if inlets:
+        <inlets>
+            % for a in inlets:
+                <inlet>${i}</inlet>
+            % endfor
+        <inlets>
         % endif
     </object>
 </pddoc>

@@ -29,9 +29,7 @@
         <arguments>
             <argument number="0" type="float">test</argument>
         </arguments>
-    </section>
     <section>
-
         <caution>
             <para>Caution text</para>
         </caution>
@@ -83,7 +81,6 @@
         <pdexample>
             <pdinclude file="objects.pd"/>
         </pdexample>
-
     </section>
 </object>
 </pddoc>

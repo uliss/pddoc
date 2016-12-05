@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pddoc version="1.0">
+    <object name="test_xlet_doc_visitor">
+        <title>simple</title>
+        <meta>
+            <authors><author>unknown</author></authors>
+            <description>empty</description>
+            <license>GPL3</license>
+            <library>test</library>
+        </meta>
+        <inlets>
+            <inlet type="audio"/>
+            <inlet type="control"/>
+        </inlets>
+        <outlets>
+            <outlet type="audio"/>
+            <outlet type="control"/>
+            <outlet type="control"/>
+        </outlets>
+    </object>
+</pddoc>

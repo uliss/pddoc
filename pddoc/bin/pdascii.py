@@ -39,7 +39,7 @@ def main():
     arg_parser.add_argument('--height', '-ht', metavar='X', type=int, nargs=1,
                             help='image height in pixels', default=300)
     arg_parser.add_argument('--xlet-db', metavar='PATH', action='append',
-                            help='inlet/outlet database file path')
+                            help='inlet/outlet database file path', default=[])
     arg_parser.add_argument('input', metavar='INPUT', help="Documentation file in pd ascii format")
     arg_parser.add_argument('output', metavar='OUTPUT', nargs='?', default='',
                             help="output file name")

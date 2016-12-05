@@ -1,0 +1,3 @@
+#N canvas 0 0 503 553 12;
+#X obj 10 45 pddplink @{LIBRARY}@.pd -text @{LIBRARY}@::;
+#X obj 75 45 pddplink @{LIBRARY}@_@{CATEGORY}@.pd -text @{CATEGORY}@;

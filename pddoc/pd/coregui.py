@@ -257,3 +257,6 @@ class CoreGui(obj.PdObject):
         else:
             logging.warning("invalid label position: {0:s}".format(str(pos)))
             return None
+
+    def to_atoms(self):
+        return {}

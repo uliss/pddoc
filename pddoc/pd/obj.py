@@ -115,6 +115,14 @@ class PdObject(BaseObject):
 
         return PdObject._brect_calc
 
+    @classmethod
+    def add_object_xlet_info(cls, name, inlets, outlets):
+        cls.xlet_calculator.mem_db.add_object(name, inlets, outlets)
+
+    @classmethod
+    def remove_object_xlet_info(cls, name):
+        cls.xlet_calculator.mem_db.remove_object(name)
+
     def num_args(self):
         return len(self._args)
 

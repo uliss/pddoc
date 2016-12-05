@@ -80,7 +80,9 @@ class PdExporter(AbstractVisitor):
             self.result.insert(1, "#X declare {0:s};".format(" ".join(obj.args)))
 
     def visit_core_gui(self, gui):
-        self.visit_object(gui)
+        line = " ".join(map(str, gui.to_atoms())) + ";"
+        for l in textwrap.wrap(line, 70):
+            self.result.append(l)
 
     def visit_message(self, msg):
         line = "#X msg {0:d} {1:d} {2:s};".format(msg.x, msg.y, msg.args_to_string())

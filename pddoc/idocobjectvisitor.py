@@ -21,6 +21,17 @@ __author__ = 'Serge Poltavski'
 
 
 class IDocObjectVisitor(object):
+    def __init__(self):
+        self._name = ""
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, n):
+        self._name = n
+
     def a_begin(self, a):
         pass
 
@@ -165,6 +176,12 @@ class IDocObjectVisitor(object):
     def outlets_end(self, outlets):
         pass
 
+    def pdascii_begin(self, pdascii):
+        pass
+
+    def pdascii_end(self, pdascii):
+        pass
+
     def pdcomment_begin(self, pdcomment):
         pass
 
@@ -229,6 +246,12 @@ class IDocObjectVisitor(object):
         pass
 
     def website_end(self, ws):
+        pass
+
+    def xinfo_begin(self, ws):
+        pass
+
+    def xinfo_end(self, ws):
         pass
 
     def render(self):

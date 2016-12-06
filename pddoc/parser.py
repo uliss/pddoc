@@ -40,4 +40,22 @@ def parse_xml(path):
         logging.error("XML syntax error:\n \"%s\"\n\twhile parsing file: \"%s\"", e, path)
         return None
 
+    pddoc = xml.getroot()
+    for obj in pddoc.findall('object'):
+        fix_section_order(obj)
+
     return xml
+
+
+def fix_section_order(obj_tag):
+    sorted_children = sorted(obj_tag, key=lambda n: ('title',
+                                                     'meta', 'info',
+                                                     'example', 'arguments',
+                                                     'inlets', 'outlets',
+                                                     'methods').index(n.tag))
+    for child in obj_tag:
+        obj_tag.remove(child)
+
+    for child in reversed(sorted_children):
+        obj_tag.insert(0, child)
+

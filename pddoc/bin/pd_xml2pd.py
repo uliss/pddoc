@@ -30,9 +30,10 @@ __author__ = 'Serge Poltavski'
 
 def main():
     arg_parser = argparse.ArgumentParser(description='PureData pddoc to pd patch converter')
-    arg_parser.add_argument('--website', '-w', metavar='URL', nargs=1, help='library website URL')
-    arg_parser.add_argument('--license', '-l', metavar='license', nargs=1, help='library license')
-    arg_parser.add_argument('--version', '-v', metavar='version', nargs=1, help='library version')
+    arg_parser.add_argument('--website', '-w', metavar='URL', help='library website URL')
+    arg_parser.add_argument('--license', '-l', metavar='license', help='library license')
+    arg_parser.add_argument('--force', '-f', action='store_true', help='force to overwrite existing file')
+    arg_parser.add_argument('--version', '-v', metavar='version', default='0.0', help='library version')
     arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC(XML) format")
     arg_parser.add_argument('output', metavar='OUTNAME', nargs='?', default='',
                             help="Pd output patch file name")
@@ -42,7 +43,11 @@ def main():
     output = args['output']
 
     if not output:
-        output = os.path.splitext(os.path.basename(in_file))[0] + ".html"
+        output = os.path.splitext(os.path.basename(in_file))[0] + "-help.pd"
+
+    if os.path.exists(output) and not args['force']:
+        print("Error: file already exists: '{0}'. Use --force flag to overwrite.".format(output))
+        exit(1)
 
     xml = parse_xml(in_file)
 
@@ -61,7 +66,7 @@ def main():
             v = PdDocVisitor()
 
             if 'version' in args:
-                v._version = args['version'][0]
+                v._version = args['version']
 
             if 'license' in args:
                 v._license['name'] = args['license']
@@ -72,7 +77,9 @@ def main():
             dobj.traverse(v)
 
             patch_data = v.render()
-            print("\n".join(map(str, patch_data[:-1])))
+            data = "\n".join(map(str, patch_data[:-1]))
+            with open(output, 'w') as f:
+                f.write(data)
 
 
 if __name__ == '__main__':

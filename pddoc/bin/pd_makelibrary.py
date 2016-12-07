@@ -47,8 +47,14 @@ def main():
     lib = LibraryMaker(args['library'])
     lib.process_files(files)
     lib.sort()
-    print(lib)
 
+    xml_data = str(lib)
+
+    if args['output']:
+        with open(args['output'], 'w') as f:
+            f.write(xml_data)
+    else:
+        print(xml_data)
 
 if __name__ == '__main__':
     main()

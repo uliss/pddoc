@@ -132,10 +132,10 @@ class PdDocVisitor(DocObjectVisitor):
         self.add_text(200, self.current_yoff, arg.text())
         self.current_yoff += 20
 
-    def substitute(self, str):
-        str = str.replace("@{LIBRARY}@", self._library)
-        str = str.replace("@{CATEGORY}@", self._category)
-        return str
+    def substitute(self, txt):
+        txt = txt.replace("@{LIBRARY}@", self._library)
+        txt = txt.replace("@{CATEGORY}@", self._category)
+        return txt
 
     def object_end(self, obj):
         self.add_footer()

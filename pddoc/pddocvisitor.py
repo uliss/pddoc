@@ -47,28 +47,42 @@ class PdDocVisitor(DocObjectVisitor):
     def __init__(self):
         DocObjectVisitor.__init__(self)
         self.current_yoff = 0
-        self._cnv = Canvas(0, 0, self.PD_WINDOW_WIDTH, self.PD_WINDOW_HEIGHT, font_size=12)
-        self._cnv.type = Canvas.TYPE_WINDOW
-        self._width = self._cnv.width
-        self._height = self._cnv.height
+        self._cnv = self.make_main_canvas()
+
+    def window_width(self):
+        return self._cnv.width
+
+    def window_height(self):
+        return self._cnv.height
+
+    def make_main_canvas(self):
+        cnv = Canvas(0, 0, self.PD_WINDOW_WIDTH, self.PD_WINDOW_HEIGHT, font_size=12)
+        cnv.type = Canvas.TYPE_WINDOW
+        return cnv
 
     def meta_end(self, meta):
         self.add_header()
-        self.current_yoff += self.PD_HEADER_HEIGHT + 30
+
+        self.current_yoff += self.PD_HEADER_HEIGHT
+        self.current_yoff += 30
 
     def pdascii_begin(self, t):
         cnv = super(self.__class__, self).pdascii_begin(t)
+        self.copy_canvas_objects(cnv)
+        self.copy_canvas_connections(cnv)
 
+        self.current_yoff += cnv.height
+        self.current_yoff += self.PD_EXAMPLE_YOFFSET
+
+    def copy_canvas_connections(self, cnv):
+        for conn in cnv.connections.values():
+            self._cnv.add_connection(conn[0].id, conn[1], conn[2].id, conn[3])
+
+    def copy_canvas_objects(self, cnv):
         for obj in cnv.objects:
             obj.y += self.current_yoff
             obj.x += self.PD_EXAMPLE_YOFFSET
             self._cnv.append_object(obj)
-
-        for conn in cnv.connections.values():
-            self._cnv.add_connection(conn[0].id, conn[1], conn[2].id, conn[3])
-
-        self.current_yoff += cnv.height
-        self.current_yoff += self.PD_EXAMPLE_YOFFSET
 
     # def pdinclude_begin(self, t):
     #     db_path = os.path.splitext(t.file())[0] + '.db'
@@ -109,15 +123,15 @@ class PdDocVisitor(DocObjectVisitor):
             t3 = self.add_text(150, self.current_yoff + 16, "({0}-{1})".format(val_range[0], val_range[1]))
             tlist.append(t3)
 
-        ht = self.calc_height(tlist)
+        ht = self.calc_objects_height(tlist)
         self.current_yoff += ht + 5
 
-    def calc_height(self, lst):
+    def calc_objects_height(self, lst):
         # calc all bounding rects
         map(lambda x: x.calc_brect(), lst)
         # find highest element y-coord
         y_min = min(lst, key=lambda x: x.y).y
-        # find lowest elemet bottom y
+        # find lowest element bottom y
         return max(map(lambda x: x.height + x.y - y_min, lst))
 
     def outlets_begin(self, outlets):
@@ -145,9 +159,11 @@ class PdDocVisitor(DocObjectVisitor):
     def object_end(self, obj):
         LNK_X = 10
         LNK_Y = 45
+        # library link
         l1 = self.add_link(LNK_X, LNK_Y, "{0}::".format(self._library), "{0}-help.pd".format(self._library))
         brect = PdObject.brect_calc().text_brect(l1.text())
         LNK_X += brect[2] + 10
+        # category link
         self.add_link(LNK_X, LNK_Y, "{0}".format(self._category), "{0}.{1}-help.pd".format(self._library, self._category))
         self.add_footer()
 
@@ -202,52 +218,35 @@ class PdDocVisitor(DocObjectVisitor):
         self.current_yoff += 10
 
     def add_header(self):
-        lbl = GCanvas(1, 1, width=self._width - 3, height=self.PD_HEADER_HEIGHT, size=10,
+        lbl = self.add_header_label()
+        self.add_header_example_object(lbl, self._title)
+
+    def add_header_example_object(self, lbl, title):
+        example_obj = make_by_name(title)
+        example_obj.calc_brect()
+        # horizontal align right
+        example_obj.x = lbl.width - example_obj.width - 20
+        # vertical align
+        example_obj.y = (lbl.height - example_obj.height) / 2
+        self._cnv.append_object(example_obj)
+
+    def add_header_label(self):
+        lbl = GCanvas(1, 1, width=self.window_width() - 3, height=self.PD_HEADER_HEIGHT, size=10,
                       label="{0}".format(self._title), font_size=self.PD_HEADER_FONT_SIZE,
                       label_yoff=18, label_xoff=10)
         lbl._label_color = self.PD_HEADER_COLOR
         lbl._bg_color = self.PD_HEADER_BG_COLOR
-
         self._cnv.append_object(lbl)
-
-        example_obj = make_by_name(self._title)
-        brect = example_obj.brect_calc().object_brect(example_obj)
-        x = lbl.width - brect[2] - 20
-        y = (lbl.height - brect[3]) / 2
-        example_obj.x = x
-        example_obj.y = y
-
-        self._cnv.append_object(example_obj)
+        return lbl
 
     def add_footer(self):
-        y = self._height - self.PD_FOOTER_HEIGHT - 2
-        bg = GCanvas(1, y, width=self._width - 3, height=self.PD_FOOTER_HEIGHT)
-        bg._bg_color = self.PD_FOOTER_COLOR
-        self._cnv.append_object(bg)
+        y = self.window_height() - self.PD_FOOTER_HEIGHT - 2
+        self.add_footer_bg(y)
+        self.add_footer_library(y)
+        self.add_also(y)
+        self.add_footer_more_info(y)
 
-        # library:
-        self.add_text(10, y + 3, "library: {0} v{1}".format(self._library, self._version))
-
-        # see also:
-        also_objects = []
-        for see in self._see_also:
-            obj = PdObject(see['name'], 0, y + 20)
-            obj.calc_brect()
-            also_objects.append(obj)
-
-        # width with padding
-        also_wd = map(lambda x: x.width, also_objects)
-        total_wd = sum(also_wd) + 14 * (len(also_wd) - 1)
-        x_init_pos = self._width - total_wd - 20
-        x_pos = x_init_pos
-
-        for obj in also_objects:
-            obj.x = x_pos
-            x_pos += obj.width + 14
-            self._cnv.append_object(obj)
-
-        self.add_text(x_init_pos - 70, y + 22, "see also:")
-
+    def add_footer_more_info(self, y):
         # more info
         pd = Canvas(10, y + 22, self.PD_INFO_WINDOW_WIDTH, self.PD_INFO_WINDOW_HEIGHT, name='info')
         pd.type = Canvas.TYPE_SUBPATCH
@@ -258,7 +257,6 @@ class PdDocVisitor(DocObjectVisitor):
         bg1 = GCanvas(1, 1, width=110 - 3, height=self.PD_INFO_WINDOW_HEIGHT - 3)
         bg1._bg_color = self.PD_FOOTER_COLOR
         pd.append_object(bg1)
-
         xc1 = 10
         xc2 = 120
         yrows = range(10, 300, 22)
@@ -278,7 +276,6 @@ class PdDocVisitor(DocObjectVisitor):
         add_subpatch_text(xc1, yrows[row], "authors:")
         add_subpatch_text(xc2, yrows[row], " \\, ".join(self._authors))
         row += 1
-
         add_subpatch_text(xc1, yrows[row], "license:")
         if not self._license.get('url', ' '):
             add_subpatch_text(xc2, yrows[row], self._license['name'])
@@ -286,26 +283,50 @@ class PdDocVisitor(DocObjectVisitor):
             lnk = self.make_link(xc2, yrows[row], self._license['name'], self._license['url'])
             pd.append_object(lnk)
         row += 1
-
         if self._keywords:
             add_subpatch_text(xc1, yrows[row], "keywords:")
             add_subpatch_text(xc2, yrows[row], " \\, ".join(self._keywords))
             row += 1
-
         if self._website:
             add_subpatch_text(xc1, yrows[row], "website:")
             lnk = self.make_link(xc2, yrows[row], self._website, self._website)
             pd.append_object(lnk)
             row += 1
-
         if self._contacts:
             add_subpatch_text(xc1, yrows[row], "contacts:")
             add_subpatch_text(xc2, yrows[row], self._contacts)
             row += 1
-
         ypos = self.PD_INFO_WINDOW_HEIGHT - 22
         delim = self.make_delimeter(ypos, width=270, x=xc2)
         pd.append_object(delim)
-        add_subpatch_text(xc2, ypos, "autogenerated by pddoc")
-
+        add_subpatch_text(xc2, ypos, "generated by pddoc")
         self._cnv.append_subpatch(pd)
+
+    def add_footer_library(self, y):
+        # library:
+        self.add_text(10, y + 3, "library: {0} v{1}".format(self._library, self._version))
+
+    def add_footer_bg(self, y):
+        bg = GCanvas(1, y, width=self.window_width() - 3, height=self.PD_FOOTER_HEIGHT)
+        bg._bg_color = self.PD_FOOTER_COLOR
+        self._cnv.append_object(bg)
+
+    def add_also(self, y):
+        # see also:
+        also_objects = []
+        for see in self._see_also:
+            obj = PdObject(see['name'], 0, y + 20)
+            obj.calc_brect()
+            also_objects.append(obj)
+
+        # width list
+        also_wd = map(lambda x: x.width, also_objects)
+        # width with padding
+        total_wd = sum(also_wd) + 14 * (len(also_wd) - 1)
+        x_init_pos = self.window_width() - total_wd - 20
+        x_pos = x_init_pos
+        for obj in also_objects:
+            obj.x = x_pos
+            x_pos += obj.width + 14
+            self._cnv.append_object(obj)
+        self.add_text(x_init_pos - 70, y + 22, "see also:")

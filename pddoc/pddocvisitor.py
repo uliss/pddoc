@@ -94,11 +94,6 @@ class PdDocVisitor(DocObjectVisitor):
     #
     #     self.current_yoff += cnv.height
 
-    def example_end(self, tag):
-        pass
-        # self.add_delimiter(self.current_yoff)
-        # self.current_yoff += 5
-
     def inlets_begin(self, inlets):
         super(self.__class__, self).inlets_begin(inlets)
         self.add_section(self.current_yoff, "inlets:")
@@ -128,6 +123,15 @@ class PdDocVisitor(DocObjectVisitor):
         self.add_text(200, self.current_yoff, outlet.text())
         self.current_yoff += 20
 
+    def arguments_begin(self, args):
+        super(self.__class__, self).arguments_begin(args)
+        self.add_section(self.current_yoff, "arguments:")
+
+    def argument_begin(self, arg):
+        super(self.__class__, self).argument_begin(arg)
+        self.add_text(200, self.current_yoff, arg.text())
+        self.current_yoff += 20
+
     def substitute(self, str):
         str = str.replace("@{LIBRARY}@", self._library)
         str = str.replace("@{CATEGORY}@", self._category)
@@ -140,25 +144,6 @@ class PdDocVisitor(DocObjectVisitor):
         pd_exporter = PdExporter()
         self._cnv.traverse(pd_exporter)
         return map(self.substitute, pd_exporter.result)
-        # return self._html_template.render(
-        #     title=self._title,
-        #     description=self._description,
-        #     keywords=self._keywords,
-        #     css_file=self._css_file,
-        #     css=self._css,
-        #     aliases=self._aliases,
-        #     license=self._license,
-        #     version=self._version,
-        #     examples=self._examples,
-        #     inlets=self._inlets,
-        #     outlets=self._outlets,
-        #     arguments=self._arguments,
-        #     see_also=self._see_also,
-        #     website=self._website,
-        #     authors=self._authors,
-        #     contacts=self._contacts,
-        #     library=self._library,
-        #     category=self._category)
 
     def make_txt(self, x, y, txt):
         txt = re.sub(' +', ' ', txt)

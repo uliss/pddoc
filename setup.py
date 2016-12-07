@@ -37,7 +37,8 @@ setup(name='pddoc',
                               'pd_xml2html=pddoc.bin.pddoc_bin:main',
                               'pd_xml2pd=pddoc.bin.pd_xml2pd:main',
                               'pd_ascii2pd=pddoc.bin.pdascii:main',
-                              'pd_comment2xml=pddoc.txt.extract:main']
+                              'pd_comment2xml=pddoc.txt.extract:main',
+                              'pd_makelibrary=pddoc.bin.pd_makelibrary:main']
       },
       include_package_data=True,
       zip_safe=False)

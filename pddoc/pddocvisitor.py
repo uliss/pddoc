@@ -224,11 +224,7 @@ class PdDocVisitor(DocObjectVisitor):
         self._cnv.append_object(bg)
 
         # library:
-        self.add_text(10, y + 3, "library:")
-        if self._website:
-            self.add_link(70, y + 3, self._library, self._website)
-        else:
-            self.add_text(70, y + 3, self._library)
+        self.add_text(10, y + 3, "library: {0} v{1}".format(self._library, self._version))
 
         # see also:
         also_objects = []
@@ -251,7 +247,7 @@ class PdDocVisitor(DocObjectVisitor):
         self.add_text(x_init_pos - 70, y + 22, "see also:")
 
         # more info
-        pd = Canvas(10, y + 22, self.PD_INFO_WINDOW_WIDTH, self.PD_INFO_WINDOW_HEIGHT, name='about')
+        pd = Canvas(10, y + 22, self.PD_INFO_WINDOW_WIDTH, self.PD_INFO_WINDOW_HEIGHT, name='info')
         pd.type = Canvas.TYPE_SUBPATCH
 
         def add_subpatch_text(x, y, txt):

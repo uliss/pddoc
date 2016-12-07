@@ -39,8 +39,10 @@ class PdDocVisitor(DocObjectVisitor):
     PD_HEADER_COLOR = Color(0, 255, 255)
     PD_HEADER_BG_COLOR = Color(100, 100, 100)
     PD_EXAMPLE_YOFFSET = 30
-    PD_FOOTER_HEIGHT = 45
+    PD_FOOTER_HEIGHT = 48
     PD_FOOTER_COLOR = Color(180, 180, 180)
+    PD_INFO_WINDOW_WIDTH = 400
+    PD_INFO_WINDOW_HEIGHT = 250
 
     def __init__(self):
         DocObjectVisitor.__init__(self)
@@ -158,20 +160,27 @@ class PdDocVisitor(DocObjectVisitor):
         #     library=self._library,
         #     category=self._category)
 
-    def add_text(self, x, y, txt):
+    def make_txt(self, x, y, txt):
         txt = re.sub(' +', ' ', txt)
         txt = txt.replace('.', '\\.')
-        c = Comment(x, y, txt.split(' '))
-        self._cnv.append_object(c)
+        return Comment(x, y, txt.split(' '))
+
+    def add_text(self, x, y, txt):
+        self._cnv.append_object(self.make_txt(x, y, txt))
+
+    def make_link(self, x, y, name, url):
+        return PdObject("pddplink", x, y, args=[url, "-text", name])
 
     def add_link(self, x, y, name, url):
-        lnk = PdObject("pddplink", x, y, args=[url, "-text", name])
-        self._cnv.append_object(lnk)
+        self._cnv.append_object(self.make_link(x, y, name, url))
 
-    def add_delimiter(self, y):
-        delim = GCanvas(20, y, width=580, height=1, size=1)
+    def make_delimeter(self, y, **kwargs):
+        delim = GCanvas(kwargs.get('x', 20), y, width=kwargs.get('width', 580), height=1, size=1)
         delim._bg_color = Color(200, 200, 200)
-        self._cnv.append_object(delim)
+        return delim
+
+    def add_delimiter(self, y, **kwargs):
+        self._cnv.append_object(self.make_delimeter(y))
 
     def add_label(self, x, y, txt, **kwargs):
         obj = GCanvas(x, y, **kwargs)
@@ -210,16 +219,96 @@ class PdDocVisitor(DocObjectVisitor):
 
     def add_footer(self):
         y = self._cnv.height - self.PD_FOOTER_HEIGHT - 2
-        bg = GCanvas(1, y, width=self._width-3, height=self.PD_FOOTER_HEIGHT)
+        bg = GCanvas(1, y, width=self._width - 3, height=self.PD_FOOTER_HEIGHT)
         bg._bg_color = self.PD_FOOTER_COLOR
         self._cnv.append_object(bg)
 
-        self.add_text(10, y + 5, "library:")
+        # library:
+        self.add_text(10, y + 3, "library:")
         if self._website:
-            self.add_link(70, y + 5, self._library, self._website)
+            self.add_link(70, y + 3, self._library, self._website)
         else:
-            self.add_text(70, y + 5, self._library)
+            self.add_text(70, y + 3, self._library)
 
-        self.add_text(10, y + 20, "version: {0}".format(self._version))
+        # see also:
+        also_objects = []
+        for see in self._see_also:
+            obj = PdObject(see['name'], 0, y + 20)
+            obj.calc_brect()
+            also_objects.append(obj)
 
+        # width with padding
+        also_wd = map(lambda x: x.width, also_objects)
+        total_wd = sum(also_wd) + 14 * (len(also_wd) - 1)
+        x_init_pos = self._width - total_wd - 20
+        x_pos = x_init_pos
 
+        for obj in also_objects:
+            obj.x = x_pos
+            x_pos += obj.width + 14
+            self._cnv.append_object(obj)
+
+        self.add_text(x_init_pos - 70, y + 22, "see also:")
+
+        # more info
+        pd = Canvas(10, y + 22, self.PD_INFO_WINDOW_WIDTH, self.PD_INFO_WINDOW_HEIGHT, name='about')
+        pd.type = Canvas.TYPE_SUBPATCH
+
+        def add_subpatch_text(x, y, txt):
+            pd.append_object(self.make_txt(x, y, txt))
+
+        bg1 = GCanvas(1, 1, width=110 - 3, height=self.PD_INFO_WINDOW_HEIGHT - 3)
+        bg1._bg_color = self.PD_FOOTER_COLOR
+        pd.append_object(bg1)
+
+        xc1 = 10
+        xc2 = 120
+        yrows = range(10, 300, 22)
+        row = 0
+        add_subpatch_text(xc1, yrows[row], "library:")
+        add_subpatch_text(xc2, yrows[row], self._library)
+        row += 1
+        add_subpatch_text(xc1, yrows[row], "title:")
+        add_subpatch_text(xc2, yrows[row], self._title)
+        row += 1
+        add_subpatch_text(xc1, yrows[row], "version:")
+        add_subpatch_text(xc2, yrows[row], self._version)
+        row += 1
+        add_subpatch_text(xc1, yrows[row], "category:")
+        add_subpatch_text(xc2, yrows[row], self._category)
+        row += 1
+        add_subpatch_text(xc1, yrows[row], "authors:")
+        add_subpatch_text(xc2, yrows[row], " \\, ".join(self._authors))
+        row += 1
+
+        add_subpatch_text(xc1, yrows[row], "license:")
+        if not self._license.get('url', ' '):
+            add_subpatch_text(xc2, yrows[row], self._license['name'])
+        else:
+            lnk = self.make_link(xc2, yrows[row], self._license['name'], self._license['url'])
+            pd.append_object(lnk)
+        row += 1
+
+        if self._keywords:
+            add_subpatch_text(xc1, yrows[row], "keywords:")
+            add_subpatch_text(xc2, yrows[row], " \\, ".join(self._keywords))
+            row += 1
+
+        if self._website:
+            add_subpatch_text(xc1, yrows[row], "website:")
+            lnk = self.make_link(xc2, yrows[row], self._website, self._website)
+            pd.append_object(lnk)
+            row += 1
+
+        if self._contacts:
+            add_subpatch_text(xc1, yrows[row], "contacts:")
+            add_subpatch_text(xc2, yrows[row], self._contacts)
+            row += 1
+
+        row += 1
+        delim = self.make_delimeter(yrows[row], width=270, x=xc2)
+        pd.append_object(delim)
+        add_subpatch_text(xc2, yrows[row], "autogenerated by pddoc")
+        row += 1
+
+        self._cnv.append_subpatch(pd)

@@ -182,3 +182,8 @@ class PdObject(BaseObject):
             return
 
         visitor.visit_object(self)
+
+    def calc_brect(self):
+        brect = self.brect_calc().object_brect(self)
+        self._width = brect[2]
+        self._height = brect[3]

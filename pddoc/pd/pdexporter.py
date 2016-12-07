@@ -31,8 +31,8 @@ class PdExporter(AbstractVisitor):
         assert isinstance(cnv, Canvas)
 
         if cnv.type == Canvas.TYPE_WINDOW:
-            line = "#N canvas {0:d} {1:d} {2:d} {3:d} {4:s};". \
-                format(cnv.x, cnv.y, cnv.width, cnv.height, cnv.name)
+            line = "#N canvas {0:d} {1:d} {2:d} {3:d} {4};". \
+                format(cnv.x, cnv.y, cnv.width, cnv.height, cnv.font_size)
             self.result.append(line)
         elif cnv.type == Canvas.TYPE_SUBPATCH:
             line = "#N canvas {0:d} {1:d} {2:d} {3:d} {4:s} 0;". \

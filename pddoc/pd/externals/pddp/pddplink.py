@@ -26,12 +26,24 @@ from pddoc.cairopainter import CairoPainter
 
 def create(atoms):
     assert len(atoms) > 1
-    return PddpLink(atoms[0], atoms[1:])
+    # X obj 10 45 pddplink URL -text TXT;
+    if len(atoms) == 2:
+        return PddpLink(0, 0, atoms[1])
+    elif len(atoms) == 4:
+        return PddpLink(0, 0, atoms[1], atoms[3])
+    else:
+        assert False
 
 
 class PddpLink(pd.PdObject):
-    def __init__(self, name, args):
-        pd.PdObject.__init__(self, name, 0, 0, 0, 0, args)
+    def __init__(self, x, y, url, text=None):
+        if text:
+            pd.PdObject.__init__(self, "pddp/pddplink", x, y, 0, 0, [url, "-text", text])
+        else:
+            pd.PdObject.__init__(self, "pddp/pddplink", x, y, 0, 0, [url])
+
+        self._text = text
+        self._url = url
 
     def inlets(self):
         return ()
@@ -40,11 +52,11 @@ class PddpLink(pd.PdObject):
         return ()
 
     def url(self):
-        return self.args[0]
+        return self._url
 
     def text(self):
-        if len(self.args) > 2:
-            return " ".join(self._args[2:])
+        if self._text:
+            return self._text
         else:
             return self.url()
 

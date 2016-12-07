@@ -32,8 +32,8 @@ def main():
     arg_parser = argparse.ArgumentParser(description='PureData pddoc to pd patch converter')
     arg_parser.add_argument('--website', '-w', metavar='URL', help='library website URL')
     arg_parser.add_argument('--license', '-l', metavar='license', help='library license')
-    arg_parser.add_argument('--force', '-f', action='store_true', help='force to overwrite existing file')
     arg_parser.add_argument('--version', '-v', metavar='version', default='0.0', help='library version')
+    arg_parser.add_argument('--force', '-f', action='store_true', help='force to overwrite existing file')
     arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC(XML) format")
     arg_parser.add_argument('output', metavar='OUTNAME', nargs='?', default='',
                             help="Pd output patch file name")
@@ -71,12 +71,16 @@ def main():
             if 'license' in args:
                 v._license['name'] = args['license']
 
-            if 'URL' in args:
-                v._website = args['URL']
+            if 'website' in args:
+                v._website = args['website']
 
             dobj.traverse(v)
 
             patch_data = v.render()
+            if not patch_data:
+                print("convertion error")
+                exit(1)
+
             data = "\n".join(map(str, patch_data[:-1]))
             with open(output, 'w') as f:
                 f.write(data)

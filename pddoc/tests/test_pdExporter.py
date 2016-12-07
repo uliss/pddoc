@@ -28,7 +28,7 @@ import difflib
 class TestPdExporter(TestCase):
     def test_init(self):
         exp = PdExporter()
-        c = Canvas(0, 0, 200, 100)
+        c = Canvas(0, 0, 200, 100, font_size=10)
         c.type = Canvas.TYPE_WINDOW
         c.traverse(exp)
 

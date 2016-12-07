@@ -25,15 +25,15 @@ from pd.pdexporter import PdExporter
 from pd.gcanvas import GCanvas
 from pd.coregui import Color
 from pd.comment import Comment
-from pd.parser import Parser
 from pd.obj import PdObject
 from pd.factory import make_by_name
-import logging
-import os
 import re
+from pd.externals.pddp.pddplink import PddpLink
 
 
 class PdDocVisitor(DocObjectVisitor):
+    PD_WINDOW_WIDTH = 685
+    PD_WINDOW_HEIGHT = 555
     PD_HEADER_HEIGHT = 40
     PD_HEADER_FONT_SIZE = 20
     PD_HEADER_COLOR = Color(0, 255, 255)
@@ -46,18 +46,11 @@ class PdDocVisitor(DocObjectVisitor):
 
     def __init__(self):
         DocObjectVisitor.__init__(self)
-
-        pd_parser = Parser()
-        tmpl_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "share/doc_template.pd")
-        if not os.path.exists(tmpl_path):
-            logging.error("File not exists: \"%s\"", tmpl_path)
-
         self.current_yoff = 0
-        pd_parser.parse(tmpl_path)
-
-        self._cnv = pd_parser.canvas
+        self._cnv = Canvas(0, 0, self.PD_WINDOW_WIDTH, self.PD_WINDOW_HEIGHT, font_size=12)
         self._cnv.type = Canvas.TYPE_WINDOW
         self._width = self._cnv.width
+        self._height = self._cnv.height
 
     def meta_end(self, meta):
         self.add_header()
@@ -149,18 +142,19 @@ class PdDocVisitor(DocObjectVisitor):
         self.add_text(200, self.current_yoff, arg.text())
         self.current_yoff += 20
 
-    def substitute(self, txt):
-        txt = txt.replace("@{LIBRARY}@", self._library)
-        txt = txt.replace("@{CATEGORY}@", self._category)
-        return txt
-
     def object_end(self, obj):
+        LNK_X = 10
+        LNK_Y = 45
+        l1 = self.add_link(LNK_X, LNK_Y, "{0}::".format(self._library), "{0}-help.pd".format(self._library))
+        brect = PdObject.brect_calc().text_brect(l1.text())
+        LNK_X += brect[2] + 10
+        self.add_link(LNK_X, LNK_Y, "{0}".format(self._category), "{0}.{1}-help.pd".format(self._library, self._category))
         self.add_footer()
 
     def render(self):
         pd_exporter = PdExporter()
         self._cnv.traverse(pd_exporter)
-        return map(self.substitute, pd_exporter.result)
+        return pd_exporter.result
 
     def make_txt(self, x, y, txt):
         txt = re.sub(' +', ' ', txt)
@@ -173,7 +167,7 @@ class PdDocVisitor(DocObjectVisitor):
         return obj
 
     def make_link(self, x, y, name, url):
-        return PdObject("pddplink", x, y, args=[url, "-text", name])
+        return PddpLink(x, y, url, name)
 
     def add_link(self, x, y, name, url):
         obj = self.make_link(x, y, name, url)
@@ -226,7 +220,7 @@ class PdDocVisitor(DocObjectVisitor):
         self._cnv.append_object(example_obj)
 
     def add_footer(self):
-        y = self._cnv.height - self.PD_FOOTER_HEIGHT - 2
+        y = self._height - self.PD_FOOTER_HEIGHT - 2
         bg = GCanvas(1, y, width=self._width - 3, height=self.PD_FOOTER_HEIGHT)
         bg._bg_color = self.PD_FOOTER_COLOR
         self._cnv.append_object(bg)

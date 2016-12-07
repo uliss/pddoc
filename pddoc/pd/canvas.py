@@ -38,11 +38,17 @@ class Canvas(PdObject):
         if 'name' in kwargs:
             self._name = kwargs['name']
 
+        self._font_size = kwargs.get('font_size', 12)
+
         if 'open_on_load' in kwargs:
             self.open_on_load = kwargs['open_on_load']
 
         self._graph_on_parent = False
         self._gop = {}
+
+    @property
+    def font_size(self):
+        return self._font_size
 
     @property
     def objects(self):

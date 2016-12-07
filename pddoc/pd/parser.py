@@ -64,6 +64,7 @@ class Parser:
         # root canvas
         if self.canvas is None:
             c.type = Canvas.TYPE_WINDOW
+            c._font_size = int(atoms[4])
             self.canvas = c
         else:
             c.type = Canvas.TYPE_SUBPATCH

@@ -175,6 +175,7 @@ class PdDocVisitor(DocObjectVisitor):
     def make_txt(self, x, y, txt):
         txt = re.sub(' +', ' ', txt)
         txt = txt.replace('.', '\\.')
+        txt = txt.replace(',', ' \\,')
         return Comment(x, y, txt.split(' '))
 
     def add_text(self, x, y, txt):
@@ -285,7 +286,7 @@ class PdDocVisitor(DocObjectVisitor):
         row += 1
         if self._keywords:
             add_subpatch_text(xc1, yrows[row], "keywords:")
-            add_subpatch_text(xc2, yrows[row], " \\, ".join(self._keywords))
+            add_subpatch_text(xc2, yrows[row], ", ".join(self._keywords))
             row += 1
         if self._website:
             add_subpatch_text(xc1, yrows[row], "website:")

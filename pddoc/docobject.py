@@ -552,11 +552,20 @@ class DocXinfo(DocItem):
         if not self._minvalue and not self._maxvalue:
             return ()
 
-        return float(self._minvalue), float(self._maxvalue)
+        return self.min(), self.max()
 
     def on(self):
         return self._on
 
+    def min(self):
+        if not self._minvalue:
+            return "-inf"
+        return self._minvalue
+
+    def max(self):
+        if not self._maxvalue:
+            return "+inf"
+        return self._maxvalue
 
 class DocOutlets(DocXlets):
     def __init__(self, *args):

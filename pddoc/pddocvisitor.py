@@ -103,12 +103,29 @@ class PdDocVisitor(DocObjectVisitor):
         self.current_yoff += 10
 
     def inlet_begin(self, inlet):
-        self.add_text(140, self.current_yoff, "{0}.".format(inlet.number()))
+        self.add_text(120, self.current_yoff, "{0}.".format(inlet.number()))
 
     def xinfo_begin(self, xinfo):
-        self.add_text(160, self.current_yoff,
-                      "if *{0}* - {1}".format(xinfo.on(), xinfo.text()))
-        self.current_yoff += 20
+        tlist = []
+        t1 = self.add_text(150, self.current_yoff, "*{0}*".format(xinfo.on()))
+        tlist.append(t1)
+        t2 = self.add_text(230, self.current_yoff, xinfo.text())
+        tlist.append(t2)
+        val_range = xinfo.range()
+        if val_range:
+            t3 = self.add_text(150, self.current_yoff + 16, "({0}-{1})".format(val_range[0], val_range[1]))
+            tlist.append(t3)
+
+        ht = self.calc_height(tlist)
+        self.current_yoff += ht + 5
+
+    def calc_height(self, lst):
+        # calc all bounding rects
+        map(lambda x: x.calc_brect(), lst)
+        # find highest element y-coord
+        y_min = min(lst, key=lambda x: x.y).y
+        # find lowest elemet bottom y
+        return max(map(lambda x: x.height + x.y - y_min, lst))
 
     def outlets_begin(self, outlets):
         super(self.__class__, self).outlets_begin(outlets)
@@ -119,8 +136,8 @@ class PdDocVisitor(DocObjectVisitor):
         self.current_yoff += 10
 
     def outlet_begin(self, outlet):
-        self.add_text(140, self.current_yoff, "{0}.".format(outlet.number()))
-        self.add_text(200, self.current_yoff, outlet.text())
+        self.add_text(120, self.current_yoff, "{0}.".format(outlet.number()))
+        self.add_text(230, self.current_yoff, outlet.text())
         self.current_yoff += 20
 
     def arguments_begin(self, args):
@@ -151,21 +168,27 @@ class PdDocVisitor(DocObjectVisitor):
         return Comment(x, y, txt.split(' '))
 
     def add_text(self, x, y, txt):
-        self._cnv.append_object(self.make_txt(x, y, txt))
+        obj = self.make_txt(x, y, txt)
+        self._cnv.append_object(obj)
+        return obj
 
     def make_link(self, x, y, name, url):
         return PdObject("pddplink", x, y, args=[url, "-text", name])
 
     def add_link(self, x, y, name, url):
-        self._cnv.append_object(self.make_link(x, y, name, url))
+        obj = self.make_link(x, y, name, url)
+        self._cnv.append_object(obj)
+        return obj
 
     def make_delimeter(self, y, **kwargs):
-        delim = GCanvas(kwargs.get('x', 20), y, width=kwargs.get('width', 580), height=1, size=1)
+        delim = GCanvas(kwargs.get('x', 20), y, width=kwargs.get('width', 640), height=1, size=1)
         delim._bg_color = Color(200, 200, 200)
         return delim
 
     def add_delimiter(self, y, **kwargs):
-        self._cnv.append_object(self.make_delimeter(y))
+        obj = self.make_delimeter(y)
+        self._cnv.append_object(obj)
+        return obj
 
     def add_label(self, x, y, txt, **kwargs):
         obj = GCanvas(x, y, **kwargs)

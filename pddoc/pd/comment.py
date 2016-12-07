@@ -22,6 +22,7 @@ __author__ = 'Serge Poltavski'
 
 from baseobject import *
 from abstractvisitor import AbstractVisitor
+from obj import PdObject
 
 
 class Comment(BaseObject):
@@ -68,3 +69,8 @@ class Comment(BaseObject):
             return
 
         visitor.visit_comment(self)
+
+    def calc_brect(self):
+        brect = PdObject.brect_calc().comment_brect(self)
+        self._width = brect[2]
+        self._height = brect[3]

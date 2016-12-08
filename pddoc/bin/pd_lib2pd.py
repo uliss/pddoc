@@ -28,7 +28,7 @@ def main():
     args = vars(arg_parser.parse_args())
 
     if not os.path.exists(args['input']):
-        logging.error('file not exists: "%s"', args['input'])
+        logging.error('no such file: "%s"', args['input'])
         exit(-1)
 
     lp = LibraryParser(args['input'])

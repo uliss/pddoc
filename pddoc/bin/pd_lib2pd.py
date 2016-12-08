@@ -33,7 +33,8 @@ def main():
 
     lp = LibraryParser(args['input'])
     lp.process()
-    print(str(lp))
+    with open(lp.lib_name() + "-help.pd", "w") as f:
+        f.write(str(lp))
 
 if __name__ == '__main__':
     main()

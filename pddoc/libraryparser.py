@@ -46,6 +46,9 @@ class LibraryParser(object):
         self._lib_info = ""
         self._current_y = 60
 
+    def lib_name(self):
+        return self._lib_name
+
     def process(self):
         self._xml = etree.parse(self._fname)
         self._root = self._xml.getroot()
@@ -71,7 +74,7 @@ class LibraryParser(object):
         pdobj.y = self._current_y
         self._cnv.append_object(pdobj)
         self.add_text(110, self._current_y, obj.get('descr'))
-        self._current_y += 40
+        self._current_y += 30
 
     def __str__(self):
         pd_exporter = PdExporter()

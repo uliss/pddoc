@@ -24,6 +24,7 @@ import re
 from pddoc.pd import Message, Comment, Canvas
 from six import string_types
 from pddoc.pd import factory
+from pddoc.pd.coregui import CoreGui
 import copy
 
 
@@ -171,7 +172,11 @@ class Parser(object):
                 assert len(atoms) > 0
                 name = atoms[0]
                 args = atoms[1:]
-                n.pd_object = factory.make_by_name(name, args)
+                if CoreGui.is_coregui(name):
+                    kwargs = dict(map(lambda x: tuple(x.split('=')), args))
+                    n.pd_object = factory.make_by_name(name, **kwargs)
+                else:
+                    n.pd_object = factory.make_by_name(name, args)
             elif n.type == 'MESSAGE':
                 m = re.match(lex.r_MESSAGE, n.value)
                 args = m.group(1).split(' ')

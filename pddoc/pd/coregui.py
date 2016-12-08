@@ -133,6 +133,12 @@ def color_from_str(value):
 class CoreGui(obj.PdObject):
     POS_LEFT, POS_RIGHT, POS_TOP, POS_BOTTOM = (0, 1, 2, 3)
 
+    @classmethod
+    def is_coregui(cls, name):
+        return name in ("bng", "tgl", "floatatom", "symbolatom",
+                        "nbx", "hslider", "vsl", "hsl", "vu",
+                        "hradio", "vradio")
+
     def __init__(self, name, x, y, args, **kwargs):
         obj.PdObject.__init__(self, name, x, y, 0, 0, args)
         self._send = kwargs.get("send", "empty")

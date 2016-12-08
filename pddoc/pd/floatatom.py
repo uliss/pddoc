@@ -144,3 +144,8 @@ class FloatAtom(CoreGui):
                 assert False
 
             painter.draw_text(lx, ly, self._label)
+
+    def to_atoms(self):
+        return ["#X", "floatatom", self._x, self._y, self._digits,
+                self._min, self._max,
+                self._label_pos, self.label, self.send, self.receive]

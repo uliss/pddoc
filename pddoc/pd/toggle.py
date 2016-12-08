@@ -77,4 +77,3 @@ class PdToggle(CoreGui):
                 self._font_type, self._font_size,
                 self._bg_color.to_pd(), self._label_color.to_pd(), self._fg_color.to_pd(),
                 self._init_value, self._default_value]
-

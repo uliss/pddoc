@@ -28,8 +28,8 @@ from pd.obj import PdObject
 
 
 class LibraryParser(object):
-    WINDOW_WIDTH = 450
-    WINDOW_HEIGHT = 600
+    WINDOW_WIDTH = 600
+    WINDOW_HEIGHT = 500
 
     def __init__(self, fname):
         self._fname = fname
@@ -73,7 +73,7 @@ class LibraryParser(object):
         pdobj.x = 20
         pdobj.y = self._current_y
         self._cnv.append_object(pdobj)
-        self.add_text(110, self._current_y, obj.get('descr'))
+        self.add_text(150, self._current_y, obj.get('descr'))
         self._current_y += 30
 
     def __str__(self):

@@ -26,7 +26,7 @@ import os.path
 
 import nologging
 
-BIN_PATH = os.path.join(os.path.dirname(__file__), "..", "bin", "pd2image.py")
+BIN_PATH = os.path.join(os.path.dirname(__file__), "..", "bin", "pd_pd2img.py")
 
 
 class TestCairoPainter(unittest.TestCase):

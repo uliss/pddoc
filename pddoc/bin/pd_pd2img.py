@@ -28,7 +28,7 @@ __author__ = 'Serge Poltavski'
 
 
 def main():
-    arg_parser = argparse.ArgumentParser(description='PureData patch to image converter')
+    arg_parser = argparse.ArgumentParser(description='Converts Pd patch to image')
     arg_parser.add_argument('--format', '-f', metavar='format', nargs=1, choices=("png", "pdf", "svg"),
                             help='output image format')
     arg_parser.add_argument('--width', metavar='px', nargs=1, help='image width in pixels')

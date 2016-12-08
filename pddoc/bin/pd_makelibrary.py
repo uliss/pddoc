@@ -27,14 +27,16 @@ def check_file(fname):
     if os.path.exists(fname):
         return True
     else:
-        logging.error("file not exists: '%s'", fname)
+        logging.error("file not found: '%s'", fname)
         return False
 
+
 def main():
-    arg_parser = argparse.ArgumentParser(description='PureData XML library tool')
+    arg_parser = argparse.ArgumentParser(description='Generates Pd XML library documentation from input '
+                                                     'pddoc files for individual objects.')
     arg_parser.add_argument('--library', '-l', metavar='NAME', required=True, help="library name")
     arg_parser.add_argument('--output', '-o', metavar='OUTPUT', help="output xml file")
-    arg_parser.add_argument('--version', '-v', metavar='version', default="0.0", help="set library version")
+    arg_parser.add_argument('--version', '-v', metavar='version', default="0.0", help="library version")
     arg_parser.add_argument('pddoc_files', metavar='FILE', nargs='+', help="pddoc files")
 
     args = vars(arg_parser.parse_args())

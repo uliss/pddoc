@@ -4,7 +4,7 @@ import argparse
 import shutil
 import logging
 import os
-from lxml import etree
+from pddoc.parser import parse_xml
 
 from pddoc.htmldocvisitor import HtmlDocVisitor
 from pddoc.docobject import DocObject
@@ -27,12 +27,6 @@ from pddoc.docobject import DocObject
 __author__ = 'Serge Poltavski'
 
 
-def get_parser():
-    schema_root = etree.parse(os.path.join(os.path.dirname(__file__), '..', 'share', 'pddoc.xsd')).getroot()
-    schema = etree.XMLSchema(schema_root)
-    return etree.XMLParser(schema=schema)
-
-
 def main():
     arg_parser = argparse.ArgumentParser(description='PureData pddoc to html converter')
     arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC format")
@@ -50,12 +44,8 @@ def main():
     if not output:
         output = os.path.splitext(os.path.basename(in_file))[0] + ".html"
 
-    xml = None
-    try:
-        xml = etree.parse(in_file, get_parser())
-        xml.xinclude()
-    except etree.XMLSyntaxError as e:
-        logging.error("XML syntax error:\n \"%s\"\n\twhile parsing file: \"%s\"", e, in_file)
+    xml = parse_xml(in_file)
+    if not xml:
         exit(1)
 
     css_file = "theme.css"

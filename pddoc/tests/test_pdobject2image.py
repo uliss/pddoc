@@ -24,7 +24,7 @@ import subprocess
 import os
 import os.path
 
-BIN_PATH = os.path.join(os.path.dirname(__file__), "..", "bin", "pd_object2image.py")
+BIN_PATH = os.path.join(os.path.dirname(__file__), "..", "bin", "pd_obj2img.py")
 
 
 class TestCairoPainter(unittest.TestCase):

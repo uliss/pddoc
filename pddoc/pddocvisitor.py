@@ -143,9 +143,12 @@ class PdDocVisitor(DocObjectVisitor):
         self.current_yoff += 10
 
     def outlet_begin(self, outlet):
-        self.add_text(120, self.current_yoff, "{0}.".format(outlet.number()))
-        self.add_text(230, self.current_yoff, outlet.text())
-        self.current_yoff += 20
+        y = self.current_yoff
+        t1 = self.add_text(120, y, "{0}.".format(outlet.number()))
+        t2 = self.add_text(230, y, outlet.text())
+
+        ht = self.calc_objects_height([t1, t2])
+        self.current_yoff += ht + 5
 
     def arguments_begin(self, args):
         super(self.__class__, self).arguments_begin(args)

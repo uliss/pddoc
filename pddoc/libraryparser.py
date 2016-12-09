@@ -70,11 +70,13 @@ class LibraryParser(object):
 
     def add_object_description(self, obj):
         pdobj = make_by_name(obj.get('name'))
+        pdobj.calc_brect()
         pdobj.x = 20
         pdobj.y = self._current_y
         self._cnv.append_object(pdobj)
-        self.add_text(150, self._current_y, obj.get('descr'))
-        self._current_y += 30
+        t1 = self.add_text(150, self._current_y, obj.get('descr'))
+        t1.calc_brect()
+        self._current_y += max(t1.height, pdobj.height) + 10
 
     def __str__(self):
         pd_exporter = PdExporter()

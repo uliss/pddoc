@@ -574,29 +574,23 @@ class DocOutlets(DocXlets):
     def is_valid_tag(self, tag_name):
         return tag_name == "outlet"
 
-    def outlet_dict(self):
-        return self.xlet_dict()
-
 
 class DocOutlet(DocXlet):
     def __init__(self, *args):
         DocXlet.__init__(self, args)
 
 
-class DocArgument(DocTypeElement):
+class DocArgument(DocXlet):
     def __init__(self, *args):
         DocTypeElement.__init__(self, args)
 
 
-class DocArguments(DocItem):
+class DocArguments(DocXlets):
     def __init__(self, *args):
-        DocItem.__init__(self, args)
+        DocXlets.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
         return tag_name == "argument"
-
-    def argument_count(self):
-        return len(self._elements)
 
 
 class DocInfo(DocItem):

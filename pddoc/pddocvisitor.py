@@ -43,6 +43,9 @@ class PdDocVisitor(DocObjectVisitor):
     PD_FOOTER_COLOR = Color(180, 180, 180)
     PD_INFO_WINDOW_WIDTH = 400
     PD_INFO_WINDOW_HEIGHT = 250
+    PD_XLET_INDX_XPOS = 125
+    PD_XLET_TYPE_XPOS = 150
+    PD_XLET_INFO_XPOS = 230
 
     def __init__(self):
         DocObjectVisitor.__init__(self)
@@ -110,17 +113,21 @@ class PdDocVisitor(DocObjectVisitor):
         self.current_yoff += 10
 
     def inlet_begin(self, inlet):
-        self.add_text(120, self.current_yoff, "{0}.".format(inlet.number()))
+        self.add_text(self.PD_XLET_INDX_XPOS, self.current_yoff, "{0}.".format(inlet.number()))
 
     def xinfo_begin(self, xinfo):
         tlist = []
-        t1 = self.add_text(150, self.current_yoff, "*{0}*".format(xinfo.on()))
-        tlist.append(t1)
-        t2 = self.add_text(230, self.current_yoff, xinfo.text())
+        if xinfo.on():
+            t1 = self.add_text(self.PD_XLET_TYPE_XPOS, self.current_yoff, "*{0}*".format(xinfo.on()))
+            tlist.append(t1)
+
+        t2 = self.add_text(self.PD_XLET_INFO_XPOS, self.current_yoff, xinfo.text())
         tlist.append(t2)
         val_range = xinfo.range()
         if val_range:
-            t3 = self.add_text(150, self.current_yoff + 16, "({0}-{1})".format(val_range[0], val_range[1]))
+            t3 = self.add_text(self.PD_XLET_TYPE_XPOS,
+                               self.current_yoff + 16,
+                               "({0}-{1})".format(val_range[0], val_range[1]))
             tlist.append(t3)
 
         ht = self.calc_objects_height(tlist)
@@ -144,8 +151,8 @@ class PdDocVisitor(DocObjectVisitor):
 
     def outlet_begin(self, outlet):
         y = self.current_yoff
-        t1 = self.add_text(120, y, "{0}.".format(outlet.number()))
-        t2 = self.add_text(230, y, outlet.text())
+        t1 = self.add_text(self.PD_XLET_INDX_XPOS, y, "{0}.".format(outlet.number()))
+        t2 = self.add_text(self.PD_XLET_INFO_XPOS, y, outlet.text())
 
         ht = self.calc_objects_height([t1, t2])
         self.current_yoff += ht + 5
@@ -153,11 +160,18 @@ class PdDocVisitor(DocObjectVisitor):
     def arguments_begin(self, args):
         super(self.__class__, self).arguments_begin(args)
         self.add_section(self.current_yoff, "arguments:")
+        args.enumerate()
+
+    def arguments_end(self, outlets):
+        self.current_yoff += 10
 
     def argument_begin(self, arg):
+        y = self.current_yoff
         super(self.__class__, self).argument_begin(arg)
-        self.add_text(200, self.current_yoff, arg.text())
-        self.current_yoff += 20
+        t1 = self.add_text(self.PD_XLET_INDX_XPOS, y, "{0}.".format(arg.number()))
+        t2 = self.add_text(self.PD_XLET_INFO_XPOS, y, arg.text())
+        ht = self.calc_objects_height([t1, t2])
+        self.current_yoff += ht + 5
 
     def object_end(self, obj):
         LNK_X = 10
@@ -216,7 +230,7 @@ class PdDocVisitor(DocObjectVisitor):
     def add_section(self, y, txt):
         self.add_delimiter(y)
 
-        lbl = GCanvas(20, y + 10, width=100, height=20, size=10, label=txt, font_size=14)
+        lbl = GCanvas(20, y + 10, width=100, height=20, size=10, label=txt, font_size=14, label_yoff=9)
         lbl._label_color = Color(50, 50, 50)
         self._cnv.append_object(lbl)
         self.current_yoff += 10

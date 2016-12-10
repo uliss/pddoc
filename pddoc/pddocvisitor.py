@@ -70,6 +70,17 @@ class PdDocVisitor(DocObjectVisitor):
         self.current_yoff += self.PD_HEADER_HEIGHT
         self.current_yoff += 30
 
+    def description_begin(self, d):
+        super(self.__class__, self).description_begin(d)
+        txt = self.make_txt(0, 0, self._description)
+        txt.calc_brect()
+        x = self.window_width() - txt.width - 40
+        y = self.PD_HEADER_HEIGHT + 10
+        txt.x = x
+        txt.y = y
+        self.add_background(x, y, txt.width + 8, txt.height + 8, Color(240, 250, 250))
+        self._cnv.append_object(txt)
+
     def pdascii_begin(self, t):
         cnv = super(self.__class__, self).pdascii_begin(t)
         self.copy_canvas_objects(cnv)
@@ -345,11 +356,18 @@ class PdDocVisitor(DocObjectVisitor):
 
         c = Comment(x, y, txt.split(' '))
         c.calc_brect()
-        bg = GCanvas(x + 1, y + 1, width=c.width + padx, height=c.height + pady)
+        self.add_background(x + 1, y + 1, c.width + padx, c.height + pady, color)
+
+    def add_background(self, x, y, w, h, color):
+        bg = GCanvas(x, y, width=w, height=h)
         bg._bg_color = color
         self._cnv.append_object(bg)
 
+
     def add_also(self, y):
+        if len(self._see_also) < 1:
+            return
+        
         # see also:
         also_objects = []
         for see in self._see_also:

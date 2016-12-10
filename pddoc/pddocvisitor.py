@@ -168,9 +168,11 @@ class PdDocVisitor(DocObjectVisitor):
     def argument_begin(self, arg):
         y = self.current_yoff
         super(self.__class__, self).argument_begin(arg)
+
         t1 = self.add_text(self.PD_XLET_INDX_XPOS, y, "{0}.".format(arg.number()))
-        t2 = self.add_text(self.PD_XLET_INFO_XPOS, y, arg.text())
-        ht = self.calc_objects_height([t1, t2])
+        t2 = self.add_text(self.PD_XLET_TYPE_XPOS, y, arg.type())
+        t3 = self.add_text(self.PD_XLET_INFO_XPOS, y, arg.main_info())
+        ht = self.calc_objects_height([t1, t2, t3])
         self.current_yoff += ht + 5
 
     def object_end(self, obj):
@@ -258,7 +260,7 @@ class PdDocVisitor(DocObjectVisitor):
         return lbl
 
     def add_footer(self):
-        y = self.window_height() - self.PD_FOOTER_HEIGHT - 2
+        y = max(self.window_height() - self.PD_FOOTER_HEIGHT - 2, self.current_yoff)
         self.add_footer_bg(y)
         self.add_footer_library(y)
         self.add_also(y)
@@ -292,7 +294,7 @@ class PdDocVisitor(DocObjectVisitor):
         add_subpatch_text(xc2, yrows[row], self._category)
         row += 1
         add_subpatch_text(xc1, yrows[row], "authors:")
-        add_subpatch_text(xc2, yrows[row], " \\, ".join(self._authors))
+        add_subpatch_text(xc2, yrows[row], ", ".join(self._authors))
         row += 1
         add_subpatch_text(xc1, yrows[row], "license:")
         if not self._license.get('url', ' '):

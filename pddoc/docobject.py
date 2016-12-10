@@ -567,6 +567,7 @@ class DocXinfo(DocItem):
             return "+inf"
         return self._maxvalue
 
+
 class DocOutlets(DocXlets):
     def __init__(self, *args):
         DocXlets.__init__(self, args)
@@ -580,9 +581,69 @@ class DocOutlet(DocXlet):
         DocXlet.__init__(self, args)
 
 
-class DocArgument(DocXlet):
+class DocArgument(DocItem):
+    UNIT_MAP = {
+        'herz': 'Hz',
+        'kiloherzt': 'KHz',
+        'millisecond': 'ms',
+        'second': 'sec',
+        'decibel': 'db',
+        'bpm': 'bpm'
+    }
+
     def __init__(self, *args):
-        DocTypeElement.__init__(self, args)
+        DocItem.__init__(self, args)
+        self._number = ""
+        self._type = ""
+        self._units = ""
+        self._name = ""
+
+    def from_xml(self, xmlobj):
+        self._name = xmlobj.attrib.get("name", "anonym")
+        self._number = xmlobj.attrib.get("number", "")
+        self._type = xmlobj.attrib.get("type", "")
+        self._units = xmlobj.attrib.get("units", "")
+        DocItem.from_xml(self, xmlobj)
+
+    def type(self):
+        return self._type
+
+    def units(self):
+        if not self._units:
+            return ""
+
+        return self.UNIT_MAP[self._units]
+
+    def name(self):
+        return self._name
+
+    def number(self):
+        return self._number
+
+    def enumerate(self, n):
+        if self._number == "":
+            self._number = n
+
+    def type_info(self):
+        if self._type == "float":
+            if self._units:
+                return self.units()
+            else:
+                return "*float*"
+        else:
+            return self._type
+
+    def main_info(self):
+        res = ""
+        if self._name:
+            res += "{0}".format(self._name)
+
+        if self._units:
+            res += "({0})".format(self.units())
+
+        res += ": "
+        res += self.text()
+        return res
 
 
 class DocArguments(DocXlets):

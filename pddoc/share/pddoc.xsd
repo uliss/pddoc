@@ -28,6 +28,25 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="ArgumentDataType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="int"/>
+            <xs:enumeration value="float"/>
+            <xs:enumeration value="symbol"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="UnitDataType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="herz"/>
+            <xs:enumeration value="kiloherz"/>
+            <xs:enumeration value="decibel"/>
+            <xs:enumeration value="millisecond"/>
+            <xs:enumeration value="bpm"/>
+            <xs:enumeration value="second"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="LabelPos">
         <xs:restriction base="xs:string">
             <xs:enumeration value="left"/>
@@ -246,7 +265,11 @@
     <xs:complexType name="ArgumentElementType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="type" use="required" type="ControlDataType"/>
+                <xs:attribute name="name" use="required" type="xs:string"/>
+                <xs:attribute name="type" use="required" type="ArgumentDataType"/>
+                <xs:attribute name="units" use="optional" type="UnitDataType"/>
+                <xs:attribute name="minvalue" use="optional" type="xs:float"/>
+                <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>

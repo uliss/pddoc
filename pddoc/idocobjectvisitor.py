@@ -254,5 +254,11 @@ class IDocObjectVisitor(object):
     def xinfo_end(self, ws):
         pass
 
+    def since_begin(self, s):
+        pass
+
+    def since_end(self, s):
+        pass
+
     def render(self):
         raise NotImplementedError

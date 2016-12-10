@@ -131,7 +131,7 @@ class DocMeta(DocItem):
         return tag_name in ("description", "authors", "contacts",
                             "license", "version", "website",
                             "aliases", "keywords", "library",
-                            "also", "category")
+                            "also", "category", "since")
 
 
 class DocDescription(DocItem):
@@ -706,3 +706,8 @@ class DocObject(DocItem):
     def traverse(self, visitor):
         visitor.name = self._name
         DocItem.traverse(self, visitor)
+
+
+class DocSince(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)

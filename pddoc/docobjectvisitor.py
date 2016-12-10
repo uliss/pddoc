@@ -62,6 +62,7 @@ class DocObjectVisitor(IDocObjectVisitor):
         self._pdascii = ""
         self._inlet_idx = 0
         self._outlet_idx = 0
+        self._since = ""
 
     def aliases_begin(self, a):
         if not a.aliases():
@@ -202,6 +203,9 @@ class DocObjectVisitor(IDocObjectVisitor):
 
     def arguments_begin(self, args):
         self._arguments = args.items()
+
+    def since_begin(self, s):
+        self._since = s.text()
 
     def see_begin(self, see):
         element = {

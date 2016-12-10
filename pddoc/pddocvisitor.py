@@ -309,6 +309,12 @@ class PdDocVisitor(DocObjectVisitor):
         add_subpatch_text(xc1, yrows[row], "category:")
         add_subpatch_text(xc2, yrows[row], self._category)
         row += 1
+
+        if(self._since):
+            add_subpatch_text(xc1, yrows[row], "since:")
+            add_subpatch_text(xc2, yrows[row], self._since)
+            row += 1
+
         add_subpatch_text(xc1, yrows[row], "authors:")
         add_subpatch_text(xc2, yrows[row], ", ".join(self._authors))
         row += 1
@@ -363,11 +369,10 @@ class PdDocVisitor(DocObjectVisitor):
         bg._bg_color = color
         self._cnv.append_object(bg)
 
-
     def add_also(self, y):
         if len(self._see_also) < 1:
             return
-        
+
         # see also:
         also_objects = []
         for see in self._see_also:

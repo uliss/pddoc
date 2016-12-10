@@ -115,6 +115,7 @@
             <xs:element name="category" type="xs:string" minOccurs="0"/>
             <xs:element name="aliases" type="AliasesElementType" minOccurs="0"/>
             <xs:element name="also" type="AlsoElementType" minOccurs="0"/>
+            <xs:element name="since" type="xs:string" minOccurs="0"/>
         </xs:all>
     </xs:complexType>
 

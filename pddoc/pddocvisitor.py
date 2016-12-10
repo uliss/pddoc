@@ -46,6 +46,7 @@ class PdDocVisitor(DocObjectVisitor):
     PD_XLET_INDX_XPOS = 125
     PD_XLET_TYPE_XPOS = 150
     PD_XLET_INFO_XPOS = 230
+    PD_ARG_NAME_COLOR = Color(230, 240, 240)
 
     def __init__(self):
         DocObjectVisitor.__init__(self)
@@ -171,6 +172,10 @@ class PdDocVisitor(DocObjectVisitor):
 
         t1 = self.add_text(self.PD_XLET_INDX_XPOS, y, "{0}.".format(arg.number()))
         t2 = self.add_text(self.PD_XLET_TYPE_XPOS, y, arg.type())
+        self.add_background_for_txt(arg.main_info_prefix(),
+                                    self.PD_XLET_INFO_XPOS,
+                                    y,
+                                    self.PD_ARG_NAME_COLOR)
         t3 = self.add_text(self.PD_XLET_INFO_XPOS, y, arg.main_info())
         ht = self.calc_objects_height([t1, t2, t3])
         self.current_yoff += ht + 5
@@ -329,6 +334,19 @@ class PdDocVisitor(DocObjectVisitor):
     def add_footer_bg(self, y):
         bg = GCanvas(1, y, width=self.window_width() - 3, height=self.PD_FOOTER_HEIGHT)
         bg._bg_color = self.PD_FOOTER_COLOR
+        self._cnv.append_object(bg)
+
+    def add_background_for_txt(self, txt, x, y, color, **kwargs):
+        if len(txt) < 1:
+            return
+
+        padx = kwargs.get("padx", 5)
+        pady = kwargs.get("pady", 5)
+
+        c = Comment(x, y, txt.split(' '))
+        c.calc_brect()
+        bg = GCanvas(x + 1, y + 1, width=c.width + padx, height=c.height + pady)
+        bg._bg_color = color
         self._cnv.append_object(bg)
 
     def add_also(self, y):

@@ -633,15 +633,19 @@ class DocArgument(DocItem):
         else:
             return self._type
 
-    def main_info(self):
+    def main_info_prefix(self):
         res = ""
         if self._name:
             res += "{0}".format(self._name)
-
         if self._units:
             res += "({0})".format(self.units())
 
-        res += ": "
+        if res:
+            res += ": "
+        return res
+
+    def main_info(self):
+        res = self.main_info_prefix()
         res += self.text()
         return res
 

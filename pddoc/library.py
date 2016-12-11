@@ -68,7 +68,7 @@ class LibraryMaker(object):
         # first time add new category
         if cat_name not in self._cats:
             c = etree.Element('category', name=cat_name)
-            cat_info_path = "{0}.xml".format(cat_name)
+            cat_info_path = "{0}_category_{1}.xml".format(self._name, cat_name)
             if os.path.exists(cat_info_path):
                 c.append(self.xi_include(os.path.basename(cat_info_path)))
 

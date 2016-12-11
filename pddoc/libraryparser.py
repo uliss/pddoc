@@ -25,11 +25,15 @@ import re
 from pd.comment import Comment
 from pd.factory import make_by_name
 from pd.obj import PdObject
+from copy import deepcopy
 
 
 class LibraryParser(object):
     WINDOW_WIDTH = 600
     WINDOW_HEIGHT = 500
+    HEADER_BG_COLOR = Color(100, 100, 100)
+    HEADER_TXT_COLOR = Color(0, 255, 255)
+    HEADER_HEIGHT = 50
 
     def __init__(self, fname):
         self._fname = fname
@@ -45,6 +49,7 @@ class LibraryParser(object):
         self._lib_contacts = ""
         self._lib_info = ""
         self._current_y = 60
+        self._pd_cats = {}
 
     def lib_name(self):
         return self._lib_name
@@ -63,12 +68,13 @@ class LibraryParser(object):
 
         cats = self._root.findall("category")
         for c in cats:
-            self.add_category_section(self._current_y, c.get('name'))
+            cat_name = c.get('name')
+            self.add_category_section(self._current_y, cat_name)
             entries = c.findall('entry')
             for e in entries:
-                self.add_object_description(e)
+                self.add_object_description(e, cat_name)
 
-    def add_object_description(self, obj):
+    def add_object_description(self, obj, cat_name):
         pdobj = make_by_name(obj.get('name'))
         pdobj.calc_brect()
         pdobj.x = 20
@@ -77,6 +83,9 @@ class LibraryParser(object):
         t1 = self.add_text(150, self._current_y, obj.get('descr'))
         t1.calc_brect()
         self._current_y += max(t1.height, pdobj.height) + 10
+
+        self._pd_cats[cat_name].append(pdobj)
+        self._pd_cats[cat_name].append(t1)
 
     def __str__(self):
         pd_exporter = PdExporter()
@@ -87,8 +96,8 @@ class LibraryParser(object):
         cnv = GCanvas(1, 1, width=self.WINDOW_WIDTH - 3, height=60,
                       label="library:{0}".format(self._lib_name.upper()), font_size=20,
                       label_xoff=20, label_yoff=20)
-        cnv._bg_color = Color(100, 100, 100)
-        cnv._label_color = Color(0, 255, 255)
+        cnv._bg_color = self.HEADER_BG_COLOR
+        cnv._label_color = self.HEADER_TXT_COLOR
         self._cnv.append_object(cnv)
 
     def add_category_section(self, y, txt):
@@ -98,6 +107,9 @@ class LibraryParser(object):
         self._current_y += 30
         self.add_delimiter(self._current_y)
         self._current_y += 20
+
+        # add new entry in category dict
+        self._pd_cats[txt] = []
 
     def make_delimeter(self, y, **kwargs):
         delim = GCanvas(20, y, width=self.WINDOW_WIDTH - 24, height=1, size=1)
@@ -119,3 +131,39 @@ class LibraryParser(object):
         obj = self.make_txt(x, y, txt)
         self._cnv.append_object(obj)
         return obj
+
+    def process_categories(self):
+        for name in sorted(self._pd_cats.keys()):
+            data = self.generate_category(name)
+            fname = "{0}.{1}-help.pd".format(self._lib_name, name)
+            with open(fname, "w") as f:
+                f.write(data)
+
+    def generate_category(self, name):
+        pd_cat = Canvas(0, 0, self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
+        pd_cat.type = Canvas.TYPE_WINDOW
+
+        cnv = GCanvas(1, 1,
+                      width=self.WINDOW_WIDTH - 3,
+                      height=self.HEADER_HEIGHT,
+                      label="{0}::{1}".format(self.lib_name(), name),
+                      font_size=18,
+                      label_xoff=20,
+                      label_yoff=20)
+
+        cnv._bg_color = self.HEADER_BG_COLOR
+        cnv._label_color = self.HEADER_TXT_COLOR
+        pd_cat.append_object(cnv)
+
+        y_off = 0
+        if len(self._pd_cats[name]) > 0:
+            y_off = self._pd_cats[name][0].y - self.HEADER_HEIGHT
+
+        for o in self._pd_cats[name]:
+            cat_obj = deepcopy(o)
+            cat_obj.y -= y_off
+            pd_cat.append_object(cat_obj)
+
+        pd_exporter = PdExporter()
+        pd_cat.traverse(pd_exporter)
+        return '\n'.join(pd_exporter.result[:-1])

@@ -3,6 +3,7 @@
 from lxml import etree
 import logging
 from pddoc.parser import get_parser
+import os
 #   Copyright (C) 2016 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
@@ -67,6 +68,10 @@ class LibraryMaker(object):
         # first time add new category
         if cat_name not in self._cats:
             c = etree.Element('category', name=cat_name)
+            cat_info_path = "{0}.xml".format(cat_name)
+            if os.path.exists(cat_info_path):
+                c.append(self.xi_include(os.path.basename(cat_info_path)))
+
             self._cats[cat_name] = c
             self._lib.append(c)
             self._cat_entries[cat_name] = {}
@@ -79,9 +84,11 @@ class LibraryMaker(object):
         self._cat_entries[cat_name][kwargs['name']] = True
 
         entry = etree.Element('entry', **kwargs)
-        include = etree.Element('{http://www.w3.org/2001/XInclude}include', href=fname, parse="xml")
-        entry.append(include)
+        entry.append(self.xi_include(os.path.basename(fname)))
         self._cats[cat_name].append(entry)
+
+    def xi_include(self, fname):
+        return etree.Element('{http://www.w3.org/2001/XInclude}include', href=fname, parse="xml")
 
     def sort_cat(self, cat):
         entries = cat.findall('entry')

@@ -47,6 +47,7 @@ def main():
         exit(-1)
 
     lib = LibraryMaker(args['library'])
+    lib.version = args['version']
     lib.process_files(files)
     lib.sort()
 

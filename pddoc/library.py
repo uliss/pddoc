@@ -30,32 +30,71 @@ class LibraryMaker(object):
         self._lib = etree.Element("library", version="1.0", name=name, nsmap=self.NSMAP)
         self._cats = {}
         self._cat_entries = {}
+        self._authors = {}
+        self._version = ""
+
+    @property
+    def version(self):
+        return self._version
+
+    @version.setter
+    def version(self, v):
+        self._version = v
 
     def process_files(self, files):
         for f in files:
-            try:
-                xml = etree.parse(f, get_parser())
-            except etree.XMLSyntaxError as e:
-                logging.error("XML syntax error:\n \"%s\"\n\twhile parsing file: \"%s\"", e, f)
-                continue
+            self.process_object_file(f)
 
-            pddoc = xml.getroot()
-            objects = filter(lambda x: x.tag == 'object', pddoc)
-            for obj in objects:
-                name = obj.get('name')
-                descr = obj.find('meta/description').text
-                # logging.info("[%s] doc found: %s", name, descr.text)
-                categ = obj.find('meta/category')
-                if categ is None:
-                    self.add_to_others(f, name=name, descr=descr)
-                else:
-                    self.add_to_cat(categ.text, f, name=name, descr=descr)
+        self.fill_library_meta()
 
-                lib = obj.find('meta/library').text
-                if lib != self._name:
-                    logging.warning("library differs in file: '%s': %s != %s", f, self._name, lib)
+    def process_object_file(self, f):
+        try:
+            xml = etree.parse(f, get_parser())
+        except etree.XMLSyntaxError as e:
+            logging.error("XML syntax error:\n \"%s\"\n\twhile parsing file: \"%s\"", e, f)
+            return
 
-            del xml
+        pddoc = xml.getroot()
+        # find all object tags, but normally it's only one per file
+        objects = filter(lambda x: x.tag == 'object', pddoc)
+        for obj in objects:
+            self.process_object_doc(f, obj)
+
+    def process_object_doc(self, doc_fname, xml_obj):
+        name = xml_obj.get('name')
+        descr = xml_obj.find('meta/description').text
+        # logging.info("[%s] doc found: %s", name, descr.text)
+        categ = xml_obj.find('meta/category')
+        if categ is None:
+            self.add_to_others(doc_fname, name=name, descr=descr)
+        else:
+            self.add_to_cat(categ.text, doc_fname, name=name, descr=descr)
+        lib = xml_obj.find('meta/library').text
+        if lib != self._name:
+            logging.warning("library differs in file: '%s': %s != %s", doc_fname, self._name, lib)
+        authors = xml_obj.findall('meta/authors/author')
+        for a in authors:
+            self._authors[a.text] = True
+
+    def fill_library_meta(self):
+        # process library meta
+        meta = etree.Element("meta")
+        version = etree.Element("version")
+        version.text = self._version
+        meta.append(version)
+        authors = etree.Element("authors")
+        for a in sorted(self._authors.keys()):
+            author = etree.Element("author")
+            author.text = a
+            authors.append(author)
+        meta.append(authors)
+
+        lib_info_fname = "{0}_meta.xml".format(self._name)
+        if os.path.exists(lib_info_fname):
+            xi = self.xi_include(os.path.basename(lib_info_fname))
+            meta.append(xi)
+
+        self._lib.append(meta)
 
     def __str__(self):
         xml = '<?xml version="1.0" encoding="UTF-8"?>\n'

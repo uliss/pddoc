@@ -26,6 +26,7 @@ from pd.comment import Comment
 from pd.factory import make_by_name
 from pd.obj import PdObject
 from copy import deepcopy
+from pd.externals.pddp.pddplink import PddpLink
 
 
 class LibraryParser(object):
@@ -33,7 +34,10 @@ class LibraryParser(object):
     WINDOW_HEIGHT = 500
     HEADER_BG_COLOR = Color(100, 100, 100)
     HEADER_TXT_COLOR = Color(0, 255, 255)
-    HEADER_HEIGHT = 50
+    HEADER_HEIGHT = 40
+    HEADER_FONT_SIZE = 20
+    FOOTER_HEIGHT = 40
+    FOOTER_BG_COLOR = Color(200, 200, 200)
 
     def __init__(self, fname):
         self._fname = fname
@@ -56,6 +60,7 @@ class LibraryParser(object):
 
     def process(self):
         self._xml = etree.parse(self._fname)
+        self._xml.xinclude()
         self._root = self._xml.getroot()
         self.process_xml()
         self.add_header()
@@ -93,8 +98,9 @@ class LibraryParser(object):
         return '\n'.join(pd_exporter.result[:-1])
 
     def add_header(self):
-        cnv = GCanvas(1, 1, width=self.WINDOW_WIDTH - 3, height=60,
-                      label="library:{0}".format(self._lib_name.upper()), font_size=20,
+        cnv = GCanvas(1, 1, width=self.WINDOW_WIDTH - 3, height=self.HEADER_HEIGHT,
+                      label="library:{0}".format(self._lib_name.upper()),
+                      font_size=self.HEADER_FONT_SIZE,
                       label_xoff=20, label_yoff=20)
         cnv._bg_color = self.HEADER_BG_COLOR
         cnv._label_color = self.HEADER_TXT_COLOR
@@ -134,35 +140,67 @@ class LibraryParser(object):
 
     def process_categories(self):
         for name in sorted(self._pd_cats.keys()):
-            data = self.generate_category(name)
+            info = ""
+            cat_xml = self._root.find("category[@name='{0}']/category-info".format(name))
+            if cat_xml is not None:
+                info = cat_xml.text
+
+            data = self.generate_category(name, info)
             fname = "{0}.{1}-help.pd".format(self._lib_name, name)
             with open(fname, "w") as f:
                 f.write(data)
 
-    def generate_category(self, name):
+    def generate_category(self, name, descr):
+        if len(self._pd_cats[name]) < 1:
+            return
+
         pd_cat = Canvas(0, 0, self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
         pd_cat.type = Canvas.TYPE_WINDOW
 
+        # category doc header
         cnv = GCanvas(1, 1,
                       width=self.WINDOW_WIDTH - 3,
                       height=self.HEADER_HEIGHT,
                       label="{0}::{1}".format(self.lib_name(), name),
-                      font_size=18,
+                      font_size=self.HEADER_FONT_SIZE,
                       label_xoff=20,
                       label_yoff=20)
-
         cnv._bg_color = self.HEADER_BG_COLOR
         cnv._label_color = self.HEADER_TXT_COLOR
         pd_cat.append_object(cnv)
 
-        y_off = 0
-        if len(self._pd_cats[name]) > 0:
-            y_off = self._pd_cats[name][0].y - self.HEADER_HEIGHT
+        y_off = self.HEADER_HEIGHT + 10
+        # category doc description
+        if descr:
+            info = Comment(20, y_off, descr.split(' '))
+            pd_cat.append_object(info)
+            y_off += 25
 
+            # delimiter
+            hrule = self.make_delimeter(y_off)
+            pd_cat.append_object(hrule)
+            y_off += 15
+
+        # category doc objects
+        y_off = self._pd_cats[name][0].y - y_off
+        last_obj_y = y_off
         for o in self._pd_cats[name]:
             cat_obj = deepcopy(o)
             cat_obj.y -= y_off
+            last_obj_y = cat_obj.y
             pd_cat.append_object(cat_obj)
+
+        # category footer
+        footer_y = max(self.WINDOW_HEIGHT, last_obj_y) - self.FOOTER_HEIGHT - 2
+        ft_bg = GCanvas(1, footer_y, width=self.WINDOW_WIDTH - 3, height=self.FOOTER_HEIGHT)
+        ft_bg._bg_color = self.FOOTER_BG_COLOR
+        pd_cat.append_object(ft_bg)
+        label1 = self.make_txt(20, footer_y + 2, "library: ")
+        pd_cat.append_object(label1)
+        lib_lnk = PddpLink(80, footer_y + 2, "{0}-help.pd".format(self.lib_name()), self.lib_name())
+        pd_cat.append_object(lib_lnk)
+        label2 = self.make_txt(20, footer_y + 20, "version: {0}".format(self._lib_version))
+        pd_cat.append_object(label2)
 
         pd_exporter = PdExporter()
         pd_cat.traverse(pd_exporter)

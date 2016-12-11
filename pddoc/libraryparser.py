@@ -52,7 +52,7 @@ class LibraryParser(object):
         self._lib_website = ""
         self._lib_contacts = ""
         self._lib_info = ""
-        self._current_y = 60
+        self._current_y = self.HEADER_HEIGHT + 10
         self._pd_cats = {}
 
     def lib_name(self):
@@ -69,8 +69,22 @@ class LibraryParser(object):
         self._lib_name = self._root.get("name")
         PdObject.xlet_calculator.add_db(self._lib_name + ".db")
 
-        self._lib_version = self._root.get("version")
+        # get version
+        version = self._root.find("meta/version")
+        if version is not None:
+            self._lib_version = version.text
+        else:
+            self._lib_version = "0.0"
 
+        # general info
+        lib_descr = self._root.find("meta/library-info/description")
+        if lib_descr is not None:
+            descr = self.add_text(20, self._current_y, lib_descr.text)
+            descr.calc_brect()
+
+            self._current_y += descr.height + 10
+
+        # process categories
         cats = self._root.findall("category")
         for c in cats:
             cat_name = c.get('name')
@@ -99,7 +113,7 @@ class LibraryParser(object):
 
     def add_header(self):
         cnv = GCanvas(1, 1, width=self.WINDOW_WIDTH - 3, height=self.HEADER_HEIGHT,
-                      label="library:{0}".format(self._lib_name.upper()),
+                      label="{0}({1})".format(self._lib_name, self._lib_version),
                       font_size=self.HEADER_FONT_SIZE,
                       label_xoff=20, label_yoff=20)
         cnv._bg_color = self.HEADER_BG_COLOR

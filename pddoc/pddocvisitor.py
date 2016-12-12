@@ -205,7 +205,7 @@ class PdDocVisitor(DocObjectVisitor):
         return self._pp.add_header("{0}".format(self._title))
 
     def add_footer(self):
-        ft = self._pp.make_footer(self._pp.bottom(), height=self.PD_FOOTER_HEIGHT)
+        ft = self._pp.make_footer(self.current_yoff + 20, height=self.PD_FOOTER_HEIGHT)
         y = ft.y
         self._pp.append_object(ft)
         self.add_footer_library(y)

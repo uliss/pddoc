@@ -24,6 +24,7 @@ from pd.coregui import Color
 from pd.comment import Comment
 from pd.factory import make_by_name
 from pddoc.pdpage import PdPage
+from pd.message import Message
 import logging
 
 
@@ -92,6 +93,40 @@ class PdDocVisitor(DocObjectVisitor):
     #         self._cnv.add_connection(conn[0].id, conn[1], conn[2].id, conn[3])
     #
     #     self.current_yoff += cnv.height
+
+    def methods_begin(self, m):
+        self.add_section("methods:")
+
+    def methods_end(self, m):
+        self.current_yoff += 10
+
+    def method_begin(self, m):
+        msg_atoms = [m.name()]
+        for i in m.items():
+            msg_atoms.append(i.param_name())
+
+        msg = Message(self.PD_XLET_INDX_XPOS, self.current_yoff, msg_atoms)
+        msg.calc_brect()
+        self._pp.append_object(msg)
+
+        info = []
+        for i in m.items():
+            rng = ""
+            if len(i.range()) > 0:
+                r = i.range()
+                rng = "Range: {0}...{1}".format(r[0], r[1])
+
+            txt = self._pp.add_txt("{1}. {0}".format(rng, i.text().strip()),
+                                   self.PD_XLET_INFO_XPOS, self.current_yoff)
+            info.append(txt)
+
+        if len(info) < 1:
+            info.append(self._pp.add_txt(m.text(), self.PD_XLET_INFO_XPOS, self.current_yoff))
+
+        self._pp.place_in_col(info, self.current_yoff, 15)
+        info.append(msg)
+        br = self._pp.group_brect(info)
+        self.current_yoff += br[3] + 10
 
     def inlets_begin(self, inlets):
         super(self.__class__, self).inlets_begin(inlets)

@@ -265,7 +265,7 @@
 
     <xs:complexType name="MethodsElementType">
         <xs:sequence>
-            <xs:element name="method" type="ArgumentElementType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="method" type="MethodElementType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -279,6 +279,24 @@
                 <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
             </xs:extension>
         </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="MethodArgumentElementType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="type" use="required" type="ArgumentDataType"/>
+                <xs:attribute name="units" use="optional" type="UnitDataType"/>
+                <xs:attribute name="minvalue" use="optional" type="xs:float"/>
+                <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="MethodElementType" mixed="true">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="param" type="MethodArgumentElementType"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="InfoElementType">

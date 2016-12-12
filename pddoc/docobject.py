@@ -603,6 +603,8 @@ class DocArgument(DocItem):
         self._number = xmlobj.attrib.get("number", "")
         self._type = xmlobj.attrib.get("type", "")
         self._units = xmlobj.attrib.get("units", "")
+        self._minvalue = xmlobj.attrib.get("minvalue", "")
+        self._maxvalue = xmlobj.attrib.get("maxvalue", "")
         DocItem.from_xml(self, xmlobj)
 
     def type(self):
@@ -649,6 +651,22 @@ class DocArgument(DocItem):
         res += self.text()
         return res
 
+    def range(self):
+        if not self._minvalue and not self._maxvalue:
+            return ()
+
+        return self.min(), self.max()
+
+    def min(self):
+        if not self._minvalue:
+            return "-inf"
+        return self._minvalue
+
+    def max(self):
+        if not self._maxvalue:
+            return "+inf"
+        return self._maxvalue
+
 
 class DocArguments(DocXlets):
     def __init__(self, *args):
@@ -656,6 +674,38 @@ class DocArguments(DocXlets):
 
     def is_valid_tag(self, tag_name):
         return tag_name == "argument"
+
+
+class DocMethods(DocXlets):
+    def __init__(self, *args):
+        DocXlets.__init__(self, args)
+
+    def is_valid_tag(self, tag_name):
+        return tag_name == "method"
+
+
+class DocMethod(DocItem):
+    def __init__(self, *args):
+        self._name = ""
+        DocItem.__init__(self, args)
+
+    def name(self):
+        return self._name
+
+    def is_valid_tag(self, tag_name):
+        return tag_name == "param"
+
+    def from_xml(self, xmlobj):
+        self._name = xmlobj.attrib.get("name", "")
+        DocItem.from_xml(self, xmlobj)
+
+
+class DocParam(DocArgument):
+    def param_name(self):
+        if self._units:
+            return self.units().upper()
+        else:
+            return "X"
 
 
 class DocInfo(DocItem):
@@ -694,7 +744,7 @@ class DocObject(DocItem):
         self._name = ""
 
     def is_valid_tag(self, tag_name):
-        return tag_name in ("title", "meta", "inlets", "outlets", "arguments", "info", "example")
+        return tag_name in ("title", "meta", "inlets", "outlets", "arguments", "info", "example", "methods")
 
     def from_xml(self, xobj):
         self._name = xobj.attrib["name"]

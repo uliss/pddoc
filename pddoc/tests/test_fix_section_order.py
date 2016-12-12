@@ -26,14 +26,14 @@ class TestFix_section_order(TestCase):
     def test_fix_section_order(self):
         input_xml = '''\
 <object>
-    <outlets/>
     <meta/>
     <inlets/>
+    <methods/>
     <example/>
     <title/>
     <info/>
     <arguments/>
-    <methods/>
+    <outlets/>
 </object>
 '''
 
@@ -44,9 +44,9 @@ class TestFix_section_order(TestCase):
     <info/>
     <example/>
     <arguments/>
+    <methods/>
     <inlets/>
     <outlets/>
-    <methods/>
 </object>
 '''
         xml = etree.fromstring(input_xml)

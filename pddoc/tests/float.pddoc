@@ -87,6 +87,9 @@
             </pdexample>
             <pdinclude file="objects.pd"/>
         </example>
+        <methods>
+            <method name="set">sets float value without output</method>
+        </methods>
         <!-- inlets documentation -->
         <inlets>
             <inlet type="control">

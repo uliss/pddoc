@@ -69,7 +69,7 @@ class CategoryParser(object):
         l1 = self._pp.make_link(0, self._current_y, "../index-help.pd", "index")
         l2 = self._pp.make_link(0, self._current_y,
                                 "{0}-help.pd".format(self._lib_name),
-                                "{0}".format(self._cat_name))
+                                "{0}".format(self._lib_name))
         delim = self._pp.make_txt("::", 0, self._current_y)
         menu = [l1, delim, l2]
         self._pp.place_in_row(menu, 20, 20)

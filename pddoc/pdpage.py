@@ -23,12 +23,18 @@ from pd.coregui import Color
 from pd.brectcalculator import BRectCalculator
 from pd.externals.pddp.pddplink import PddpLink
 from pd.comment import Comment
+from pd.pdexporter import PdExporter
 import re
 
 
 class PdPageStyle(object):
     HRULE_COLOR = Color(200, 200, 200)
     SECTION_FONT_SIZE = 17
+    SECTION_FONT_COLOR = Color(50, 50, 50)
+    HEADER_HEIGHT = 40
+    HEADER_FONT_SIZE = 20
+    HEADER_BG_COLOR = Color(100, 100, 100)
+    HEADER_FONT_COLOR = Color(0, 255, 255)
 
 
 class PdPage(object):
@@ -41,7 +47,8 @@ class PdPage(object):
         self._title = title.replace(' ', '_')
         self._width = int(width)
         self._height = int(height)
-        self._canvas = Canvas(0, 0, self._width, self._height)
+        self._canvas = Canvas(0, 0, self._width, self._height, font_size=12)
+        self._canvas.type = Canvas.TYPE_WINDOW
         self._pd = {} # subpatches dict
 
     @property
@@ -62,16 +69,29 @@ class PdPage(object):
     def make_label(self, x, y, txt, font_size, color=Color.black(), bg_color=Color.white()):
         w, h = self.brect_calc.string_brect(txt, font_size)[2:]
 
-        cnv = GCanvas(x, y, width=w, height=h, size=1, font_size=font_size, label_xoff=0, label_yoff=font_size/2)
+        cnv = GCanvas(x, y, width=w, height=h, size=5, font_size=font_size, label_xoff=0, label_yoff=font_size)
         cnv.label = txt.replace(' ', '_')
         cnv._label_color = color
         cnv._bg_color = bg_color
         return cnv
 
+    def make_header(self, title):
+        cnv = GCanvas(1, 1,
+                      width=self._width - 3,
+                      height=PdPageStyle.HEADER_HEIGHT,
+                      size=5,
+                      font_size=PdPageStyle.HEADER_FONT_SIZE,
+                      label_xoff=PdPageStyle.HEADER_FONT_SIZE,
+                      label_yoff=PdPageStyle.HEADER_FONT_SIZE)
+        cnv.label = title.replace(' ', '_')
+        cnv._label_color = PdPageStyle.HEADER_FONT_COLOR
+        cnv._bg_color = PdPageStyle.HEADER_BG_COLOR
+        return cnv
+
     def make_section(self, y, txt, font_size=PdPageStyle.SECTION_FONT_SIZE):
-        l = self.make_label(20, y, txt, font_size)
+        l = self.make_label(20, y, txt, font_size, PdPageStyle.SECTION_FONT_COLOR)
         r = self.make_styled_hrule(y + l.height + 10)
-        return l, r
+        return l, r, self.group_brect([l, r])
 
     def make_link(self, x, y, url, name):
         return PddpLink(x, y, url, name)
@@ -88,19 +108,47 @@ class PdPage(object):
         self._pd[name] = pd
         return pd
 
+    def add_header(self, title):
+        h = self.make_header(title)
+        h.calc_brect()
+        self._canvas.append_object(h)
+        return h
+
     def add_to_subpatch(self, name, obj):
         assert name in self._pd
         self._pd[name].append_object(obj)
+
+    def add_pd_txt(self, pd, txt, x, y):
+        t = self.make_txt(txt, x, y)
+        pd.append_object(t)
+        t.calc_brect()
+        return t
+
+    def add_txt(self, txt, x, y):
+        return self.add_pd_txt(self._canvas, txt, x, y)
+
+    def add_section(self, title, y):
+        l, r, brect = self.make_section(y, title)
+        self._canvas.append_object(l)
+        self._canvas.append_object(r)
+        return l, r, brect
+
+    def add_subpatch_txt(self, name, txt, x, y):
+        return self.add_pd_txt(self._pd[name], txt, x, y)
+
+    def append_object(self, obj):
+        self._canvas.append_object(obj)
+        obj.calc_brect()
+        return obj
 
     def group_brect(self, seq):
         for el in seq:
             el.calc_brect()
 
-        br = map(lambda x: x.brect(), seq)
-        left = min(lambda x: x[0], br)
-        top = min(lambda x: x[1], br)
-        right = max(lambda x: x[0] + x[2], br)
-        bottom = max(lambda x: x[1] + x[3], br)
+        left = min(seq, key=lambda x: x.left).left
+        top = min(seq, key=lambda x: x.top).top
+        right = max(seq, key=lambda x: x.right).right
+        bottom = max(seq, key=lambda x: x.bottom).bottom
         return left, top, right - left, bottom - top
 
     def move_to_x(self, seq, x):
@@ -173,3 +221,8 @@ class PdPage(object):
         for o in seq:
             o.y = y
             y += o.height + y_pad
+
+    def to_string(self):
+        pd_exporter = PdExporter()
+        self._canvas.traverse(pd_exporter)
+        return '\n'.join(pd_exporter.result[:-1])

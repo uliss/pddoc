@@ -21,12 +21,12 @@ from pd.canvas import Canvas
 from pd.pdexporter import PdExporter
 from pd.gcanvas import GCanvas
 from pd.coregui import Color
-import re
 from pd.comment import Comment
 from pd.factory import make_by_name
 from pd.obj import PdObject
 from copy import deepcopy
 from pd.externals.pddp.pddplink import PddpLink
+from pdpage import PdPage
 
 
 class LibraryParser(object):
@@ -43,8 +43,6 @@ class LibraryParser(object):
         self._fname = fname
         self._xml = None
         self._root = None
-        self._cnv = Canvas(0, 0, self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
-        self._cnv.type = Canvas.TYPE_WINDOW
         self._lib_name = ""
         self._lib_version = ""
         self._lib_authors = []
@@ -54,6 +52,7 @@ class LibraryParser(object):
         self._lib_info = ""
         self._current_y = self.HEADER_HEIGHT + 10
         self._pd_cats = {}
+        self._pp = PdPage("lib", self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
 
     def lib_name(self):
         return self._lib_name
@@ -66,91 +65,69 @@ class LibraryParser(object):
         self.add_header()
 
     def process_xml(self):
-        self._lib_name = self._root.get("name")
+        self.get_lib_name()
+        # order matters! add_xlet_db() should called after get_lib_name()
+        self.add_xlet_db()
+        self.get_lib_version()
+        self.add_lib_description()
+        self.process_xml_categories()
+
+    def process_xml_categories(self):
+        for c in self._root.findall("category"):
+            self.process_xml_category(c)
+
+    def process_xml_category(self, c):
+        self.add_category_section(self._current_y, c.get('name'))
+        self.process_xml_category_entries(c)
+
+    def process_xml_category_entries(self, c):
+        cat_name = c.get('name')
+        for e in c.findall('entry'):
+            self.add_object_description(e, cat_name)
+
+    def add_xlet_db(self):
         PdObject.xlet_calculator.add_db(self._lib_name + ".db")
 
-        # get version
+    def get_lib_name(self):
+        self._lib_name = self._root.get("name")
+
+    def get_lib_version(self):
         version = self._root.find("meta/version")
         if version is not None:
             self._lib_version = version.text
         else:
             self._lib_version = "0.0"
 
-        # general info
+    def add_lib_description(self):
         lib_descr = self._root.find("meta/library-info/description")
         if lib_descr is not None:
-            descr = self.add_text(20, self._current_y, lib_descr.text)
-            descr.calc_brect()
-
+            descr = self._pp.add_txt(lib_descr.text, 30, self._current_y)
             self._current_y += descr.height + 10
-
-        # process categories
-        cats = self._root.findall("category")
-        for c in cats:
-            cat_name = c.get('name')
-            self.add_category_section(self._current_y, cat_name)
-            entries = c.findall('entry')
-            for e in entries:
-                self.add_object_description(e, cat_name)
 
     def add_object_description(self, obj, cat_name):
         pdobj = make_by_name(obj.get('name'))
-        pdobj.calc_brect()
-        pdobj.x = 20
+        pdobj.x = 30
         pdobj.y = self._current_y
-        self._cnv.append_object(pdobj)
-        t1 = self.add_text(150, self._current_y, obj.get('descr'))
-        t1.calc_brect()
-        self._current_y += max(t1.height, pdobj.height) + 10
+        self._pp.append_object(pdobj)
+
+        info = self._pp.add_txt(obj.get('descr'), 150, self._current_y)
+        self._current_y += max(info.height, pdobj.height) + 10
 
         self._pd_cats[cat_name].append(pdobj)
-        self._pd_cats[cat_name].append(t1)
+        self._pd_cats[cat_name].append(info)
 
     def __str__(self):
-        pd_exporter = PdExporter()
-        self._cnv.traverse(pd_exporter)
-        return '\n'.join(pd_exporter.result[:-1])
+        return self._pp.to_string()
 
     def add_header(self):
-        cnv = GCanvas(1, 1, width=self.WINDOW_WIDTH - 3, height=self.HEADER_HEIGHT,
-                      label="{0}({1})".format(self._lib_name, self._lib_version),
-                      font_size=self.HEADER_FONT_SIZE,
-                      label_xoff=20, label_yoff=20)
-        cnv._bg_color = self.HEADER_BG_COLOR
-        cnv._label_color = self.HEADER_TXT_COLOR
-        self._cnv.append_object(cnv)
+        title = "{0}({1})".format(self._lib_name, self._lib_version)
+        h = self._pp.add_header(title)
+        return h
 
     def add_category_section(self, y, txt):
-        lbl = GCanvas(20, y + 10, width=100, height=20, size=10, label=txt, font_size=14)
-        lbl._label_color = Color(50, 50, 50)
-        self._cnv.append_object(lbl)
-        self._current_y += 30
-        self.add_delimiter(self._current_y)
-        self._current_y += 20
-
-        # add new entry in category dict
+        l, r, brect = self._pp.add_section(txt, y)
+        self._current_y = brect[1] + brect[3] + 10
         self._pd_cats[txt] = []
-
-    def make_delimeter(self, y, **kwargs):
-        delim = GCanvas(20, y, width=self.WINDOW_WIDTH - 24, height=1, size=1)
-        delim._bg_color = Color(200, 200, 200)
-        return delim
-
-    def add_delimiter(self, y, **kwargs):
-        obj = self.make_delimeter(y)
-        self._cnv.append_object(obj)
-        return obj
-
-    def make_txt(self, x, y, txt):
-        txt = re.sub(' +', ' ', txt)
-        txt = txt.replace('.', '\\.')
-        txt = txt.replace(',', ' \\,')
-        return Comment(x, y, txt.split(' '))
-
-    def add_text(self, x, y, txt):
-        obj = self.make_txt(x, y, txt)
-        self._cnv.append_object(obj)
-        return obj
 
     def process_categories(self):
         for name in sorted(self._pd_cats.keys()):

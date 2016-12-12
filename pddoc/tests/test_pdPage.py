@@ -147,3 +147,10 @@ class TestPdPage(TestCase):
         self.assertEqual(o2.x, 124)
         self.assertEqual(o1.y, 5)
         self.assertEqual(o2.y, 100)
+
+    def test_group_brect(self):
+        p = PdPage("sample", 600, 500)
+
+        o1 = self.obj(x=4, y=5, w=100, h=20)
+        o2 = self.obj(x=2, y=100, w=100, h=20)
+        self.assertEqual(p.group_brect([o1, o2]), (2, 5, 102, 115))

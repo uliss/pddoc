@@ -33,7 +33,7 @@ def main():
 
     lp = LibraryParser(args['input'])
     lp.process()
-    lp.process_categories()
+    # lp.process_categories()
     with open(lp.lib_name() + "-help.pd", "w") as f:
         f.write(str(lp))
 

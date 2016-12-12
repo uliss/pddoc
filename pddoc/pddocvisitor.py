@@ -25,7 +25,9 @@ from pd.comment import Comment
 from pd.factory import make_by_name
 from pddoc.pdpage import PdPage
 from pd.message import Message
-import logging
+from pd.obj import PdObject
+from pd.parser import Parser
+import os
 
 
 class PdDocVisitor(DocObjectVisitor):
@@ -77,22 +79,16 @@ class PdDocVisitor(DocObjectVisitor):
             obj.x += self.PD_EXAMPLE_YOFFSET
             self._pp.append_object(obj)
 
-    # def pdinclude_begin(self, t):
-    #     db_path = os.path.splitext(t.file())[0] + '.db'
-    #     PdObject.xlet_calculator.add_db(db_path)
-    #
-    #     pd_parser = Parser()
-    #     pd_parser.parse(t.file())
-    #     cnv = pd_parser.canvas
-    #     for obj in cnv.objects:
-    #         obj.y += self.current_yoff
-    #         obj.x += self.PD_EXAMPLE_YOFFSET
-    #         self._cnv.append_object(obj)
-    #
-    #     for conn in cnv.connections.values():
-    #         self._cnv.add_connection(conn[0].id, conn[1], conn[2].id, conn[3])
-    #
-    #     self.current_yoff += cnv.height
+    def pdinclude_begin(self, t):
+        db_path = '{0}.db'.format(self._library)
+        PdObject.xlet_calculator.add_db(db_path)
+
+        pd_parser = Parser()
+        pd_parser.parse(t.file())
+        cnv = pd_parser.canvas
+        self.copy_canvas_objects(cnv)
+        self.copy_canvas_connections(cnv)
+        self.current_yoff += cnv.height
 
     def methods_begin(self, m):
         self.add_section("methods:")

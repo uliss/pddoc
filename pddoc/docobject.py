@@ -402,6 +402,7 @@ class DocPdexample(DocItem):
 
     def from_xml(self, xmlobj):
         size = xmlobj.attrib.get("size", None)
+        self._file = xmlobj.attrib.get("file", None)
         if size:
             if size in ("auto", "canvas"):
                 self._size = size

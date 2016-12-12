@@ -96,7 +96,7 @@
             <xs:element name="inlets" type="InletsElementType" minOccurs="0"/>
             <xs:element name="outlets" type="OutletsElementType" minOccurs="0"/>
             <xs:element name="arguments" type="ArgumentsElementType" minOccurs="0"/>
-            <!--<xs:element name="methods" type="MethodsElementType" minOccurs="0"/>-->
+            <xs:element name="methods" type="MethodsElementType" minOccurs="0"/>
             <xs:element name="info" type="InfoElementType" minOccurs="0"/>
         </xs:all>
         <xs:attribute name="name" use="required" type="ObjectNameType"/>
@@ -260,6 +260,12 @@
     <xs:complexType name="ArgumentsElementType">
         <xs:sequence>
             <xs:element name="argument" type="ArgumentElementType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MethodsElementType">
+        <xs:sequence>
+            <xs:element name="method" type="ArgumentElementType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 

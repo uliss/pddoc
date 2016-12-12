@@ -81,9 +81,8 @@ def main():
                 print("convertion error")
                 exit(1)
 
-            data = "\n".join(map(str, patch_data[:-1]))
             with open(output, 'w') as f:
-                f.write(data)
+                f.write(patch_data)
 
 
 if __name__ == '__main__':

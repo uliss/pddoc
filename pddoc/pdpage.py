@@ -55,6 +55,14 @@ class PdPage(object):
         self._pd = {} # subpatches dict
 
     @property
+    def width(self):
+        return self._width
+
+    @property
+    def height(self):
+        return self._height
+
+    @property
     def canvas(self):
         return self._canvas
 
@@ -91,18 +99,21 @@ class PdPage(object):
         cnv._bg_color = PdPageStyle.HEADER_BG_COLOR
         return cnv
 
-    def make_footer(self, bottom):
-        y = max(bottom, self._height - PdPageStyle.FOOTER_HEIGHT - 3)
+    def make_footer(self, bottom, height=PdPageStyle.FOOTER_HEIGHT):
+        y = max(bottom, self._height - height - 2)
         cnv = GCanvas(1, y,
                       width=self._width - 3,
-                      height=PdPageStyle.FOOTER_HEIGHT,
+                      height=height,
                       size=5)
 
         cnv._bg_color = PdPageStyle.FOOTER_BG_COLOR
         return cnv
 
-    def make_section(self, y, txt, font_size=PdPageStyle.SECTION_FONT_SIZE):
-        l = self.make_label(20, y, txt, font_size, PdPageStyle.SECTION_FONT_COLOR)
+    def make_section_label(self, y, txt, font_size=PdPageStyle.SECTION_FONT_SIZE):
+        return self.make_label(20, y, txt, font_size, PdPageStyle.SECTION_FONT_COLOR)
+
+    def make_section(self, y, txt):
+        l = self.make_section_label(y, txt)
         r = self.make_styled_hrule(y + l.height + 10)
         return l, r, self.group_brect([l, r])
 
@@ -162,6 +173,11 @@ class PdPage(object):
     def add_subpatch_txt(self, name, txt, x, y):
         return self.add_pd_txt(self._pd[name], txt, x, y)
 
+    def add_subpatch_obj(self, name, obj):
+        self._pd[name].append_object(obj)
+        obj.calc_brect()
+        return obj
+
     def append_object(self, obj):
         self._canvas.append_object(obj)
         obj.calc_brect()
@@ -182,12 +198,21 @@ class PdPage(object):
         return left, top, right - left, bottom - top
 
     def move_to_x(self, seq, x):
+        if len(seq) < 1:
+            return
+
+        x_off = x - seq[0].x
+
         for o in seq:
-            o.x = x
+            o.x += x_off
 
     def move_to_y(self, seq, y):
+        if len(seq) < 1:
+            return
+
+        y_off = y - seq[0].y
         for o in seq:
-            o.y = y
+            o.y += y_off
 
     def move_to(self, seq, x, y):
         for o in seq:

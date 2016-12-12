@@ -35,6 +35,8 @@ class PdPageStyle(object):
     HEADER_FONT_SIZE = 20
     HEADER_BG_COLOR = Color(100, 100, 100)
     HEADER_FONT_COLOR = Color(0, 255, 255)
+    FOOTER_HEIGHT = 40
+    FOOTER_BG_COLOR = Color(200, 200, 200)
 
 
 class PdPage(object):
@@ -86,6 +88,16 @@ class PdPage(object):
         cnv.label = title.replace(' ', '_')
         cnv._label_color = PdPageStyle.HEADER_FONT_COLOR
         cnv._bg_color = PdPageStyle.HEADER_BG_COLOR
+        return cnv
+
+    def make_footer(self, bottom):
+        y = max(bottom, self._height - PdPageStyle.FOOTER_HEIGHT - 3)
+        cnv = GCanvas(1, y,
+                      width=self._width - 3,
+                      height=PdPageStyle.FOOTER_HEIGHT,
+                      size=5)
+
+        cnv._bg_color = PdPageStyle.FOOTER_BG_COLOR
         return cnv
 
     def make_section(self, y, txt, font_size=PdPageStyle.SECTION_FONT_SIZE):

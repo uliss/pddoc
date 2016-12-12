@@ -63,14 +63,20 @@ class LibraryParser(object):
         self._root = self._xml.getroot()
         self.process_xml()
         self.add_header()
+        self.add_footer()
 
     def process_xml(self):
-        self.get_lib_name()
-        # order matters! add_xlet_db() should called after get_lib_name()
+        self.get_meta()
+        # order matters! add_xlet_db() should called after get_meta()
         self.add_xlet_db()
-        self.get_lib_version()
         self.add_lib_description()
         self.process_xml_categories()
+
+    def get_meta(self):
+        self.get_lib_name()
+        self.get_lib_version()
+        self.get_lib_website()
+        self.get_lib_license()
 
     def process_xml_categories(self):
         for c in self._root.findall("category"):
@@ -98,6 +104,16 @@ class LibraryParser(object):
         else:
             self._lib_version = "0.0"
 
+    def get_lib_website(self):
+        el = self._root.find("meta/library-info/website")
+        if el is not None:
+            self._lib_website = el.text
+
+    def get_lib_license(self):
+        el = self._root.find("meta/library-info/license")
+        if el is not None:
+            self._lib_license = el.text
+
     def add_lib_description(self):
         lib_descr = self._root.find("meta/library-info/description")
         if lib_descr is not None:
@@ -120,9 +136,22 @@ class LibraryParser(object):
         return self._pp.to_string()
 
     def add_header(self):
-        title = "{0}({1})".format(self._lib_name, self._lib_version)
+        title = "{0}".format(self._lib_name)
         h = self._pp.add_header(title)
         return h
+
+    def add_footer(self):
+        f = self._pp.make_footer(self._current_y)
+        self._pp.append_object(f)
+
+        info = self._pp.make_txt("version: v{0}, license: {1}".format(
+            self._lib_version, self._lib_license), 20, f.top)
+        self._pp.append_object(info)
+
+        if self._lib_website:
+            lnk = self._pp.make_link(20, f.top + info.height + 3, self._lib_website, self._lib_website)
+            self._pp.append_object(lnk)
+        return f
 
     def add_category_section(self, y, txt):
         l, r, brect = self._pp.add_section(txt, y)

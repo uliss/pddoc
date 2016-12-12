@@ -153,6 +153,10 @@ class PdPage(object):
         obj.calc_brect()
         return obj
 
+    def append_list(self, obj):
+        for o in obj:
+            self.append_object(o)
+
     def group_brect(self, seq):
         for el in seq:
             el.calc_brect()

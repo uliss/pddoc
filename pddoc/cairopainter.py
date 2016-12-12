@@ -209,9 +209,15 @@ class CairoPainter(PdPainter):
         self.cr.restore()
         pass
 
-    def text_size(self, txt):
+    def text_size(self, txt, font_size=None):
         self.cr.save()
         self.cr.select_font_face(self.style.font_family)
+
+        if font_size is not None:
+            self.cr.set_font_size(int(font_size))
+        else:
+            self.cr.set_font_size(self.style.font_size)
+
         w = self.cr.text_extents(txt)[2]
         h = self.cr.font_extents()[2]
         self.cr.restore()

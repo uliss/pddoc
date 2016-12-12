@@ -310,7 +310,7 @@ class PdDocVisitor(DocObjectVisitor):
         add_subpatch_text(xc2, yrows[row], self._category)
         row += 1
 
-        if(self._since):
+        if self._since:
             add_subpatch_text(xc1, yrows[row], "since:")
             add_subpatch_text(xc2, yrows[row], self._since)
             row += 1

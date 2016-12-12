@@ -183,7 +183,10 @@ class PdObject(BaseObject):
 
         visitor.visit_object(self)
 
-    def calc_brect(self):
+    def calc_brect(self, use_cached=True):
+        if use_cached and (self._width != 0 and self._height != 0):
+            return
+
         brect = self.brect_calc().object_brect(self)
         self._width = brect[2]
         self._height = brect[3]

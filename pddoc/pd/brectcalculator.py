@@ -80,6 +80,10 @@ class BRectCalculator(AbstractVisitor):
         w, h = self._cairo.box_size(txt)
         return cnv.x, cnv.y, int(w), int(h)
 
+    def string_brect(self, string, font_size):
+        w, h = self._cairo.text_size(string, font_size)
+        return 0, 0, w, h
+
     def message_brect(self, message):
         assert isinstance(message, Message)
         w, h = self._cairo.message_size(message.to_string())

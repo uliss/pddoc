@@ -37,6 +37,7 @@ class PdPageStyle(object):
     HEADER_FONT_COLOR = Color(0, 255, 255)
     FOOTER_HEIGHT = 40
     FOOTER_BG_COLOR = Color(200, 200, 200)
+    INFO_BG_COLOR = Color(240, 255, 255)
 
 
 class PdPage(object):
@@ -138,6 +139,19 @@ class PdPage(object):
 
     def add_txt(self, txt, x, y):
         return self.add_pd_txt(self._canvas, txt, x, y)
+
+    def add_bg_txt(self, txt, color, x, y):
+        t = self.make_txt(txt, x, y)
+        t.calc_brect()
+        bg = self.make_background(x, y, t.width + 8, t.height + 8, color=color)
+        self._canvas.append_object(bg)
+        self._canvas.append_object(t)
+        return t, bg
+
+    def add_description(self, txt, y):
+        d = self.add_bg_txt(txt, PdPageStyle.INFO_BG_COLOR, 0, y)
+        br = self.group_brect(d)
+        self.move_to_x(d, self._width - br[2] - 20)
 
     def add_section(self, title, y):
         l, r, brect = self.make_section(y, title)

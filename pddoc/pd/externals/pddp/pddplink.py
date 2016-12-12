@@ -63,3 +63,8 @@ class PddpLink(pd.PdObject):
     def draw(self, painter):
         assert isinstance(painter, CairoPainter)
         painter.draw_text(self.x + 4, self.y + 12, self.text(), color=(0, 0, 1))
+
+    def calc_brect(self):
+        x, y, w, h = self.brect_calc().string_brect(self.text(), None)
+        self.width = w
+        self.height = h

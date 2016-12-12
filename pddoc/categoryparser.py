@@ -33,7 +33,6 @@ class CategoryParser(object):
         self._root = None
         self._cat = None
         self._cat_name = ""
-        self._cat_info = ""
         self._lib_name = ""
         self._current_y = 0
         self._pp = None
@@ -52,18 +51,21 @@ class CategoryParser(object):
     def process_xml_category(self, c):
         self._cat = c
         self._cat_name = c.get('name')
-        info = self._cat.find("category-info")
-        if info is not None:
-            self._cat_info = info.text
         self._current_y = self.HEADER_HEIGHT + 10
         self._pp = PdPage("cat", self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
         self.add_menubar()
+        self.add_info()
         self.process_xml_category_entries()
         self.add_header()
         self.add_footer()
         self.save()
         del self._pp
         self._pp = None
+
+    def add_info(self):
+        info = self._cat.find("category-info")
+        if info is not None:
+            self._pp.add_description(info.text, self.HEADER_HEIGHT + 10)
 
     def add_menubar(self):
         l1 = self._pp.make_link(0, self._current_y, "../index-help.pd", "index")
@@ -72,7 +74,7 @@ class CategoryParser(object):
                                 "{0}".format(self._lib_name))
         delim = self._pp.make_txt("::", 0, self._current_y)
         menu = [l1, delim, l2]
-        self._pp.place_in_row(menu, 20, 20)
+        self._pp.place_in_row(menu, 20, 8)
         self._pp.append_list(menu)
         br = self._pp.group_brect(menu)
         self._current_y += br[1] + br[3]
@@ -105,6 +107,6 @@ class CategoryParser(object):
         f = self._pp.make_footer(self._current_y)
         self._pp.append_object(f)
 
-        info = self._pp.make_txt("libarary: {0}".format(self._lib_name), 20, f.top + 10)
+        info = self._pp.make_txt("library: {0}".format(self._lib_name), 20, f.top + 10)
         self._pp.append_object(info)
         return f

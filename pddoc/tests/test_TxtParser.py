@@ -23,6 +23,7 @@ import os.path
 from pddoc.pd import Canvas
 from pddoc.pd.pdexporter import PdExporter
 from pddoc import CairoPainter
+import nologging
 
 TEST_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "ascii.txt")
 
@@ -47,6 +48,7 @@ class TestTxtParser(TestCase):
         self.assertEqual(self.p.token_line_lex_pos(1, 12), 1)
 
     def test_parse_file(self):
+        nl = nologging.NoLogging()
         self.p.parse_file(TEST_FILE)
 
         self.assertEqual(self.p.num_lines(), 11)
@@ -65,12 +67,14 @@ class TestTxtParser(TestCase):
         # self.fail()
 
     def test_elements_in_line(self):
+        nl = nologging.NoLogging()
         self.p.parse_file(TEST_FILE)
         self.assertEqual(len(self.p.elements_in_line('OBJECT', 3)), 3)
         self.assertEqual(len(self.p.elements_in_line('MESSAGE', 0)), 1)
         self.assertEqual(len(self.p.elements_in_line('COMMENT', 0)), 1)
 
     def test_export(self):
+        nl = nologging.NoLogging()
         n = Node(None, 'CONNECTION')
         self.assertFalse(n.is_object())
 

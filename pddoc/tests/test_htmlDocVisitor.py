@@ -25,6 +25,7 @@ __author__ = 'Serge Poltavski'
 from pddoc.htmldocvisitor import *
 from pddoc.pdlayout import *
 import os
+import nologging
 
 
 class TestHtmlDocVisitor(TestCase):

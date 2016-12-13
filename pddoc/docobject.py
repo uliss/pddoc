@@ -589,7 +589,8 @@ class DocArgument(DocItem):
         'millisecond': 'ms',
         'second': 'sec',
         'decibel': 'db',
-        'bpm': 'bpm'
+        'bpm': 'bpm',
+        'percent': '%'
     }
 
     def __init__(self, *args):

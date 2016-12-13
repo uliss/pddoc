@@ -85,7 +85,8 @@ class PdExporter(AbstractVisitor):
             self.result.append(l)
 
     def visit_message(self, msg):
-        line = "#X msg {0:d} {1:d} {2:s};".format(msg.x, msg.y, msg.args_to_string())
+        txt = msg.args_to_string().replace('$', '\\$')
+        line = "#X msg {0:d} {1:d} {2:s};".format(msg.x, msg.y, txt)
         self.result.append(line)
 
     def save(self, fname):

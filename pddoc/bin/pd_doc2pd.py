@@ -3,11 +3,13 @@
 from __future__ import print_function
 import argparse
 import os
+import logging
 
 from pddoc.docobject import DocObject
 from pddoc.pddocvisitor import PdDocVisitor
 from pddoc.xletdocvisitor import XletDocVisitor
 from pddoc.parser import parse_xml
+from pddoc.pd.obj import PdObject
 
 #   Copyright (C) 2016 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -28,12 +30,22 @@ from pddoc.parser import parse_xml
 __author__ = 'Serge Poltavski'
 
 
+def add_xlet_db(path_list):
+    for db_path in path_list:
+        if not os.path.exists(db_path):
+            logging.warning("xlet database file not found: '%s'. skipping...", db_path)
+        else:
+            PdObject.xlet_calculator.add_db(db_path)
+
+
 def main():
     arg_parser = argparse.ArgumentParser(description='PureData pddoc to pd patch converter')
     arg_parser.add_argument('--website', '-w', metavar='URL', help='library website URL')
     arg_parser.add_argument('--license', '-l', metavar='license', help='library license')
     arg_parser.add_argument('--version', '-v', metavar='version', default='0.0', help='library version')
     arg_parser.add_argument('--force', '-f', action='store_true', help='force to overwrite existing file')
+    arg_parser.add_argument('--xlet-db', metavar='PATH', action='append',
+                            help='inlet/outlet database file path', default=[])
     arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC(XML) format")
     arg_parser.add_argument('output', metavar='OUTNAME', nargs='?', default='',
                             help="Pd output patch file name")
@@ -48,6 +60,8 @@ def main():
     if os.path.exists(output) and not args['force']:
         print("Error: file already exists: '{0}'. Use --force flag to overwrite.".format(output))
         exit(1)
+
+    add_xlet_db(args['xlet_db'])
 
     xml = parse_xml(in_file)
 

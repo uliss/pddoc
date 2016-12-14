@@ -111,8 +111,8 @@
         </arguments>
         <!-- additional info -->
         <info>
-            <text>test para</text>
-            <text>another para</text>
+            <par>test para</par>
+            <par>another para</par>
             <a href="http://github.com">github.com</a>
             <itemize>
                 <item>item no.1</item>

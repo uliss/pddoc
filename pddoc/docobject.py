@@ -715,7 +715,12 @@ class DocInfo(DocItem):
         DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
-        return tag_name in ("itemize", "p", "a")
+        return tag_name in ("itemize", "par", "a")
+
+
+class DocPar(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
 
 
 class DocA(DocItem):

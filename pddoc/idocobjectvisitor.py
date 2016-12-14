@@ -278,5 +278,11 @@ class IDocObjectVisitor(object):
     def param_end(self, p):
         pass
 
+    def par_begin(self, par):
+        pass
+
+    def par_end(self, par):
+        pass
+
     def render(self):
         raise NotImplementedError

@@ -302,7 +302,7 @@
 
     <xs:complexType name="InfoElementType">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
-            <xs:element name="text" type="MarkupText"/>
+            <xs:element name="par" type="MarkupText"/>
             <xs:element name="itemize" type="MarkupItemize"/>
             <xs:element name="pdobject" type="PdObjectElementType"/>
             <xs:element name="pdsubpatch" type="PdObjectElementType"/>

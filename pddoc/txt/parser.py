@@ -100,9 +100,13 @@ class Parser(object):
 
     ALIASES = {
         '_': 'tgl',
+        'T': 'tgl',
+        'B': 'bng',
         'O': 'bng',
         'o': 'bng',
-        'fa': 'floatatom'
+        'fa': 'floatatom',
+        'F': 'floatatom',
+        'S': 'symbolatom'
     }
 
     def __init__(self):

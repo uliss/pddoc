@@ -98,6 +98,13 @@ class Parser(object):
     X_SPACE = 8
     Y_SPACE = 12
 
+    ALIASES = {
+        '_': 'tgl',
+        'O': 'bng',
+        'o': 'bng',
+        'fa': 'floatatom'
+    }
+
     def __init__(self):
         self.lines = []
         self.lines_len = []
@@ -163,6 +170,14 @@ class Parser(object):
             n = Node(tok, char_pos)
             self.nodes.append(n)
 
+    @classmethod
+    def find_alias(cls, atoms):
+        name = atoms[0]
+        args = atoms[1:]
+        if name in cls.ALIASES:
+            return cls.ALIASES[name], args
+        return name, args
+
     def parse_nodes(self):
         for n in filter(lambda x: x.is_object(), self.nodes):
             if n.type == 'OBJECT':
@@ -170,8 +185,7 @@ class Parser(object):
                 # filter spaces and #ID values
                 atoms = filter(lambda a: len(a) > 0 and (not a.startswith('#')), m.group(1).split(' '))
                 assert len(atoms) > 0
-                name = atoms[0]
-                args = atoms[1:]
+                name, args = self.find_alias(atoms)
                 if CoreGui.is_coregui(name):
                     kwargs = dict(map(lambda x: tuple(x.split('=')), args))
                     n.pd_object = factory.make_by_name(name, **kwargs)

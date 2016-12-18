@@ -145,6 +145,10 @@ _objects = {
         lambda args: (2 if not args else 1) * [XLET_MESSAGE],
         lambda args: []
     ),
+    "pointer": (
+        lambda args: 2 * [XLET_MESSAGE],
+        lambda args: (len(args) + 2) * [XLET_MESSAGE]
+    ),
     "pack": (
         lambda args: (2 if len(args) == 0 else len(args)) * [XLET_MESSAGE],
         lambda args: [XLET_MESSAGE]

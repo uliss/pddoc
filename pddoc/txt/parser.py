@@ -26,6 +26,7 @@ from six import string_types
 from pddoc.pd import factory
 from pddoc.pd.coregui import CoreGui
 import copy
+import logging
 
 
 class Node(object):
@@ -193,18 +194,22 @@ class Parser(object):
                 if CoreGui.is_coregui(name):
                     kwargs = dict(map(lambda x: tuple(x.split('=')), args))
                     n.pd_object = factory.make_by_name(name, **kwargs)
+                elif name == 'pd':
+                    n.pd_object = Canvas.subpatch(args[0])
                 else:
                     n.pd_object = factory.make_by_name(name, args)
             elif n.type == 'MESSAGE':
                 m = re.match(lex.r_MESSAGE, n.value)
-                args = m.group(1).split(' ')
+                txt = m.group(1).replace(',', '\,')
+                # logging.warning(txt)
+                args = txt.split(' ')
                 n.pd_object = Message(0, 0, args)
             elif n.type == 'COMMENT':
                 m = re.match(lex.r_COMMENT, n.value)
                 txt = m.group(1).replace(';', ' \;').replace(',', ' \,')
                 n.pd_object = Comment(0, 0, txt.split(' '))
             else:
-                print("Unknown type {0:s}".format(n.type))
+                logging.warning("Unknown type {0:s}".format(n.type))
 
     def parse_connections(self):
         for c in filter(lambda n: n.is_connection(), self.nodes):

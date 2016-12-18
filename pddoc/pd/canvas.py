@@ -39,12 +39,21 @@ class Canvas(PdObject):
             self._name = kwargs['name']
 
         self._font_size = kwargs.get('font_size', 12)
-
-        if 'open_on_load' in kwargs:
-            self.open_on_load = kwargs['open_on_load']
+        self._open_on_load = kwargs.get('open_on_load', 0)
 
         self._graph_on_parent = False
         self._gop = {}
+
+    @classmethod
+    def subpatch(cls, name, x=0, y=0, w=200, h=100):
+        c = Canvas(x, y, w, h, open_on_load=0, name=name)
+        c.type = cls.TYPE_SUBPATCH
+        c._graph_on_parent = False
+        return c
+
+    @property
+    def open_on_load(self):
+        return self._open_on_load
 
     @property
     def font_size(self):

@@ -26,6 +26,13 @@ import difflib
 
 
 class TestPdExporter(TestCase):
+    def setUp(self):
+        self._exp = PdExporter()
+        self._parser = Parser()
+        c = Canvas(0, 0, 100, 100)
+        self._parser.canvas = c
+        self._parser.canvas_stack.append(c)
+
     def test_init(self):
         exp = PdExporter()
         c = Canvas(0, 0, 200, 100, font_size=10)
@@ -97,3 +104,16 @@ class TestPdExporter(TestCase):
         fname2 = "out/export_simple.pd"
         self.reexport(fname1, fname2)
         self.assertFalse(self.diff(fname1, fname2))
+
+    def parse_line(self, line):
+        n = len(self._parser.canvas.objects)
+        self._parser.parse_line(line)
+        self.assertEqual(len(self._parser.canvas.objects), n + 1)
+        return self._parser.canvas.objects[n]
+
+    def test_visit_message(self):
+        msg = self.parse_line('#X msg 10 20 1 \\, 2')
+        msg.traverse(self._exp)
+        res = self._exp.result
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0], '#X msg 10 20 1 \\, 2;')

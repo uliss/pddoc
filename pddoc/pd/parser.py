@@ -203,6 +203,9 @@ class Parser:
             if atoms[0] == "#X" and atoms[1] == "obj" and atoms[4] == "import":
                 factory.add_import(atoms[5])
 
+    def parse_line(self, line):
+        self.parse_atoms(self.split_re.split(line))
+
     def parse(self, file_name):
         if not path.exists(file_name):
             logging.warning("File not exists: \"{0:s}\"".format(file_name))
@@ -216,8 +219,6 @@ class Parser:
         self.parse_imports(lines)
 
         for found in self.lines_re.finditer(lines):
-            line = found.group(1)
-            atoms = self.split_re.split(line)
-            self.parse_atoms(atoms)
+            self.parse_line(found.group(1))
 
         return True

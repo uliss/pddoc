@@ -85,7 +85,7 @@ class PdExporter(AbstractVisitor):
             self.result.append(l)
 
     def visit_message(self, msg):
-        txt = msg.args_to_string().replace('$', '\\$').replace(',', ' \\,')
+        txt = self.escape_tokens(msg.args_to_string())
         line = "#X msg {0:d} {1:d} {2:s};".format(msg.x, msg.y, txt)
         self.result.append(line)
 
@@ -93,3 +93,7 @@ class PdExporter(AbstractVisitor):
         f = open(fname, 'w')
         f.write("\n".join(self.result))
         f.close()
+
+    @classmethod
+    def escape_tokens(cls, s):
+        return s.replace(',', ' \\,').replace('$', '\\$')

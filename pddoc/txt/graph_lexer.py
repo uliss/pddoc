@@ -21,6 +21,7 @@ from __future__ import print_function
 import ply.lex as lex
 from ply.lex import TOKEN
 import re
+import logging
 
 # token names
 tokens = (
@@ -46,7 +47,7 @@ t_ignore = ' \r\t\f'
 
 
 def t_error(t):
-    print("Illegal character '{0:s}'".format(t.value[0]))
+    logging.error("Illegal character '{0:s}'".format(t.value[0]))
     t.lexer.skip(1)
 
 

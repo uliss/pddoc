@@ -108,11 +108,7 @@ class PdDocVisitor(DocObjectVisitor):
 
         info = []
         for i in m.items():
-            rng = ""
-            if len(i.range()) > 0:
-                r = i.range()
-                rng = "Range: {0}...{1}".format(r[0], r[1])
-
+            rng = self.format_range(i)
             txt = self._pp.add_txt("{1}. {0}".format(rng, i.text().strip()),
                                    self.PD_XLET_INFO_XPOS, self.current_yoff)
             info.append(txt)
@@ -142,14 +138,9 @@ class PdDocVisitor(DocObjectVisitor):
             t1 = self._pp.add_txt("*{0}*".format(xinfo.on()), self.PD_XLET_TYPE_XPOS, self.current_yoff)
             tlist.append(t1)
 
-        t2 = self._pp.add_txt(xinfo.text(), self.PD_XLET_INFO_XPOS, self.current_yoff)
+        rng = self.format_range(xinfo)
+        t2 = self._pp.add_txt("{0}. {1}".format(xinfo.text(), rng), self.PD_XLET_INFO_XPOS, self.current_yoff)
         tlist.append(t2)
-        val_range = xinfo.range()
-        if val_range:
-            t3 = self._pp.add_txt("({0}-{1})".format(val_range[0], val_range[1]),
-                                  self.PD_XLET_TYPE_XPOS,
-                                  self.current_yoff + 16)
-            tlist.append(t3)
 
         _, _, _, h = self._pp.group_brect(tlist)
         self.current_yoff += h + 5
@@ -205,7 +196,8 @@ class PdDocVisitor(DocObjectVisitor):
                                     y,
                                     self.PD_ARG_NAME_COLOR)
 
-        t3 = self._pp.add_txt(arg.main_info(), self.PD_XLET_INFO_XPOS, y)
+        rng = self.format_range(arg)
+        t3 = self._pp.add_txt("{0}. {1}".format(arg.main_info(), rng), self.PD_XLET_INFO_XPOS, y)
         _, _, _, h = self._pp.group_brect([t1, t2, t3])
         self.current_yoff += h + 5
 
@@ -230,6 +222,19 @@ class PdDocVisitor(DocObjectVisitor):
 
     def render(self):
         return self._pp.to_string()
+
+    @classmethod
+    def format_range(cls, obj):
+        r = obj.range()
+        if len(r) == 2:
+            if not r[0]:
+                return "Max: {0}".format(r[1])
+            if not r[1]:
+                return "Min: {0}".format(r[0])
+
+            return "Range: {0}...{1}".format(r[0], r[1])
+        else:
+            return ""
 
     def add_section(self, txt):
         hr = self._pp.make_styled_hrule(self.current_yoff)

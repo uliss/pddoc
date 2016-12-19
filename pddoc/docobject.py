@@ -559,13 +559,9 @@ class DocXinfo(DocItem):
         return self._on
 
     def min(self):
-        if not self._minvalue:
-            return "-inf"
         return self._minvalue
 
     def max(self):
-        if not self._maxvalue:
-            return "+inf"
         return self._maxvalue
 
 
@@ -651,7 +647,7 @@ class DocArgument(DocItem):
     def main_info(self):
         res = self.main_info_prefix()
         res += self.text()
-        return res
+        return res.strip()
 
     def range(self):
         if not self._minvalue and not self._maxvalue:
@@ -660,13 +656,9 @@ class DocArgument(DocItem):
         return self.min(), self.max()
 
     def min(self):
-        if not self._minvalue:
-            return "-inf"
         return self._minvalue
 
     def max(self):
-        if not self._maxvalue:
-            return "+inf"
         return self._maxvalue
 
 

@@ -355,5 +355,5 @@ class PdDocVisitor(DocObjectVisitor):
         self._pp.place_in_row(also_objects, 0, 10)
         _, _, w, h = self._pp.group_brect(also_objects)
         self._pp.move_to_y(also_objects, y)
-        self._pp.move_to_x(also_objects, self._pp.width - w - 10)
+        self._pp.move_to_x(also_objects, (self._pp.width - w) - 20)
         self._pp.append_list(also_objects)

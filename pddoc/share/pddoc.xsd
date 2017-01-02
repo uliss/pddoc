@@ -33,6 +33,8 @@
             <xs:enumeration value="int"/>
             <xs:enumeration value="float"/>
             <xs:enumeration value="symbol"/>
+            <xs:enumeration value="list"/>
+            <xs:enumeration value="any"/>
         </xs:restriction>
     </xs:simpleType>
 

@@ -226,12 +226,14 @@
         <xs:sequence>
             <xs:element name="inlet" minOccurs="0" maxOccurs="unbounded" type="InletElementType"/>
         </xs:sequence>
+        <xs:attribute name="dynamic" use="optional" type="xs:boolean" default="false"/>
     </xs:complexType>
 
     <xs:complexType name="OutletsElementType">
         <xs:sequence>
             <xs:element name="outlet" minOccurs="0" maxOccurs="unbounded" type="OutletElementType"/>
         </xs:sequence>
+        <xs:attribute name="dynamic" use="optional" type="xs:boolean" default="false"/>
     </xs:complexType>
 
     <xs:complexType name="InletElementType">

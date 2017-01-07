@@ -465,6 +465,7 @@ class DocAliases(DocItem):
 class DocXlets(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
+        self._dynamic = False
 
     def pd_type_list(self):
         return map(lambda x: x.pd_type(), self.items())
@@ -473,6 +474,13 @@ class DocXlets(DocItem):
         # enumerate
         for n in range(len(self.items())):
             self.items()[n].enumerate(n + 1)
+
+    def is_dynamic(self):
+        return self._dynamic
+    
+    def from_xml(self, xmlobj):
+        DocItem.from_xml(self, xmlobj)
+        self._dynamic = xmlobj.attrib.get("dynamic", False)
 
 
 class DocInlets(DocXlets):

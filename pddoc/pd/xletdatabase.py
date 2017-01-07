@@ -28,6 +28,12 @@ class XletDatabase(object):
     def has_object(self, name):
         return False
 
+    def ignore_inlets(self, objname):
+        return False
+
+    def ignore_outlets(self, objname):
+        return False
+
     def inlets(self, name, args=None):
         if args is None:
             args = []

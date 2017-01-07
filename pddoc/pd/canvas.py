@@ -153,7 +153,6 @@ class Canvas(PdObject):
         dest_obj = self.find_object_by_id(did)
 
         if src_obj and dest_obj:
-
             if check_xlets:
                 if soutl >= len(src_obj.outlets()):
                     logging.warning("[{0:s}] invalid outlet number: {1:d}, total outlets: {2:d}".

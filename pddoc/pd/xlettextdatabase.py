@@ -23,7 +23,7 @@ __author__ = 'Serge Poltavski'
 import logging
 import re
 
-from . import XLET_MESSAGE, XLET_SOUND
+from . import XLET_MESSAGE, XLET_SOUND, XLET_IGNORE
 from xletdatabase import XletDatabase
 
 
@@ -51,17 +51,25 @@ class XletTextDatabase(XletDatabase):
             logging.error("Load failed: {0:s}".format(fname))
             raise e
 
+    def ignore_inlets(self, objname):
+        if not self.has_object(objname):
+            return False
+        else:
+            return XLET_IGNORE in self._objects[objname][0]
+
+    def ignore_outlets(self, objname):
+        if not self.has_object(objname):
+            return False
+        else:
+            return XLET_IGNORE in self._objects[objname][1]
+
     def inlets(self, objname, args=None):
-        if args is None:
-            args = []
         if not self.has_object(objname):
             return []
 
         return self._objects[objname][0]
 
     def outlets(self, objname, args=None):
-        if args is None:
-            args = []
         if not self.has_object(objname):
             return []
 
@@ -87,6 +95,8 @@ class XletTextDatabase(XletDatabase):
                     res.append(XLET_SOUND)
                 elif char == ".":
                     res.append(XLET_MESSAGE)
+                elif char == '?':
+                    res.append(XLET_IGNORE)
                 else:
                     logging.error("unknown char in inlet definition")
 

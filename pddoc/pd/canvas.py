@@ -20,7 +20,7 @@ from __future__ import print_function
 __author__ = 'Serge Poltavski'
 
 from obj import *
-from . import XLET_MESSAGE, XLET_SOUND
+from . import XLET_MESSAGE, XLET_SOUND, XLET_IGNORE
 
 
 class Canvas(PdObject):
@@ -152,17 +152,25 @@ class Canvas(PdObject):
         src_obj = self.find_object_by_id(sid)
         dest_obj = self.find_object_by_id(did)
 
+        def do_check_xlets(xlets):
+            if len(xlets) < 1:
+                return True
+
+            return XLET_IGNORE not in xlets
+
         if src_obj and dest_obj:
             if check_xlets:
-                if soutl >= len(src_obj.outlets()):
-                    logging.warning("[{0:s}] invalid outlet number: {1:d}, total outlets: {2:d}".
-                                    format(src_obj.name, soutl, len(src_obj.outlets())))
-                    return False
+                if do_check_xlets(src_obj.outlets()):
+                    if soutl >= len(src_obj.outlets()):
+                        logging.warning("[{0:s}] invalid outlet number: {1:d}, total outlets: {2:d}".
+                                        format(src_obj.name, soutl, len(src_obj.outlets())))
+                        return False
 
-                if dinl >= len(dest_obj.inlets()):
-                    logging.warning("[{0:s}] invalid inlet number: {1:d}, total inlets: {2:d}".
-                                    format(dest_obj.name, dinl, len(dest_obj.inlets())))
-                    return False
+                if do_check_xlets(dest_obj.inlets()):
+                    if dinl >= len(dest_obj.inlets()):
+                        logging.warning("[{0:s}] invalid inlet number: {1:d}, total inlets: {2:d}".
+                                        format(dest_obj.name, dinl, len(dest_obj.inlets())))
+                        return False
 
             ckey = Canvas.make_connection_key(sid, soutl, did, dinl)
             self._connections[ckey] = (src_obj, soutl, dest_obj, dinl)

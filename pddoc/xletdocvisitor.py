@@ -28,17 +28,27 @@ class XletDocVisitor(IDocObjectVisitor):
         self._outlet_types = []
         self._write_to_file = write_to_file
         self._add_to_mem_db = add_to_mem_db
+        self._dynamic_inlets = False
+        self._dynamic_outlets = False
 
     def inlets_begin(self, inlets):
         self._inlet_types = inlets.pd_type_list()
+        self._dynamic_inlets = inlets.is_dynamic()
 
     def outlets_begin(self, outlets):
         self._outlet_types = outlets.pd_type_list()
+        self._dynamic_outlets = outlets.is_dynamic()
 
     def inlet_types(self):
+        if self._dynamic_inlets:
+            return [3]  # XLET_IGNORE
+
         return self._inlet_types
 
     def outlet_types(self):
+        if self._dynamic_outlets:
+            return [3]  # XLET_IGNORE
+
         return self._outlet_types
 
     @staticmethod
@@ -47,7 +57,7 @@ class XletDocVisitor(IDocObjectVisitor):
             return '-'
 
         def x_type(x):
-            return ('.', '~', '_')[x]
+            return ('.', '~', '_', '?')[x]
 
         return ''.join(map(x_type, xlets))
 

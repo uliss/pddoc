@@ -477,7 +477,7 @@ class DocXlets(DocItem):
 
     def is_dynamic(self):
         return self._dynamic
-    
+
     def from_xml(self, xmlobj):
         DocItem.from_xml(self, xmlobj)
         self._dynamic = xmlobj.attrib.get("dynamic", False)

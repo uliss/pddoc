@@ -248,11 +248,17 @@ class PdDocVisitor(DocObjectVisitor):
         self.add_header_example_object(lbl, self._title)
 
     def add_header_example_object(self, lbl, title):
-        example_obj = make_by_name(title)
-        example_obj.calc_brect()
-        y = (lbl.height - example_obj.height) / 2
-        self._pp.place_top_right(example_obj, 20, y)
-        self._pp.append_object(example_obj)
+        seq = []
+        for a in map(lambda i: i["name"], self._aliases):
+            seq.append(make_by_name(a))
+
+        self._pp.place_in_row(seq, 0, 20)
+        _, _, w, h = self._pp.group_brect(seq)
+        y = (lbl.height - h) / 2
+        x = (lbl.width - w) - 20
+        self._pp.move_to_x(seq, x)
+        self._pp.move_to_y(seq, y)
+        self._pp.append_list(seq)
 
     def add_header_label(self):
         return self._pp.add_header("{0}".format(self._title))

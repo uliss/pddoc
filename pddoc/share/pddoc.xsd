@@ -116,11 +116,26 @@
             <xs:element name="version" type="xs:string" minOccurs="0"/>
             <xs:element name="website" type="xs:anyURI" minOccurs="0"/>
             <xs:element name="keywords" type="xs:string" minOccurs="0"/>
-            <xs:element name="category" type="xs:string" minOccurs="0"/>
+            <xs:element name="category" type="ObjectCategory" minOccurs="0"/>
             <xs:element name="aliases" type="AliasesElementType" minOccurs="0"/>
             <xs:element name="also" type="AlsoElementType" minOccurs="0"/>
             <xs:element name="since" type="xs:string" minOccurs="0"/>
         </xs:all>
+    </xs:complexType>
+
+    <xs:simpleType name="ObjectCategoryView">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="object"/>
+            <xs:enumeration value="text"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="ObjectCategory">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="view" type="ObjectCategoryView" use="optional" default="object"/>
+            </xs:extension>
+        </xs:simpleContent>
     </xs:complexType>
 
     <xs:complexType name="AuthorsElementType">

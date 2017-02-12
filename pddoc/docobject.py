@@ -181,7 +181,15 @@ class DocVersion(DocItem):
 
 
 class DocCategory(DocItem):
-    pass
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
+        self._ref_view = "object"
+
+    def read_xml_data(self, xmlobj):
+        self._ref_view = xmlobj.attrib.get("view", "object")
+
+    def ref_view(self):
+        return self._ref_view
 
 
 class DocLicense(DocItem):

@@ -249,7 +249,7 @@ class PdDocVisitor(DocObjectVisitor):
 
     def add_header_example_object(self, lbl, title):
         seq = []
-        for a in map(lambda i: i["name"], self._aliases):
+        for a in filter(lambda n: n != title, map(lambda i: i["name"], self._aliases)) + [title]:
             seq.append(make_by_name(a))
 
         self._pp.place_in_row(seq, 0, 20)

@@ -26,6 +26,7 @@ import os
 from pddoc.txt import Parser
 from pddoc.pd import Canvas, PdExporter, PdObject
 from pddoc import CairoPainter
+import pddoc.pd.factory as factory
 
 
 def main():
@@ -63,6 +64,8 @@ def main():
 
     if not output:
         output = os.path.splitext(os.path.basename(in_file))[0] + "." + fmt
+
+    factory.add_import('ceammc')
 
     p = Parser()
     p.parse_file(in_file)

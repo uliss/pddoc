@@ -131,15 +131,16 @@ def _find_in_externals(name):
 
 def _find_in_imports(name):
     for path in imports:
-        mod_path = os.path.join(path, name)
-        # print mod_path
-        if os.path.exists(mod_path + ".py"):
-            return mod_path
+        if os.path.exists(os.path.join(path, name) + ".py"):
+            return path
 
     return None
 
 
 def find_external_object(name):
+    if '.' in name:
+        name = name.replace('.', '_')
+
     if name in externals:
         return True
 

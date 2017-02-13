@@ -49,3 +49,9 @@ class TestPdCoreGui(TestCase):
         painter = CairoPainter(canvas.width, canvas.height, "out/core_gui.png")
         drawer = PdDrawer()
         drawer.draw(canvas, painter)
+
+    def test_is_core_gui(self):
+        self.assertTrue(pd.CoreGui.is_coregui("ui.scope"))
+        self.assertTrue(pd.CoreGui.is_coregui("ui.unknown"))
+        self.assertTrue(pd.CoreGui.is_coregui("vsl"))
+        self.assertFalse(pd.CoreGui.is_coregui("unknown"))

@@ -26,7 +26,15 @@ __author__ = 'Serge Poltavski'
 
 class TestCeammcExt(TestCase):
     def test_ui_scope(self):
+        self.assertTrue(f.find_external_object("ceammc/ui.scope"))
         self.assertTrue(f.find_external_object("ceammc/ui_scope"))
+
+        self.assertFalse(f.find_external_object("ui.scope"))
+        self.assertFalse(f.find_external_object("ui_scope"))
+        f.add_import("ceammc")
+        self.assertTrue(f.find_external_object("ui.scope"))
+        self.assertTrue(f.find_external_object("ui_scope"))
+
 
         args = dict()
         args['@size'] = '10x20'

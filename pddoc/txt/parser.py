@@ -191,13 +191,19 @@ class Parser(object):
                 atoms = filter(lambda a: len(a) > 0 and (not a.startswith('#')), m.group(1).split(' '))
                 assert len(atoms) > 0
                 name, args = self.find_alias(atoms)
+                kwargs = dict()
+
+                for a in args:
+                    pair = a.split('=')
+                    if len(pair) == 2:
+                        kwargs[pair[0]] = pair[1]
+
                 if CoreGui.is_coregui(name):
-                    kwargs = dict(map(lambda x: tuple(x.split('=')), args))
                     n.pd_object = factory.make_by_name(name, **kwargs)
                 elif name == 'pd':
                     n.pd_object = Canvas.subpatch(args[0])
                 else:
-                    n.pd_object = factory.make_by_name(name, args)
+                    n.pd_object = factory.make_by_name(name, args, **kwargs)
             elif n.type == 'MESSAGE':
                 m = re.match(lex.r_MESSAGE, n.value)
                 txt = m.group(1).replace(',', '\,')

@@ -51,7 +51,6 @@ class TestPdCoreGui(TestCase):
         drawer.draw(canvas, painter)
 
     def test_is_core_gui(self):
-        self.assertTrue(pd.CoreGui.is_coregui("ui.scope"))
-        self.assertTrue(pd.CoreGui.is_coregui("ui.unknown"))
+        self.assertFalse(pd.CoreGui.is_coregui("ui.scope"))
         self.assertTrue(pd.CoreGui.is_coregui("vsl"))
         self.assertFalse(pd.CoreGui.is_coregui("unknown"))

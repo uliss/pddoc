@@ -17,12 +17,12 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-from pddoc.pd import CoreGui
+from pddoc.pd import PdObject
 
 
-class UIBase(CoreGui):
+class UIBase(PdObject):
     def __init__(self, name, x, y, **kwargs):
-        CoreGui.__init__(self, name, x, y, [], **kwargs)
+        PdObject.__init__(self, name, x, y, 100, 25, [])
         self.parse_args(kwargs)
 
     def parse_args(self, args):
@@ -37,3 +37,8 @@ class UIBase(CoreGui):
         else:
             self.set_width(100)
             self.set_height(25)
+
+        self.append_arg('@size')
+        self.append_arg(self.width)
+        self.append_arg(self.height)
+

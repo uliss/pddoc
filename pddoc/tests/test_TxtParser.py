@@ -102,5 +102,6 @@ class TestTxtParser(TestCase):
         self.assertEqual(obj.width, 300)
         self.assertEqual(obj.height, 400)
         self.assertEqual(obj.to_string(), 'ui.scope @size 300 400')
+        self.assertEqual(obj.brect(), (20, 20, 300, 400))
 
 

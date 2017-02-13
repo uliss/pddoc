@@ -61,7 +61,7 @@ class UIScope(UIBase):
         return [XLET_GUI]
 
     def outlets(self):
-        return [XLET_GUI]
+        return []
 
     def draw(self, painter):
         assert isinstance(painter, CairoPainter)

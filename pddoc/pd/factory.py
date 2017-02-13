@@ -131,17 +131,20 @@ def _find_in_externals(name):
 
 def _find_in_imports(name):
     for path in imports:
-        if os.path.exists(os.path.join(path, name) + ".py"):
-            return path
+        mod_path = os.path.join(path, name)
+        if os.path.exists(mod_path + ".py"):
+            return mod_path
 
     return None
 
 
 def find_external_object(name):
+    dotname = name
+
     if '.' in name:
         name = name.replace('.', '_')
 
-    if name in externals:
+    if name in externals or dotname in externals:
         return True
 
     rname = re.compile(r"^([-a-zA-Z0-9~/*=+><!_%|&.]+)$")
@@ -164,6 +167,8 @@ def find_external_object(name):
     try:
         mod = __import__(mod_name)
         externals[name] = mod
+        if name != dotname:
+            externals[dotname] = mod
         logging.debug("module \"%s.py\" imported from \"%s\".", mod_name, mod_dir)
         return True
     except ImportError as e:

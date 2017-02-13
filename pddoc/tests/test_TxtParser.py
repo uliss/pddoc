@@ -23,6 +23,8 @@ import os.path
 from pddoc.pd import Canvas
 from pddoc.pd.pdexporter import PdExporter
 from pddoc import CairoPainter
+from pddoc.pd import factory
+from pddoc.pd import PdObject
 import nologging
 
 TEST_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "ascii.txt")
@@ -89,3 +91,16 @@ class TestTxtParser(TestCase):
         pd_exporter = PdExporter()
         cnv.traverse(pd_exporter)
         pd_exporter.save("out/ascii.pd")
+
+    def test_parse_kwargs(self):
+        factory.add_import("ceammc")
+        self.p.parse('[ui.scope @size=300x400]')
+        self.assertEqual(self.p.tokens[0].type, 'OBJECT')
+        self.assertTrue(self.p.nodes[0].pd_object is not None)
+        obj = self.p.nodes[0].pd_object
+        self.assertTrue(issubclass(obj.__class__, PdObject));
+        self.assertEqual(obj.width, 300)
+        self.assertEqual(obj.height, 400)
+        self.assertEqual(obj.to_string(), 'ui.scope @size 300 400')
+
+

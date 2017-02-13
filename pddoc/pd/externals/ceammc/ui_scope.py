@@ -18,17 +18,10 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from ui_base import UIBase
-from pddoc.cairopainter import CairoPainter
-from pddoc.pd import XLET_GUI
-
-
-def create(atoms):
-    assert len(atoms)
-    return UIScope.from_atoms(atoms)
+from pddoc.pd import XLET_SOUND
 
 
 def create_by_name(name, args=None, **kwargs):
-    # print name, kwargs
     return UIScope(0, 0, **kwargs)
 
 
@@ -61,27 +54,7 @@ class UIScope(UIBase):
         UIBase.__init__(self, "ui.scope~", x, y, **kwargs)
 
     def inlets(self):
-        return [XLET_GUI]
+        return [XLET_SOUND]
 
     def outlets(self):
         return []
-
-    def draw(self, painter):
-        assert isinstance(painter, CairoPainter)
-        #
-        # self.draw_label(painter)
-        # # self.draw_xlets(painter)
-        # stroke_width = 3
-        #
-        # angle1 = 0.58 * pi
-        # angle2 = 2.42 * pi
-        # radius = self._width / 2
-        # x0 = self.x + radius
-        # y0 = self.y + radius
-        # painter.draw_arc(x0, y0, radius, angle1, angle2,
-        #                  width=stroke_width,
-        #                  outline=(0, 0, 0))
-        #
-        # x1 = x0 - (radius * sin(0.08 * pi))
-        # y1 = y0 + (radius * cos(0.08 * pi))
-        # painter.draw_line(x0, y0, x1, y1, width=stroke_width, color=self.fgcolor())

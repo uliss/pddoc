@@ -50,17 +50,17 @@ class TestCeammcExt(TestCase):
         # default size
         sc = f.make_by_name("ceammc/ui_scope~")
         self.assertTrue(issubclass(sc.__class__, PdObject))
-        self.assertEqual(sc.width, 100)
-        self.assertEqual(sc.height, 25)
+        self.assertEqual(sc.width, 150)
+        self.assertEqual(sc.height, 100)
 
-        self.assertEqual(sc.args, ['@size', '100', '25'])
+        self.assertEqual(sc.args, ['@size', '150', '100'])
 
     def test_export(self):
         sc = f.make_by_name("ceammc/ui_scope~")
 
-        self.assertEqual(sc.to_string(), "ui.scope~ @size 100 25")
+        self.assertEqual(sc.to_string(), "ui.scope~ @size 150 100")
         sc.x = 10
         sc.y = 20
 
         sc.calc_brect()
-        self.assertEqual(sc.brect(), (10, 20, 100, 25))
+        self.assertEqual(sc.brect(), (10, 20, 150, 100))

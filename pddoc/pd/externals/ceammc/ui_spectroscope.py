@@ -17,36 +17,23 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-from pddoc.pd import PdObject
-from pddoc.cairopainter import CairoPainter
+from ui_base import UIBase
+from pddoc.pd import XLET_SOUND
 
 
-class UIBase(PdObject):
-    def __init__(self, name, x, y, **kwargs):
-        PdObject.__init__(self, name, x, y, 100, 25, [])
-        self._fixed_size = True
-        self.parse_args(kwargs)
+def create_by_name(name, args=None, **kwargs):
+    return UISpectroscope(0, 0, **kwargs)
 
-    def parse_args(self, args):
-        if '@size' in args:
-            sz = args.get('@size', '100x25').split('x')
-            if len(sz) == 2:
-                self.set_width(sz[0])
-                self.set_height(sz[1])
-            else:
-                self.set_width(100)
-                self.set_height(25)
-        else:
-            self.set_width(100)
-            self.set_height(25)
 
-        self.append_arg('@size')
-        self.append_arg(str(self.width))
-        self.append_arg(str(self.height))
+class UISpectroscope(UIBase):
+    def __init__(self, x, y, **kwargs):
+        if '@size' not in kwargs:
+            kwargs['@size'] = '150x100'
 
-    def calc_brect(self):
-        pass
+        UIBase.__init__(self, "ui.spectroscope~", x, y, **kwargs)
 
-    def draw(self, painter):
-        assert isinstance(painter, CairoPainter)
-        pass
+    def inlets(self):
+        return [XLET_SOUND]
+
+    def outlets(self):
+        return []

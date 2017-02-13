@@ -22,6 +22,7 @@ import lxml.etree as ET
 from unittest import TestCase, expectedFailure
 from pddoc.htmldocvisitor import *
 from pddoc.docobject import DocObject
+from pddoc.parser import parse_xml
 
 __author__ = 'Serge Poltavski'
 
@@ -45,3 +46,15 @@ class TestDocObject(TestCase):
                 f.write(s)
                 f.close()
                 break
+
+    def test_parse(self):
+        xml = parse_xml("sample.pddoc")
+
+        if not xml:
+            exit(1)
+
+        pddoc = xml.getroot()
+        for child_tag in pddoc:
+            if child_tag.tag == "object":
+                dobj = DocObject()
+                dobj.from_xml(child_tag)

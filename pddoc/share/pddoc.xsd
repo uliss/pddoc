@@ -126,7 +126,7 @@
     <xs:simpleType name="ObjectCategoryView">
         <xs:restriction base="xs:string">
             <xs:enumeration value="object"/>
-            <xs:enumeration value="text"/>
+            <xs:enumeration value="link"/>
         </xs:restriction>
     </xs:simpleType>
 

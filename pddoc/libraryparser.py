@@ -116,7 +116,7 @@ class LibraryParser(object):
         ref_view = obj.get('ref_view', 'object')
         if ref_view == 'object':
             self._pp.append_object(pdobj)
-        elif ref_view == 'text':
+        elif ref_view == 'link':
             name = format(obj.get('name'))
             help_file = '{0}-help.pd'.format(name)
             link_text = '[{0}]'.format(name)

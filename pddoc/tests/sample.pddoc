@@ -5,82 +5,50 @@
         <meta>
             <description>Documentation system for PureData</description>
             <authors>
-                <author>Serj Poltavski</author>
+                <author>Serge Poltavski</author>
+                 <author>Alex Nadzharov</author>
             </authors>
-            <date>01.01.2011</date>
             <license url="http://www.gnu.org/copyleft/gpl.html">GPL v3</license>
             <contacts>serj@poltavski.ru</contacts>
             <version>0.1</version>
             <website>http://github.com</website>
             <keywords>doc puredata python pddp</keywords>
             <library>pddoc</library>
+            <category view="link">misc</category>
             <aliases>
                 <alias>pddoc</alias>
             </aliases>
         </meta>
         <inlets>
-            <inlet number="0" type="bang">outputs the currently stored value.</inlet>
-            <inlet number="0" type="float" min_range="0.0" max_range="1.0">outputs the currently stored value.</inlet>
-            <inlet number="1" type="symbol">range parameter.</inlet>
+            <inlet type="control">
+                <xinfo minvalue="0.0" maxvalue="1.0">outputs the currently stored value</xinfo>
+            </inlet>
+            <inlet type="audio">
+                <xinfo>outputs the currently stored value.</xinfo>
+            </inlet>
+            <inlet><xinfo>range parameter.</xinfo></inlet>
         </inlets>
         <outlets>
-            <outlet number="0" type="bang">outputs bang all the time</outlet>
+            <outlet>outputs bang all the time</outlet>
         </outlets>
         <arguments>
-            <argument number="0" type="float">test</argument>
+            <argument name="FREQ" type="float">test</argument>
         </arguments>
-    <section>
-        <caution>
-            <para>Caution text</para>
-        </caution>
-
-        <para></para>
-
-        <table>
-            <row>
-                <col>
-                    <para>column 1</para>
-                </col>
-                <col>
-                    <para>column 2</para>
-                </col>
-            </row>
-        </table>
-
-        <pdexample width="200" height="100">
-            <row>
-                <pdmessage id="msg1" text="440" comment="440 Hz"/>
-                <pdmessage id="msg2" text="442" comment="442 Hz"/>
-            </row>
-            <row>
-                <col>
-                    <pdobject id="osc~" name="osc~" params="415" comment="oscillator">
-                        <pdinlet type="audio"/>
-                        <pdinlet type="control"/>
-                        <pdoutlet type="audio"/>
-                    </pdobject>
-                    <pdobject id="*~" name="*~" param="0.5" comment="gain">
-                        <pdinlet type="audio"/>
-                        <pdinlet type="control"/>
-                        <pdoutlet type="audio"/>
-                    </pdobject>
-                    <pdobject id="dac~" name="dac~">
-                        <pdinlet type="audio"/>
-                        <pdinlet type="audio"/>
-                    </pdobject>
-                </col>
-            </row>
-            <pdconnect src="msg1" src_out="0" dest="osc~" dest_in="0"/>
-            <pdconnect src="msg2" src_out="0" dest="osc~" dest_in="0"/>
-            <pdconnect src="osc~" src_out="0" dest="*~" dest_in="0"/>
-            <pdconnect src="*~" src_out="0" dest="dac~" dest_in="0"/>
-            <pdconnect src="*~" src_out="0" dest="dac~" dest_in="1"/>
-        </pdexample>
-    </section>
-    <section>
-        <pdexample>
-            <pdinclude file="objects.pd"/>
-        </pdexample>
-    </section>
-</object>
+        <info>
+            <par>sample text</par>
+        </info>
+        <methods>
+            <method name="set">sets parameters</method>
+        </methods>
+        <example>
+            <pdascii>
+<![CDATA[
+[floatatom]
+|
+|
+[nbx]
+]]>
+            </pdascii>
+        </example>
+    </object>
 </pddoc>

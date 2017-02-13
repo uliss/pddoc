@@ -23,9 +23,11 @@ import logging
 
 
 class CategoryParser(object):
-    WINDOW_WIDTH = 600
+    WINDOW_WIDTH = 630
     WINDOW_HEIGHT = 500
     HEADER_HEIGHT = 40
+    OBJECT_OFFSET = 30
+    DESCRIPTION_OFFSET = 175
 
     def __init__(self, fname):
         self._fname = fname
@@ -85,7 +87,7 @@ class CategoryParser(object):
 
     def add_object_description(self, obj):
         pdobj = make_by_name(obj.get('name'))
-        pdobj.x = 30
+        pdobj.x = self.OBJECT_OFFSET
         pdobj.y = self._current_y
 
         ref_view = obj.get('ref_view', 'object')
@@ -95,9 +97,9 @@ class CategoryParser(object):
             name = format(obj.get('name'))
             help_file = '{0}-help.pd'.format(name)
             link_text = '[{0}]'.format(name)
-            self._pp.add_link(link_text, help_file, 30, self._current_y)
+            self._pp.add_link(link_text, help_file, self.OBJECT_OFFSET, self._current_y)
 
-        info = self._pp.add_txt(obj.get('descr'), 150, self._current_y)
+        info = self._pp.add_txt(obj.get('descr'), self.DESCRIPTION_OFFSET, self._current_y)
         self._current_y += max(info.height, pdobj.height) + 10
 
     def save(self):

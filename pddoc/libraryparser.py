@@ -23,11 +23,11 @@ from pdpage import PdPage
 
 
 class LibraryParser(object):
-    WINDOW_WIDTH = 600
+    WINDOW_WIDTH = 630
     WINDOW_HEIGHT = 500
     HEADER_HEIGHT = 40
     OBJECT_OFFSET = 30
-    DESCRIPTION_OFFSET = 170
+    DESCRIPTION_OFFSET = 175
 
     def __init__(self, fname):
         self._fname = fname

@@ -10,6 +10,7 @@ from pddoc.pddocvisitor import PdDocVisitor
 from pddoc.xletdocvisitor import XletDocVisitor
 from pddoc.parser import parse_xml
 from pddoc.pd.obj import PdObject
+from pddoc.pd import factory
 
 #   Copyright (C) 2016 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -67,6 +68,8 @@ def main():
 
     if not xml:
         exit(1)
+
+    factory.add_import('ceammc')
 
     pddoc = xml.getroot()
     for child_tag in pddoc:

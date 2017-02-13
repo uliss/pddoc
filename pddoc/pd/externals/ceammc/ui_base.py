@@ -39,6 +39,6 @@ class UIBase(PdObject):
             self.set_height(25)
 
         self.append_arg('@size')
-        self.append_arg(self.width)
-        self.append_arg(self.height)
+        self.append_arg(str(self.width))
+        self.append_arg(str(self.height))
 

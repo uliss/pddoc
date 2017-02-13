@@ -26,6 +26,8 @@ class LibraryParser(object):
     WINDOW_WIDTH = 600
     WINDOW_HEIGHT = 500
     HEADER_HEIGHT = 40
+    OBJECT_OFFSET = 30
+    DESCRIPTION_OFFSET = 170
 
     def __init__(self, fname):
         self._fname = fname
@@ -105,12 +107,12 @@ class LibraryParser(object):
     def add_lib_description(self):
         lib_descr = self._root.find("meta/library-info/description")
         if lib_descr is not None:
-            descr = self._pp.add_txt(lib_descr.text, 30, self._current_y)
+            descr = self._pp.add_txt(lib_descr.text, self.OBJECT_OFFSET, self._current_y)
             self._current_y += descr.height + 10
 
     def add_object_description(self, obj, cat_name):
         pdobj = make_by_name(obj.get('name'))
-        pdobj.x = 30
+        pdobj.x = self.OBJECT_OFFSET
         pdobj.y = self._current_y
 
         ref_view = obj.get('ref_view', 'object')
@@ -120,9 +122,9 @@ class LibraryParser(object):
             name = format(obj.get('name'))
             help_file = '{0}-help.pd'.format(name)
             link_text = '[{0}]'.format(name)
-            self._pp.add_link(link_text, help_file, 30, self._current_y)
+            self._pp.add_link(link_text, help_file, self.OBJECT_OFFSET, self._current_y)
 
-        info = self._pp.add_txt(obj.get('descr'), 150, self._current_y)
+        info = self._pp.add_txt(obj.get('descr'), self.DESCRIPTION_OFFSET, self._current_y)
         self._current_y += max(info.height, pdobj.height) + 10
 
         self._pd_cats[cat_name].append(pdobj)

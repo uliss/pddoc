@@ -68,7 +68,7 @@ class LibraryMaker(object):
         if categ is None:
             self.add_to_others(doc_fname, name=name, descr=descr)
         else:
-            self.add_to_cat(categ.text, doc_fname, name=name, descr=descr)
+            self.add_to_cat(categ.text, doc_fname, name=name, descr=descr, ref_view=categ.get('view', 'object'))
         lib = xml_obj.find('meta/library').text
         if lib != self._name:
             logging.warning("library differs in file: '%s': %s != %s", doc_fname, self._name, lib)

@@ -87,7 +87,15 @@ class CategoryParser(object):
         pdobj = make_by_name(obj.get('name'))
         pdobj.x = 30
         pdobj.y = self._current_y
-        self._pp.append_object(pdobj)
+
+        ref_view = obj.get('ref_view', 'object')
+        if ref_view == 'object':
+            self._pp.append_object(pdobj)
+        elif ref_view == 'text':
+            name = format(obj.get('name'))
+            help_file = '{0}-help.pd'.format(name)
+            link_text = '[{0}]'.format(name)
+            self._pp.add_link(link_text, help_file, 30, self._current_y)
 
         info = self._pp.add_txt(obj.get('descr'), 150, self._current_y)
         self._current_y += max(info.height, pdobj.height) + 10

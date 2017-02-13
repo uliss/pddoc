@@ -55,6 +55,9 @@ class UIScope(UIBase):
                     steady=atoms[18])
 
     def __init__(self, x, y, **kwargs):
+        if '@size' not in kwargs:
+            kwargs['@size'] = '150x100'
+
         UIBase.__init__(self, "ui.scope~", x, y, **kwargs)
 
     def inlets(self):

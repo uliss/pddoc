@@ -151,6 +151,11 @@ class PdPage(object):
     def add_txt(self, txt, x, y):
         return self.add_pd_txt(self._canvas, txt, x, y)
 
+    def add_link(self, txt, url, x, y):
+        lnk = self.make_link(x, y, url, txt)
+        self._canvas.append_object(lnk)
+        return lnk
+
     def add_bg_txt(self, txt, color, x, y):
         t = self.make_txt(txt, x, y)
         t.calc_brect()

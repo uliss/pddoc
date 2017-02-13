@@ -758,12 +758,14 @@ class DocObject(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
         self._name = ""
+        self._type = "box"
 
     def is_valid_tag(self, tag_name):
         return tag_name in ("title", "meta", "inlets", "outlets", "arguments", "info", "example", "methods")
 
     def from_xml(self, xobj):
         self._name = xobj.attrib["name"]
+        self._type = xobj.attrib.get("type", "box")
         DocItem.from_xml(self, xobj)
 
     def name(self):
@@ -772,6 +774,12 @@ class DocObject(DocItem):
     def traverse(self, visitor):
         visitor.name = self._name
         DocItem.traverse(self, visitor)
+
+    def is_box(self):
+        return self._type == "box"
+
+    def is_gui(self):
+        return self._type == "gui"
 
 
 class DocSince(DocItem):

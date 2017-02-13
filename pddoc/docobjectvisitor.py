@@ -63,6 +63,10 @@ class DocObjectVisitor(IDocObjectVisitor):
         self._inlet_idx = 0
         self._outlet_idx = 0
         self._since = ""
+        self._is_gui = False
+
+    def object_begin(self, obj):
+        self._is_gui = obj.is_gui()
 
     def aliases_begin(self, a):
         if not a.aliases():

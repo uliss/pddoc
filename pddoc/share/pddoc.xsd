@@ -92,6 +92,13 @@
         </xs:attribute>
     </xs:complexType>
 
+    <xs:simpleType name="ObjectTypeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="box"/>
+            <xs:enumeration value="gui"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:complexType name="ObjectType">
         <xs:all>
             <xs:element name="title"/>
@@ -104,6 +111,7 @@
             <xs:element name="info" type="InfoElementType" minOccurs="0"/>
         </xs:all>
         <xs:attribute name="name" use="required" type="ObjectNameType"/>
+        <xs:attribute name="type" use="optional" type="ObjectTypeType" default="box"/>
     </xs:complexType>
 
     <xs:complexType name="MetaElementType">

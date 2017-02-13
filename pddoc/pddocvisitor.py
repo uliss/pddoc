@@ -245,7 +245,8 @@ class PdDocVisitor(DocObjectVisitor):
 
     def add_header(self):
         lbl = self.add_header_label()
-        self.add_header_example_object(lbl, self._title)
+        if not self._is_gui:
+            self.add_header_example_object(lbl, self._title)
 
     def add_header_example_object(self, lbl, title):
         seq = []

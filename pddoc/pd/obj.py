@@ -39,6 +39,8 @@ class PdObject(BaseObject):
     _patch_cache = {}
     # brect calc
     _brect_calc = None
+    # fixed brect
+    _fixed_size = False
 
     def __init__(self, name, x=0, y=0, w=0, h=0, args=None):
         BaseObject.__init__(self, x, y, w, h)

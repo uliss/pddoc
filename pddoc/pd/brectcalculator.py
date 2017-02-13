@@ -49,6 +49,9 @@ class BRectCalculator(AbstractVisitor):
         return left, top, right - left, bottom - top
 
     def object_brect(self, obj):
+        if obj._fixed_size:
+            return obj.x, obj.y, obj.width, obj.height
+
         w, h = self._cairo.box_size(obj.to_string())
         return obj.x, obj.y, int(w), int(h)
 

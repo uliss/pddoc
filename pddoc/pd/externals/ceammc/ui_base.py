@@ -23,6 +23,7 @@ from pddoc.pd import PdObject
 class UIBase(PdObject):
     def __init__(self, name, x, y, **kwargs):
         PdObject.__init__(self, name, x, y, 100, 25, [])
+        self._fixed_size = True
         self.parse_args(kwargs)
 
     def parse_args(self, args):

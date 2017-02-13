@@ -160,7 +160,7 @@
 
     <xs:complexType name="AlsoElementType">
         <xs:sequence>
-            <xs:element name="see" minOccurs="1" maxOccurs="unbounded" type="xs:string"/>
+            <xs:element name="see" minOccurs="0" maxOccurs="unbounded" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 

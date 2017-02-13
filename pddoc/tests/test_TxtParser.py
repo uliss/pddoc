@@ -94,14 +94,14 @@ class TestTxtParser(TestCase):
 
     def test_parse_kwargs(self):
         factory.add_import("ceammc")
-        self.p.parse('[ui.scope @size=300x400]')
+        self.p.parse('[ui.scope~ @size=300x400]')
         self.assertEqual(self.p.tokens[0].type, 'OBJECT')
         self.assertTrue(self.p.nodes[0].pd_object is not None)
         obj = self.p.nodes[0].pd_object
         self.assertTrue(issubclass(obj.__class__, PdObject));
         self.assertEqual(obj.width, 300)
         self.assertEqual(obj.height, 400)
-        self.assertEqual(obj.to_string(), 'ui.scope @size 300 400')
+        self.assertEqual(obj.to_string(), 'ui.scope~ @size 300 400')
         self.assertEqual(obj.brect(), (20, 20, 300, 400))
 
 

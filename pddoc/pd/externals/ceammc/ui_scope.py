@@ -55,7 +55,7 @@ class UIScope(UIBase):
                     steady=atoms[18])
 
     def __init__(self, x, y, **kwargs):
-        UIBase.__init__(self, "ui.scope", x, y, **kwargs)
+        UIBase.__init__(self, "ui.scope~", x, y, **kwargs)
 
     def inlets(self):
         return [XLET_GUI]

@@ -40,6 +40,14 @@ externals = {}
 not_found = set()
 imports = []
 
+def _clean_ext_name(name):
+    if '.' in name:
+        name = name.replace('.', '_')
+    if '~' in name:
+        name = name.replace('~', '')
+
+    return name
+
 
 def make(atoms):
     assert isinstance(atoms, list)
@@ -69,7 +77,7 @@ def make(atoms):
         return Nbx.from_atoms(atoms)
     elif name not in not_found:
         if find_external_object(name):
-            return externals[name].create(atoms)
+            return externals[_clean_ext_name(name)].create(atoms)
     else:
         pass
 
@@ -116,7 +124,7 @@ def make_by_name(name, args=None, **kwargs):
     elif name == "vu":
         return PdVu(0, 0, **kwargs)
     elif name not in not_found and find_external_object(name):
-        return externals[name].create_by_name(name, args, **kwargs)
+        return externals[_clean_ext_name(name)].create_by_name(name, args, **kwargs)
     else:
         return PdObject(name, 0, 0, 0, 0, args)
 
@@ -139,24 +147,21 @@ def _find_in_imports(name):
 
 
 def find_external_object(name):
-    dotname = name
+    clean_ext_name = _clean_ext_name(name)
 
-    if '.' in name:
-        name = name.replace('.', '_')
-
-    if name in externals or dotname in externals:
+    if clean_ext_name in externals:
         return True
 
     rname = re.compile(r"^([-a-zA-Z0-9~/*=+><!_%|&.]+)$")
-    if not rname.match(name):
-        logging.warning("name contains invalid characters: [%s]", name)
+    if not rname.match(clean_ext_name):
+        logging.warning("name contains invalid characters: [%s]", clean_ext_name)
         return False
 
-    mod_path = _find_in_externals(name)
+    mod_path = _find_in_externals(clean_ext_name)
     if not mod_path:
-        mod_path = _find_in_imports(name)
+        mod_path = _find_in_imports(clean_ext_name)
     if not mod_path:
-        not_found.add(name)
+        not_found.add(clean_ext_name)
         return False
 
     mod_dir = os.path.dirname(mod_path)
@@ -166,12 +171,10 @@ def find_external_object(name):
         sys.path.append(mod_dir)
     try:
         mod = __import__(mod_name)
-        externals[name] = mod
-        if name != dotname:
-            externals[dotname] = mod
+        externals[clean_ext_name] = mod
         logging.debug("module \"%s.py\" imported from \"%s\".", mod_name, mod_dir)
         return True
     except ImportError as e:
         logging.error("error while importing extension: %s - \"%s\". Paths: = %s", mod_name, e, "\n\t".join(sys.path))
-        not_found.add(name)
+        not_found.add(clean_ext_name)
         return None

@@ -49,9 +49,14 @@ class TestCeammcExt(TestCase):
         self.assertEqual(sc.width, 100)
         self.assertEqual(sc.height, 25)
 
-        self.assertEqual(sc.args, ['@size', 100, 25])
+        self.assertEqual(sc.args, ['@size', '100', '25'])
 
     def test_export(self):
         sc = f.make_by_name("ceammc/ui_scope")
 
         self.assertEqual(sc.to_string(), "ui.scope @size 100 25")
+        sc.x = 10
+        sc.y = 20
+
+        sc.calc_brect()
+        self.assertEqual(sc.brect(), (10, 20, 100, 25))

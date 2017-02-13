@@ -42,3 +42,5 @@ class UIBase(PdObject):
         self.append_arg(str(self.width))
         self.append_arg(str(self.height))
 
+    def calc_brect(self):
+        pass

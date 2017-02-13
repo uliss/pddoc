@@ -186,6 +186,7 @@ class DocCategory(DocItem):
         self._ref_view = "object"
 
     def read_xml_data(self, xmlobj):
+        DocItem.read_xml_data(self, xmlobj)
         self._ref_view = xmlobj.attrib.get("view", "object")
 
     def ref_view(self):

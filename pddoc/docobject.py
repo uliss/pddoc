@@ -163,6 +163,14 @@ class DocAlso(DocItem):
 class DocSee(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
+        self._ref_view = "object"
+
+    def from_xml(self, xmlobj):
+        DocItem.from_xml(self, xmlobj)
+        self._ref_view = xmlobj.get("view", "object")
+
+    def is_link(self):
+        return self._ref_view == "link"
 
 
 class DocContacts(DocItem):

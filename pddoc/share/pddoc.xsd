@@ -168,8 +168,16 @@
 
     <xs:complexType name="AlsoElementType">
         <xs:sequence>
-            <xs:element name="see" minOccurs="0" maxOccurs="unbounded" type="xs:string"/>
+            <xs:element name="see" minOccurs="0" maxOccurs="unbounded" type="SeeElementType"/>
         </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SeeElementType">
+         <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="view" type="ObjectCategoryView" use="optional" default="object"/>
+            </xs:extension>
+        </xs:simpleContent>
     </xs:complexType>
 
     <xs:complexType name="ExampleElementType">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pddoc version="1.0">
-    <object name="float">
+    <object name="float" type="box">
         <title>osc~</title>
         <meta>
             <description>Documentation system for PureData</description>
@@ -15,6 +15,9 @@
             <keywords>doc puredata python pddp</keywords>
             <library>pddoc</library>
             <category view="link">misc</category>
+            <also>
+                <see view="link">double</see>
+            </also>
             <aliases>
                 <alias>pddoc</alias>
             </aliases>

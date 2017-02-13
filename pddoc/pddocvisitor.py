@@ -357,7 +357,12 @@ class PdDocVisitor(DocObjectVisitor):
         label = self._pp.make_txt("see also:", 0, 0)
         also_objects = [label]
         for see in self._see_also:
-            also_objects.append(make_by_name(see['name']))
+            if 'is_link' in see:
+                also_objects.append(self._pp.make_link(0, 0,
+                                                       "{0}-help.pd".format(see['name']),
+                                                       "[{0}]".format(see['name'])))
+            else:
+                also_objects.append(make_by_name(see['name']))
 
         self._pp.place_in_row(also_objects, 0, 10)
         _, _, w, h = self._pp.group_brect(also_objects)

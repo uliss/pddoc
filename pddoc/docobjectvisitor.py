@@ -214,7 +214,8 @@ class DocObjectVisitor(IDocObjectVisitor):
     def see_begin(self, see):
         element = {
             'name': see.text(),
-            'image': self.image_pdobject_fname(see.text())
+            'image': self.image_pdobject_fname(see.text()),
+            'is_link': see.is_link()
         }
 
         self._see_also.append(element)

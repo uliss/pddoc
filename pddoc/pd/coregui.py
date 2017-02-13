@@ -135,6 +135,9 @@ class CoreGui(obj.PdObject):
 
     @classmethod
     def is_coregui(cls, name):
+        if name.startswith("ui."):
+            return True
+
         return name in ("bng", "tgl", "floatatom", "symbolatom",
                         "nbx", "hslider", "vsl", "hsl", "vu",
                         "hradio", "vradio")

@@ -115,6 +115,8 @@ def make_by_name(name, args=None, **kwargs):
         return PdVRadio(0, 0, **kwargs)
     elif name == "vu":
         return PdVu(0, 0, **kwargs)
+    elif name not in not_found and find_external_object(name):
+        return externals[name].create_by_name(name, args, **kwargs)
     else:
         return PdObject(name, 0, 0, 0, 0, args)
 
@@ -161,9 +163,9 @@ def find_external_object(name):
     try:
         mod = __import__(mod_name)
         externals[name] = mod
-        logging.debug("module \"%s.py\" imported from \"%s\"", mod_name, mod_dir)
+        logging.debug("module \"%s.py\" imported from \"%s\".", mod_name, mod_dir)
         return True
-    except ImportError:
-        logging.error("error while importing extension: %s", mod_name)
+    except ImportError as e:
+        logging.error("error while importing extension: %s - \"%s\". Paths: = %s", mod_name, e, "\n\t".join(sys.path))
         not_found.add(name)
         return None

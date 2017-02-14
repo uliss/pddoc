@@ -25,29 +25,35 @@ class UIBase(PdObject):
     def __init__(self, name, x, y, **kwargs):
         PdObject.__init__(self, name, x, y, 100, 25, [])
         self._fixed_size = True
-        self.parse_args(kwargs)
+        self._properties = kwargs
+        self.parse_props()
 
-    def parse_args(self, args):
-        if '@size' in args:
-            sz = args.get('@size', '100x25').split('x')
+    def parse_props(self):
+        if '@size' in self._properties:
+            sz = self._properties['@size'].split('x')
             if len(sz) == 2:
-                self.set_width(sz[0])
-                self.set_height(sz[1])
-            else:
-                self.set_width(100)
-                self.set_height(25)
+                self.set_property('@size', sz[0] + ' ' + sz[1])
         else:
-            self.set_width(100)
-            self.set_height(25)
+            self.set_property('@size', '100 25')
 
-        self.append_arg('@size')
-        self.append_arg(str(self.width))
-        self.append_arg(str(self.height))
+    def set_property(self, name, value):
+        self._properties[name] = value
+        if name == '@size':
+            self.width = int(value.split(' ')[0])
+            self.height = int(value.split(' ')[1])
 
-        for k, v in args.items():
-            if k != '@size':
-                self.append_arg(k)
-                self.append_arg(v)
+    @property
+    def args(self):
+        res = []
+        for k, v in self._properties.items():
+            res.append(k)
+            if not v:
+                continue
+
+            for p in v.split(' '):
+                res.append(str(p))
+
+        return res
 
     def calc_brect(self):
         pass
@@ -55,3 +61,7 @@ class UIBase(PdObject):
     def draw(self, painter):
         assert isinstance(painter, CairoPainter)
         pass
+
+    def set_bg_color(self, color):
+        self.set_property('@bgcolor', ' '.join(map(lambda c: str(c), color.rgb_float())))
+

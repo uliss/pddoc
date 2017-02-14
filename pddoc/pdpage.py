@@ -22,6 +22,7 @@ from pd.gcanvas import GCanvas
 from pd.coregui import Color
 from pd.brectcalculator import BRectCalculator
 from pd.externals.pddp.pddplink import PddpLink
+from pd.externals.ceammc.ui_link import UILink
 from pd.comment import Comment
 from pd.pdexporter import PdExporter
 import re
@@ -118,7 +119,7 @@ class PdPage(object):
         return l, r, self.group_brect([l, r])
 
     def make_link(self, x, y, url, name):
-        return PddpLink(x, y, url, name)
+        return UILink(x, y + 3, url, name)
 
     def make_txt(self, txt, x, y):
         txt = re.sub(' +', ' ', txt)

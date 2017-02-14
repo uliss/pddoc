@@ -358,9 +358,11 @@ class PdDocVisitor(DocObjectVisitor):
         also_objects = [label]
         for see in self._see_also:
             if 'is_link' in see and see['is_link'] == True:
-                also_objects.append(self._pp.make_link(0, 0,
-                                                       "{0}-help.pd".format(see['name']),
-                                                       "[{0}]".format(see['name'])))
+                lnk = self._pp.make_link(0, 0,
+                                         "{0}-help.pd".format(see['name']),
+                                         "[{0}]".format(see['name']))
+                lnk.set_bg_color(Color(200, 200, 200))
+                also_objects.append(lnk)
             else:
                 also_objects.append(make_by_name(see['name']))
 

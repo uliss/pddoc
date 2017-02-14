@@ -29,16 +29,13 @@ def create_by_name(name, args, **kwargs):
 
 
 class UILink(UIBase):
-    def __init__(self, x, y, url, text, **kwargs):
+    def __init__(self, x, y, url, text):
+        kwargs = dict()
         kwargs['@link'] = url
         if text:
             kwargs['@title'] = text
 
         UIBase.__init__(self, "ui.link", x, y, **kwargs)
-        self.x = x
-        self.y = y
-        self._url = url
-        self._text = text
 
     def inlets(self):
         return ()
@@ -47,13 +44,10 @@ class UILink(UIBase):
         return ()
 
     def url(self):
-        return self._url
+        self._properties['@link']
 
     def text(self):
-        if self._text:
-            return self._text
-        else:
-            return self.url()
+        return self._properties['@title']
 
     def draw(self, painter):
         assert isinstance(painter, CairoPainter)

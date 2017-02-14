@@ -96,7 +96,7 @@ class Color:
         return self.compare((0, 0, 0))
 
     def rgb_float(self):
-        return self._r / 255.0, self._g / 255.0, self._b / 255.0
+        return round(self._r / 255.0, 5), round(self._g / 255.0, 5), round(self._b / 255.0, 5)
 
     def to_pd(self):
         return -4096 * int(round(self._r * (63 / 255.0))) \

@@ -20,6 +20,7 @@
 from unittest import TestCase, expectedFailure
 import pddoc.pd.factory as f
 from pddoc.pd.obj import PdObject
+from pddoc.pd.coregui import Color
 
 __author__ = 'Serge Poltavski'
 
@@ -39,7 +40,6 @@ class TestCeammcExt(TestCase):
         self.assertTrue(f.find_external_object("ui.scope~"))
         self.assertTrue(f.find_external_object("ui_scope~"))
 
-
         args = dict()
         args['@size'] = '100x200'
         sc = f.make_by_name("ceammc/ui_scope~", **args)
@@ -53,8 +53,6 @@ class TestCeammcExt(TestCase):
         self.assertEqual(sc.width, 150)
         self.assertEqual(sc.height, 100)
 
-        self.assertEqual(sc.args, ['@size', '150', '100'])
-
     def test_export(self):
         sc = f.make_by_name("ceammc/ui_scope~")
 
@@ -64,3 +62,10 @@ class TestCeammcExt(TestCase):
 
         sc.calc_brect()
         self.assertEqual(sc.brect(), (10, 20, 150, 100))
+
+    def test_bg_color(self):
+        lnk = f.make_by_name("ceammc/ui_link", link='http://ya.ru', title='Yandex')
+        lnk.set_bg_color(Color(255, 0, 128))
+        self.assertEqual(lnk.to_string(),
+                         "ui.link @title Yandex @link http://ya.ru @size 100 25 @bgcolor 1.0 0.0 0.50196")
+

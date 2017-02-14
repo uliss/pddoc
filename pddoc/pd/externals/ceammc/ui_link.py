@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-#   Copyright (C) 2017 by Serge Poltavski                                 #
+#   Copyright (C) 2015 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -17,41 +17,49 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-from pddoc.pd import PdObject
+
+__author__ = 'Serge Poltavski'
+
+from ui_base import UIBase
 from pddoc.cairopainter import CairoPainter
 
 
-class UIBase(PdObject):
-    def __init__(self, name, x, y, **kwargs):
-        PdObject.__init__(self, name, x, y, 100, 25, [])
-        self._fixed_size = True
-        self.parse_args(kwargs)
+def create_by_name(name, args, **kwargs):
+    return UILink(0, 0, kwargs.get('link'), kwargs.get('title'))
 
-    def parse_args(self, args):
-        if '@size' in args:
-            sz = args.get('@size', '100x25').split('x')
-            if len(sz) == 2:
-                self.set_width(sz[0])
-                self.set_height(sz[1])
-            else:
-                self.set_width(100)
-                self.set_height(25)
+
+class UILink(UIBase):
+    def __init__(self, x, y, url, text, **kwargs):
+        kwargs['@link'] = url
+        if text:
+            kwargs['@title'] = text
+
+        UIBase.__init__(self, "ui.link", x, y, **kwargs)
+        self.x = x
+        self.y = y
+        self._url = url
+        self._text = text
+
+    def inlets(self):
+        return ()
+
+    def outlets(self):
+        return ()
+
+    def url(self):
+        return self._url
+
+    def text(self):
+        if self._text:
+            return self._text
         else:
-            self.set_width(100)
-            self.set_height(25)
-
-        self.append_arg('@size')
-        self.append_arg(str(self.width))
-        self.append_arg(str(self.height))
-
-        for k, v in args.items():
-            if k != '@size':
-                self.append_arg(k)
-                self.append_arg(v)
-
-    def calc_brect(self):
-        pass
+            return self.url()
 
     def draw(self, painter):
         assert isinstance(painter, CairoPainter)
-        pass
+        painter.draw_text(self.x + 4, self.y + 12, self.text(), color=(0, 0, 1))
+
+    def calc_brect(self):
+        x, y, w, h = self.brect_calc().string_brect(self.text(), None)
+        self.width = w
+        self.height = h

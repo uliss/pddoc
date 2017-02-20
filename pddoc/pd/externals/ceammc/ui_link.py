@@ -25,13 +25,13 @@ from pddoc.cairopainter import CairoPainter
 
 
 def create_by_name(name, args, **kwargs):
-    return UILink(0, 0, kwargs.get('link'), kwargs.get('title'))
+    return UILink(0, 0, kwargs.get('url'), kwargs.get('title'))
 
 
 class UILink(UIBase):
     def __init__(self, x, y, url, text):
         kwargs = dict()
-        kwargs['@link'] = url
+        kwargs['@url'] = url
         if text:
             kwargs['@title'] = text
 
@@ -44,7 +44,7 @@ class UILink(UIBase):
         return ()
 
     def url(self):
-        self._properties['@link']
+        self._properties['@url']
 
     def text(self):
         return self._properties['@title']

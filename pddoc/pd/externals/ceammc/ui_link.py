@@ -36,6 +36,7 @@ class UILink(UIBase):
             kwargs['@title'] = text
 
         UIBase.__init__(self, "ui.link", x, y, **kwargs)
+        self._properties.pop('@size', None)
 
     def inlets(self):
         return ()

@@ -321,10 +321,13 @@
     <xs:complexType name="MethodArgumentElementType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
+                <xs:attribute name="name" use="optional" type="xs:string"/>
                 <xs:attribute name="type" use="required" type="ArgumentDataType"/>
                 <xs:attribute name="units" use="optional" type="UnitDataType"/>
                 <xs:attribute name="minvalue" use="optional" type="xs:float"/>
                 <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
+                <xs:attribute name="default" use="optional" type="xs:string"/>
+                <xs:attribute name="required" use="optional" type="xs:boolean"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>

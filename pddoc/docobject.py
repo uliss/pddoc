@@ -620,6 +620,10 @@ class DocArgument(DocItem):
         self._type = ""
         self._units = ""
         self._name = ""
+        self._minvalue = ""
+        self._maxvalue = ""
+        self._default = ""
+        self._required = False
 
     def from_xml(self, xmlobj):
         self._name = xmlobj.attrib.get("name", "anonym")
@@ -628,6 +632,8 @@ class DocArgument(DocItem):
         self._units = xmlobj.attrib.get("units", "")
         self._minvalue = xmlobj.attrib.get("minvalue", "")
         self._maxvalue = xmlobj.attrib.get("maxvalue", "")
+        self._default = xmlobj.attrib.get("default", "")
+        self._required = xmlobj.attrib.get("required", False) == "true"
         DocItem.from_xml(self, xmlobj)
 
     def type(self):
@@ -641,6 +647,15 @@ class DocArgument(DocItem):
 
     def name(self):
         return self._name
+
+    def required(self):
+        return self._required is True
+
+    def optional(self):
+        return self._required is False
+
+    def default(self):
+        return self._default
 
     def number(self):
         return self._number
@@ -723,6 +738,8 @@ class DocParam(DocArgument):
     def param_name(self):
         if self._units:
             return self.units().upper()
+        elif self._name:
+            return self._name
         else:
             return "X"
 

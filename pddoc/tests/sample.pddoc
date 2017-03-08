@@ -22,6 +22,9 @@
                 <alias>pddoc</alias>
             </aliases>
         </meta>
+        <properties>
+            <property name="@test" type="int" readonly="false" units="herz" minvalue="0" maxvalue="1">test property</property>
+        </properties>
         <inlets>
             <inlet type="control">
                 <xinfo minvalue="0.0" maxvalue="1.0">outputs the currently stored value</xinfo>

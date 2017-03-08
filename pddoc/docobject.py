@@ -817,3 +817,23 @@ class DocObject(DocItem):
 class DocSince(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
+
+
+class DocProperties(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
+
+    def is_valid_tag(self, tag_name):
+        return tag_name == "property"
+
+
+class DocProperty(DocArgument):
+    def __init__(self, *args):
+        DocArgument.__init__(self, args)
+        self._enum = []
+
+    def from_xml(self, xmlobj):
+        DocArgument.from_xml(self, xmlobj)
+        self._name = xmlobj.attrib.get("name", "")
+        self._enum = xmlobj.attrib.get("enum", "").split(' ')
+

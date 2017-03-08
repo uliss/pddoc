@@ -108,6 +108,7 @@
             <xs:element name="outlets" type="OutletsElementType" minOccurs="0"/>
             <xs:element name="arguments" type="ArgumentsElementType" minOccurs="0"/>
             <xs:element name="methods" type="MethodsElementType" minOccurs="0"/>
+            <xs:element name="properties" type="PropertiesElementType" minOccurs="0"/>
             <xs:element name="info" type="InfoElementType" minOccurs="0"/>
         </xs:all>
         <xs:attribute name="name" use="required" type="ObjectNameType"/>
@@ -306,6 +307,12 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="PropertiesElementType">
+        <xs:sequence>
+            <xs:element name="property" type="PropertyElementType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="ArgumentElementType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
@@ -337,6 +344,17 @@
             <xs:element name="param" type="MethodArgumentElementType"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="PropertyElementType" mixed="true">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="type" type="ControlDataType" use="required"/>
+        <xs:attribute name="readonly" type="xs:boolean" default="false"/>
+        <xs:attribute name="units" use="optional" type="UnitDataType"/>
+        <xs:attribute name="minvalue" use="optional" type="xs:float"/>
+        <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
+        <xs:attribute name="default" use="optional" type="xs:string"/>
+        <xs:attribute name="enum" use="optional" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="InfoElementType">

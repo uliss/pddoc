@@ -739,7 +739,14 @@ class DocParam(DocArgument):
         if self._units:
             return self.units().upper()
         elif self._name:
-            return self._name
+            name = self.name()
+            if self.default():
+                name += '=' + self.default()
+
+            if self.optional():
+                name = "[{0}]".format(name)
+
+            return name
         else:
             return "X"
 

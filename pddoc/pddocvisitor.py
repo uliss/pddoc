@@ -43,9 +43,9 @@ class PdDocVisitor(DocObjectVisitor):
     PD_FOOTER_COLOR = Color(180, 180, 180)
     PD_INFO_WINDOW_WIDTH = 400
     PD_INFO_WINDOW_HEIGHT = 250
-    PD_XLET_INDX_XPOS = 125
+    PD_XLET_INDX_XPOS = 120
     PD_XLET_TYPE_XPOS = 150
-    PD_XLET_INFO_XPOS = 230
+    PD_XLET_INFO_XPOS = 240
     PD_ARG_NAME_COLOR = Color(230, 240, 240)
 
     def __init__(self):
@@ -107,11 +107,19 @@ class PdDocVisitor(DocObjectVisitor):
         self._pp.append_object(msg)
 
         info = []
+        # add method arguments
         for i in m.items():
-            rng = self.format_range(i)
-            txt = self._pp.add_txt("{1}. {0}".format(rng, i.text().strip()),
-                                   self.PD_XLET_INFO_XPOS, self.current_yoff)
-            info.append(txt)
+            arg_descr = i.text().strip()
+            value_range = self.format_range(i)
+            if len(value_range) > 0:
+                # add dot after description
+                if arg_descr[-1] != '.':
+                    arg_descr += '.'
+
+                arg_descr += " " + value_range
+
+            txt_obj = self._pp.add_txt(arg_descr, self.PD_XLET_INFO_XPOS, self.current_yoff)
+            info.append(txt_obj)
 
         if len(info) < 1:
             info.append(self._pp.add_txt(m.text(), self.PD_XLET_INFO_XPOS, self.current_yoff))

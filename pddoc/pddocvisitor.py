@@ -31,6 +31,22 @@ from pddoc.docobject import DocPar
 import os
 
 
+def add_text_dot(string):
+    string = string.strip()
+    if string[-1] == '.':
+        return string
+    else:
+        return string + '.'
+
+
+def remove_text_dot(string):
+    string = string.strip()
+    if string[-1] == '.':
+        return string[0:-1]
+    else:
+        return string
+
+
 class PdDocVisitor(DocObjectVisitor):
     PD_WINDOW_WIDTH = 685
     PD_WINDOW_HEIGHT = 555
@@ -175,6 +191,56 @@ class PdDocVisitor(DocObjectVisitor):
         args.enumerate()
 
     def arguments_end(self, outlets):
+        self.current_yoff += 10
+
+    def properties_begin(self, p):
+        super(self.__class__, self).properties_begin(p)
+        self.add_section("properties:")
+
+    def property_begin(self, m):
+        props = list()
+
+        # add message with property name
+        prop_get_name = "{0}".format(m.name())
+        props.append(Message(self.PD_XLET_INDX_XPOS, self.current_yoff, [prop_get_name]))
+        self._pp.append_list(props)
+
+        # props description
+        prop_descr = ""
+        if m.readonly():
+            prop_descr += "(readonly) Get "
+        else:
+            prop_descr += "Get/Set "
+
+        prop_descr += m.text()
+
+        if m.type():
+            prop_descr = "{0} Type: {1}. ".format(add_text_dot(prop_descr), m.type())
+
+        if m.units():
+            prop_descr = "{0} Units: {1}. ".format(add_text_dot(prop_descr), m.units())
+
+        if m.default():
+            prop_descr = "{0} Default value: {1}. ".format(add_text_dot(prop_descr), m.default())
+
+        if m.min() and m.max():
+            prop_descr = "{0} Value range: {1}-{2}. ".format(add_text_dot(prop_descr), m.min(), m.max())
+        elif m.min():
+            prop_descr = "{0} Min value: {1}. ".format(add_text_dot(prop_descr), m.min())
+        elif m.max():
+            prop_descr = "{0} Max value: {1}. ".format(add_text_dot(prop_descr), m.max())
+
+        if len(m.enum()) > 0:
+            prop_descr = "{0} Allowed values: {1}.".format(add_text_dot(prop_descr), ', '.join(m.enum()))
+
+        info = list()
+        info.append(self._pp.add_txt(remove_text_dot(prop_descr), self.PD_XLET_INFO_XPOS, self.current_yoff))
+
+        self._pp.place_in_col(info, self.current_yoff, 15)
+        br = self._pp.group_brect(info + props)
+        self.current_yoff += br[3] + 10
+
+    def properties_end(self, p):
         self.current_yoff += 10
 
     def info_begin(self, info):

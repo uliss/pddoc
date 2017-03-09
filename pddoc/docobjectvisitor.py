@@ -50,6 +50,7 @@ class DocObjectVisitor(IDocObjectVisitor):
         self._inlets = {}
         self._outlets = {}
         self._arguments = []
+        self._props = []
         self._inlet_counter = 0
         self._image_counter = 0
         self._image_prefix = ""
@@ -207,6 +208,9 @@ class DocObjectVisitor(IDocObjectVisitor):
 
     def arguments_begin(self, args):
         self._arguments = args.items()
+
+    def properties_begin(self, props):
+        self._props = props.items()
 
     def since_begin(self, s):
         self._since = s.text()

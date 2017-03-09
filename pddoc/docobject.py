@@ -793,7 +793,8 @@ class DocObject(DocItem):
         self._type = "box"
 
     def is_valid_tag(self, tag_name):
-        return tag_name in ("title", "meta", "inlets", "outlets", "arguments", "info", "example", "methods")
+        return tag_name in ("title", "meta", "inlets", "outlets",
+                            "arguments", "properties", "info", "example", "methods")
 
     def from_xml(self, xobj):
         self._name = xobj.attrib["name"]
@@ -830,10 +831,19 @@ class DocProperties(DocItem):
 class DocProperty(DocArgument):
     def __init__(self, *args):
         DocArgument.__init__(self, args)
+        self._readonly = False
         self._enum = []
 
     def from_xml(self, xmlobj):
         DocArgument.from_xml(self, xmlobj)
-        self._name = xmlobj.attrib.get("name", "")
-        self._enum = xmlobj.attrib.get("enum", "").split(' ')
+        enum_str = xmlobj.attrib.get("enum", "").strip()
+        if len(enum_str) > 1:
+            self._enum = enum_str.split(' ')
 
+        self._readonly = xmlobj.attrib.get("readonly", "false") == "true"
+
+    def readonly(self):
+        return self._readonly
+
+    def enum(self):
+        return self._enum

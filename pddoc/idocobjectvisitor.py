@@ -286,3 +286,15 @@ class IDocObjectVisitor(object):
 
     def render(self):
         raise NotImplementedError
+
+    def properties_begin(self, p):
+        pass
+
+    def properties_end(self, p):
+        pass
+
+    def property_begin(self, p):
+        pass
+
+    def property_end(self, p):
+        pass

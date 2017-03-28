@@ -23,6 +23,9 @@ from abstractvisitor import AbstractVisitor
 __author__ = 'Serge Poltavski'
 
 
+from array import Array
+
+
 class PdExporter(AbstractVisitor):
     def __init__(self):
         self.result = []
@@ -38,6 +41,11 @@ class PdExporter(AbstractVisitor):
             line = "#N canvas {0:d} {1:d} {2:d} {3:d} {4:s} 0;". \
                 format(cnv.x, cnv.y, cnv.width, cnv.height, cnv.name)
             self.result.append(line)
+        elif cnv.type == Canvas.TYPE_GRAPH:
+            gline = "#N canvas {0:d} {1:d} {2:d} {3:d} {4:s} 0;". \
+                format(cnv.x, cnv.y, cnv.width, cnv.height, cnv.name)
+            self.result.append(gline)
+        else:
             pass
 
     def visit_graph(self, graph):
@@ -52,8 +60,7 @@ class PdExporter(AbstractVisitor):
         elif cnv.type == Canvas.TYPE_SUBPATCH:
             line = "#X restore {0:d} {1:d} pd {2:s};".format(cnv.x, cnv.y, cnv.name)
             self.result.append(line)
-        else:
-            pass
+        pass
 
     def visit_connection(self, conn):
         line = "#X connect {0:d} {1:d} {2:d} {3:d};".format(conn[0].id, conn[1], conn[2].id, conn[3])
@@ -65,7 +72,32 @@ class PdExporter(AbstractVisitor):
             self.result.append(l)
 
     def visit_object(self, obj):
-        line = "#X obj {0:d} {1:d} {2:s}".format(obj.x, obj.y, obj.name)
+        if isinstance(obj, Array):
+            line = "#N canvas {0:d} {1:d} {2:d} {3:d} {4:s} {5:d};". \
+                format(obj._cnv_x, obj._cnv_y, obj._cnv_w, obj._cnv_h, "(subpatch)", 0)
+            self.result.append(line)
+
+            line = "#X array {0:s} {1:d} float {2:d};".format(obj.name, obj.size(), obj.save_flag())
+            self.result.append(line)
+
+            line = "#A 0 " + " ".join(map(lambda x: "{0:g}".format(x), obj.data())) + ";"
+            for l in textwrap.wrap(line, 70):
+                self.result.append(l)
+
+            # X coords [x_from]? [y_to]? [x_to]? [y_from]? [width]? [heigth]? [graph_on_parent]?;\r\n
+            line = "#X coords {0:g} {1:g} {2:g} {3:g} {4:g} {5:d} {6:d};".format(
+                obj.xrange()[0], obj.yrange()[1],
+                obj.xrange()[1], obj.yrange()[0],
+                obj.width, obj.height, 1
+            )
+            self.result.append(line)
+
+            # restore
+            line = "#X restore {0:d} {1:d} graph;".format(obj.x, obj.y)
+            self.result.append(line)
+            return
+        else:
+            line = "#X obj {0:d} {1:d} {2:s}".format(obj.x, obj.y, obj.name)
 
         if len(obj.args):
             line += " " + " ".join(obj.args)

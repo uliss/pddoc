@@ -21,7 +21,7 @@ from __future__ import print_function
 from itertools import ifilter
 import graph_lexer as lex
 import re
-from pddoc.pd import Message, Comment, Canvas
+from pddoc.pd import Message, Comment, Canvas, Array
 from six import string_types
 from pddoc.pd import factory
 from pddoc.pd.coregui import CoreGui
@@ -202,6 +202,10 @@ class Parser(object):
                     n.pd_object = factory.make_by_name(name, **kwargs)
                 elif name == 'pd':
                     n.pd_object = Canvas.subpatch(args[0])
+                elif name == 'array':
+                    cnv_arr = Canvas.graph(args[0])
+                    cnv_arr.append_object(Array)
+                    n.pd_object = cnv_arr
                 else:
                     n.pd_object = factory.make_by_name(name, args, **kwargs)
             elif n.type == 'MESSAGE':

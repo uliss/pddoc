@@ -132,11 +132,16 @@ class Parser:
         self.current_canvas().append_object(obj)
 
     def parse_array(self, atoms):
+        c = self.current_canvas()
         self._array = Array.from_atoms(atoms[1:])
+        self._array._cnv_x = c.x
+        self._array._cnv_y = c.y
+        self._array._cnv_w = c.width
+        self._array._cnv_h = c.height
 
     def parse_array_content(self, atoms):
         assert self._array
-        self._array.set(atoms)
+        self._array.set_data(atoms)
 
     def parse_connect(self, atoms):
         c = self.current_canvas()
@@ -157,7 +162,7 @@ class Parser:
             return
 
         self._array.set_xrange(float(atoms[1]), float(atoms[3]))
-        self._array.set_yrange(float(atoms[2]), float(atoms[4]))
+        self._array.set_yrange(float(atoms[4]), float(atoms[2]))
         self._array.width = int(atoms[5])
         self._array.height = int(atoms[6])
 

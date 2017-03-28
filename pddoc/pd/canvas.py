@@ -51,6 +51,12 @@ class Canvas(PdObject):
         c._graph_on_parent = False
         return c
 
+    @classmethod
+    def graph(clscls, name, x=0, y=0, w=200, h=100):
+        c = Canvas(x, y, w, h, open_on_load=0, name=name)
+        c.type = cls.TYPE_GRAPH
+        return c
+
     @property
     def open_on_load(self):
         return self._open_on_load

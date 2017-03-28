@@ -43,3 +43,4 @@ from comment import Comment
 from factory import make_by_name
 from xletcalculator import XletCalculator
 from pdexporter import PdExporter
+from array import Array

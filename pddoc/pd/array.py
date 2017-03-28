@@ -23,29 +23,46 @@ __author__ = 'Serge Poltavski'
 
 
 class Array(PdObject):
-    def __init__(self, name, size, save=0):
+    def __init__(self, name, size, save=0, cnv_x=0, cnv_y=0, cnv_w=0, cnv_h=0):
         PdObject.__init__(self, name)
         self._size = int(float(size))
-        self._save = save
-        self._data = []
+        self._save = int(save)
+        self._data = [0] * self._size
         self._xrange = (0, self._size)
         self._yrange = (-1, +1)
+        self._cnv_x = cnv_x
+        self._cnv_y = cnv_y
+        self._cnv_w = cnv_w
+        self._cnv_h = cnv_h
 
-    def set(self, atoms):
+    def save_flag(self):
+        return self._save
+
+    def size(self):
+        return self._size
+
+    def data(self):
+        return self._data
+
+    def set_data(self, atoms):
         assert len(atoms) == self._size
-        self._data = []
-        for a in atoms:
-            self._data.append(float(a))
+        self._data = map(lambda x: float(x), atoms)
+
+    def xrange(self):
+        return self._xrange
 
     def set_xrange(self, min_x, max_x):
         self._xrange = (min_x, max_x)
+
+    def yrange(self):
+        return self._yrange
 
     def set_yrange(self, min_y, max_y):
         self._yrange = (min_y, max_y)
 
     @staticmethod
     def from_atoms(atoms):
-        assert len(atoms) == 4
+        assert len(atoms) == 4 or len(atoms) == 6
         return Array(atoms[0], atoms[1], atoms[3])
 
     def draw(self, painter):
@@ -63,3 +80,7 @@ class Array(PdObject):
             x1 = x0 + swd
             y = self.top + sht * self._data[idx] + (self.height * self._yrange[1])/yrange
             painter.draw_line(x0, y, x1, y, width=3, color=(0, 0, 0))
+
+    def to_string(self):
+        res = PdObject.unescape(self.name) + ' ' + self.args_to_string()
+        return res.strip()

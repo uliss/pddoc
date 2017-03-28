@@ -98,6 +98,12 @@ class TestPdExporter(TestCase):
         self.reexport(fname1, fname2)
         self.assertFalse(self.diff(fname1, fname2))
 
+    def test_export_array(self):
+        fname1 = "array.pd"
+        fname2 = "out/export_array.pd"
+        self.reexport(fname1, fname2)
+        self.assertFalse(self.diff(fname1, fname2))
+
     @expectedFailure
     def test_export_many(self):
         fname1 = "simple.pd"

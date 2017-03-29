@@ -346,7 +346,7 @@ class Parser(object):
         c.connected = True
 
     def layout_nodes(self):
-        obj = filter(lambda x: x.is_object(), self.nodes)
+        obj = filter(lambda x: x.is_object() and x.pd_object is not None, self.nodes)
         for n in obj:
             n.pd_object.x = n.char_pos * self.X_SPACE + self.X_PAD
             n.pd_object.y = n.line_pos * self.Y_SPACE + self.Y_PAD
@@ -365,7 +365,7 @@ class Parser(object):
 
     def export(self, cnv):
         assert isinstance(cnv, Canvas)
-        for n in filter(lambda x: x.is_object(), self.nodes):
+        for n in filter(lambda x: x.is_object() and x.pd_object is not None, self.nodes):
             cnv.append_object(n.pd_object)
 
         for c in filter(lambda x: x.is_connection() and x.connected, self.nodes):

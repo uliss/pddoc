@@ -107,7 +107,8 @@ class Parser(object):
         'o': 'bng',
         'fa': 'floatatom',
         'F': 'floatatom',
-        'S': 'symbolatom'
+        'S': 'symbolatom',
+        'A': 'array'
     }
 
     def __init__(self):
@@ -203,9 +204,9 @@ class Parser(object):
                 elif name == 'pd':
                     n.pd_object = Canvas.subpatch(args[0])
                 elif name == 'array':
-                    cnv_arr = Canvas.graph(args[0])
-                    cnv_arr.append_object(Array)
-                    n.pd_object = cnv_arr
+                    n.pd_object = Array(args[0], kwargs.get('size', 100), kwargs.get('save', 0))
+                    # n.pd_object.width = kwargs.get('w', 200)
+                    # n.pd_object.height = kwargs.get('h', 140)
                 else:
                     n.pd_object = factory.make_by_name(name, args, **kwargs)
             elif n.type == 'MESSAGE':

@@ -8,3 +8,5 @@
 [dac~]
 
 [f 0] X [+ 1]
+
+[A array1 size=111]

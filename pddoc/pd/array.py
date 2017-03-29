@@ -23,8 +23,11 @@ __author__ = 'Serge Poltavski'
 
 
 class Array(PdObject):
-    def __init__(self, name, size, save=0, cnv_x=0, cnv_y=0, cnv_w=0, cnv_h=0):
+    def __init__(self, name, size, save=0, cnv_x=0, cnv_y=22, cnv_w=450, cnv_h=300):
         PdObject.__init__(self, name)
+        self.width = 200
+        self.height = 140
+        self._fixed_size = True
         self._size = int(float(size))
         self._save = int(save)
         self._data = [0] * self._size
@@ -34,6 +37,7 @@ class Array(PdObject):
         self._cnv_y = cnv_y
         self._cnv_w = cnv_w
         self._cnv_h = cnv_h
+        self.calc_brect()
 
     def save_flag(self):
         return self._save
@@ -84,3 +88,10 @@ class Array(PdObject):
     def to_string(self):
         res = PdObject.unescape(self.name) + ' ' + self.args_to_string()
         return res.strip()
+
+    def inlets(self):
+        return []
+
+    def outlets(self):
+        return []
+

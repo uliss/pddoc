@@ -87,7 +87,7 @@ class PdExporter(AbstractVisitor):
             # X coords [x_from]? [y_to]? [x_to]? [y_from]? [width]? [heigth]? [graph_on_parent]?;\r\n
             line = "#X coords {0:g} {1:g} {2:g} {3:g} {4:g} {5:d} {6:d};".format(
                 obj.xrange()[0], obj.yrange()[1],
-                obj.xrange()[1], obj.yrange()[0],
+                obj.xrange()[0] + obj.size(), obj.yrange()[0],
                 obj.width, obj.height, 1
             )
             self.result.append(line)

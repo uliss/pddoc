@@ -106,6 +106,7 @@ class TestTxtParser(TestCase):
 
     def test_find_by_hash(self):
         str = '''[int #a]
+[mtof]
 [float #b]
         '''
 
@@ -115,7 +116,7 @@ class TestTxtParser(TestCase):
         self.p.parse_tokens()
 
         self.assertEqual(self.p.find_node_id_by_hash('a'), 0)
-        self.assertEqual(self.p.find_node_id_by_hash('b'), 1000)
+        self.assertEqual(self.p.find_node_id_by_hash('b'), 2000)
 
     def test_parse_named_connection(self):
         self.p.parse('''

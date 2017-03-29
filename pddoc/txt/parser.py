@@ -190,6 +190,9 @@ class Parser(object):
                 continue
 
             m = re.match(lex.r_OBJECT, n.value)
+            if not m:
+                continue
+
             # filter spaces and #ID values
             atoms = filter(lambda a: len(a) > 0 and a.startswith('#'), m.group(1).split(' '))
             if '#' + hash in atoms:
@@ -235,13 +238,10 @@ class Parser(object):
                         i[0] = obj_id
                         conn.append(i)
 
-
                     n.conn_src_id = conn[0][0]
                     n.conn_src_outlet = int(conn[0][1])
                     n.conn_dest_id = conn[1][0]
                     n.conn_dest_inlet = int(conn[1][1])
-
-                    print(n.__dict__)
 
                 elif name == 'array':
                     n.pd_object = Array(args[0], kwargs.get('size', 100), kwargs.get('save', 0))

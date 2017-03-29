@@ -193,7 +193,9 @@ class Parser(object):
 
             m = re.match(lex.r_OBJECT, n.value)
             if not m:
-                continue
+                m = re.match(lex.r_MESSAGE, n.value)
+                if not m:
+                    continue
 
             # filter spaces and #ID values
             atoms = filter(lambda a: len(a) > 0 and a.startswith('#'), m.group(1).split(' '))
@@ -254,8 +256,7 @@ class Parser(object):
             elif n.type == 'MESSAGE':
                 m = re.match(lex.r_MESSAGE, n.value)
                 txt = m.group(1).replace(',', '\,')
-                # logging.warning(txt)
-                args = txt.split(' ')
+                args = filter(lambda a: len(a) > 0 and (not a.startswith('#')), txt.split(' '))
                 n.pd_object = Message(0, 0, args)
             elif n.type == 'COMMENT':
                 m = re.match(lex.r_COMMENT, n.value)

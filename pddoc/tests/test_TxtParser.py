@@ -108,6 +108,7 @@ class TestTxtParser(TestCase):
         str = '''[int #a]
 [mtof]
 [float #b]
+[msg #c(
         '''
 
         self.p.lines = str.split('\n')
@@ -117,6 +118,7 @@ class TestTxtParser(TestCase):
 
         self.assertEqual(self.p.find_node_id_by_hash('a'), 0)
         self.assertEqual(self.p.find_node_id_by_hash('b'), 2000)
+        self.assertEqual(self.p.find_node_id_by_hash('c'), 3000)
 
     def test_parse_named_connection(self):
         self.p.parse('''

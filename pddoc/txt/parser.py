@@ -108,6 +108,8 @@ class Parser(object):
         'fa': 'floatatom',
         'F': 'floatatom',
         'S': 'symbolatom',
+        'HR': 'hradio',
+        'VR': 'vradio',
         'A': 'array'
     }
 
@@ -245,8 +247,8 @@ class Parser(object):
 
                 elif name == 'array':
                     n.pd_object = Array(args[0], kwargs.get('size', 100), kwargs.get('save', 0))
-                    # n.pd_object.width = kwargs.get('w', 200)
-                    # n.pd_object.height = kwargs.get('h', 140)
+                    n.pd_object.width = kwargs.get('w', 200)
+                    n.pd_object.height = kwargs.get('h', 140)
                 else:
                     n.pd_object = factory.make_by_name(name, args, **kwargs)
             elif n.type == 'MESSAGE':
@@ -309,6 +311,7 @@ class Parser(object):
 
     def process_connection(self, c):
         if c.type == 'CONNECTION_MANUAL':
+            c.connected = True
             return
 
         if c.type == 'CONNECTION_X':

@@ -104,4 +104,33 @@ class TestTxtParser(TestCase):
         self.assertEqual(obj.to_string(), 'ui.scope~ @size 300 400')
         self.assertEqual(obj.brect(), (20, 20, 300, 400))
 
+    def test_find_by_hash(self):
+        str = '''[int #a]
+[float #b]
+        '''
+
+        self.p.lines = str.split('\n')
+        self.p.lines_len = map(lambda x: len(x), self.p.lines)
+        self.p.lexer.input(str)
+        self.p.parse_tokens()
+
+        self.assertEqual(self.p.find_node_id_by_hash('a'), 0)
+        self.assertEqual(self.p.find_node_id_by_hash('b'), 1000)
+
+    def test_parse_named_connection(self):
+        self.p.parse('''
+        [float #a]
+        [float #b]
+        [X a:0->b:1]
+        ''')
+        self.assertEqual(self.p.tokens[0].type, 'OBJECT')
+        self.assertEqual(self.p.nodes[0].id, 1008)
+        self.assertEqual(self.p.tokens[1].type, 'OBJECT')
+        self.assertEqual(self.p.nodes[1].id, 2008)
+        self.assertEqual(self.p.tokens[2].type, 'CONNECTION_MANUAL')
+        self.assertEqual(self.p.nodes[2].conn_src_id, 1008)
+        self.assertEqual(self.p.nodes[2].conn_dest_id, 2008)
+        self.assertEqual(self.p.nodes[2].conn_src_outlet, 0)
+        self.assertEqual(self.p.nodes[2].conn_dest_inlet, 1)
+
 

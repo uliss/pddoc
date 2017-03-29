@@ -60,7 +60,7 @@ class Node(object):
         return self.tok.type in ('OBJECT', 'MESSAGE', 'COMMENT')
 
     def is_connection(self):
-        return self.tok.type in ('CONNECTION', 'CONNECTION_LEFT', 'CONNECTION_RIGHT', 'CONNECTION_X')
+        return self.tok.type in ('CONNECTION', 'CONNECTION_LEFT', 'CONNECTION_RIGHT', 'CONNECTION_X', 'CONNECTION_MANUAL')
 
     @property
     def id(self):
@@ -184,6 +184,19 @@ class Parser(object):
             return cls.ALIASES[name], args
         return name, args
 
+    def find_node_id_by_hash(self, hash):
+        for n in filter(lambda x: x.is_object(), self.nodes):
+            if n.value.startswith('X'):
+                continue
+
+            m = re.match(lex.r_OBJECT, n.value)
+            # filter spaces and #ID values
+            atoms = filter(lambda a: len(a) > 0 and a.startswith('#'), m.group(1).split(' '))
+            if '#' + hash in atoms:
+                return n.id
+
+        return False
+
     def parse_nodes(self):
         for n in filter(lambda x: x.is_object(), self.nodes):
             if n.type == 'OBJECT':
@@ -203,6 +216,33 @@ class Parser(object):
                     n.pd_object = factory.make_by_name(name, **kwargs)
                 elif name == 'pd':
                     n.pd_object = Canvas.subpatch(args[0])
+                elif name == 'X':
+                    n.tok.type = 'CONNECTION_MANUAL'
+                    str = atoms[1]
+                    conn = []
+
+                    for i in map(lambda x: x.split(':'), str.split('->')):
+                        if len(i) == 1:
+                            i.append(0)
+
+                        assert len(i) == 2
+
+                        obj_id = self.find_node_id_by_hash(i[0])
+                        if obj_id is False:
+                            logging.error("can't find node with id: {0:s}".format(i[0]))
+                            return
+
+                        i[0] = obj_id
+                        conn.append(i)
+
+
+                    n.conn_src_id = conn[0][0]
+                    n.conn_src_outlet = int(conn[0][1])
+                    n.conn_dest_id = conn[1][0]
+                    n.conn_dest_inlet = int(conn[1][1])
+
+                    print(n.__dict__)
+
                 elif name == 'array':
                     n.pd_object = Array(args[0], kwargs.get('size', 100), kwargs.get('save', 0))
                     # n.pd_object.width = kwargs.get('w', 200)
@@ -268,11 +308,13 @@ class Parser(object):
             self.nodes.append(c2)
 
     def process_connection(self, c):
+        if c.type == 'CONNECTION_MANUAL':
+            return
+
         if c.type == 'CONNECTION_X':
             self.process_cross_connection(c)
             return
 
-        conn_start = []
         if c.type == 'CONNECTION_LEFT':
             conn_start = [c.char_pos + c.tok.value.index('/')]
         else:

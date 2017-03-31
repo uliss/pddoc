@@ -42,9 +42,6 @@ class PdPageStyle(object):
 
 
 class PdPage(object):
-    WIDTH = 600
-    HEIGHT = 500
-
     brect_calc = BRectCalculator()
 
     def __init__(self, title, width=600, height=500):

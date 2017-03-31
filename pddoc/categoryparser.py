@@ -23,7 +23,7 @@ import logging
 
 
 class CategoryParser(object):
-    WINDOW_WIDTH = 630
+    WINDOW_WIDTH = 715
     WINDOW_HEIGHT = 500
     HEADER_HEIGHT = 40
     OBJECT_OFFSET = 30

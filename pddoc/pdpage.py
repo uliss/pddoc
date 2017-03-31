@@ -73,7 +73,7 @@ class PdPage(object):
         return self.make_background(x, y, width, height, color)
 
     def make_styled_hrule(self, y):
-        return self.make_hrule(20, y, width=self._width - 24, color=PdPageStyle.HRULE_COLOR)
+        return self.make_hrule(20, y, width=self._width - 30, color=PdPageStyle.HRULE_COLOR)
 
     def make_label(self, x, y, txt, font_size, color=Color.black(), bg_color=Color.white()):
         w, h = self.brect_calc.string_brect(txt, font_size)[2:]

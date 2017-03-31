@@ -56,6 +56,17 @@ class LibraryMaker(object):
         self._search_paths.append(path)
         return True
 
+    def find_in_path(self, path):
+        if os.path.exists(path):
+            return path
+
+        for p in self._search_paths:
+            new_path = os.path.join(p, path)
+            if os.path.exists(new_path):
+                return new_path
+
+        return False
+
     def process_files(self, files):
         for f in files:
             self.process_object_file(f)
@@ -104,8 +115,8 @@ class LibraryMaker(object):
             authors.append(author)
         meta.append(authors)
 
-        lib_info_fname = "{0}_meta.xml".format(self._name)
-        if os.path.exists(lib_info_fname):
+        lib_info_fname = self.find_in_path("{0}_meta.xml".format(self._name))
+        if lib_info_fname:
             xi = self.xi_include(os.path.basename(lib_info_fname))
             meta.append(xi)
 
@@ -122,9 +133,11 @@ class LibraryMaker(object):
         # first time add new category
         if cat_name not in self._cats:
             c = etree.Element('category', name=cat_name)
-            cat_info_path = "{0}_category_{1}.xml".format(self._name, cat_name)
-            if os.path.exists(cat_info_path):
-                c.append(self.xi_include(os.path.basename(cat_info_path)))
+            cat_info_path = self.find_in_path("{0}_category_{1}.xml".format(self._name, cat_name))
+            if cat_info_path:
+                logging.info("adding: {0:s}".format(cat_info_path))
+                cat_element = self.xi_include(os.path.basename(cat_info_path))
+                c.append(cat_element)
 
             self._cats[cat_name] = c
             self._lib.append(c)
@@ -164,6 +177,3 @@ class LibraryMaker(object):
         for child in reversed(sorted_cats):
             self.sort_cat(child)
             self._lib.insert(0, child)
-
-
-

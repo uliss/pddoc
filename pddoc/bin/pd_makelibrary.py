@@ -35,6 +35,7 @@ def main():
     arg_parser = argparse.ArgumentParser(description='Generates Pd XML library documentation from input '
                                                      'pddoc files for individual objects.')
     arg_parser.add_argument('--library', '-l', metavar='NAME', required=True, help="library name")
+    arg_parser.add_argument('--search-path', '-p', metavar='search_path', help="Adds search path for XInclude files")
     arg_parser.add_argument('--output', '-o', metavar='OUTPUT', help="output xml file")
     arg_parser.add_argument('--version', '-v', metavar='version', default="0.0", help="library version")
     arg_parser.add_argument('pddoc_files', metavar='FILE', nargs='+', help="pddoc files")
@@ -48,6 +49,10 @@ def main():
 
     lib = LibraryMaker(args['library'])
     lib.version = args['version']
+
+    if args['search_path']:
+        lib.add_search_path(args['search_path'])
+
     lib.process_files(files)
     lib.sort()
 

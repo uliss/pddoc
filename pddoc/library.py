@@ -20,6 +20,8 @@ import os
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
+import os.path
+
 
 class LibraryMaker(object):
     NSMAP = {'xi': "http://www.w3.org/2001/XInclude"}
@@ -32,6 +34,7 @@ class LibraryMaker(object):
         self._cat_entries = {}
         self._authors = {}
         self._version = ""
+        self._search_paths = []
 
     @property
     def version(self):
@@ -40,6 +43,18 @@ class LibraryMaker(object):
     @version.setter
     def version(self, v):
         self._version = v
+
+    def add_search_path(self, path):
+        if not os.path.exists(path) or not os.path.isdir(path):
+            logging.error("invalid search path added: {0:s}".format(path))
+            return False
+
+        if path in self._search_paths:
+            logging.warning("search path already exists in search path list: {0:s}".format(path))
+            return False
+
+        self._search_paths.append(path)
+        return True
 
     def process_files(self, files):
         for f in files:

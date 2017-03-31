@@ -33,6 +33,9 @@ import os
 
 def add_text_dot(string):
     string = string.strip()
+    if len(string) == 0:
+        return string
+
     if string[-1] == '.':
         return string
     else:
@@ -41,6 +44,9 @@ def add_text_dot(string):
 
 def remove_text_dot(string):
     string = string.strip()
+    if len(string) == 0:
+        return string
+
     if string[-1] == '.':
         return string[0:-1]
     else:
@@ -62,7 +68,7 @@ class PdDocVisitor(DocObjectVisitor):
     PD_XLET_INDX_XPOS = 120
     PD_XLET_TYPE_XPOS = 150
     PD_XLET_INFO_XPOS = 240
-    PD_ARG_NAME_COLOR = Color(230, 240, 240)
+    PD_ARG_NAME_COLOR = Color(240, 250, 250)
 
     def __init__(self):
         DocObjectVisitor.__init__(self)
@@ -115,35 +121,54 @@ class PdDocVisitor(DocObjectVisitor):
 
     def method_begin(self, m):
         msg_atoms = [m.name()]
-        for i in m.items():
-            msg_atoms.append(i.param_name())
+        # for i in m.items():
+            # msg_atoms.append(i.param_name())
 
         msg = Message(self.PD_XLET_INDX_XPOS, self.current_yoff, msg_atoms)
         msg.calc_brect()
         self._pp.append_object(msg)
 
+        info_text = m.text().strip()
+        info_text = add_text_dot(info_text)
+
+        if len(m.items()) > 0:
+            info_text += " Arguments are: "
+
         info = []
+        info.append(self._pp.add_txt(info_text, self.PD_XLET_INFO_XPOS, self.current_yoff))
+
         # add method arguments
         for i in m.items():
-            arg_descr = i.text().strip()
+            param_name = i.param_name()
+            arg_descr = param_name + ": " + i.text().strip()
             value_range = self.format_range(i)
             if len(value_range) > 0:
                 # add dot after description
-                if arg_descr[-1] != '.':
-                    arg_descr += '.'
+                arg_descr = add_text_dot(arg_descr)
 
                 arg_descr += " " + value_range
 
+            hl_text = self._pp.make_txt(param_name, 0, 0)
+            hl_text.calc_brect()
+            bg = self._pp.make_background(0, 0, hl_text.width + 8, hl_text.height + 8, color=self.PD_ARG_NAME_COLOR)
+            self._pp.append_object(bg)
+
             txt_obj = self._pp.add_txt(arg_descr, self.PD_XLET_INFO_XPOS, self.current_yoff)
+            setattr(txt_obj, 'background_obj', bg)
+
             info.append(txt_obj)
 
-        if len(info) < 1:
-            info.append(self._pp.add_txt(m.text(), self.PD_XLET_INFO_XPOS, self.current_yoff))
-
         self._pp.place_in_col(info, self.current_yoff, 15)
+
+        for obj in info:
+            if hasattr(obj, 'background_obj'):
+                bg = getattr(obj, 'background_obj')
+                bg.x = obj.x
+                bg.y = obj.y
+
         info.append(msg)
         br = self._pp.group_brect(info)
-        self.current_yoff += br[3] + 10
+        self.current_yoff += br[3] + 15
 
     def inlets_begin(self, inlets):
         super(self.__class__, self).inlets_begin(inlets)

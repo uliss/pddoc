@@ -17,16 +17,15 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
- 
+
 __author__ = 'Serge Poltavski'
 
-from pddoc.pd import XLET_SOUND
-
+from pddoc.pd import XLET_MESSAGE
 
 _objects = {
-    "crossfade~": (
-        lambda args: ((1 if not args else int(args[0])) * 2 + 1) * [XLET_SOUND],
-        lambda args: (1 if not args else int(args[0])) * [XLET_SOUND]
+    "prop->": (
+        lambda args: [XLET_MESSAGE],
+        lambda args: (len(args) + 2) * [XLET_MESSAGE]
     )
 }
 

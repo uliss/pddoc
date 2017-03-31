@@ -159,3 +159,8 @@ class TestXletCalcDatabase(TestCase):
 
         self.assertEqual(xd.inlets(make_pdo("mux~")), [1, 1])
         self.assertEqual(xd.outlets(make_pdo("mux~")), [1])
+
+        self.assertEqual(xd.inlets(make_pdo("prop->")), [0])
+        self.assertEqual(xd.outlets(make_pdo("prop->")), [0] * 2)
+        self.assertEqual(xd.outlets(make_pdo("prop-> @prop1")), [0] * 3)
+        self.assertEqual(xd.outlets(make_pdo("prop-> @prop1 @prop2")), [0] * 4)

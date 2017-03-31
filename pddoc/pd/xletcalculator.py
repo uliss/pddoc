@@ -36,6 +36,7 @@ class XletCalculator(object):
         self._dbs = [self.mem_db]
         self._dbs.append(XletTextDatabase(os.path.join(ext_dir, 'core/pd_objects.db'), "core"))
         self._dbs.append(XletCalcDatabase(os.path.join(ext_dir, 'core/xletsdb_core.py'), "core"))
+        self._dbs.append(XletCalcDatabase(os.path.join(ext_dir, 'ceammc/xletsdb.py'), "ceammc"))
 
         for paths in os.walk(ext_dir):
             for text_db in [f for f in paths[2] if f.endswith(".db")]:

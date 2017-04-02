@@ -119,9 +119,14 @@ class PdPage(object):
         return UILink(x, y + 3, url, name)
 
     def make_txt(self, txt, x, y):
-        txt = re.sub(' +', ' ', txt)
-        txt = txt.replace('.', '\\.')
-        txt = txt.replace(',', ' \\,')
+        if txt:
+            txt = re.sub(' +', ' ', txt)
+            #  match only number with end dot: 1. - used for enums
+            txt = re.sub('(\d+)\\.(?!\d)', '\\1\\.', txt)
+            txt = txt.replace(',', ' \\,')
+        else:
+            txt = ""
+
         return Comment(x, y, txt.split(' '))
 
     def make_subpatch(self, name, x, y, w, h):

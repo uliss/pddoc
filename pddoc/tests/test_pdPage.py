@@ -154,3 +154,30 @@ class TestPdPage(TestCase):
         o1 = self.obj(x=4, y=5, w=100, h=20)
         o2 = self.obj(x=2, y=100, w=100, h=20)
         self.assertEqual(p.group_brect([o1, o2]), (2, 5, 102, 115))
+
+    def test_make_txt(self):
+        p = PdPage("sample", 600, 500)
+
+        t1 = p.make_txt(None, 10, 20)
+        self.assertEqual(t1.text(), "")
+        self.assertEqual(t1.x, 10)
+        self.assertEqual(t1.y, 20)
+
+        t1 = p.make_txt("       ", 0, 0)
+        self.assertEqual(t1.text(), "")
+        t1 = p.make_txt(" a b c ", 0, 0)
+        self.assertEqual(t1.text(), "a b c")
+
+        t1 = p.make_txt("test.", 0, 0)
+        self.assertEqual(t1.text(), "test.")
+
+        t1 = p.make_txt("10.124", 0, 0)
+        self.assertEqual(t1.text(), "10.124")
+
+        t1 = p.make_txt(".test", 0, 0)
+        self.assertEqual(t1.text(), ".test")
+
+        t1 = p.make_txt("1.", 0, 0)
+        self.assertEqual(t1.text(), "1\\.")
+
+

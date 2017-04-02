@@ -375,7 +375,10 @@ class Parser(object):
             dest = self.node_by_id(c.conn_dest_id)
 
             if src and dest:
-                # print("add connection: {0:d}-> {1:d}".format(src.pd_object.id, dest.pd_object.id))
+                if not src.pd_object or not dest.pd_object:
+                    logging.warning("can't connect {0:s} and {1:s}".format(src.tok, dest.tok))
+                    return
+
                 cnv.add_connection(
                     src.pd_object.id,
                     c.conn_src_outlet,

@@ -180,4 +180,13 @@ class TestPdPage(TestCase):
         t1 = p.make_txt("1.", 0, 0)
         self.assertEqual(t1.text(), "1\\.")
 
+        # test commas
+        t1 = p.make_txt("a,b,c", 0, 0)
+        self.assertEqual(t1.text(), "a, b, c")
+
+        t1 = p.make_txt("a, b, c", 0, 0)
+        self.assertEqual(t1.text(), "a, b, c")
+
+        t1 = p.make_txt("a , b , c", 0, 0)
+        self.assertEqual(t1.text(), "a, b, c")
 

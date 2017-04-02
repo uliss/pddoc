@@ -19,6 +19,7 @@
     <xs:simpleType name="ControlDataType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="bang"/>
+            <xs:enumeration value="atom"/>
             <xs:enumeration value="int"/>
             <xs:enumeration value="float"/>
             <xs:enumeration value="list"/>
@@ -30,6 +31,7 @@
 
     <xs:simpleType name="ArgumentDataType">
         <xs:restriction base="xs:string">
+            <xs:enumeration value="atom"/>
             <xs:enumeration value="int"/>
             <xs:enumeration value="float"/>
             <xs:enumeration value="symbol"/>

@@ -124,7 +124,6 @@ class PdPage(object):
             #  match only number with end dot: 1. - used for enums
             txt = re.sub('(\d+)\\.(?!\d)', '\\1\\.', txt)
             txt = re.sub(' *, *', ' \\, ', txt)
-            print(txt.split(' '))
         else:
             txt = ""
 

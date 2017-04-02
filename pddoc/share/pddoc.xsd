@@ -75,7 +75,7 @@
 
     <xs:simpleType name="XletNumber">
         <xs:restriction base="xs:string">
-            <xs:pattern value="([\d]{1,2}|n)"/>
+            <xs:pattern value="([\d]{1,2}|n|\.\.\.|.{0})"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -273,6 +273,7 @@
             <xs:element name="xinfo" type="InletInfoType" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="type" use="optional" type="XletType" default="control"/>
+        <xs:attribute name="number" use="optional" type="XletNumber" default=""/>
     </xs:complexType>
 
     <xs:complexType name="InletInfoType">
@@ -291,6 +292,7 @@
                 <xs:attribute name="type" use="optional" type="XletType" default="control"/>
                 <xs:attribute name="minvalue" use="optional" type="xs:float"/>
                 <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
+                <xs:attribute name="number" use="optional" type="XletNumber" default=""/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>

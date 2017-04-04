@@ -141,6 +141,11 @@ class PdDocVisitor(DocObjectVisitor):
         for i in m.items():
             param_name = i.param_name()
             arg_descr = param_name + ": " + i.text().strip()
+
+            if i.type():
+                arg_descr = "{0} Type: {1}. ".format(add_text_dot(arg_descr), i.type())
+
+
             value_range = self.format_range(i)
             if len(value_range) > 0:
                 # add dot after description
@@ -153,7 +158,7 @@ class PdDocVisitor(DocObjectVisitor):
             bg = self._pp.make_background(0, 0, hl_text.width + 8, hl_text.height + 8, color=self.PD_ARG_NAME_COLOR)
             self._pp.append_object(bg)
 
-            txt_obj = self._pp.add_txt(arg_descr, self.PD_XLET_INFO_XPOS, self.current_yoff)
+            txt_obj = self._pp.add_txt(arg_descr, self.PD_XLET_INFO_XPOS + 10, self.current_yoff)
             setattr(txt_obj, 'background_obj', bg)
 
             info.append(txt_obj)
@@ -327,9 +332,9 @@ class PdDocVisitor(DocObjectVisitor):
         r = obj.range()
         if len(r) == 2:
             if not r[0]:
-                return "Max: {0}".format(r[1])
+                return "Max value: {0}".format(r[1])
             if not r[1]:
-                return "Min: {0}".format(r[0])
+                return "Min value: {0}".format(r[0])
 
             return "Range: {0}...{1}".format(r[0], r[1])
         else:

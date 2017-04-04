@@ -42,6 +42,9 @@ class UIBase(PdObject):
             self.width = int(value.split(' ')[0])
             self.height = int(value.split(' ')[1])
 
+    def get_property(self, name, default=None):
+        return self._properties.get(name, default)
+
     @property
     def args(self):
         res = []

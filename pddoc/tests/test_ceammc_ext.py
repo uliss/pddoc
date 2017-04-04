@@ -69,3 +69,12 @@ class TestCeammcExt(TestCase):
         self.assertEqual(lnk.to_string(),
                          "ui.link @title Yandex @bgcolor 1.0 0.0 0.50196 @url http://ya.ru")
 
+    def test_ui_matrix(self):
+        m = f.make_by_name("ceammc/ui_matrix")
+        self.assertEqual(m.width, 105)
+        self.assertEqual(m.height, 53)
+
+        self.assertEqual(m.get_property('@rows'), '4')
+        self.assertEqual(m.get_property('@cols'), '8')
+
+

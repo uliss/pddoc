@@ -624,6 +624,7 @@ class DocArgument(DocItem):
         self._maxvalue = ""
         self._default = ""
         self._required = False
+        self._enum = []
 
     def from_xml(self, xmlobj):
         self._name = xmlobj.attrib.get("name", "anonym")
@@ -634,6 +635,10 @@ class DocArgument(DocItem):
         self._maxvalue = xmlobj.attrib.get("maxvalue", "")
         self._default = xmlobj.attrib.get("default", "")
         self._required = xmlobj.attrib.get("required", False) == "true"
+        enum_str = xmlobj.attrib.get("enum", "").strip()
+        if len(enum_str) > 1:
+            self._enum = enum_str.split(' ')
+
         DocItem.from_xml(self, xmlobj)
 
     def type(self):
@@ -832,14 +837,9 @@ class DocProperty(DocArgument):
     def __init__(self, *args):
         DocArgument.__init__(self, args)
         self._readonly = False
-        self._enum = []
 
     def from_xml(self, xmlobj):
         DocArgument.from_xml(self, xmlobj)
-        enum_str = xmlobj.attrib.get("enum", "").strip()
-        if len(enum_str) > 1:
-            self._enum = enum_str.split(' ')
-
         self._readonly = xmlobj.attrib.get("readonly", "false") == "true"
 
     def readonly(self):

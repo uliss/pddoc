@@ -70,11 +70,35 @@ class TestCeammcExt(TestCase):
                          "ui.link @title Yandex @bgcolor 1.0 0.0 0.50196 @url http://ya.ru")
 
     def test_ui_matrix(self):
-        m = f.make_by_name("ceammc/ui_matrix")
-        self.assertEqual(m.width, 105)
-        self.assertEqual(m.height, 53)
+        d = dict()
+        d['@size'] = "200x150"
+        m = f.make_by_name("ceammc/ui_matrix", **d)
+        self.assertEqual(m.width, 200)
+        self.assertEqual(m.height, 150)
 
         self.assertEqual(m.get_property('@rows'), '4')
         self.assertEqual(m.get_property('@cols'), '8')
+
+    def test_ui_display(self):
+        kw = dict()
+        d = f.make_by_name("ceammc/ui_display", **kw)
+        self.assertEqual(d.width, 150)
+        self.assertEqual(d.height, 18)
+
+        kw['@size'] = "100x25"
+        d = f.make_by_name("ceammc/ui_display", **kw)
+        self.assertEqual(d.width, 100)
+        self.assertEqual(d.height, 25)
+
+    def test_ui_knob(self):
+        kw = dict()
+        d = f.make_by_name("ceammc/ui_knob", **kw)
+        self.assertEqual(d.width, 40)
+        self.assertEqual(d.height, 40)
+
+        kw['@size'] = "60x60"
+        d = f.make_by_name("ceammc/ui_knob", **kw)
+        self.assertEqual(d.width, 60)
+        self.assertEqual(d.height, 60)
 
 

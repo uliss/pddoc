@@ -153,6 +153,9 @@ class PdDocVisitor(DocObjectVisitor):
 
                 arg_descr += " " + value_range
 
+            if len(i.enum()) > 0:
+                arg_descr = "{0} Allowed values: {1}.".format(add_text_dot(arg_descr), ', '.join(i.enum()))
+
             hl_text = self._pp.make_txt(param_name, 0, 0)
             hl_text.calc_brect()
             bg = self._pp.make_background(0, 0, hl_text.width + 8, hl_text.height + 8, color=self.PD_ARG_NAME_COLOR)

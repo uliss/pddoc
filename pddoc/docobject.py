@@ -706,6 +706,9 @@ class DocArgument(DocItem):
     def max(self):
         return self._maxvalue
 
+    def enum(self):
+        return self._enum
+
 
 class DocArguments(DocXlets):
     def __init__(self, *args):
@@ -844,6 +847,3 @@ class DocProperty(DocArgument):
 
     def readonly(self):
         return self._readonly
-
-    def enum(self):
-        return self._enum

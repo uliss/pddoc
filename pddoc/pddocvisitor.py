@@ -280,13 +280,13 @@ class PdDocVisitor(DocObjectVisitor):
         lst = []
         for p in info.items():
             if isinstance(p, DocPar):
-                t = self._pp.make_txt(p.text(), self.PD_XLET_INFO_XPOS, 0)
+                t = self._pp.make_txt(p.text(), self.PD_XLET_INFO_XPOS - 30, 0)
                 lst.append(t)
 
         self._pp.place_in_col(lst, self.PD_HEADER_HEIGHT + 40, 10)
         brect = self._pp.group_brect(lst)
         bg = self._pp.make_background(brect[0] - 5, brect[1],
-                                      self._pp.width - self.PD_XLET_INFO_XPOS - 15,
+                                      self._pp.width - self.PD_XLET_INFO_XPOS + 25,
                                       brect[3] + 20, Color(250, 250, 250))
         self._pp.append_object(bg)
         self._pp.append_list(lst)

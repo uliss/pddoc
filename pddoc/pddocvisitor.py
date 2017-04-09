@@ -64,7 +64,7 @@ class PdDocVisitor(DocObjectVisitor):
     PD_FOOTER_HEIGHT = 48
     PD_FOOTER_COLOR = Color(180, 180, 180)
     PD_INFO_WINDOW_WIDTH = 400
-    PD_INFO_WINDOW_HEIGHT = 250
+    PD_INFO_WINDOW_HEIGHT = 290
     PD_XLET_INDX_XPOS = 120
     PD_XLET_TYPE_XPOS = 150
     PD_XLET_INFO_XPOS = 240
@@ -433,6 +433,8 @@ class PdDocVisitor(DocObjectVisitor):
             add_subpatch_text(xc1, yrows[row], "contacts:")
             add_subpatch_text(xc2, yrows[row], self._contacts)
             row += 1
+
+        pd.append_object(PdObject("declare", x=xc2, y=yrows[row], args=["-lib", "ceammc", "-lib", "creammc"]))
 
         ypos = self.PD_INFO_WINDOW_HEIGHT - 22
         delim = self._pp.make_hrule(xc2, ypos, width=270)

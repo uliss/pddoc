@@ -78,7 +78,7 @@ class PdPage(object):
     def make_label(self, x, y, txt, font_size, color=Color.black(), bg_color=Color.white()):
         w, h = self.brect_calc.string_brect(txt, font_size)[2:]
 
-        cnv = GCanvas(x, y, width=w, height=h, size=5, font_size=font_size, label_xoff=0, label_yoff=font_size)
+        cnv = GCanvas(x, y, width=w, height=h * 2, size=5, font_size=font_size, label_xoff=0, label_yoff=font_size)
         cnv.label = txt.replace(' ', '_')
         cnv._label_color = color
         cnv._bg_color = bg_color

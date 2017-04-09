@@ -48,8 +48,8 @@ class TestBRectCalculator(TestCase):
 
     def test_comment_brect(self):
         br = BRectCalculator()
-        self.assertEqual(br.text_brect("test"), (0, 0, 26, 13))
-        self.assertEqual(br.text_brect("test; line break"), (0, 0, 70, 27))
+        self.assertEqual(br.text_brect("test"), (0, 0, 29, 13))
+        self.assertEqual(br.text_brect("test; line break"), (0, 0, 77, 27))
 
     def test_comment(self):
         p = Parser()
@@ -71,4 +71,4 @@ class TestBRectCalculator(TestCase):
         p = 5
         pnt.draw_rect(bbox[0] - p, bbox[1] - p, bbox[2] + p * 2, bbox[3] + p * 2, color=(0, 0, 1))
 
-        self.assertEqual(br.brect(), (67, 35, 417, 117))
+        self.assertEqual(br.brect(), (67, 35, 458, 117))

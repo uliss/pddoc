@@ -70,7 +70,7 @@ class BRectCalculator(AbstractVisitor):
             max_w = max(max_w, w)
             max_h = max(max_h, h)
 
-        return 0, 0, int(max_w), int(len(lines) * max_h)
+        return 0, 0, int(max_w * 1.1), int(len(lines) * max_h)
 
     def comment_brect(self, comment):
         return self.text_brect(comment.text())

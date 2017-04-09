@@ -125,7 +125,7 @@ class TestHtmlDocVisitor(TestCase):
         self.assertTrue(hasattr(pdc, "layout"))
         self.assertEqual(pdc.layout.x(), 0)
         self.assertEqual(pdc.layout.y(), 0)
-        self.assertEqual(pdc.layout.width(), 98)
+        self.assertEqual(pdc.layout.width(), 108)
         self.assertEqual(pdc.layout.height(), 13)
 
         pdc = v.comment2pd_comment(" ".join(["long comment"] * 40))
@@ -137,5 +137,5 @@ class TestHtmlDocVisitor(TestCase):
         self.assertTrue(hasattr(pdc, "layout"))
         self.assertEqual(pdc.layout.x(), 0)
         self.assertEqual(pdc.layout.y(), 0)
-        self.assertEqual(pdc.layout.width(), 423)
+        self.assertEqual(pdc.layout.width(), 466)
         self.assertEqual(pdc.layout.height(), 125)

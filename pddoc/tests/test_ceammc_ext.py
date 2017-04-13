@@ -101,4 +101,15 @@ class TestCeammcExt(TestCase):
         self.assertEqual(d.width, 60)
         self.assertEqual(d.height, 60)
 
+    def test_ui_keyboard(self):
+        kw = dict()
+        d = f.make_by_name("ceammc/ui_keyboard", **kw)
+        self.assertEqual(d.width, 433)
+        self.assertEqual(d.height, 60)
+
+        kw['@size'] = "200x30"
+        d = f.make_by_name("ceammc/ui_keyboard", **kw)
+        self.assertEqual(d.width, 200)
+        self.assertEqual(d.height, 30)
+
 

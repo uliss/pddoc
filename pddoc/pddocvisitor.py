@@ -140,7 +140,10 @@ class PdDocVisitor(DocObjectVisitor):
         # add method arguments
         for i in m.items():
             param_name = i.param_name()
-            arg_descr = param_name + ": " + i.text().strip()
+            arg_descr = param_name
+
+            if i.text() is not None:
+                arg_descr += ": " + i.text().strip()
 
             if i.type():
                 arg_descr = "{0} Type: {1}. ".format(add_text_dot(arg_descr), i.type())

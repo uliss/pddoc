@@ -26,6 +26,10 @@ _objects = {
     "prop->": (
         lambda args: [XLET_MESSAGE],
         lambda args: (len(args) + 2) * [XLET_MESSAGE]
+    ),
+    "flow.sync": (
+        lambda args: 2 if len(args) < 1 else int(args[0]) * [XLET_MESSAGE],
+        lambda args: 2 if len(args) < 1 else int(args[0]) * [XLET_MESSAGE]
     )
 }
 

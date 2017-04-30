@@ -88,7 +88,7 @@ class LibraryMaker(object):
 
     def process_object_doc(self, doc_fname, xml_obj):
         name = xml_obj.get('name')
-        descr = xml_obj.find('meta/description').text
+        descr = ' '.join(xml_obj.find('meta/description').text.split())
         # logging.info("[%s] doc found: %s", name, descr.text)
         categ = xml_obj.find('meta/category')
         if categ is None:

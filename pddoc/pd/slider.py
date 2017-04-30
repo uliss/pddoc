@@ -50,9 +50,9 @@ class PdSlider(CoreGui):
     @staticmethod
     def from_atoms(atoms):
         assert isinstance(atoms, list) and len(atoms) == 19
-        assert atoms[0] in ("hsl", "vsl")
+        assert atoms[0] in ("hsl", "hslider", "vsl", "vslider")
 
-        if atoms[0] == "hsl":
+        if atoms[0] == "hslider":
             return PdHSlider(0, 0,
                              width=atoms[1],
                              height=atoms[2],
@@ -93,10 +93,19 @@ class PdSlider(CoreGui):
                              default_value=atoms[17],
                              steady=atoms[18])
 
+    def to_atoms(self):
+        return ["#X", "obj", self.x, self.y, self.name, self.width, self.height,
+                self._min, self._max, self._log, self._init,
+                self.send, self.receive,
+                self.label, self._label_xoff, self._label_yoff,
+                self._font_type, self._font_size,
+                self._bg_color.to_pd(), self._fg_color.to_pd(), self._label_color.to_pd(),
+                self._default_value, self._steady]
+
 
 class PdHSlider(PdSlider):
     def __init__(self, x, y, **kwargs):
-        PdSlider.__init__(self, "hsl", x, y, **kwargs)
+        PdSlider.__init__(self, "hslider", x, y, **kwargs)
         self.width = int(kwargs.get("width", 128))
         self.height = int(kwargs.get("height", 15))
 
@@ -113,7 +122,7 @@ class PdHSlider(PdSlider):
 
 class PdVSlider(PdSlider):
     def __init__(self, x, y, **kwargs):
-        PdSlider.__init__(self, "vsl", x, y, **kwargs)
+        PdSlider.__init__(self, "vslider", x, y, **kwargs)
 
         self.width = int(kwargs.get("width", 15))
         self.height = int(kwargs.get("height", 128))

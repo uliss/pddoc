@@ -136,8 +136,8 @@ class CoreGui(obj.PdObject):
     @classmethod
     def is_coregui(cls, name):
         return name in ("bng", "tgl", "floatatom", "symbolatom",
-                        "nbx", "hslider", "vsl", "hsl", "vu",
-                        "hradio", "vradio")
+                        "nbx", "hslider", "vslider",  "vsl", "hsl", "vu",
+                        "hrd", "vrd", "hradio", "vradio")
 
     def __init__(self, name, x, y, args, **kwargs):
         obj.PdObject.__init__(self, name, x, y, 0, 0, args)

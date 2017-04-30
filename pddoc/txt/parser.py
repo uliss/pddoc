@@ -110,6 +110,10 @@ class Parser(object):
         'S': 'symbolatom',
         'HR': 'hradio',
         'VR': 'vradio',
+        'hsl': 'hslider',
+        'vsl': 'vslider',
+        'HS': 'hslider',
+        'VS': 'vslider',
         'A': 'array'
     }
 
@@ -251,6 +255,8 @@ class Parser(object):
                     n.pd_object = Array(args[0], kwargs.get('size', 100), kwargs.get('save', 0))
                     n.pd_object.width = kwargs.get('w', 200)
                     n.pd_object.height = kwargs.get('h', 140)
+                    yr = map(lambda x: float(x), kwargs.get('yr', "-1..1").split('..'))
+                    n.pd_object.set_yrange(yr[0], yr[1])
                 else:
                     n.pd_object = factory.make_by_name(name, args, **kwargs)
             elif n.type == 'MESSAGE':

@@ -114,9 +114,9 @@ def make_by_name(name, args=None, **kwargs):
         return PdToggle(0, 0, **kwargs)
     elif name == "nbx":
         return Nbx(0, 0, **kwargs)
-    elif name == "hsl":
+    elif name == "hslider":
         return PdHSlider(0, 0, **kwargs)
-    elif name == "vsl":
+    elif name == "vslider":
         return PdVSlider(0, 0, **kwargs)
     elif name == "hradio":
         return PdHRadio(0, 0, **kwargs)

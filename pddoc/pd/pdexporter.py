@@ -24,6 +24,7 @@ __author__ = 'Serge Poltavski'
 
 
 from array import Array
+import re
 
 
 class PdExporter(AbstractVisitor):
@@ -67,7 +68,8 @@ class PdExporter(AbstractVisitor):
         self.result.append(line)
 
     def visit_comment(self, comment):
-        line = "#X text {0:d} {1:d} {2:s};".format(comment.x, comment.y, " ".join(comment.args))
+        txt = re.sub('\s+', ' ', " ".join(comment.args).strip())
+        line = "#X text {0:d} {1:d} {2:s};".format(comment.x, comment.y, txt)
         for l in textwrap.wrap(line):
             self.result.append(l)
 

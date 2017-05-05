@@ -24,6 +24,16 @@ from format import detect_format
 
 __author__ = 'Serge Poltavski'
 
+import os
+
+
+def add_xlet_db(path_list):
+    for db_path in path_list:
+        if not os.path.exists(db_path):
+            logging.warning("xlet database file not found: '%s'. skipping...", db_path)
+        else:
+            PdObject.xlet_calculator.add_db(db_path)
+
 
 def draw_object(obj, fname, fmt, **kwargs):
     w, h = BRectCalculator().object_brect(obj)[2:]
@@ -45,8 +55,12 @@ def main():
     arg_parser.add_argument('name', metavar='OBJECT_NAME', help="PureData object name, for ex.: osc~")
     arg_parser.add_argument('output', metavar='OUTNAME', nargs='?', default='',
                             help="Image output name, for ex.: float.png")
+    arg_parser.add_argument('--xlet-db', '-x', metavar='PATH', action='append',
+                            help='inlet/outlet database file path', default=[])
 
     args = vars(arg_parser.parse_args())
+
+    add_xlet_db(args['xlet_db'])
 
     pdo = PdObject(args['name'])
 

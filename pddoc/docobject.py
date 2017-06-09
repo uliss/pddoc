@@ -844,6 +844,22 @@ class DocProperty(DocArgument):
     def from_xml(self, xmlobj):
         DocArgument.from_xml(self, xmlobj)
         self._readonly = xmlobj.attrib.get("readonly", "false") == "true"
+        self._default = xmlobj.attrib.get("default", "")
 
     def readonly(self):
         return self._readonly
+
+    def is_flag(self):
+        return self._type == "flag"
+
+    def is_alias(self):
+        return self._type == "alias"
+
+    def prefix(self):
+        if self.is_flag() or self.is_flag():
+            return ""
+
+        if self.readonly():
+            return "(readonly) Get "
+        else:
+            return "Get/Set "

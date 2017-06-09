@@ -29,6 +29,19 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="PropertyDataType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="atom"/>
+            <xs:enumeration value="int"/>
+            <xs:enumeration value="float"/>
+            <xs:enumeration value="list"/>
+            <xs:enumeration value="symbol"/>
+            <xs:enumeration value="data"/>
+            <xs:enumeration value="alias"/>
+            <xs:enumeration value="flag"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="ArgumentDataType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="atom"/>
@@ -353,7 +366,7 @@
 
     <xs:complexType name="PropertyElementType" mixed="true">
         <xs:attribute name="name" type="xs:string" use="required"/>
-        <xs:attribute name="type" type="ControlDataType" use="required"/>
+        <xs:attribute name="type" type="PropertyDataType" use="required"/>
         <xs:attribute name="readonly" type="xs:boolean" default="false"/>
         <xs:attribute name="units" use="optional" type="UnitDataType"/>
         <xs:attribute name="minvalue" use="optional" type="xs:float"/>

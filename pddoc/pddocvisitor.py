@@ -242,12 +242,7 @@ class PdDocVisitor(DocObjectVisitor):
         self._pp.append_list(props)
 
         # props description
-        prop_descr = ""
-        if m.readonly():
-            prop_descr += "(readonly) Get "
-        else:
-            prop_descr += "Get/Set "
-
+        prop_descr = m.prefix()
         prop_descr += m.text()
 
         if m.type():

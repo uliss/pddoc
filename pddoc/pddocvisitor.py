@@ -242,10 +242,16 @@ class PdDocVisitor(DocObjectVisitor):
         self._pp.append_list(props)
 
         # props description
-        prop_descr = m.prefix()
+        prop_descr = ""
+        if not (m.is_alias() or m.is_flag()):
+            if m.readonly():
+                prop_descr += "(readonly) Get "
+            else:
+                prop_descr += "Get/Set "
+
         prop_descr += m.text()
 
-        if m.type():
+        if m.type() and not (m.is_alias() or m.is_flag()):
             prop_descr = "{0} Type: {1}. ".format(add_text_dot(prop_descr), m.type())
 
         if m.units():

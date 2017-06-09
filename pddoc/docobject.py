@@ -854,12 +854,3 @@ class DocProperty(DocArgument):
 
     def is_alias(self):
         return self._type == "alias"
-
-    def prefix(self):
-        if self.is_flag() or self.is_flag():
-            return ""
-
-        if self.readonly():
-            return "(readonly) Get "
-        else:
-            return "Get/Set "

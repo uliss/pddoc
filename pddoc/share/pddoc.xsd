@@ -26,6 +26,7 @@
             <xs:enumeration value="symbol"/>
             <xs:enumeration value="pointer"/>
             <xs:enumeration value="any"/>
+            <xs:enumeration value="data"/>
         </xs:restriction>
     </xs:simpleType>
 

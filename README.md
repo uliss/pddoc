@@ -37,6 +37,31 @@ for generation *-help.pd files used **pddoc** format
     ```xml 
     <property enum="A,B,C"/>
     ```
+    
+### inlets
+```xml
+<inlets dynamic="true">
+    <inlet type="TYPE" number="XXX">
+        <xinfo on="symbol"></xinfo>
+    </inlet>
+</inlets>
+```
+
+- **dynamic** *(optional)* - if True, external has dynamic number of inlets, otherwise fixed.
+- **type** *(optional)* - inlet type:
+    - control
+    - audio
+- **number** *(optional)* - manually specified inlet number: number, or "n", or "..."
+- **on** *(optional)* - describe reaction on input data type. Data types:
+    - atom
+    - int
+    - float
+    - list
+    - symbol
+    - pointer
+    - any
+    - data - for additional data types
+
 
     
 

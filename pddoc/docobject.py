@@ -73,6 +73,9 @@ class DocItem(object):
     def num_children(self):
         return len(self._elements)
 
+    def is_empty(self):
+        return len(self._elements) == 0
+
     def traverse(self, visitor):
         assert isinstance(visitor, IDocObjectVisitor)
 

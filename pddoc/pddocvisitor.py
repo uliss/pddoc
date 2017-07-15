@@ -189,6 +189,9 @@ class PdDocVisitor(DocObjectVisitor):
     def inlets_end(self, inlets):
         self.current_yoff += 10
 
+        if inlets.is_empty():
+            self.current_yoff += 10
+
     def inlet_begin(self, inlet):
         self._pp.add_txt("{0}.".format(inlet.number()), self.PD_XLET_INDX_XPOS, self.current_yoff)
 
@@ -212,6 +215,9 @@ class PdDocVisitor(DocObjectVisitor):
 
     def outlets_end(self, outlets):
         self.current_yoff += 10
+
+        if outlets.is_empty():
+            self.current_yoff += 10
 
     def outlet_begin(self, outlet):
         y = self.current_yoff

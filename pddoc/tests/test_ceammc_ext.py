@@ -64,10 +64,13 @@ class TestCeammcExt(TestCase):
         self.assertEqual(sc.brect(), (10, 20, 150, 100))
 
     def test_bg_color(self):
-        lnk = f.make_by_name("ceammc/ui_link", url='http://ya.ru', title='Yandex')
+        kw = {'@url': 'http://ya.ru', '@title': 'Yandex'}
+        lnk = f.make_by_name("ceammc/ui_link", args=None, **kw)
         lnk.set_bg_color(Color(255, 0, 128))
         self.assertEqual(lnk.to_string(),
                          "ui.link @title Yandex @bgcolor 1.0 0.0 0.50196 @url http://ya.ru")
+        self.assertEqual(lnk.url(), "http://ya.ru")
+        self.assertEqual(lnk.text(), "Yandex")
 
     def test_ui_matrix(self):
         d = dict()
@@ -112,4 +115,16 @@ class TestCeammcExt(TestCase):
         self.assertEqual(d.width, 200)
         self.assertEqual(d.height, 30)
 
+    def test_ui_link(self):
+        kw = dict()
+        d = f.make_by_name("ceammc/ui_link", **kw)
+        self.assertEqual(d.width, 100)
+        self.assertEqual(d.height, 25)
+        self.assertEqual(d.text(), "<no-title>")
 
+        kw = {'@url': 'file.pd', '@title': 'FILE'}
+        d = f.make_by_name("ceammc/ui_link", **kw)
+        self.assertEqual(d.width, 100)
+        self.assertEqual(d.height, 25)
+        self.assertEqual(d.text(), "FILE")
+        self.assertEqual(d.url(), "file.pd")

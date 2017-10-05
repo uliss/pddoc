@@ -21,38 +21,21 @@
 __author__ = 'Serge Poltavski'
 
 from ui_base import UIBase
-from pddoc.cairopainter import CairoPainter
+from pddoc.pd import XLET_GUI, XLET_SOUND
 
 
 def create_by_name(name, args, **kwargs):
-    return UILink(0, 0, **kwargs)
+    return UIMeter(0, 0, **kwargs)
 
 
-class UILink(UIBase):
+class UIMeter(UIBase):
     def __init__(self, x, y, **kwargs):
-        UIBase.__init__(self, "ui.link", x, y, **kwargs)
-        self._properties.pop('@size', None)
+        if '@size' not in kwargs:
+            kwargs['@size'] = '15x120'
+        UIBase.__init__(self, "ui.meter~", x, y, **kwargs)
 
     def inlets(self):
-        return ()
+        return [XLET_SOUND]
 
     def outlets(self):
-        return ()
-
-    def url(self):
-        return self._properties['@url']
-
-    def text(self):
-        if '@title' not in self._properties:
-            return '<no-title>'
-
-        return self._properties['@title']
-
-    def draw(self, painter):
-        assert isinstance(painter, CairoPainter)
-        painter.draw_text(self.x + 4, self.y + 12, self.text(), color=(0, 0, 1))
-
-    def calc_brect(self):
-        x, y, w, h = self.brect_calc().string_brect(self.text(), None)
-        self.width = w
-        self.height = h
+        return [XLET_GUI]

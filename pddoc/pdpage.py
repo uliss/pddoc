@@ -117,7 +117,8 @@ class PdPage(object):
         return l, r, self.group_brect([l, r])
 
     def make_link(self, x, y, url, name):
-        return UILink(x, y + 3, url, name)
+        kw = {'@url': url, '@title': name}
+        return UILink(x, y + 3, **kw)
 
     def make_txt(self, txt, x, y):
         if txt:

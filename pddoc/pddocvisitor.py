@@ -444,7 +444,7 @@ class PdDocVisitor(DocObjectVisitor):
             add_subpatch_text(xc2, yrows[row], self._contacts)
             row += 1
 
-        pd.append_object(PdObject("declare", x=xc2, y=yrows[row], args=["-lib", "ceammc", "-lib", "creammc"]))
+        pd.append_object(PdObject("declare", x=xc2, y=yrows[row], args=["-lib", "ceammc"]))
 
         ypos = self.PD_INFO_WINDOW_HEIGHT - 22
         delim = self._pp.make_hrule(xc2, ypos, width=270)

@@ -122,7 +122,7 @@ class PdDocVisitor(DocObjectVisitor):
     def method_begin(self, m):
         msg_atoms = [m.name()]
         # for i in m.items():
-            # msg_atoms.append(i.param_name())
+        # msg_atoms.append(i.param_name())
 
         msg = Message(self.PD_XLET_INDX_XPOS, self.current_yoff, msg_atoms)
         msg.calc_brect()
@@ -147,7 +147,6 @@ class PdDocVisitor(DocObjectVisitor):
 
             if i.type():
                 arg_descr = "{0} Type: {1}. ".format(add_text_dot(arg_descr), i.type())
-
 
             value_range = self.format_range(i)
             if len(value_range) > 0:
@@ -362,13 +361,24 @@ class PdDocVisitor(DocObjectVisitor):
 
     def add_header(self):
         lbl = self.add_header_label()
-        if not self._is_gui:
-            self.add_header_example_object(lbl, self._title)
+        self.add_header_example_object(lbl, self._title)
 
     def add_header_example_object(self, lbl, title):
         seq = []
-        for a in filter(lambda n: n != title, map(lambda i: i["name"], self._aliases)) + [title]:
-            seq.append(make_by_name(a))
+        alias_objects = filter(lambda n: n["name"] != title, self._aliases)
+
+        for a in alias_objects:
+            if 'is_link' in a and a['is_link'] is True:
+                seq.append(self._pp.make_header_alias_link(title, a['name']))
+            else:
+                seq.append(make_by_name(a['name']))
+
+        # append main object name
+        # UI object added as link
+        if self._is_gui:
+            seq.append(self._pp.make_header_alias_link(title, title))
+        else:
+            seq.append(make_by_name(title))
 
         self._pp.place_in_row(seq, 0, 20)
         _, _, w, h = self._pp.group_brect(seq)

@@ -69,17 +69,20 @@ class DocObjectVisitor(IDocObjectVisitor):
     def object_begin(self, obj):
         self._is_gui = obj.is_gui()
 
-    def aliases_begin(self, a):
-        if not a.aliases():
-            return
-
-        for alias in a.aliases() + [self._title]:
-            self.add_alias(alias)
-
-    def add_alias(self, name):
+    def alias_begin(self, a):
         element = {
-            'name': name,
-            'image': self.image_pdobject_fname(name)
+            'name': a.text(),
+            'image': self.image_pdobject_fname(a.text()),
+            'is_link': a.is_link()
+        }
+
+        self._aliases.append(element)
+
+    def add_alias(self, alias):
+        element = {
+            'name': alias,
+            'image': self.image_pdobject_fname(alias),
+            'is_link': False
         }
         self._aliases.append(element)
 

@@ -67,5 +67,5 @@ class UIBase(PdObject):
         pass
 
     def set_bg_color(self, color):
-        self.set_property('@bgcolor', ' '.join(map(lambda c: str(c), color.rgb_float())))
+        self.set_property('@background_color', ' '.join(map(lambda c: str(c), color.rgb_float())))
 

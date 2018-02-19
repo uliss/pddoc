@@ -24,6 +24,7 @@ __author__ = 'Serge Poltavski'
 
 from pddoc.htmldocvisitor import *
 from pddoc.pdlayout import *
+from pddoc.docobject import *
 import os
 import nologging
 

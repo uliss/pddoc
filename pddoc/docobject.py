@@ -471,15 +471,22 @@ class DocKeywords(DocItem):
 class DocAliases(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
-        self._aliases = []
 
-    def aliases(self):
-        return self._aliases
+    def is_valid_tag(self, tag_name):
+        return tag_name == "alias"
+
+
+class DocAlias(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
+        self._ref_view = "object"
 
     def from_xml(self, xmlobj):
-        for child in xmlobj:
-            if child.tag == "alias":
-                self._aliases.append(child.text)
+        DocItem.from_xml(self, xmlobj)
+        self._ref_view = xmlobj.get("view", "object")
+
+    def is_link(self):
+        return self._ref_view == "link"
 
 
 class DocXlets(DocItem):

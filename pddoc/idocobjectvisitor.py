@@ -44,6 +44,12 @@ class IDocObjectVisitor(object):
     def aliases_end(self, aliases):
         pass
 
+    def alias_begin(self, alias):
+        pass
+
+    def alias_end(self, alias):
+        pass
+
     def also_begin(self, also):
         pass
 

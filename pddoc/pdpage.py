@@ -120,6 +120,11 @@ class PdPage(object):
         kw = {'@url': url, '@title': name}
         return UILink(x, y + 3, **kw)
 
+    def make_header_alias_link(self, objname, title):
+        lnk = self.make_link(0, 0, "{0}-help.pd".format(objname), "[{0}]".format(title))
+        lnk.set_bg_color(PdPageStyle.HEADER_BG_COLOR)
+        return lnk
+
     def make_txt(self, txt, x, y):
         if txt:
             txt = re.sub(' +', ' ', txt)

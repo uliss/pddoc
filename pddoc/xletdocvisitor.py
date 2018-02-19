@@ -36,8 +36,8 @@ class XletDocVisitor(IDocObjectVisitor):
         self._inlet_types = inlets.pd_type_list()
         self._dynamic_inlets = inlets.is_dynamic()
 
-    def aliases_begin(self, a):
-        self._aliases = a.aliases()
+    def alias_begin(self, a):
+        self._aliases.append(a)
 
     def outlets_begin(self, outlets):
         self._outlet_types = outlets.pd_type_list()
@@ -66,7 +66,7 @@ class XletDocVisitor(IDocObjectVisitor):
         return ''.join(map(x_type, xlets))
 
     def names(self):
-        return ",".join([self.name] + self._aliases)
+        return ",".join([self.name] + map(lambda a: a.text(), self._aliases))
 
     def object_end(self, obj):
         if self._write_to_file:

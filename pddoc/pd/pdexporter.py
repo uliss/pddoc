@@ -106,7 +106,12 @@ class PdExporter(AbstractVisitor):
 
         line += ";"
 
-        for l in textwrap.wrap(line, 70):
+        w = textwrap.TextWrapper()
+        w.break_long_words = False
+        w.break_on_hyphens = False
+        w.width = 70
+
+        for l in w.wrap(line):
             self.result.append(l)
 
         # handle declare

@@ -37,7 +37,7 @@ tokens = (
 # token regexp
 r_OBJECT = r'\[((?:[^\[\\]|\\.)+)\]'
 r_MESSAGE = r'\[((?:[^\(\\]|\\.)+)\('
-r_COMMENT = r'/\*(.+)\*/'
+r_COMMENT = r'/\*(.+?)\*/'
 r_NEWLINE = r'\n+'
 t_CONNECTION = r'\^*\|\.*'          # ^^|.. connection
 t_CONNECTION_RIGHT = r'\^*\\_*\.*'  # ^^\______..

@@ -20,6 +20,7 @@
 __author__ = 'Serge Poltavski'
 
 import logging
+import re
 
 from idocobjectvisitor import IDocObjectVisitor
 
@@ -647,7 +648,7 @@ class DocArgument(DocItem):
         self._required = xmlobj.attrib.get("required", False) == "true"
         enum_str = xmlobj.attrib.get("enum", "").strip()
         if len(enum_str) > 1:
-            self._enum = enum_str.split(' ')
+            self._enum = re.split("[ \n\t]+", enum_str)
 
         DocItem.from_xml(self, xmlobj)
 

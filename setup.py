@@ -10,14 +10,14 @@ def readme():
 
 
 setup(name='pddoc',
-      version='0.4.4',
+      version='0.5.0',
       description='PureData documentation tools',
       long_description=readme(),
       classifiers=[
           'Development Status :: 4 - Beta',
           'Topic :: Software Development :: Documentation',
           'Topic :: Multimedia :: Sound/Audio',
-          'Programming Language :: Python :: 2.7',
+          'Programming Language :: Python :: 3.3',
           'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)'
       ],
       url='https://github.com/uliss/pddoc',

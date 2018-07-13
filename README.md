@@ -51,7 +51,7 @@ for generation *-help.pd files used **pddoc** format
 - **type** *(optional)* - inlet type:
     - control
     - audio
-- **number** *(optional)* - manually specified inlet number: number, or "n", or "..."
+- **number** *(optional)* - manually specified inlet number: number, or "n", or "n+1", or "n-1", or "..."
 - **on** *(optional)* - describe reaction on input data type. Data types:
     - atom
     - int

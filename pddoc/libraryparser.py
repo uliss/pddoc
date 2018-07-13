@@ -17,9 +17,9 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from lxml import etree
-from pd.factory import make_by_name
-from pd.obj import PdObject
-from pdpage import PdPage
+from .pd.factory import make_by_name
+from .pd.obj import PdObject
+from .pdpage import PdPage
 
 
 class LibraryParser(object):

@@ -19,7 +19,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from coregui import CoreGui
+from .coregui import CoreGui
 from . import XLET_MESSAGE
 
 

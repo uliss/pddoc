@@ -24,12 +24,12 @@ import os
 import logging
 
 import pddoc.pd as pd
-from pdlayout import PdLayout
-from idocobjectvisitor import IDocObjectVisitor
-from txt.parser import Parser
-from pd.canvas import Canvas
-from pd.pdexporter import PdExporter
-from pd.obj import PdObject
+from .pdlayout import PdLayout
+from .idocobjectvisitor import IDocObjectVisitor
+from .txt.parser import Parser
+from .pd.canvas import Canvas
+from .pd.pdexporter import PdExporter
+from .pd.obj import PdObject
 
 
 class DocObjectVisitor(IDocObjectVisitor):

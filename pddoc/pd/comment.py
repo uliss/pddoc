@@ -20,9 +20,9 @@
 
 __author__ = 'Serge Poltavski'
 
-from baseobject import *
-from abstractvisitor import AbstractVisitor
-from obj import PdObject
+from .baseobject import *
+from .abstractvisitor import AbstractVisitor
+from .obj import PdObject
 
 
 class Comment(BaseObject):

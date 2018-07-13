@@ -24,12 +24,12 @@ __author__ = 'Serge Poltavski'
 from pddoc.latexdocobjectvisitor import LatexDocObjectVisitor
 from pddoc.docobject import DocObject
 import lxml.etree as etree
-import nologging
+from .nologging import *
 
 
 class TestLatexDocObjectVisitor(TestCase):
     def test_init(self):
-        nl = nologging.NoLogging()
+        nl = NoLogging()
 
         xml = etree.parse("float.pddoc")
         pddoc = xml.getroot()

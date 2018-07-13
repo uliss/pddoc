@@ -19,10 +19,10 @@
 
 __author__ = 'Serge Poltavski'
 
-from xlettextdatabase import XletTextDatabase
-from xletcalcdatabase import XletCalcDatabase
-from xletdatabase import XletMemoryDatabase
-from xletpatchlookup import XletPatchLookup
+from .xlettextdatabase import XletTextDatabase
+from .xletcalcdatabase import XletCalcDatabase
+from .xletdatabase import XletMemoryDatabase
+from .xletpatchlookup import XletPatchLookup
 from . import EXTERNALS_DIR
 import os
 
@@ -57,7 +57,7 @@ class XletCalculator(object):
         return "/" in obj.name and obj.name not in ("/", "/~")
 
     def inlets(self, obj):
-        from obj import PdObject
+        from .obj import PdObject
         if not issubclass(obj.__class__, PdObject):
             return []
 
@@ -74,7 +74,7 @@ class XletCalculator(object):
         return []
 
     def outlets(self, obj):
-        from obj import PdObject
+        from .obj import PdObject
         if not issubclass(obj.__class__, PdObject):
             return []
 

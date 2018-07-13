@@ -25,7 +25,7 @@ __author__ = 'Serge Poltavski'
 from pddoc.pd.xlettextdatabase import XletTextDatabase
 from pddoc.pd import EXTERNALS_DIR
 import os
-from nologging import *
+from .nologging import *
 
 pddoc_db = os.path.join(EXTERNALS_DIR, 'core/pd_objects.db')
 

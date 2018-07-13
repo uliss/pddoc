@@ -20,12 +20,12 @@
  
 __author__ = 'Serge Poltavski'
 
-from abstractvisitor import AbstractVisitor
-from brectcalculator import BRectCalculator
-from obj import PdObject
-from message import Message
-from comment import Comment
-from canvas import Canvas
+from .abstractvisitor import AbstractVisitor
+from .brectcalculator import BRectCalculator
+from .obj import PdObject
+from .message import Message
+from .comment import Comment
+from .canvas import Canvas
 
 
 class ObjectBRectVisitor(AbstractVisitor):

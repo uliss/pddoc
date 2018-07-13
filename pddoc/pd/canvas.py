@@ -19,7 +19,7 @@ from __future__ import print_function
 
 __author__ = 'Serge Poltavski'
 
-from obj import *
+from .obj import *
 from . import XLET_MESSAGE, XLET_SOUND, XLET_IGNORE
 
 
@@ -110,7 +110,7 @@ class Canvas(PdObject):
         assert issubclass(obj.__class__, BaseObject)
 
         if obj in self._objects:
-            logging.warning("object already on canvas: {0:s}".format(obj))
+            logging.warning("object already on canvas: {0:s}".format(str(obj)))
             return False
 
         obj.id = self.gen_object_id()

@@ -19,7 +19,7 @@
 
 from unittest import TestCase
 import sys
-import StringIO
+from io import StringIO
 
 __author__ = 'Serge Poltavski'
 
@@ -32,7 +32,7 @@ class TestPdDrawer(TestCase):
     def test_draw(self):
         # suppress output
         cout = sys.stdout
-        sys.stdout = StringIO.StringIO()
+        sys.stdout = StringIO()
 
         parser = pd.Parser()
         parser.parse("simple.pd")

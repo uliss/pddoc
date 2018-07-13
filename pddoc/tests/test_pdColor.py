@@ -47,9 +47,14 @@ class TestPdColor(unittest.TestCase):
 
         c.set_rgb((255, 0, 0))
         c2.from_pd(c.to_pd())
+        self.assertEqual(c2.rgb()[0], 255)
         self.assertEqual(c == c2, True)
 
         c.set_rgb((255, 255, 0))
+        self.assertEqual(c.to_pd(), -262081)
+        c2.from_pd(-262081)
+        self.assertEqual(c2.rgb()[0], 255)
+        self.assertEqual(c2.to_pd(), -262081)
         c2.from_pd(c.to_pd())
         self.assertEqual(c == c2, True)
 
@@ -57,7 +62,7 @@ class TestPdColor(unittest.TestCase):
         c2.from_pd(c.to_pd())
         self.assertEqual(c == c2, True)
 
-        for v in xrange(1, 4096, 4):
+        for v in range(1, 4096, 4):
             c.from_pd(-v)
             self.assertEqual(c.to_pd(), -v)
 

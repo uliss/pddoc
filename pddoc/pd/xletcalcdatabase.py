@@ -23,7 +23,7 @@ __author__ = 'Serge Poltavski'
 import imp
 import logging
 
-from xletdatabase import XletDatabase
+from .xletdatabase import XletDatabase
 
 
 class XletCalcDatabase(XletDatabase):

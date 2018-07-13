@@ -23,8 +23,8 @@ import os
 
 from mako.template import Template
 
-import cairopainter
-from docobjectvisitor import DocObjectVisitor
+from .cairopainter import CairoPainter
+from .docobjectvisitor import DocObjectVisitor
 
 
 class HtmlDocVisitor(DocObjectVisitor):
@@ -53,7 +53,7 @@ class HtmlDocVisitor(DocObjectVisitor):
         self._css = content
 
     def make_image_painter(self, w, h, fname):
-        return cairopainter.CairoPainter(w, h, fname, "png",
+        return CairoPainter(w, h, fname, "png",
                                          xoffset=self._canvas_padding,
                                          yoffset=self._canvas_padding)
 

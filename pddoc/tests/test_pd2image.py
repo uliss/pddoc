@@ -24,7 +24,7 @@ import subprocess
 import os
 import os.path
 
-import nologging
+from .nologging import *
 
 BIN_PATH = os.path.join(os.path.dirname(__file__), "..", "bin", "pd_pd2img.py")
 
@@ -44,7 +44,7 @@ class TestCairoPainter(unittest.TestCase):
         self.clean()
 
     def test_run_simple(self):
-        nolog = nologging.NoLogging()
+        nolog = NoLogging()
         rc = subprocess.call(["python", BIN_PATH, "not-exists"])
         self.assertNotEqual(rc, 0)
 

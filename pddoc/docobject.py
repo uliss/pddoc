@@ -22,7 +22,7 @@ __author__ = 'Serge Poltavski'
 import logging
 import re
 
-from idocobjectvisitor import IDocObjectVisitor
+from .idocobjectvisitor import IDocObjectVisitor
 
 
 def make_class_name(tag_name):

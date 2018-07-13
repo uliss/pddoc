@@ -34,7 +34,7 @@ class CairoPainter(PdPainter):
     def __init__(self, width, height, output, fmt="png", **kwargs):
         PdPainter.__init__(self)
 
-        from pd.drawstyle import DrawStyle
+        from .pd.drawstyle import DrawStyle
         self.style = DrawStyle()
 
         self.st_font_slant = cairo.FONT_SLANT_NORMAL

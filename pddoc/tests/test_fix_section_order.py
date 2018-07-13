@@ -24,7 +24,7 @@ from lxml import etree
 
 class TestFix_section_order(TestCase):
     def test_fix_section_order(self):
-        input_xml = '''\
+        input_xml = b'''\
 <object>
     <meta/>
     <inlets/>
@@ -37,7 +37,7 @@ class TestFix_section_order(TestCase):
 </object>
 '''
 
-        output_xml = '''\
+        output_xml = b'''\
 <object>
     <title/>
     <meta/>

@@ -20,7 +20,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from coregui import *
+from .coregui import *
 
 
 class Nbx(CoreGui):

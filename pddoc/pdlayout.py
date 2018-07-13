@@ -19,9 +19,9 @@
 
 __author__ = 'Serge Poltavski'
 
-import pd
-from layout import *
-from docobject import DocPdobject, DocPdmessage
+from .pd import *
+from .layout import *
+from .docobject import DocPdobject, DocPdmessage
 import logging
 
 
@@ -31,7 +31,7 @@ class PdLayout(object):
         self._cur_layout = []
         self._example_brect = ()
         self._pdobj_id_map = {}
-        self._brect_calc = pd.BRectCalculator()
+        self._brect_calc = BRectCalculator()
         self._comment_xoffset = 2
         self._hlayout_space = 20
         self._vlayout_space = 25
@@ -48,7 +48,7 @@ class PdLayout(object):
 
     @canvas.setter
     def canvas(self, cnv):
-        assert isinstance(cnv, pd.Canvas)
+        assert isinstance(cnv, Canvas)
         self._canvas = cnv
 
     def update(self):
@@ -61,11 +61,11 @@ class PdLayout(object):
             pdo.y = litem.y()
 
     def calc_brect(self, obj):
-        if isinstance(obj, pd.Message):
+        if isinstance(obj, Message):
             return self._brect_calc.message_brect(obj)
-        elif isinstance(obj, pd.PdObject):
+        elif isinstance(obj, PdObject):
             return self._brect_calc.object_brect(obj)
-        elif isinstance(obj, pd.Comment):
+        elif isinstance(obj, Comment):
             return self._brect_calc.comment_brect(obj)
         else:
             assert False
@@ -95,7 +95,7 @@ class PdLayout(object):
         self._example_brect = lv.brect()
 
     def comment2pd_comment(self, txt):
-        pd_comment = pd.Comment(0, 0, txt.split(" "))
+        pd_comment = Comment(0, 0, txt.split(" "))
         cbbox = self.calc_brect(pd_comment)
         comment_litem = LayoutItem(0, 0, cbbox[2], cbbox[3])
         setattr(pd_comment, "layout", comment_litem)
@@ -103,7 +103,7 @@ class PdLayout(object):
 
     def doc2msg(self, doc_msg):
         assert isinstance(doc_msg, DocPdmessage)
-        pdm = pd.Message(0, 0, [doc_msg.text()])
+        pdm = Message(0, 0, [doc_msg.text()])
         obj_bbox = list(self.calc_brect(pdm))
         litem = LayoutItem(doc_msg.offset(), 0, obj_bbox[2], obj_bbox[3])
         setattr(pdm, "layout", litem)
@@ -111,8 +111,8 @@ class PdLayout(object):
 
     def doc2obj(self, doc_obj):
         assert isinstance(doc_obj, DocPdobject)
-        args = filter(None, doc_obj.args())
-        pd_obj = pd.factory.make_by_name(doc_obj.name(), args, **doc_obj.attrs())
+        args = list(filter(None, doc_obj.args()))
+        pd_obj = factory.make_by_name(doc_obj.name(), args, **doc_obj.attrs())
         obj_bbox = list(self.calc_brect(pd_obj))
         litem = LayoutItem(doc_obj.offset(), 0, obj_bbox[2], obj_bbox[3])
         setattr(pd_obj, "layout", litem)

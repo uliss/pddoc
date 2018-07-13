@@ -23,18 +23,21 @@ import os
 import re
 import sys
 import logging
+import importlib
 
-from floatatom import FloatAtom
+from .floatatom import FloatAtom
 from . import EXTERNALS_DIR
-from obj import PdObject
-from bng import PdBng
-from toggle import PdToggle
-from slider import PdSlider, PdHSlider, PdVSlider
-from radio import Radio, PdVRadio, PdHRadio
-from gcanvas import GCanvas
-from nbx import Nbx
-from vu import PdVu
-from symbolatom import PdSymbolAtom
+from .obj import PdObject
+from .bng import PdBng
+from .toggle import PdToggle
+from .slider import PdSlider, PdHSlider, PdVSlider
+from .radio import Radio, PdVRadio, PdHRadio
+from .gcanvas import GCanvas
+from .nbx import Nbx
+from .vu import PdVu
+from .symbolatom import PdSymbolAtom
+
+sys.path.append(EXTERNALS_DIR)
 
 externals = {}
 not_found = set()
@@ -171,11 +174,12 @@ def find_external_object(name):
     if mod_dir not in sys.path:
         sys.path.append(mod_dir)
     try:
-        mod = __import__(mod_name)
+        mod = importlib.import_module(mod_name, 'ceammc')
+        # mod = __import__(mod_name, globals(), locals(), [name], 0)
         externals[clean_ext_name] = mod
         logging.debug("module \"%s.py\" imported from \"%s\".", mod_name, mod_dir)
         return True
     except ImportError as e:
-        logging.error("error while importing extension: %s - \"%s\". Paths: = %s", mod_name, e, "\n\t".join(sys.path))
+        logging.error("Error while importing extension: %s - \"%s\". Search paths: = %s", mod_name, e, "\n\t".join(sys.path))
         not_found.add(clean_ext_name)
         return None

@@ -24,7 +24,7 @@ import logging
 import re
 
 from . import XLET_MESSAGE, XLET_SOUND, XLET_IGNORE
-from xletdatabase import XletDatabase
+from .xletdatabase import XletDatabase
 
 
 class XletTextDatabase(XletDatabase):

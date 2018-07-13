@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
-from obj import PdObject
+from .obj import PdObject
 
 #   Copyright (C) 2015 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -50,7 +50,7 @@ class Array(PdObject):
 
     def set_data(self, atoms):
         assert len(atoms) == self._size
-        self._data = map(lambda x: float(x), atoms)
+        self._data = list(map(lambda x: float(x), atoms))
 
     def xrange(self):
         return self._xrange

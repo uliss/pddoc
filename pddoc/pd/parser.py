@@ -21,12 +21,12 @@
 __author__ = 'Serge Poltavski'
 
 from os import path
-from canvas import *
-from message import *
-from comment import *
-from coregui import *
-from array import *
-import factory
+from .canvas import *
+from .message import *
+from .comment import *
+from .coregui import *
+from .array import *
+from .factory import *
 
 
 class Parser:
@@ -125,7 +125,7 @@ class Parser:
         x = atoms[0]
         y = atoms[1]
 
-        obj = factory.make(atoms[2:])
+        obj = make(atoms[2:])
         obj.x = x
         obj.y = y
 
@@ -180,7 +180,7 @@ class Parser:
             # end canvas definition
             self.parse_restore(atoms[1:])
         elif name in("floatatom", "symbolatom"):
-            obj = factory.make(atoms)
+            obj = make(atoms)
             self.current_canvas().append_object(obj)
         elif name == "array":
             self.parse_array(atoms)
@@ -206,7 +206,7 @@ class Parser:
             line = found.group(1)
             atoms = self.split_re.split(line)
             if atoms[0] == "#X" and atoms[1] == "obj" and atoms[4] == "import":
-                factory.add_import(atoms[5])
+                add_import(atoms[5])
 
     def parse_line(self, line):
         self.parse_atoms(self.split_re.split(line))

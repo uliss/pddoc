@@ -20,7 +20,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from coregui import CoreGui
+from .coregui import CoreGui
 from . import XLET_GUI
 
 # [width]? - horizontal size of element

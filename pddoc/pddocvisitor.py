@@ -19,14 +19,15 @@
 
 __author__ = 'Serge Poltavski'
 
-from docobjectvisitor import DocObjectVisitor
-from pd.coregui import Color
-from pd.comment import Comment
-from pd.factory import make_by_name
+from .docobjectvisitor import DocObjectVisitor
+from .pd.coregui import Color
+from .pd.comment import Comment
+from .pd.factory import make_by_name
+from .pd.message import Message
+from .pd.obj import PdObject
+from .pd.parser import Parser
+
 from pddoc.pdpage import PdPage
-from pd.message import Message
-from pd.obj import PdObject
-from pd.parser import Parser
 from pddoc.docobject import DocPar
 import os
 

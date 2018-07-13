@@ -18,9 +18,9 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from __future__ import print_function
-from itertools import ifilter
-import graph_lexer as lex
 import re
+
+from .graph_lexer import *
 from pddoc.pd import Message, Comment, Canvas, Array
 from six import string_types
 from pddoc.pd import factory
@@ -122,21 +122,21 @@ class Parser(object):
         self.lines_len = []
         self.tokens = []
         self.nodes = []
-        self.lexer = lex.lexer()
+        self.lexer = lexer()
 
     def clear(self):
         self.lines = []
         self.lines_len = []
         self.tokens = []
         self.nodes = []
-        self.lexer = lex.lexer()
+        self.lexer = lexer()
 
     def parse_file(self, fname):
         with open(fname) as f:
             self.parse(f.read())
 
     def node_by_id(self, id):
-        res = filter(lambda n: id == n.id, self.nodes)
+        res = list(filter(lambda n: id == n.id, self.nodes))
         if len(res) < 1:
             return None
 
@@ -146,7 +146,7 @@ class Parser(object):
         assert isinstance(string, string_types)
 
         self.lines = string.split('\n')
-        self.lines_len = map(lambda x: len(x), self.lines)
+        self.lines_len = list(map(lambda x: len(x), self.lines))
         self.lexer.input(string)
         self.parse_tokens()
         self.parse_nodes()
@@ -195,9 +195,9 @@ class Parser(object):
             if n.value.startswith('X'):
                 continue
 
-            m = re.match(lex.r_OBJECT, n.value)
+            m = re.match(r_OBJECT, n.value)
             if not m:
-                m = re.match(lex.r_MESSAGE, n.value)
+                m = re.match(r_MESSAGE, n.value)
                 if not m:
                     continue
 
@@ -211,9 +211,9 @@ class Parser(object):
     def parse_nodes(self):
         for n in filter(lambda x: x.is_object(), self.nodes):
             if n.type == 'OBJECT':
-                m = re.match(lex.r_OBJECT, n.value)
+                m = re.match(r_OBJECT, n.value)
                 # filter spaces and #ID values
-                atoms = filter(lambda a: len(a) > 0 and (not a.startswith('#')), m.group(1).split(' '))
+                atoms = list(filter(lambda a: len(a) > 0 and (not a.startswith('#')), m.group(1).split(' ')))
                 assert len(atoms) > 0
                 name, args = self.find_alias(atoms)
                 kwargs = dict()
@@ -255,17 +255,17 @@ class Parser(object):
                     n.pd_object = Array(args[0], kwargs.get('size', 100), kwargs.get('save', 0))
                     n.pd_object.width = kwargs.get('w', 200)
                     n.pd_object.height = kwargs.get('h', 140)
-                    yr = map(lambda x: float(x), kwargs.get('yr', "-1..1").split('..'))
+                    yr = list(map(lambda x: float(x), kwargs.get('yr', "-1..1").split('..')))
                     n.pd_object.set_yrange(yr[0], yr[1])
                 else:
                     n.pd_object = factory.make_by_name(name, args, **kwargs)
             elif n.type == 'MESSAGE':
-                m = re.match(lex.r_MESSAGE, n.value)
+                m = re.match(r_MESSAGE, n.value)
                 txt = m.group(1).replace(',', '\,')
-                args = filter(lambda a: len(a) > 0 and (not a.startswith('#')), txt.split(' '))
+                args = list(filter(lambda a: len(a) > 0 and (not a.startswith('#')), txt.split(' ')))
                 n.pd_object = Message(0, 0, args)
             elif n.type == 'COMMENT':
-                m = re.match(lex.r_COMMENT, n.value)
+                m = re.match(r_COMMENT, n.value)
                 txt = m.group(1).replace(';', ' \;').replace(',', ' \,')
                 n.pd_object = Comment(0, 0, txt.split(' '))
             else:
@@ -280,12 +280,12 @@ class Parser(object):
         :type line: int
         :type char_pos: list
         """
-        return next(ifilter(
+        return next(filter(
             lambda x:
             x.line_pos == line and any(map(lambda c: x.contains(c), char_pos)), self.nodes), None)
 
     def find_by_line_idx(self, line, idx):
-        return next((ifilter(lambda n: n.line_pos == line and n.obj_line_index == idx, self.nodes)), None)
+        return next((filter(lambda n: n.line_pos == line and n.obj_line_index == idx, self.nodes)), None)
 
     def process_cross_connection(self, conn):
         assert isinstance(conn, Node)
@@ -333,7 +333,7 @@ class Parser(object):
         # find object on previous line
         src = self.find_connection(c.line_pos - 1, conn_start)
         if src is None:
-            print("connection source is not found for: {0:s}".format(c))
+            print("connection source is not found for: {0:s}".format(str(c)))
             return
 
         c.conn_src_id = src.id
@@ -365,10 +365,10 @@ class Parser(object):
         return len(self.elements(type))
 
     def elements(self, type):
-        return filter(lambda x: x.type == type, self.nodes)
+        return list(filter(lambda x: x.type == type, self.nodes))
 
     def elements_in_line(self, type, line_pos):
-        return filter(lambda x: x.type == type and x.line_pos == line_pos, self.nodes)
+        return list(filter(lambda x: x.type == type and x.line_pos == line_pos, self.nodes))
 
     def export(self, cnv):
         assert isinstance(cnv, Canvas)

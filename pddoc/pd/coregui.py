@@ -19,13 +19,13 @@
 
 __author__ = 'Serge Poltavski'
 
-import obj
+from .obj import *
 from termcolor import colored
 import six
 import logging
 
 from . import XLET_GUI
-from abstractvisitor import AbstractVisitor
+from .abstractvisitor import AbstractVisitor
 
 
 class Color:
@@ -55,12 +55,12 @@ class Color:
 
     def from_pd(self, value):
         v = abs(int(value) + 1)
-        r = v / 4096
-        g = (v % 4096) / 64
+        r = v // 4096
+        g = (v % 4096) // 64
         b = (v % 4096) % 64
-        self._r = int(round(r / 63.0 * 255)) % 256
-        self._g = int(round(g / 63.0 * 255)) % 256
-        self._b = int(round(b / 63.0 * 255)) % 256
+        self._r = int(round(r / 63.0 * 255.0)) % 256
+        self._g = int(round(g / 63.0 * 255.0)) % 256
+        self._b = int(round(b / 63.0 * 255.0)) % 256
 
     @staticmethod
     def from_hex(hex_str):
@@ -130,7 +130,7 @@ def color_from_str(value):
     return c
 
 
-class CoreGui(obj.PdObject):
+class CoreGui(PdObject):
     POS_LEFT, POS_RIGHT, POS_TOP, POS_BOTTOM = (0, 1, 2, 3)
 
     @classmethod
@@ -140,7 +140,7 @@ class CoreGui(obj.PdObject):
                         "hrd", "vrd", "hradio", "vradio")
 
     def __init__(self, name, x, y, args, **kwargs):
-        obj.PdObject.__init__(self, name, x, y, 0, 0, args)
+        PdObject.__init__(self, name, x, y, 0, 0, args)
         self._send = kwargs.get("send", "empty")
         self._receive = kwargs.get("receive", "empty")
         self._label = kwargs.get("label", "empty")

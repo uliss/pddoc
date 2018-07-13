@@ -24,7 +24,7 @@ from pddoc.pd.obj import PdObject
 class TestPdPage(TestCase):
     def assertSeqProp(self, seq, func, pos):
         self.assertEqual(len(seq), len(pos))
-        self.assertEqual(map(func, seq), pos)
+        self.assertEqual(list(map(func, seq)), pos)
 
     def assertXPos(self, seq, pos):
         self.assertSeqProp(seq, lambda x: x.x, pos)

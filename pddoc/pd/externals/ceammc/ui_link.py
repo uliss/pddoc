@@ -20,7 +20,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from ui_base import UIBase
+from pddoc.pd.externals.ceammc.ui_base import UIBase
 from pddoc.cairopainter import CairoPainter
 
 
@@ -56,3 +56,5 @@ class UILink(UIBase):
         x, y, w, h = self.brect_calc().string_brect(self.text(), None)
         self.width = w
         self.height = h
+
+# if __name__ == "__main__" and __package__ is None:

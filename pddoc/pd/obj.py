@@ -22,10 +22,10 @@ __author__ = 'Serge Poltavski'
 import six
 import logging
 
-from baseobject import BaseObject
-from xletcalculator import XletCalculator
-from xletpatchlookup import XletPatchLookup
-from abstractvisitor import AbstractVisitor
+from .baseobject import BaseObject
+from .xletcalculator import XletCalculator
+from .xletpatchlookup import XletPatchLookup
+from .abstractvisitor import AbstractVisitor
 
 
 class PdObject(BaseObject):
@@ -110,10 +110,10 @@ class PdObject(BaseObject):
 
     @staticmethod
     def brect_calc():
-        import brectcalculator
+        from .brectcalculator import  BRectCalculator
 
         if not PdObject._brect_calc:
-            PdObject._brect_calc = brectcalculator.BRectCalculator()
+            PdObject._brect_calc = BRectCalculator()
 
         return PdObject._brect_calc
 
@@ -133,7 +133,7 @@ class PdObject(BaseObject):
 
         esc_args = []
         for arg in self.args:
-            esc_args.append(PdObject.unescape(arg.encode('utf-8')))
+            esc_args.append(PdObject.unescape(arg))
 
         for arg in esc_args:
             if arg == ",":

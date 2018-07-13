@@ -40,6 +40,6 @@ class TestLexer(TestCase):
             tok = l.token()  # читаем следующий токен
             if not tok:
                 break  # закончились печеньки
-            print tok
+            print(tok)
 
 

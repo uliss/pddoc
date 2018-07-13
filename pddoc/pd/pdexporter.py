@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # coding=utf-8
-from canvas import Canvas
 import textwrap
-from abstractvisitor import AbstractVisitor
+
+from .canvas import Canvas
+from .abstractvisitor import AbstractVisitor
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -23,7 +24,7 @@ from abstractvisitor import AbstractVisitor
 __author__ = 'Serge Poltavski'
 
 
-from array import Array
+from .array import Array
 import re
 
 

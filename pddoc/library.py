@@ -2,8 +2,10 @@
 # coding=utf-8
 from lxml import etree
 import logging
-from pddoc.parser import get_parser
 import os
+import os.path
+
+from .parser import get_parser
 #   Copyright (C) 2016 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
@@ -19,8 +21,6 @@ import os
 #                                                                         #
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
-
-import os.path
 
 
 class LibraryMaker(object):
@@ -124,7 +124,7 @@ class LibraryMaker(object):
 
     def __str__(self):
         xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        return xml + etree.tostring(self._lib, pretty_print=True)
+        return xml + etree.tostring(self._lib, pretty_print=True, encoding='unicode')
 
     def add_to_others(self, fname, **kwargs):
         self.add_to_cat('others', fname, **kwargs)

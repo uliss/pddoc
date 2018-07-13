@@ -91,7 +91,7 @@
 
     <xs:simpleType name="XletNumber">
         <xs:restriction base="xs:string">
-            <xs:pattern value="([\d]{1,2}|n|\.\.\.|.{0})"/>
+            <xs:pattern value="([\d]{1,2}|n|n\+1|n-1|\.\.\.|.{0})"/>
         </xs:restriction>
     </xs:simpleType>
 

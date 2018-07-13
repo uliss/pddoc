@@ -66,7 +66,7 @@ class XletDocVisitor(IDocObjectVisitor):
         return ''.join(map(x_type, xlets))
 
     def names(self):
-        return ",".join([self.name] + map(lambda a: a.text(), self._aliases))
+        return ",".join([self.name] + list(map(lambda a: a.text(), self._aliases)))
 
     def object_end(self, obj):
         if self._write_to_file:

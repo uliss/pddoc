@@ -26,11 +26,12 @@ from lxml import etree
 class TestPddocXmlSchema(TestCase):
     schema_root = etree.parse('../share/pddoc.xsd').getroot()
     schema = etree.XMLSchema(schema_root)
-    parser = etree.XMLParser(schema=schema)
 
     def test_init(self):
+        parser = etree.XMLParser(schema=self.schema)
         with self.assertRaises(etree.XMLSyntaxError):
-            etree.fromstring("<a>5</a>", self.parser)
+            etree.fromstring("<a>5</a>", parser)
 
     def test_float(self):
-        etree.parse('float.pddoc', self.parser)
+        parser = etree.XMLParser(schema=self.schema)
+        etree.parse('float.pddoc', parser)

@@ -496,7 +496,7 @@ class DocXlets(DocItem):
         self._dynamic = False
 
     def pd_type_list(self):
-        return map(lambda x: x.pd_type(), self.items())
+        return list(map(lambda x: x.pd_type(), self.items()))
 
     def enumerate(self):
         # enumerate

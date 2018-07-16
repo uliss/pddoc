@@ -282,7 +282,7 @@ class Parser(object):
         """
         return next(filter(
             lambda x:
-            x.line_pos == line and any(map(lambda c: x.contains(c), char_pos)), self.nodes), None)
+            x.line_pos == line and any(list(map(lambda c: x.contains(c), char_pos))), self.nodes), None)
 
     def find_by_line_idx(self, line, idx):
         return next((filter(lambda n: n.line_pos == line and n.obj_line_index == idx, self.nodes)), None)

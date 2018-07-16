@@ -49,7 +49,11 @@ class UIBase(PdObject):
     @property
     def args(self):
         res = []
-        for k, v in self._properties.items():
+        sorted_list = sorted(self._properties.items(), key=lambda x: x[0])
+
+        for item in sorted_list:
+            k = item[0]
+            v = item[1]
             res.append(k)
             if not v:
                 continue

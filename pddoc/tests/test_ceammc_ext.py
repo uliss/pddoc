@@ -68,7 +68,7 @@ class TestCeammcExt(TestCase):
         lnk = f.make_by_name("ceammc/ui_link", args=None, **kw)
         lnk.set_bg_color(Color(255, 0, 128))
         self.assertEqual(lnk.to_string(),
-                         "ui.link @url http://ya.ru @title Yandex @background_color 1.0 0.0 0.50196")
+                         "ui.link @background_color 1.0 0.0 0.50196 @title Yandex @url http://ya.ru")
         self.assertEqual(lnk.url(), "http://ya.ru")
         self.assertEqual(lnk.text(), "Yandex")
 

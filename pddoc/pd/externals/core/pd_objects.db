@@ -63,6 +63,7 @@ line            ...     .
 line~           ..      ~
 loadbang        .       .
 log             .       .
+loop~           ~~      ~~
 lop~            ~.      ~
 makefilename    .       .
 makenote        ...     ..

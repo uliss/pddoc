@@ -4,6 +4,7 @@ from lxml import etree
 import logging
 import os
 import os.path
+import urllib.parse as ul
 
 from .parser import get_parser
 #   Copyright (C) 2016 by Serge Poltavski                                 #
@@ -155,7 +156,8 @@ class LibraryMaker(object):
         self._cats[cat_name].append(entry)
 
     def xi_include(self, fname):
-        return etree.Element('{http://www.w3.org/2001/XInclude}include', href=fname, parse="xml")
+        url = ul.quote(fname)
+        return etree.Element('{http://www.w3.org/2001/XInclude}include', href=url, parse="xml")
 
     def sort_cat(self, cat):
         entries = cat.findall('entry')

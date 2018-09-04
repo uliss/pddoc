@@ -1,9 +1,119 @@
 # PDDOC
 PureData documentation generator
 
-## XML
-for generation *-help.pd files used **pddoc** format
+ 
+This is a generator that creates *-help.pd files from single **pddoc**-formatted files and another .pd file from XML that contains objects, short descriptions and links to help files.
 
+---
+## 1. XML file
+
+```xml
+<library xmlns:xi="http://www.w3.org/2001/XInclude" name="--your-library-name--" version="1.0">
+  <category name="--category--">
+    <entry descr="Object description" name="the_object" ref_view="object">
+      <xi:include href="the_object.pddoc" parse="xml"/>
+    </entry>
+  </category>
+ <meta>
+    <version> % </version>
+    <authors>
+      <author> % </author>
+    </authors>
+  </meta>
+ </library>
+```
+### library
+- **name** (required)
+
+### category
+- **name** (required)
+
+### entry
+- **name** (required)
+- **ref_view** (required):
+    - object
+    - link      (for UI objects)
+
+---
+## 2. pddoc file
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<pddoc version="1.0">
+    <object name="the_object">
+        <title>the_object</title>
+        <meta>
+            <authors>
+                <author> % </author>
+            </authors>
+            <description>% </description>
+            <license> % </license>
+            <library> % </library>
+            <category> % </category>
+            <keywords> % </keywords>
+            <since> % </since>
+        </meta>
+        <info>
+            <par> Paragraph text </par>
+        </info>
+        <arguments>
+            <argument name="ARG_NAME" type="symbol">argument name</argument>
+        </arguments>
+        <properties>
+            <property name="@property_name" type="symbol">property name</property>
+        </properties>
+        <inlets>
+            <inlet>
+                <xinfo on="bang">detailed description</xinfo>
+            </inlet>
+        </inlets>
+        <outlets>
+            <outlet>description</outlet>
+        </outlets>
+        <example>
+            <pdascii>
+<![CDATA[
+
+[message_box(                                 
+|
+[object_box]
+
+]]>
+            </pdascii>
+        </example>
+    </object>
+</pddoc>
+```
+### header:
+- `<pddoc>`
+    - **version** (required)
+- `<object>`
+    - **name** (required)
+- `<title>`
+- `<meta>`
+    - `<authors>`
+    - `<description>`
+    - `<license>`
+    - `<library>`
+    - `<category>`
+    - `<keywords>`
+    - `<since>`
+   
+### info
+```xml
+<info>
+    <par> Paragraph text </par>
+</info>
+```
+### arguments
+- **name** (required)
+- **type** (required):
+    - int
+    - float
+    - symbol
+    - atom - int, float or symbol
+    - list - list of atoms
+    
 ### properties
 
 ```xml
@@ -61,6 +171,36 @@ for generation *-help.pd files used **pddoc** format
     - pointer
     - any
     - data - for additional data types
+    
+### outlets
+```xml
+<outlets>
+    <outlet>
+        description
+    </outlet>
+</outlets>
+```
+
+### example
+```
+<example>
+    <pdascii>
+<![CDATA[
+
+[message_box(                                 
+|
+[object_box]
+
+]]>
+    </pdascii>
+</example>
+```
+
+- [*value*( - message box
+- [*value*] - object box
+- [T] - toggle
+- [B] - bang
+
 
 
     

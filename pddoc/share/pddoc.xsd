@@ -69,6 +69,10 @@
             <xs:enumeration value="bpm"/>
             <xs:enumeration value="second"/>
             <xs:enumeration value="percent"/>
+            <xs:enumeration value="sample"/>
+            <xs:enumeration value="sec"/>
+            <xs:enumeration value="msec"/>
+            <xs:enumeration value="db"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -352,6 +356,8 @@
                 <xs:attribute name="units" use="optional" type="UnitDataType"/>
                 <xs:attribute name="minvalue" use="optional" type="xs:float"/>
                 <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
+                <xs:attribute name="enum" use="optional" type="xs:string"/>
+                <xs:attribute name="required" use="optional" type="xs:boolean"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -376,6 +382,8 @@
             <xs:element name="param" type="MethodArgumentElementType"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="internal" use="optional" type="xs:boolean"/>
+        <xs:attribute name="example" use="optional" type="xs:boolean"/>
     </xs:complexType>
 
     <xs:complexType name="PropertyElementType" mixed="true">

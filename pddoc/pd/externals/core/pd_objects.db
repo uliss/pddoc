@@ -11,6 +11,7 @@ bang~           .       .
 bendout         ..      -
 biquad~         ~       ~
 block~          .       -
+bob~            ~~~     ~
 bp~             ~..     ~
 catch~          -       ~
 change          .       .

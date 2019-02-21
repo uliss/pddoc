@@ -5,6 +5,8 @@ abs             .       .
 abs~            ~       ~
 arraysize       ..      .
 append          .       .
+array_set       ...     .
+array_get       ...     .
 bag             ..      .
 bang,b          .       .
 bang~           .       .

@@ -58,6 +58,15 @@ class PdExporter(AbstractVisitor):
 
     def visit_canvas_end(self, cnv):
         if cnv.type == Canvas.TYPE_WINDOW:
+            if cnv.is_graph_on_parent():
+                gr = cnv.gop_rect()
+                ha = 1
+                if cnv.gop_hide_args():
+                    ha = 2
+
+                line = "#X coords 0 -1 1 1 {2:d} {3:d} {4:d} {0:d} {1:d};".format(gr[0], gr[1], gr[2], gr[3], ha)
+                self.result.append(line)
+
             self.result.append("")
         elif cnv.type == Canvas.TYPE_SUBPATCH:
             line = "#X restore {0:d} {1:d} pd {2:s};".format(cnv.x, cnv.y, cnv.name)

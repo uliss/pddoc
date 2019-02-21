@@ -49,6 +49,8 @@ def _clean_ext_name(name):
         name = name.replace('.', '_')
     if '~' in name:
         name = name.replace('~', '')
+    if ' ' in name:
+        name = name.replace(' ', '_')
 
     return name
 
@@ -156,7 +158,7 @@ def find_external_object(name):
     if clean_ext_name in externals:
         return True
 
-    rname = re.compile(r"^([-a-zA-Z0-9~/*=+><!_%|&.^]+)$")
+    rname = re.compile(r"^([-a-zA-Z0-9~/*=+><!_%|&.^ ]+)$")
     if not rname.match(clean_ext_name):
         logging.warning("name contains invalid characters: [%s]", clean_ext_name)
         return False

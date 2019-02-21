@@ -39,6 +39,7 @@ setup(name='pddoc',
                               'pd_ascii2pd = pddoc.bin.pd_ascii2pd:main',
                               'pd_makelibrary = pddoc.bin.pd_makelibrary:main',
                               'pd_lib2pd   = pddoc.bin.pd_lib2pd:main',
+                              'pd_faust2ui = pddoc.bin.pd_faust2gui:main',
                               'pd_cat2pd   = pddoc.bin.pd_cat2pd:main']
       },
       include_package_data=True,

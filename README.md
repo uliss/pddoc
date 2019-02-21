@@ -158,17 +158,22 @@ description
 - **units** - value unit from list:
     - herz
     - kiloherz
-    - decibell
-    - millisecond
-    - second
+    - decibell (db)
+    - millisecond (msec)
+    - second (sec)
     - bpm
     - percent
+    - sample
+    - semitone
+    - cent
+    - radian
+    - degree
 - **minvalue** - minimum allowed value
 - **maxvalue** - maximum allowed value
 - **default** - default value, if not specified
-- **enum** - comma separated list of allowed values
+- **enum** - space separated list of allowed values
     ```xml 
-    <property enum="A,B,C"/>
+    <property enum="A B C"/>
     ```
     
 ### inlets
@@ -194,6 +199,11 @@ description
     - pointer
     - any
     - data - for additional data types
+    - data:set
+    - data:dict
+    - data:mlist
+    - data:string
+    - data:fifo
     
 ### outlets
 ```xml
@@ -223,6 +233,10 @@ description
 - [*value*] - object box
 - [T] - toggle
 - [B] - bang
+- [obj1] X [obj2] - cross connection
+- [obj1 #a] - object with id:a
+- [X a->b] - connect object #a to object with id:b
+- [X a:1->b:0] - connect second outlet of object #a to first inlet of object #b
 
 
 

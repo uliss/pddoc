@@ -30,6 +30,8 @@ import re
 
 class PdPageStyle(object):
     HRULE_COLOR = Color(200, 200, 200)
+    HRULE_LEFT_MARGIN = 20
+    HRULE_RIGHT_MARGIN = 20
     SECTION_FONT_SIZE = 17
     SECTION_FONT_COLOR = Color(50, 50, 50)
     HEADER_HEIGHT = 40
@@ -39,12 +41,13 @@ class PdPageStyle(object):
     FOOTER_HEIGHT = 40
     FOOTER_BG_COLOR = Color(200, 200, 200)
     INFO_BG_COLOR = Color(240, 255, 255)
+    HEADER_RIGHT_MARGIN = 20
 
 
 class PdPage(object):
     brect_calc = BRectCalculator()
 
-    def __init__(self, title, width=600, height=500):
+    def __init__(self, title, width=700, height=500):
         self._title = title.replace(' ', '_')
         self._width = int(width)
         self._height = int(height)
@@ -73,7 +76,8 @@ class PdPage(object):
         return self.make_background(x, y, width, height, color)
 
     def make_styled_hrule(self, y):
-        return self.make_hrule(20, y, width=self._width - 30, color=PdPageStyle.HRULE_COLOR)
+        return self.make_hrule(20, y, width=self._width - (PdPageStyle.HRULE_LEFT_MARGIN + PdPageStyle.HRULE_RIGHT_MARGIN),
+                               color=PdPageStyle.HRULE_COLOR)
 
     def make_label(self, x, y, txt, font_size, color=Color.black(), bg_color=Color.white()):
         w, h = self.brect_calc.string_brect(txt, font_size)[2:]
@@ -87,7 +91,7 @@ class PdPage(object):
 
     def make_header(self, title):
         cnv = GCanvas(1, 1,
-                      width=self._width - 3,
+                      width=self._width - PdPageStyle.HEADER_RIGHT_MARGIN,
                       height=PdPageStyle.HEADER_HEIGHT,
                       size=5,
                       font_size=PdPageStyle.HEADER_FONT_SIZE,
@@ -101,7 +105,7 @@ class PdPage(object):
     def make_footer(self, bottom, height=PdPageStyle.FOOTER_HEIGHT):
         y = max(bottom, self._height - height - 2)
         cnv = GCanvas(1, y,
-                      width=self._width - 3,
+                      width=self._width - PdPageStyle.HEADER_RIGHT_MARGIN,
                       height=height,
                       size=5)
 

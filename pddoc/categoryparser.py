@@ -23,11 +23,11 @@ import logging
 
 
 class CategoryParser(object):
-    WINDOW_WIDTH = 715
-    WINDOW_HEIGHT = 500
+    WINDOW_WIDTH = 760
+    WINDOW_HEIGHT = 555
     HEADER_HEIGHT = 40
     OBJECT_OFFSET = 30
-    DESCRIPTION_OFFSET = 175
+    DESCRIPTION_OFFSET = 200
 
     def __init__(self, fname):
         self._fname = fname

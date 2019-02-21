@@ -72,7 +72,10 @@
             <xs:enumeration value="sample"/>
             <xs:enumeration value="sec"/>
             <xs:enumeration value="msec"/>
-            <xs:enumeration value="db"/>
+            <xs:enumeration value="semitone"/>
+            <xs:enumeration value="cent"/>
+            <xs:enumeration value="radian"/>
+            <xs:enumeration value="degree"/>
         </xs:restriction>
     </xs:simpleType>
 

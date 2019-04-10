@@ -55,7 +55,7 @@ def remove_text_dot(string):
 
 
 class PdDocVisitor(DocObjectVisitor):
-    PD_WINDOW_WIDTH = 715
+    PD_WINDOW_WIDTH = 785
     PD_WINDOW_HEIGHT = 555
     PD_HEADER_HEIGHT = 40
     PD_HEADER_FONT_SIZE = 20

@@ -62,11 +62,11 @@
 
     <xs:simpleType name="MouseEventClickType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="left"/>
-            <xs:enumeration value="right"/>
-            <xs:enumeration value="middle"/>
-            <xs:enumeration value="double"/>
-            <xs:enumeration value="popup"/>
+            <xs:enumeration value="left-click"/>
+            <xs:enumeration value="right-click"/>
+            <xs:enumeration value="middle-click"/>
+            <xs:enumeration value="double-click"/>
+            <xs:enumeration value="drag"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -354,7 +354,7 @@
         <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attribute name="editmode" use="required" type="xs:boolean"/>
-                <xs:attribute name="click" use="required" type="MouseEventClickType"/>
+                <xs:attribute name="type" use="required" type="MouseEventClickType"/>
                 <xs:attribute name="keys" type="xs:string"/>
             </xs:extension>
         </xs:simpleContent>

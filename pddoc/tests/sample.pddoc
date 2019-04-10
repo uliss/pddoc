@@ -47,7 +47,7 @@
             <method name="set">sets parameters</method>
         </methods>
         <mouse>
-            <event editmode="true" click="double" keys="Ctrl"/>
+            <event editmode="true" type="double-click" keys="Ctrl"/>
         </mouse>
         <example>
             <pdascii>

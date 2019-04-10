@@ -518,6 +518,13 @@ class DocInlets(DocXlets):
     def is_valid_tag(self, tag_name):
         return tag_name == "inlet"
 
+class DocMouse(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
+
+    def is_valid_tag(self, tag_name):
+        return tag_name == "event"
+
 
 class DocTypeElement(DocItem):
     allowed_types = ("control", "audio", "gui")
@@ -726,6 +733,27 @@ class DocArgument(DocItem):
     def enum(self):
         return self._enum
 
+class DocEvent(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
+        self._editmode = ""
+        self._type = ""
+        self._keys = ""
+
+    def from_xml(self, xmlobj):
+        self._editmode = xmlobj.attrib.get("editmode", "")
+        self._type = xmlobj.attrib.get("type", "")
+        self._keys = xmlobj.attrib.get("keys", "")
+        DocItem.from_xml(self, xmlobj)
+
+    def edit_mode(self):
+        return self._editmode == "true"
+
+    def type(self):
+        return self._type
+
+    def keys(self):
+        return self._keys
 
 class DocArguments(DocXlets):
     def __init__(self, *args):
@@ -819,7 +847,7 @@ class DocObject(DocItem):
 
     def is_valid_tag(self, tag_name):
         return tag_name in ("title", "meta", "inlets", "outlets",
-                            "arguments", "properties", "info", "example", "methods")
+                            "arguments", "properties", "info", "example", "methods", "mouse")
 
     def from_xml(self, xobj):
         self._name = xobj.attrib["name"]

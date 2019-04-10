@@ -66,9 +66,10 @@ class PdDocVisitor(DocObjectVisitor):
     PD_FOOTER_COLOR = Color(180, 180, 180)
     PD_INFO_WINDOW_WIDTH = 400
     PD_INFO_WINDOW_HEIGHT = 290
-    PD_XLET_INDX_XPOS = 120
+    PD_XLET_INDX_XPOS = 110
     PD_XLET_TYPE_XPOS = 150
-    PD_XLET_INFO_XPOS = 240
+    PD_XLET_INFO_XPOS = 245
+    PD_SECTION_YMARGIN = 40
     PD_ARG_NAME_COLOR = Color(240, 250, 250)
 
     def __init__(self):
@@ -114,11 +115,47 @@ class PdDocVisitor(DocObjectVisitor):
         self.copy_canvas_connections(cnv)
         self.current_yoff += cnv.height
 
+    def mouse_begin(self, m):
+        self.add_section("mouse events:", self.PD_SECTION_YMARGIN)
+
+    def mouse_end(self, m):
+        self.current_yoff += 10
+        if m.is_empty():
+            self.current_yoff += 10
+
+    def event_begin(self, e):
+        click_map = {
+            'left-click': 'Left-click',
+            'right-click': 'Right-click',
+            'middle-click': 'Middle-click',
+            'double-click': 'Double-click',
+            'drag': 'Mouse-drag'
+        }
+
+        ct = e.type()
+        k = e.keys()
+        if k == "":
+            tmpl = "{0}"
+        else:
+            tmpl = "{0} + {1}"
+
+        items = []
+        t1 = self._pp.add_txt(tmpl.format(click_map[ct], k), self.PD_XLET_INDX_XPOS, self.current_yoff)
+        t2 = self._pp.add_txt(add_text_dot(e.text()), self.PD_XLET_INFO_XPOS + 40, self.current_yoff)
+
+        items.append(t1)
+        items.append(t2)
+
+        _, _, _, h = self._pp.group_brect(items)
+        self.current_yoff += h + 5
+
     def methods_begin(self, m):
-        self.add_section("methods:")
+        self.add_section("methods:", self.PD_SECTION_YMARGIN)
 
     def methods_end(self, m):
         self.current_yoff += 10
+        if m.is_empty():
+            self.current_yoff += 10
 
     def method_begin(self, m):
         msg_atoms = [m.name()]
@@ -164,12 +201,12 @@ class PdDocVisitor(DocObjectVisitor):
             bg = self._pp.make_background(0, 0, hl_text.width + 8, hl_text.height + 8, color=self.PD_ARG_NAME_COLOR)
             self._pp.append_object(bg)
 
-            txt_obj = self._pp.add_txt(arg_descr, self.PD_XLET_INFO_XPOS + 10, self.current_yoff)
+            txt_obj = self._pp.add_txt(add_text_dot(arg_descr), self.PD_XLET_INFO_XPOS + 10, self.current_yoff)
             setattr(txt_obj, 'background_obj', bg)
 
             info.append(txt_obj)
 
-        self._pp.place_in_col(info, self.current_yoff, 15)
+        self._pp.place_in_col(info, self.current_yoff, 8)
 
         for obj in info:
             if hasattr(obj, 'background_obj'):
@@ -179,11 +216,11 @@ class PdDocVisitor(DocObjectVisitor):
 
         info.append(msg)
         br = self._pp.group_brect(info)
-        self.current_yoff += br[3] + 15
+        self.current_yoff += br[3] + 10
 
     def inlets_begin(self, inlets):
         super(self.__class__, self).inlets_begin(inlets)
-        self.add_section("inlets:")
+        self.add_section("inlets:", 6)
         inlets.enumerate()
 
     def inlets_end(self, inlets):
@@ -201,8 +238,12 @@ class PdDocVisitor(DocObjectVisitor):
             t1 = self._pp.add_txt("*{0}*".format(xinfo.on()), self.PD_XLET_TYPE_XPOS, self.current_yoff)
             tlist.append(t1)
 
+        txt = add_text_dot(xinfo.text())
         rng = self.format_range(xinfo)
-        t2 = self._pp.add_txt("{0}. {1}".format(xinfo.text(), rng), self.PD_XLET_INFO_XPOS, self.current_yoff)
+        if rng != "":
+            txt += " " + rng
+
+        t2 = self._pp.add_txt(add_text_dot(txt), self.PD_XLET_INFO_XPOS, self.current_yoff)
         tlist.append(t2)
 
         _, _, _, h = self._pp.group_brect(tlist)
@@ -210,7 +251,7 @@ class PdDocVisitor(DocObjectVisitor):
 
     def outlets_begin(self, outlets):
         super(self.__class__, self).outlets_begin(outlets)
-        self.add_section("outlets:")
+        self.add_section("outlets:", 6)
         outlets.enumerate()
 
     def outlets_end(self, outlets):
@@ -222,22 +263,29 @@ class PdDocVisitor(DocObjectVisitor):
     def outlet_begin(self, outlet):
         y = self.current_yoff
         t1 = self._pp.add_txt("{0}.".format(outlet.number()), self.PD_XLET_INDX_XPOS, y)
-        t2 = self._pp.add_txt(outlet.text(), self.PD_XLET_INFO_XPOS, y)
+        t2 = self._pp.add_txt(add_text_dot(outlet.text()), self.PD_XLET_INFO_XPOS, y)
 
         _, _, _, h = self._pp.group_brect([t1, t2])
         self.current_yoff += h + 5
 
     def arguments_begin(self, args):
         super(self.__class__, self).arguments_begin(args)
-        self.add_section("arguments:")
+        self.add_section("arguments:", self.PD_SECTION_YMARGIN)
         args.enumerate()
 
-    def arguments_end(self, outlets):
+    def arguments_end(self, args):
         self.current_yoff += 10
+        if args.is_empty():
+            self.current_yoff += 10
 
     def properties_begin(self, p):
         super(self.__class__, self).properties_begin(p)
-        self.add_section("properties:")
+        self.add_section("properties:", self.PD_SECTION_YMARGIN)
+
+    def properties_end(self, p):
+        self.current_yoff += 10
+        if p.is_empty():
+            self.current_yoff += 10
 
     def property_begin(self, m):
         props = list()
@@ -267,7 +315,7 @@ class PdDocVisitor(DocObjectVisitor):
             prop_descr = "{0} Default value: {1}. ".format(add_text_dot(prop_descr), m.default())
 
         if m.min() and m.max():
-            prop_descr = "{0} Value range: {1}-{2}. ".format(add_text_dot(prop_descr), m.min(), m.max())
+            prop_descr = "{0} Range: {1}...{2}. ".format(add_text_dot(prop_descr), m.min(), m.max())
         elif m.min():
             prop_descr = "{0} Min value: {1}. ".format(add_text_dot(prop_descr), m.min())
         elif m.max():
@@ -277,14 +325,11 @@ class PdDocVisitor(DocObjectVisitor):
             prop_descr = "{0} Allowed values: {1}.".format(add_text_dot(prop_descr), ', '.join(m.enum()))
 
         info = list()
-        info.append(self._pp.add_txt(remove_text_dot(prop_descr), self.PD_XLET_INFO_XPOS, self.current_yoff))
+        info.append(self._pp.add_txt(add_text_dot(prop_descr), self.PD_XLET_INFO_XPOS, self.current_yoff))
 
         self._pp.place_in_col(info, self.current_yoff, 15)
         br = self._pp.group_brect(info + props)
-        self.current_yoff += br[3] + 10
-
-    def properties_end(self, p):
-        self.current_yoff += 10
+        self.current_yoff += br[3] + 12
 
     def info_begin(self, info):
         lst = []
@@ -353,11 +398,11 @@ class PdDocVisitor(DocObjectVisitor):
         else:
             return ""
 
-    def add_section(self, txt):
+    def add_section(self, txt, yoff):
         hr = self._pp.make_styled_hrule(self.current_yoff)
         self._pp.append_object(hr)
         lbl = self._pp.make_section_label(self.current_yoff + 5, txt, font_size=14)
-        self.current_yoff += 10
+        self.current_yoff += yoff
         self._pp.append_object(lbl)
 
     def add_header(self):
@@ -499,5 +544,5 @@ class PdDocVisitor(DocObjectVisitor):
         self._pp.place_in_row(also_objects, 0, 10)
         _, _, w, h = self._pp.group_brect(also_objects)
         self._pp.move_to_y(also_objects, y)
-        self._pp.move_to_x(also_objects, (self._pp.width - w) - 20)
+        self._pp.move_to_x(also_objects, (self._pp.width - w) - 40)
         self._pp.append_list(also_objects)

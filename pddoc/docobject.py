@@ -121,6 +121,13 @@ class DocItem(object):
             obj.from_xml(child)
             self.add_child(obj)
 
+    def sort_by(self, fx):
+        lst = sorted(self._elements, key=fx)
+        self._elements.clear()
+
+        for el in lst:
+            self._elements.append(el)
+
 
 class DocTitle(DocItem):
     def __init__(self, *args):
@@ -774,6 +781,7 @@ class DocMethods(DocXlets):
 class DocMethod(DocItem):
     def __init__(self, *args):
         self._name = ""
+        self._cat = 0
         DocItem.__init__(self, args)
 
     def name(self):
@@ -784,7 +792,23 @@ class DocMethod(DocItem):
 
     def from_xml(self, xmlobj):
         self._name = xmlobj.attrib.get("name", "")
+        cat = xmlobj.attrib.get("category", "")
+        cat_lst = ['main', 'preset', 'color', 'basic']
+        if cat in cat_lst:
+            self._cat = cat_lst.index(cat)
+        else:
+            if self._name == "dump":
+                self._cat = 4 # basic
+            else:
+                self._cat = 0 # main
+
         DocItem.from_xml(self, xmlobj)
+
+    def sort_name(self):
+        if not self._name[0].isalpha():
+            return "{0}_~{1}".format(self._cat, self.name())
+        else:
+            return "{0}_{1}".format(self._cat, self.name())
 
 
 class DocParam(DocArgument):
@@ -885,11 +909,32 @@ class DocProperty(DocArgument):
     def __init__(self, *args):
         DocArgument.__init__(self, args)
         self._readonly = False
+        self._cat = 0
 
     def from_xml(self, xmlobj):
         DocArgument.from_xml(self, xmlobj)
         self._readonly = xmlobj.attrib.get("readonly", "false") == "true"
         self._default = xmlobj.attrib.get("default", "")
+        cat = xmlobj.attrib.get("category", "")
+        cat_lst = ['main', 'midi', 'preset', 'color', 'label', 'font', 'basic']
+        if cat in cat_lst:
+            self._cat = cat_lst.index(cat)
+        else:
+            if self._name in ("@size", "@pinned", "@presetname"):
+                self._cat = 6  # lowest
+            elif 'color' in self._name:
+                self._cat = 3 # colors
+            elif 'font' in self._name:
+                self._cat = 5 # font
+            elif 'label' in self._name:
+                self._cat = 4 # label
+            elif 'midi' in self._name:
+                self._cat = 1  # midi
+            else:
+                self._cat = 0  # main
+
+    def sort_name(self):
+        return "{0}_{1}".format(self._cat, self.name())
 
     def readonly(self):
         return self._readonly

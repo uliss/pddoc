@@ -151,6 +151,7 @@ class PdDocVisitor(DocObjectVisitor):
 
     def methods_begin(self, m):
         self.add_section("methods:", self.PD_SECTION_YMARGIN)
+        m.sort_by(lambda n: n.sort_name())
 
     def methods_end(self, m):
         self.current_yoff += 10
@@ -281,6 +282,8 @@ class PdDocVisitor(DocObjectVisitor):
     def properties_begin(self, p):
         super(self.__class__, self).properties_begin(p)
         self.add_section("properties:", self.PD_SECTION_YMARGIN)
+        # sort by names
+        p.sort_by(lambda n: n.sort_name())
 
     def properties_end(self, p):
         self.current_yoff += 10

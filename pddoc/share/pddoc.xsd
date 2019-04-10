@@ -16,6 +16,18 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="CategoryType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="basic"/>
+            <xs:enumeration value="main"/>
+            <xs:enumeration value="preset"/>
+            <xs:enumeration value="color"/>
+            <xs:enumeration value="font"/>
+            <xs:enumeration value="label"/>
+            <xs:enumeration value="midi"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="ControlDataType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="bang"/>
@@ -414,6 +426,7 @@
         <xs:attribute name="name" type="xs:string"/>
         <xs:attribute name="internal" use="optional" type="xs:boolean"/>
         <xs:attribute name="example" use="optional" type="xs:boolean"/>
+        <xs:attribute name="category" use="optional" type="CategoryType"/>
     </xs:complexType>
 
     <xs:complexType name="PropertyElementType" mixed="true">
@@ -425,6 +438,7 @@
         <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
         <xs:attribute name="default" use="optional" type="xs:string"/>
         <xs:attribute name="enum" use="optional" type="xs:string"/>
+        <xs:attribute name="category" use="optional" type="CategoryType"/>
     </xs:complexType>
 
     <xs:complexType name="InfoElementType">

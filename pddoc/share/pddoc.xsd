@@ -60,6 +60,16 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="MouseEventClickType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="left"/>
+            <xs:enumeration value="right"/>
+            <xs:enumeration value="middle"/>
+            <xs:enumeration value="double"/>
+            <xs:enumeration value="popup"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="UnitDataType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="herz"/>
@@ -135,6 +145,7 @@
             <xs:element name="inlets" type="InletsElementType" minOccurs="0"/>
             <xs:element name="outlets" type="OutletsElementType" minOccurs="0"/>
             <xs:element name="arguments" type="ArgumentsElementType" minOccurs="0"/>
+            <xs:element name="mouse" type="MouseEvents" minOccurs="0"/>
             <xs:element name="methods" type="MethodsElementType" minOccurs="0"/>
             <xs:element name="properties" type="PropertiesElementType" minOccurs="0"/>
             <xs:element name="info" type="InfoElementType" minOccurs="0"/>
@@ -336,6 +347,22 @@
     <xs:complexType name="ArgumentsElementType">
         <xs:sequence>
             <xs:element name="argument" type="ArgumentElementType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MouseEventType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="editmode" use="required" type="xs:boolean"/>
+                <xs:attribute name="click" use="required" type="MouseEventClickType"/>
+                <xs:attribute name="keys" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="MouseEvents">
+        <xs:sequence>
+            <xs:element name="event" type="MouseEventType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 

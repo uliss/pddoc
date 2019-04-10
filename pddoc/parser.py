@@ -52,7 +52,7 @@ def parse_xml(path):
 
 def fix_section_order(obj_tag):
     sorted_children = sorted(obj_tag, key=lambda n: ('title',
-                                                     'meta', 'info',
+                                                     'meta', 'info', 'mouse',
                                                      'example', 'arguments', 'properties', 'methods',
                                                      'inlets', 'outlets').index(n.tag))
     for child in obj_tag:

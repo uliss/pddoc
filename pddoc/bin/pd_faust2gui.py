@@ -31,7 +31,7 @@ def obj_props(json):
     lst = []
 
     def props(el):
-        if el['type'] in ('vslider', 'hslider', 'nentry', 'checkbox'):
+        if el['type'] in ('vslider', 'hslider', 'nentry', 'checkbox', 'button'):
             return ['@' + el['label']]
         elif 'items' in el:
             lst = []
@@ -51,7 +51,7 @@ def obj_props(json):
 
 def obj_prop_defs(json, d):
     def props(el):
-        if el['type'] in ('vslider', 'hslider', 'nentry', 'checkbox'):
+        if el['type'] in ('vslider', 'hslider', 'nentry', 'checkbox', 'button'):
             if 'init' in el:
                 d['@' + el['label']] = el['init']
         elif 'items' in el:
@@ -159,8 +159,9 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
         tgl = PdObject('ui.toggle', args=["@size", "12", "12"])
         tgl.set_x(x + 2)
         tgl.set_y(y + 8)
-        tgl.append_arg("@presetname")
-        tgl.append_arg("/gui/{0}/checkbox{1}".format(main_obj.name, counter))
+        if el["label"] != "gate":
+            tgl.append_arg("@presetname")
+            tgl.append_arg("/gui/{0}/checkbox{1}".format(main_obj.name, counter))
 
         cnv.append_object(tgl)
 
@@ -221,6 +222,12 @@ def main():
         if k == "name":
             name = v
             continue
+
+        if k == "meta":
+            for item in v:
+                if "ui" in item and item["ui"] == "disable":
+                    logging.warning("Skipping UI generation for \"%s\"", in_file)
+                    return
 
 
     main_obj = PdObject(name + '~')

@@ -117,6 +117,7 @@ class PdDocVisitor(DocObjectVisitor):
 
     def mouse_begin(self, m):
         self.add_section("mouse events:", self.PD_SECTION_YMARGIN)
+        m.sort_by(lambda e: e.edit_mode())
 
     def mouse_end(self, m):
         self.current_yoff += 10
@@ -147,6 +148,12 @@ class PdDocVisitor(DocObjectVisitor):
         items.append(t2)
 
         _, _, _, h = self._pp.group_brect(items)
+
+        if e.edit_mode():
+            lbl = self._pp.add_txt("[Edit]", 0, self.current_yoff)
+            _, _, w, _ = self._pp.group_brect([lbl])
+            lbl.set_x(self.PD_XLET_INDX_XPOS - w - 10)
+
         self.current_yoff += h + 5
 
     def methods_begin(self, m):

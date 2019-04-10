@@ -93,6 +93,9 @@ description
         <outlets>
             <outlet>description</outlet>
         </outlets>
+        <mouse>
+            <event type="left-click" edit_mode="0" keys="Shift+Ctrl">Some info</event>
+        </mouse>
         <example>
             <pdascii>
 <![CDATA[
@@ -171,6 +174,14 @@ description
 - **minvalue** - minimum allowed value
 - **maxvalue** - maximum allowed value
 - **default** - default value, if not specified
+- **category** - value from this list (in sort order):
+    - main
+    - midi
+    - preset
+    - color
+    - label
+    - font
+    - basic
 - **enum** - space separated list of allowed values
     ```xml 
     <property enum="A B C"/>
@@ -213,6 +224,22 @@ description
     </outlet>
 </outlets>
 ```
+
+### mouse
+```xml
+<mouse>
+    <event type="drag" keys="Shift" editmode="false"></event>
+</mouse>
+```
+
+- **type** - event type from list:
+    - left-click
+    - right-click
+    - middle-click
+    - double-click
+    - drag
+- **keys** - key modifiers, like Shift+Alt
+- **editmode** - edit mode on/off
 
 ### example
 ```

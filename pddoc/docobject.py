@@ -748,7 +748,7 @@ class DocEvent(DocItem):
         self._keys = ""
 
     def from_xml(self, xmlobj):
-        self._editmode = xmlobj.attrib.get("editmode", "")
+        self._editmode = xmlobj.attrib.get("editmode", "false")
         self._type = xmlobj.attrib.get("type", "")
         self._keys = xmlobj.attrib.get("keys", "")
         DocItem.from_xml(self, xmlobj)

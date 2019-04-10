@@ -625,7 +625,10 @@ class DocArgument(DocItem):
         'percent': '%',
         'sample': 'samp',
         'msec': 'ms',
-        'sec': 'sec'
+        'sec': 'sec',
+        'semitone': 'semitone',
+        'radian': 'rad',
+        'degree': 'deg'
     }
 
     def __init__(self, *args):

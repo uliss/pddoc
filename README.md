@@ -129,6 +129,7 @@ description
 ```xml
 <info>
     <par> Paragraph text </par>
+    <wiki name="Arithmetic_mean">Arithmetic mean</wiki>
 </info>
 ```
 ### arguments

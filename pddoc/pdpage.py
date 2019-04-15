@@ -41,6 +41,7 @@ class PdPageStyle(object):
     FOOTER_HEIGHT = 40
     FOOTER_BG_COLOR = Color(200, 200, 200)
     INFO_BG_COLOR = Color(240, 255, 255)
+    MAIN_BG_COLOR = Color(250, 250, 250)
     HEADER_RIGHT_MARGIN = 20
 
 

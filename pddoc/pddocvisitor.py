@@ -28,7 +28,8 @@ from .pd.obj import PdObject
 from .pd.parser import Parser
 
 from pddoc.pdpage import PdPage
-from pddoc.docobject import DocPar
+from pddoc.docobject import DocPar, DocA, DocWiki
+from pddoc.pdpage import PdPageStyle
 import os
 
 
@@ -349,17 +350,38 @@ class PdDocVisitor(DocObjectVisitor):
 
     def info_begin(self, info):
         lst = []
+        XPOS = self.PD_XLET_INFO_XPOS - 30
         for p in info.items():
             if isinstance(p, DocPar):
-                t = self._pp.make_txt(p.text(), self.PD_XLET_INFO_XPOS - 30, 0)
+                t = self._pp.make_txt(p.text(), XPOS, 0)
                 lst.append(t)
+            elif isinstance(p, DocA):
+                a = self._pp.make_link(XPOS, 0, p.url, p.text())
+                a.set_bg_color(PdPageStyle.MAIN_BG_COLOR)
+                lst.append(a)
+            elif isinstance(p, DocWiki):
+                a = self._pp.make_link(XPOS, 0, p.url, p.text())
+                a.set_bg_color(PdPageStyle.MAIN_BG_COLOR)
+                lst.append(a)
+                setattr(a, 'wiki_txt', True)
 
         self._pp.place_in_col(lst, self.PD_HEADER_HEIGHT + 40, 10)
+
         brect = self._pp.group_brect(lst)
         bg = self._pp.make_background(brect[0] - 5, brect[1],
                                       self._pp.width - self.PD_XLET_INFO_XPOS + 15,
-                                      brect[3] + 20, Color(250, 250, 250))
+                                      brect[3] + 20, PdPageStyle.MAIN_BG_COLOR)
         self._pp.append_object(bg)
+
+        # place "Wiki:" before wiki link
+        for obj in lst:
+            if hasattr(obj, 'wiki_txt'):
+                # create "Wiki:" text
+                wiki_txt = self._pp.make_txt("Wiki:", obj.x, obj.y)
+                self._pp.append_object(wiki_txt)
+                obj.x += wiki_txt.brect()[2] + 5
+                obj.y += 2
+
         self._pp.append_list(lst)
         self.current_yoff = brect[1] + brect[3]
 

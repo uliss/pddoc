@@ -316,3 +316,9 @@ class IDocObjectVisitor(object):
 
     def event_end(self, e):
         pass
+
+    def wiki_begin(self, a):
+        pass
+
+    def wiki_end(self, a):
+        pass

@@ -833,7 +833,7 @@ class DocInfo(DocItem):
         DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
-        return tag_name in ("itemize", "par", "a")
+        return tag_name in ("itemize", "par", "a", "wiki")
 
 
 class DocPar(DocItem):
@@ -852,6 +852,20 @@ class DocA(DocItem):
 
     def from_xml(self, xmlobj):
         self._url = xmlobj.attrib["href"]
+        DocItem.from_xml(self, xmlobj)
+
+
+class DocWiki(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
+        self._url = ""
+
+    @property
+    def url(self):
+        return self._url
+
+    def from_xml(self, xmlobj):
+        self._url = 'https://en.wikipedia.org/wiki/{}'.format(xmlobj.attrib["name"])
         DocItem.from_xml(self, xmlobj)
 
 

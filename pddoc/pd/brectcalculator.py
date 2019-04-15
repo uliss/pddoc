@@ -55,13 +55,18 @@ class BRectCalculator(AbstractVisitor):
         w, h = self._cairo.box_size(obj.to_string())
         return obj.x, obj.y, int(w), int(h)
 
-    def text_brect(self, text):
+    def break_lines(self, text):
         lines = []
-        for line in textwrap.wrap(text, 59):
+        for line in textwrap.wrap(text, 61):
             line = ";\n".join(line.split(";")).split("\n")
             for subl in line:
-                if subl:
+                if subl.strip():
                     lines.append(subl.strip())
+
+        return lines
+
+    def text_brect(self, text):
+        lines = self.break_lines(text)
 
         max_w = 0
         max_h = 0

@@ -46,10 +46,37 @@ class TestBRectCalculator(TestCase):
             p = 5
             pnt.draw_rect(b[0] - p, b[1] - p, b[2] + 2 * p, b[3] + 2 * p, width=1, color=(1, 0, 0))
 
+    def test_break_lines(self):
+        br = BRectCalculator()
+        self.assertEqual(br.break_lines("test"), ["test"]);
+        self.assertEqual(br.break_lines("test "), ["test"]);
+        self.assertEqual(br.break_lines("     test "), ["test"]);
+        self.assertEqual(br.break_lines("test\n\n\n"), ["test"]);
+        self.assertEqual(br.break_lines(" \n test \n  \n  \n"), ["test"]);
+        self.assertEqual(br.break_lines("test; line break"), ["test;", "line break"]);
+        self.assertEqual(br.break_lines("test\; line break"), ["test\;", "line break"]);
+        self.assertEqual(br.break_lines("test test test test test test test test test test "
+                                        "test test test test test test test test test test"),
+                         ['test test test test test test test test test test test test',
+                          'test test test test test test test test']
+                         )
+
+        self.assertEqual(br.break_lines("[@to]: fill range end index. Can be negative - to "
+                                        "address from array end. For example: -1 means till "
+                                        "last element (not including). If not specified "
+                                        "set to array length. Type: int."),
+                         ['[@to]: fill range end index. Can be negative - to address',
+                          'from array end. For example: -1 means till last element (not',
+                          'including). If not specified set to array length. Type: int.'])
+
     def test_comment_brect(self):
         br = BRectCalculator()
         self.assertEqual(br.text_brect("test"), (0, 0, 29, 13))
         self.assertEqual(br.text_brect("test; line break"), (0, 0, 77, 27))
+        self.assertEqual(br.text_brect("[@to]: fill range end index. Can be negative - to "
+                                        "address from array end. For example: -1 means till "
+                                        "last element (not including). If not specified "
+                                        "set to array length. Type: int.;"), (0, 0, 480, 41))
 
     def test_comment(self):
         p = Parser()
@@ -71,4 +98,4 @@ class TestBRectCalculator(TestCase):
         p = 5
         pnt.draw_rect(bbox[0] - p, bbox[1] - p, bbox[2] + p * 2, bbox[3] + p * 2, color=(0, 0, 1))
 
-        self.assertEqual(br.brect(), (67, 35, 458, 117))
+        self.assertEqual(br.brect(), (67, 35, 474, 117))

@@ -394,7 +394,7 @@ class CairoPainter(PdPainter):
 
     def draw_comment(self, comment):
         txt = comment.text()
-        lines = textwrap.wrap(txt, 59)
+        lines = textwrap.wrap(txt, 61)
 
         self.set_src_color(self.style.comment_color)
         line_height = self.cr.font_extents()[2]

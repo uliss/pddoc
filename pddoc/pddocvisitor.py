@@ -200,24 +200,28 @@ class PdDocVisitor(DocObjectVisitor):
             if len(value_range) > 0:
                 # add dot after description
                 arg_descr = add_text_dot(arg_descr)
-
-                arg_descr += " " + value_range
+                # add dot after the range
+                arg_descr += " " + add_text_dot(value_range)
 
             if len(i.enum()) > 0:
                 arg_descr = "{0} Allowed values: {1}.".format(add_text_dot(arg_descr), ', '.join(i.enum()))
 
+            # param name highlight with background canvas
             hl_text = self._pp.make_txt(param_name, 0, 0)
             hl_text.calc_brect()
             bg = self._pp.make_background(0, 0, hl_text.width + 8, hl_text.height + 8, color=self.PD_ARG_NAME_COLOR)
             self._pp.append_object(bg)
 
+            # param description
             txt_obj = self._pp.add_txt(add_text_dot(arg_descr), self.PD_XLET_INFO_XPOS + 10, self.current_yoff)
+            # bind background to object
             setattr(txt_obj, 'background_obj', bg)
 
             info.append(txt_obj)
 
         self._pp.place_in_col(info, self.current_yoff, 8)
 
+        # set background positions
         for obj in info:
             if hasattr(obj, 'background_obj'):
                 bg = getattr(obj, 'background_obj')
@@ -225,8 +229,8 @@ class PdDocVisitor(DocObjectVisitor):
                 bg.y = obj.y
 
         info.append(msg)
-        br = self._pp.group_brect(info)
-        self.current_yoff += br[3] + 10
+        _, _, _, h = self._pp.group_brect(info)
+        self.current_yoff += h + 10
 
     def inlets_begin(self, inlets):
         super(self.__class__, self).inlets_begin(inlets)

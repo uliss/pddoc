@@ -1,4 +1,4 @@
-#N canvas 0 22 501 300 10;
+#N canvas 0 22 550 300 12;
 #X text 68 35 Simple comment;
 #X text 67 65 Comment with symbols: $"!@#$%^&*()[] \; new line;
 #X text 67 97 Lorem ipsum dolor sit amet \, consectetur adipiscing

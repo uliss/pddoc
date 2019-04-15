@@ -131,10 +131,10 @@ class PdPage(object):
 
     def make_txt(self, txt, x, y):
         if txt:
-            txt = re.sub(' +', ' ', txt)
             #  match only number with end dot: 1. - used for enums
             txt = re.sub('(\d+)\\.(?!\d)', '\\1\\.', txt)
             txt = re.sub(' *, *', ' \\, ', txt)
+            txt = re.sub('[\s]+', ' ', txt)
         else:
             txt = ""
 

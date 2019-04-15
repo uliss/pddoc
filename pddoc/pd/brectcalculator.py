@@ -55,9 +55,9 @@ class BRectCalculator(AbstractVisitor):
         w, h = self._cairo.box_size(obj.to_string())
         return obj.x, obj.y, int(w), int(h)
 
-    def break_lines(self, text):
+    def break_lines(self, text, width=61):
         lines = []
-        for line in textwrap.wrap(text, 61):
+        for line in textwrap.wrap(text, width, break_long_words=False, break_on_hyphens=False):
             line = ";\n".join(line.split(";")).split("\n")
             for subl in line:
                 if subl.strip():
@@ -65,8 +65,8 @@ class BRectCalculator(AbstractVisitor):
 
         return lines
 
-    def text_brect(self, text):
-        lines = self.break_lines(text)
+    def text_brect(self, text, line_width=61):
+        lines = self.break_lines(text, width=line_width)
 
         max_w = 0
         max_h = 0
@@ -75,10 +75,13 @@ class BRectCalculator(AbstractVisitor):
             max_w = max(max_w, w)
             max_h = max(max_h, h)
 
-        return 0, 0, int(max_w * 1.1), int(len(lines) * max_h)
+        return 0, 0, int(max_w * 1.06), int(len(lines) * max_h * 1.08)
 
     def comment_brect(self, comment):
-        return self.text_brect(comment.text())
+        wd = 61
+        if comment.line_width():
+            wd = comment.line_width()
+        return self.text_brect(comment.text(), line_width=wd)
 
     def subpatch_brect(self, cnv):
         assert isinstance(cnv, Canvas)

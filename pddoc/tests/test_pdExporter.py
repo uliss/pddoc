@@ -63,6 +63,32 @@ class TestPdExporter(TestCase):
         self.reexport(fname1, fname2)
         self.assertFalse(self.diff(fname1, fname2))
 
+    def test_export_comments2(self):
+        comm = Comment(0, 0, ['a', 'b', 'c'])
+        self._parser.canvas.append_object(comm)
+        self._parser.canvas.traverse(self._exp)
+        self.assertEqual("\n".join(self._exp.result), "#X text 0 0 a b c;")
+
+    def test_export_comments3(self):
+        comm = Comment(0, 0, ['Comment', 'with', 'symbols:', '$"!@#$%^&*()[]', '\\,',  'new line'])
+        self.assertEqual(comm.text(), 'Comment with symbols: $"!@#$%^&*()[], new line')
+        self._parser.canvas.append_object(comm)
+        self._parser.canvas.traverse(self._exp)
+        self.assertEqual("\n".join(self._exp.result), '#X text 0 0 Comment with symbols: $"!@#$%^&*()[] \\, new line;')
+
+    def test_export_comments4(self):
+        comm = Comment(0, 0, ['a', 'b', 'c'], width=45)
+        self._parser.canvas.append_object(comm)
+        self._parser.canvas.traverse(self._exp)
+        self.assertEqual("\n".join(self._exp.result), "#X text 0 0 a b c, f 45;")
+
+    def test_export_comments5(self):
+        comm = Comment(0, 0, 'fill all array with specified value or pattern. Arguments are:'.split(' '))
+        self._parser.canvas.append_object(comm)
+        self._parser.canvas.traverse(self._exp)
+        self.assertEqual("\n".join(self._exp.result), "#X text 0 0 fill all array with specified value or pattern. "
+                                                      "Arguments\nare:;")
+
     def test_export_objects(self):
         fname1 = "objects.pd"
         fname2 = "out/export_objects.pd"

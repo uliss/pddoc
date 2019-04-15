@@ -78,10 +78,25 @@ class PdExporter(AbstractVisitor):
         self.result.append(line)
 
     def visit_comment(self, comment):
-        txt = re.sub('\s+', ' ', " ".join(comment.args).strip())
-        line = "#X text {0:d} {1:d} {2:s};".format(comment.x, comment.y, txt)
-        for l in textwrap.wrap(line):
-            self.result.append(l)
+        txt = "#X text {0:d} {1:d} ".format(comment.x, comment.y)
+        ncol = len(txt)
+        for atom in comment.args:
+            txt += atom.strip()
+            ncol += len(atom)
+
+            if atom == ';' or ncol > 65:
+                txt += '\n'
+                ncol = 0
+            else:
+                txt += ' '
+                ncol += 1
+
+        txt = txt.strip()
+        if comment.line_width():
+            txt += ', f {}'.format(comment.line_width())
+
+        txt += ';'
+        self.result += txt.split('\n')
 
     def visit_object(self, obj):
         if isinstance(obj, Array):

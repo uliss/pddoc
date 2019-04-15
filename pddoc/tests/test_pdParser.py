@@ -76,7 +76,7 @@ class TestPdParser(TestCase):
         p = Parser()
         self.assertTrue(p.parse("comments.pd"))
         cnv = p.canvas
-        self.assertEqual(len(cnv.objects), 3)
+        self.assertEqual(len(cnv.objects), 4)
 
     def test_parse_connections(self):
         p = Parser()

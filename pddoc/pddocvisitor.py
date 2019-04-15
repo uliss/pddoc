@@ -33,6 +33,8 @@ import os
 
 
 def add_text_dot(string):
+    if string is None:
+        return ''
     string = string.strip()
     if len(string) == 0:
         return string

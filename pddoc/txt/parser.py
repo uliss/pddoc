@@ -34,17 +34,31 @@ class Node(object):
         self.tok = tok
         self.char_pos_ = char_pos
         self.pd_object = None
-        self.conn_src_id = None
+        self.conn_src_id = []
         self.conn_src_outlet = 0
-        self.conn_dest_id = None
+        self.conn_dest_id = []
         self.conn_dest_inlet = 0
         self.connected = False
+        self.multi_connect = None
+        self.conn_multi = {}
         self.obj_line_index = -1
 
         if self.tok and self.is_connection():
             # calc connection source outlet
             self.conn_src_outlet = self.tok.value.count('^')
             self.conn_dest_inlet = self.tok.value.count('.')
+
+            all_connect = list(map(lambda x: x.count('*'), self.tok.value.split('|')))
+            if len(all_connect) == 2:
+                if all_connect[0] > 0 and all_connect[1] > 0:
+                    self.multi_connect = 'all'
+                elif all_connect[0] > 0:
+                    self.multi_connect = 'all_in'
+                elif all_connect[1] > 0:
+                    self.multi_connect = 'all_out'
+            elif len(all_connect) == 1:
+                if all_connect[0] > 0:
+                    self.multi_connect = 'all_in'
 
             # only single \
             if self.tok.value == '\\':
@@ -61,6 +75,18 @@ class Node(object):
 
     def is_connection(self):
         return self.tok.type in ('CONNECTION', 'CONNECTION_LEFT', 'CONNECTION_RIGHT', 'CONNECTION_X', 'CONNECTION_MANUAL')
+
+    def is_all_in_connection(self):
+        return self.multi_connect == 'all_in'
+
+    def is_all_out_connection(self):
+        return self.multi_connect == 'all_out'
+
+    def is_connect_all(self):
+        return self.multi_connect == 'all'
+
+    def is_multi_connect(self):
+        return self.multi_connect is not None
 
     @property
     def id(self):
@@ -379,17 +405,46 @@ class Parser(object):
             cnv.append_object(n.pd_object)
 
         for c in filter(lambda x: x.is_connection() and x.connected, self.nodes):
-            # print("connection %s -> %s" % (c.conn_src_id, c.conn_dest_id))
             src = self.node_by_id(c.conn_src_id)
             dest = self.node_by_id(c.conn_dest_id)
 
-            if src and dest:
-                if not src.pd_object or not dest.pd_object:
-                    logging.warning("can't connect {0:s} and {1:s}".format(src.tok, dest.tok))
-                    return
+            if not src or not dest:
+                continue
 
+            if not src.pd_object or not dest.pd_object:
+                logging.warning("can't connect {0:s} and {1:s}".format(src.tok, dest.tok))
+                return
+
+            if not c.is_multi_connect():
                 cnv.add_connection(
                     src.pd_object.id,
                     c.conn_src_outlet,
                     dest.pd_object.id,
                     c.conn_dest_inlet)
+            elif c.is_all_in_connection():
+                n = len(src.pd_object.outlets())
+                for i in range(n):
+                    cnv.add_connection(
+                        src.pd_object.id,
+                        i,
+                        dest.pd_object.id,
+                        c.conn_dest_inlet)
+            elif c.is_all_out_connection():
+                n = len(dest.pd_object.inlets())
+                for i in range(n):
+                    cnv.add_connection(
+                        src.pd_object.id,
+                        c.conn_src_outlet,
+                        dest.pd_object.id,
+                        i)
+            elif c.is_connect_all():
+                n_in = len(src.pd_object.outlets())
+                n_out = len(dest.pd_object.inlets())
+                for i in range(min(n_in, n_out)):
+                    cnv.add_connection(
+                        src.pd_object.id,
+                        i,
+                        dest.pd_object.id,
+                        i)
+
+

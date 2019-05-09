@@ -53,12 +53,12 @@ class TestTxtParser(TestCase):
         nl = NoLogging()
         self.p.parse_file(TEST_FILE)
 
-        self.assertEqual(self.p.num_lines(), 13)
-        self.assertEqual(len(self.p.nodes), 26)
-        self.assertEqual(self.p.num_elements('OBJECT'), 9)
+        self.assertEqual(self.p.num_lines(), 23)
+        self.assertEqual(len(self.p.nodes), 34)
+        self.assertEqual(self.p.num_elements('OBJECT'), 13)
         self.assertEqual(self.p.num_elements('MESSAGE'), 2)
         self.assertEqual(self.p.num_elements('COMMENT'), 1)
-        self.assertEqual(self.p.num_elements('CONNECTION'), 11)
+        self.assertEqual(self.p.num_elements('CONNECTION'), 15)
 
     def test_parse(self):
         pass

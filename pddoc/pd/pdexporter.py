@@ -129,6 +129,9 @@ class PdExporter(AbstractVisitor):
         if len(obj.args):
             line += " " + " ".join(obj.args)
 
+        if obj.fixed_width is not None:
+            line += ", f {}".format(obj.fixed_width)
+
         line += ";"
 
         w = textwrap.TextWrapper()

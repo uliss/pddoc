@@ -321,3 +321,44 @@ Number of **"."** specifies inlet index
 ```   
 ![example01](pddoc/doc/img/example05.png)
 
+#### options
+
+##### object width in chars
+
+```
+[mtof]
+
+[mtof {w=10}]
+
+[mtof {w=40}]
+```
+![example01](pddoc/doc/img/example06.png)
+
+
+##### object inlets
+
+```
+[uknown object {i=10,w=30}]  /*10 sound inlets*/
+
+[uknown object {i=10~,w=30}] /*10 sound inlets*/
+
+[uknown object {i=~10,w=30}] /*10 control inlets*/
+
+[uknown object {i=6~4,w=30}] /*6 sound inlets, 4 control inlets*/
+```
+![example01](pddoc/doc/img/example07.png)
+
+##### object outlets
+
+```
+[uknown object {o=10,w=30}]  /*10 sound outlets*/
+
+[uknown object {o=10~,w=30}] /*10 sound outlets*/
+
+[uknown object {o=~10,w=30}] /*10 control outlets*/
+
+[uknown object {o=6~4,w=30}] /*6 sound outlets, 4 control outlets*/
+```
+![example01](pddoc/doc/img/example08.png)
+
+

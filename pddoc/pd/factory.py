@@ -109,6 +109,7 @@ def add_import(name):
 def make_by_name(name, args=None, **kwargs):
     if args is None:
         args = []
+
     if name == "floatatom":
         return FloatAtom(0, 0, **kwargs)
     elif name == "symbolatom":

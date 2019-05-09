@@ -460,7 +460,9 @@
 
     <xs:complexType name="MarkupText">
         <xs:simpleContent>
-            <xs:extension base="xs:string"/>
+            <xs:extension base="xs:string">
+                 <xs:attribute name="indent" type="xs:integer" use="optional"/>
+            </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
 

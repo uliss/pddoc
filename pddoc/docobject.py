@@ -839,6 +839,15 @@ class DocInfo(DocItem):
 class DocPar(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
+        self._indent = 0
+
+    def from_xml(self, xmlobj):
+        self._indent = int(xmlobj.attrib.get("indent", "0"))
+        DocItem.from_xml(self, xmlobj)
+
+    @property
+    def indent(self):
+        return self._indent
 
 
 class DocA(DocItem):

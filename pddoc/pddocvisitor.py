@@ -73,6 +73,7 @@ class PdDocVisitor(DocObjectVisitor):
     PD_XLET_TYPE_XPOS = 150
     PD_XLET_INFO_XPOS = 245
     PD_SECTION_YMARGIN = 40
+    PD_PAR_INDENT = 10
     PD_ARG_NAME_COLOR = Color(240, 250, 250)
 
     def __init__(self):
@@ -353,7 +354,8 @@ class PdDocVisitor(DocObjectVisitor):
         XPOS = self.PD_XLET_INFO_XPOS - 30
         for p in info.items():
             if isinstance(p, DocPar):
-                t = self._pp.make_txt(p.text(), XPOS, 0)
+                ind = p.indent * self.PD_PAR_INDENT
+                t = self._pp.make_txt(p.text(), XPOS + ind, 0)
                 lst.append(t)
             elif isinstance(p, DocA):
                 a = self._pp.make_link(XPOS, 0, p.url, p.text())

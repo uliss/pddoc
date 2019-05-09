@@ -21,12 +21,13 @@ from __future__ import print_function
 import re
 
 from .graph_lexer import *
-from pddoc.pd import Message, Comment, Canvas, Array
+from pddoc.pd import Message, Comment, Canvas, Array, XLET_SOUND, XLET_MESSAGE
 from six import string_types
 from pddoc.pd import factory
 from pddoc.pd.coregui import CoreGui
 import copy
 import logging
+
 
 
 class Node(object):
@@ -287,7 +288,16 @@ class Parser(object):
                         yr = list(map(lambda x: float(x), kwargs.get('yr', "-1..1").split('..')))
                         n.pd_object.set_yrange(yr[0], yr[1])
                 else:
+                    # check options
+                    opts = {}
+                    for arg in args[:]:
+                        if arg[0] == '{' and arg[-1] == '}':
+                            opts.update(parse_object_options(arg))
+                            args.remove(arg)
+
                     n.pd_object = factory.make_by_name(name, args, **kwargs)
+                    process_object_options(n.pd_object, opts)
+
             elif n.type == 'MESSAGE':
                 m = re.match(r_MESSAGE, n.value)
                 txt = m.group(1).replace(',', '\,')
@@ -440,6 +450,8 @@ class Parser(object):
             elif c.is_connect_all():
                 n_in = len(src.pd_object.outlets())
                 n_out = len(dest.pd_object.inlets())
+
+                # print("c:", src.pd_object.name, src.pd_object.outlets(), dest.pd_object.name, dest.pd_object.inlets())
                 for i in range(min(n_in, n_out)):
                     cnv.add_connection(
                         src.pd_object.id,
@@ -448,3 +460,57 @@ class Parser(object):
                         i)
 
 
+def parse_object_option(name, txt):
+    if name == 'w':
+        return {'w' : int(txt) }
+    elif name == 'i':
+        res = {'i' : True}
+
+        opt_res = re.match(r"(\d*)(~?)(\d*)", txt)
+        if opt_res.group(1) != "":
+            res["in_sig"] = int(opt_res.group(1))
+        if opt_res.group(3) != "":
+            res["in_ctl"] = int(opt_res.group(3))
+
+        return res
+    elif name == 'o':
+        res = {'o' : True}
+
+        opt_res = re.match(r"(\d*)(~?)(\d*)", txt)
+        if opt_res.group(1) != "":
+            res["out_sig"] = int(opt_res.group(1))
+        if opt_res.group(3) != "":
+            res["out_ctl"] = int(opt_res.group(3))
+
+        return res
+
+
+def parse_object_options(arg):
+    res = {}
+    arg_str = arg[1:-1]
+    if len(arg_str) < 1:
+        return res
+
+    re_opt = re.compile(r"(\w{1})=(.+)")
+
+    for opt in arg_str.split(","):
+        res_opt = re.match(re_opt, opt)
+        if res_opt:
+            res.update(parse_object_option(res_opt.group(1), res_opt.group(2)))
+
+    return res
+
+
+def process_object_options(obj, opts: dict):
+    # print(opts)
+
+    if 'w' in opts:
+        obj.fixed_width = opts['w']
+
+    if 'i' in opts:
+        xin = opts.get('in_sig', 0) * [XLET_SOUND] + opts.get('in_ctl', 0) * [XLET_MESSAGE]
+        obj.set_inlets(xin)
+
+    if 'o' in opts:
+        xout = opts.get('out_sig', 0) * [XLET_SOUND] + opts.get('out_ctl', 0) * [XLET_MESSAGE]
+        obj.set_outlets(xout)

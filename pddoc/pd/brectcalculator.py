@@ -52,7 +52,13 @@ class BRectCalculator(AbstractVisitor):
         if obj._fixed_size:
             return obj.x, obj.y, obj.width, obj.height
 
-        w, h = self._cairo.box_size(obj.to_string())
+        if obj.fixed_width:
+            lines = textwrap.wrap(obj.to_string().ljust(obj.fixed_width, "."), obj.fixed_width)
+            obj_str = "\n".join(lines)
+            w, h = self._cairo.box_size(obj_str)
+        else:
+            w, h = self._cairo.box_size(obj.to_string())
+
         return obj.x, obj.y, int(w), int(h)
 
     def break_lines(self, text, width=61):

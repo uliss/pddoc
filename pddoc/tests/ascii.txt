@@ -19,4 +19,4 @@
 
 [unpack f f f]
 *|*
-[pack f f f]
+[pack f f f {w=25,i=~3,o=~1}]

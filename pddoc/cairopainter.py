@@ -250,7 +250,12 @@ class CairoPainter(PdPainter):
 
         x = obj.x
         y = obj.y
-        w, h = self.box_size(txt)
+
+        if obj.fixed_width is not None:
+            lines = textwrap.wrap(txt.ljust(obj.fixed_width, "."), obj.fixed_width)
+            w, h = self.box_size("\n".join(lines))
+        else:
+            w, h = self.box_size(txt)
 
         obj.set_width(w)
         obj.set_height(h)

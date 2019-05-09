@@ -42,6 +42,7 @@ class PdObject(BaseObject):
     # fixed brect
     _fixed_size = False
 
+
     def __init__(self, name, x=0, y=0, w=0, h=0, args=None):
         BaseObject.__init__(self, x, y, w, h)
         if args is None:
@@ -57,6 +58,7 @@ class PdObject(BaseObject):
         self._inlets = []
         self._outlets = []
         self._xlets_method = self.XMETHOD_CALCULATE
+        self._fixed_width = None
         self._gop = False
 
         if self.name in PdObject._patch_cache:
@@ -70,14 +72,21 @@ class PdObject(BaseObject):
         else:
             # objname.pd patch found
             if self.xlet_patch_finder.has_object(self.name):
-                import parser as pd
+                from .parser import Parser
 
                 obj = self.xlet_patch_finder.get_object(self.name)
-                parser = pd.Parser()
+                parser = Parser()
                 if not parser.parse(obj.path):
                     logging.error("can't parse patch: \"{0:s}\"".format(obj.path))
                     self._gop = False
                     PdObject._patch_cache[self.name] = None
+                    return
+
+                # now they are calculated
+                # do not call XletCalculator
+                self._xlets_method = self.XMETHOD_EXPLICIT
+                self._inlets = self.xlet_patch_finder.inlets(self.name)
+                self._outlets = self.xlet_patch_finder.outlets(self.name)
 
                 # success
                 if parser.canvas.is_graph_on_parent():
@@ -100,6 +109,14 @@ class PdObject(BaseObject):
         assert isinstance(n, six.string_types)
         assert len(n) > 0
         self._name = n
+
+    @property
+    def fixed_width(self):
+        return self._fixed_width
+
+    @fixed_width.setter
+    def fixed_width(self, n):
+        self._fixed_width = n
 
     @property
     def args(self):
@@ -169,6 +186,10 @@ class PdObject(BaseObject):
         else:
             return []
 
+    def set_inlets(self, inlets):
+        self._xlets_method = self.XMETHOD_EXPLICIT
+        self._inlets = inlets
+
     def outlets(self):
         if self._xlets_method == self.XMETHOD_EXPLICIT:
             return self._outlets
@@ -176,6 +197,10 @@ class PdObject(BaseObject):
             return PdObject.xlet_calculator.outlets(self)
         else:
             return []
+
+    def set_outlets(self, outlets):
+        self._xlets_method = self.XMETHOD_EXPLICIT
+        self._outlets = outlets
 
     def traverse(self, visitor):
         assert isinstance(visitor, AbstractVisitor)

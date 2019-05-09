@@ -258,15 +258,66 @@ description
 ```
 
 - [*value*( - message box
-- [*value*] - object box
-- [T] - toggle
-- [B] - bang
+- [*value* *key*=*value* *{key=param}*] - object box with optional key-value support
+- [T], [_] - toggle
+- [B], [O] - bang
+- [F] - number box
+- [A] - array
+- [HR] - horizontal radio
+- [VR] - vertical radio
+- [HS] - horizontal slider
+- [VS] - vertical slider
+- [S digits=10] - symbol entry with width 10 chars
 - [obj1] X [obj2] - cross connection
 - [obj1 #a] - object with id:a
 - [X a->b] - connect object #a to object with id:b
 - [X a:1->b:0] - connect second outlet of object #a to first inlet of object #b
 
+#### connections
+- | - simple connection
+```
+[mtof]
+|
+|
+[F]
+```
+![example01](pddoc/doc/img/example04.png)
 
+- ^|. - specified connection. Number of **"^"** specifies outlet index.
+Number of **"."** specifies inlet index
+```
+[unpack f f f] /*connect second outlet to third inlet*/
+^|
+ |
+ |..
+[pack f f f]
+```
+![example01](pddoc/doc/img/example03.png)
 
-    
+- \*| - all to one connection. Note: no simple cord continuation.
+```
+[unpack f f f] 
+*|
+*|
+[flow.count]
+```
+![example01](pddoc/doc/img/example01.png)
+
+- |\* - one to all connection. Note: no simple cord continuation.
+```
+[F]
+|*
+|*
+[pack f f f]
+```   
+![example01](pddoc/doc/img/example02.png)
+
+- \*|\* - parallel connection. Note: no simple cord continuation.
+```
+[unpack f f f f f f f f f f f] 
+*|*
+*|*
+[pack f f f f f f f f]
+```   
+![example01](pddoc/doc/img/example05.png)
 

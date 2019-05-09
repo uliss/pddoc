@@ -55,6 +55,9 @@ def main():
     in_file = args['name']
     output = args['output']
 
+    # add input pddoc file dir to search path for abstractions
+    PdObject.xlet_patch_finder.add_search_dir(os.path.dirname(in_file))
+
     if not output:
         output = os.path.splitext(os.path.basename(in_file))[0] + "-help.pd"
 

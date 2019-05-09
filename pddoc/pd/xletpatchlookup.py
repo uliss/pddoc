@@ -73,6 +73,9 @@ class XletPatchLookup(XletDatabase):
         self._dirs.append(os.getcwd())
         self._cache = {}
 
+    def add_search_dir(self, path):
+        self._dirs.append(path)
+
     def clean_name(self, name):
         return re.sub("/[\W]+/", '', name) + ".pd"
 

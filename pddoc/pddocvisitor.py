@@ -134,7 +134,8 @@ class PdDocVisitor(DocObjectVisitor):
             'right-click': 'Right-click',
             'middle-click': 'Middle-click',
             'double-click': 'Double-click',
-            'drag': 'Mouse-drag'
+            'drag': 'Mouse-drag',
+            'wheel': 'Mouse-wheel'
         }
 
         ct = e.type()

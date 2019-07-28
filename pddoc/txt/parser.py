@@ -74,6 +74,12 @@ class Node(object):
 
         return self.tok.type in ('OBJECT', 'MESSAGE', 'COMMENT')
 
+    def is_object_id(self):
+        if self.tok is None:
+            return False
+
+        return self.tok.type == 'OBJECT_ID'
+
     def is_connection(self):
         return self.tok.type in ('CONNECTION', 'CONNECTION_LEFT', 'CONNECTION_RIGHT', 'CONNECTION_X', 'CONNECTION_MANUAL')
 
@@ -236,11 +242,22 @@ class Parser(object):
         return False
 
     def parse_nodes(self):
+        obj_args = dict()
+
+        for n in filter(lambda x: x.is_object_id(), self.nodes):
+            m = re.match(r_OBJECT_ID, n.value)
+            # skip spaces
+            atoms = list(filter(lambda b: len(b) > 0, m.group(1).split(' ')))
+            obj_args[atoms[0]] = atoms[1:]
+            logging.error(atoms[1:])
+
         for n in filter(lambda x: x.is_object(), self.nodes):
             if n.type == 'OBJECT':
                 m = re.match(r_OBJECT, n.value)
-                # filter spaces and #ID values
-                atoms = list(filter(lambda a: len(a) > 0 and (not a.startswith('#')), m.group(1).split(' ')))
+                # skip spaces
+                all_atoms = list(filter(lambda b: len(b) > 0, m.group(1).split(' ')))
+                # skip #ID values
+                atoms = list(filter(lambda b: not b.startswith('#'), all_atoms))
                 assert len(atoms) > 0
                 name, args = self.find_alias(atoms)
                 kwargs = dict()
@@ -259,10 +276,13 @@ class Parser(object):
                     str = atoms[1]
                     conn = []
 
+                    # syntax: SRC_ID(:OUTLET_N)->DEST_ID(:INLET_N)
                     for i in map(lambda x: x.split(':'), str.split('->')):
+                        # if xlet is not specified using first xlet
                         if len(i) == 1:
                             i.append(0)
 
+                        # i now is [OBJ_ID, XLET_IDX]
                         assert len(i) == 2
 
                         obj_id = self.find_node_id_by_hash(i[0])
@@ -272,6 +292,9 @@ class Parser(object):
 
                         i[0] = obj_id
                         conn.append(i)
+
+                    # conn at this moment: [[SRC, OUT_IDX], [DEST, IN_IDX]]
+                    assert len(conn) == 2
 
                     n.conn_src_id = conn[0][0]
                     n.conn_src_outlet = int(conn[0][1])
@@ -291,9 +314,16 @@ class Parser(object):
                     # check options
                     opts = {}
                     for arg in args[:]:
+                        # no spaces allowed: {x=1,y=1,etc=...}
                         if arg[0] == '{' and arg[-1] == '}':
                             opts.update(parse_object_options(arg))
                             args.remove(arg)
+
+                    # check for id
+                    all_id = list(filter(lambda b: b.startswith("#"), all_atoms))
+                    if len(all_id) > 0 and all_id[0][1:] in obj_args:
+                        logging.error(obj_args[all_id[0][1:]])
+                        args += obj_args[all_id[0][1:]]
 
                     n.pd_object = factory.make_by_name(name, args, **kwargs)
                     process_object_options(n.pd_object, opts)

@@ -31,13 +31,15 @@ tokens = (
     'CONNECTION',
     'CONNECTION_RIGHT',
     'CONNECTION_LEFT',
-    'CONNECTION_X'
+    'CONNECTION_X',
+    'OBJECT_ID'
 )
 
 # token regexp
 r_OBJECT = r'\[((?:[^\[\\]|\\.)+)\]'
 r_MESSAGE = r'\[((?:[^\(\\]|\\.)+)\('
 r_COMMENT = r'/\*(.+?)\*/'
+r_OBJECT_ID = r'#(.+)'
 r_NEWLINE = r'\n+'
 t_CONNECTION = r'[*^]*\|[.*]*'          # ^^|.. connection
 t_CONNECTION_RIGHT = r'\^*\\_*\.*'  # ^^\______..
@@ -70,6 +72,9 @@ def t_MESSAGE(t):
 def t_COMMENT(t):
     return t
 
+@TOKEN(r_OBJECT_ID)
+def t_OBJECT_ID(t):
+    return t
 
 def lexer():
     return lex.lex(reflags=re.UNICODE)

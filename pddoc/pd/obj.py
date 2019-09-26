@@ -150,7 +150,10 @@ class PdObject(BaseObject):
 
         esc_args = []
         for arg in self.args:
-            esc_args.append(PdObject.unescape(arg))
+            if isinstance(arg, str):
+                esc_args.append(PdObject.unescape(arg))
+            else:
+                esc_args.append(str(arg))
 
         for arg in esc_args:
             if arg == ",":

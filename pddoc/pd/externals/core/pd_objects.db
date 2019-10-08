@@ -3,6 +3,7 @@ atan            .       .
 atan2           .       .
 abs             .       .
 abs~            ~       ~
+array           .       .
 arraysize       ..      .
 append          .       .
 array_set       ...     .
@@ -73,7 +74,7 @@ makenote        ...     ..
 max             ..      .
 metro           ..      .
 midiin          -       ..
-midiout        ..      -
+midiout         ..      -
 min             ..      .
 mod             ..      .
 moses           ..      ..
@@ -136,6 +137,7 @@ switch~         .       -
 symbol          ..      .
 sysexin         -       ..
 system          .       -
+table           -       -
 tabosc4~        ~.      ~
 tabplay~        .       ~.
 tabread         .       .

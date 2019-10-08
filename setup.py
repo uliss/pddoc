@@ -34,6 +34,7 @@ setup(name='pddoc',
       entry_points={
           'console_scripts': ['pd_pd2img   = pddoc.bin.pd_pd2img:main',
                               'pd_obj2img  = pddoc.bin.pd_obj2img:main',
+                              'pd_objcheck  = pddoc.bin.pd_objcheck:main',
                               'pd_doc2html = pddoc.bin.pd_doc2html:main',
                               'pd_doc2pd   = pddoc.bin.pd_doc2pd:main',
                               'pd_doc2ls   = pddoc.bin.pd_docls:main',

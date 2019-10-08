@@ -50,6 +50,10 @@ class XletCalculator(object):
 
         self._dbs.append(XletPatchLookup())
 
+    @property
+    def databases(self):
+        return self._dbs
+
     def add_db(self, path, name='user'):
         self._dbs.append(XletTextDatabase(path, name))
 

@@ -18,6 +18,7 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from __future__ import print_function
+import logging
 import re
 
 from .graph_lexer import *
@@ -402,7 +403,7 @@ class Parser(object):
         # find object on previous line
         src = self.find_connection(c.line_pos - 1, conn_start)
         if src is None:
-            print("connection source is not found for: {0:s}".format(str(c)))
+            logging.warning("connection source is not found for: {0:s}".format(str(c)))
             return
 
         c.conn_src_id = src.id
@@ -415,7 +416,7 @@ class Parser(object):
         # find on next line
         dest = self.find_connection(c.line_pos + 1, [c.char_pos, c.char_pos + c.width])
         if dest is None:
-            print("connection destination is not found for: {0:s}".format(c.tok.value))
+            logging.warning("connection destination is not found for: {0:s}".format(c.tok.value))
             return
 
         c.conn_dest_id = dest.id

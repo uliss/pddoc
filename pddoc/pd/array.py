@@ -86,7 +86,7 @@ class Array(PdObject):
             painter.draw_line(x0, y, x1, y, width=3, color=(0, 0, 0))
 
     def to_string(self):
-        res = PdObject.unescape(self.name) + ' ' + self.args_to_string()
+        res = 'array ' + PdObject.unescape(self.name) + ' ' + self.args_to_string()
         return res.strip()
 
     def inlets(self):

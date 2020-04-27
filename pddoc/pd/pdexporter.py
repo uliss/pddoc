@@ -104,7 +104,7 @@ class PdExporter(AbstractVisitor):
                 format(obj._cnv_x, obj._cnv_y, obj._cnv_w, obj._cnv_h, "(subpatch)", 0)
             self.result.append(line)
 
-            line = "#X array {0:s} {1:d} float {2:d};".format(obj.name, obj.size(), obj.save_flag())
+            line = "#X array {0:s} {1:d} float {2:d};".format(obj.name, obj.size(), obj.flags())
             self.result.append(line)
 
             line = "#A 0 " + " ".join(map(lambda x: "{0:g}".format(x), obj.data())) + ";"

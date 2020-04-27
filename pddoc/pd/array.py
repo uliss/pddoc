@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 from .obj import PdObject
+import logging
 
 #   Copyright (C) 2015 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -23,6 +24,8 @@ __author__ = 'Serge Poltavski'
 
 
 class Array(PdObject):
+    STYLE_POINTS, STYLE_LINES, STYLE_CURVE = (1, 0, 2)
+
     def __init__(self, name, size, save=0, cnv_x=0, cnv_y=22, cnv_w=450, cnv_h=300):
         PdObject.__init__(self, name)
         self.width = 200
@@ -37,7 +40,11 @@ class Array(PdObject):
         self._cnv_y = cnv_y
         self._cnv_w = cnv_w
         self._cnv_h = cnv_h
+        self._style = self.STYLE_LINES
         self.calc_brect()
+
+    def flags(self):
+        return self._save | (1 << self._style)
 
     def save_flag(self):
         return self._save
@@ -63,6 +70,12 @@ class Array(PdObject):
 
     def set_yrange(self, min_y, max_y):
         self._yrange = (min_y, max_y)
+
+    def set_style(self, style):
+        if style not in (0, 1, 2):
+            logging.error('invalid style value: %d', style)
+        else:
+            self._style = style
 
     @staticmethod
     def from_atoms(atoms):

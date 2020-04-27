@@ -303,6 +303,16 @@ class Parser(object):
                     n.conn_dest_inlet = int(conn[1][1])
 
                 elif name == 'array':
+                    # check for id
+                    array_ids = list(filter(lambda b: b.startswith("#"), all_atoms))
+                    if len(array_ids) > 0:
+                        # trim '#'
+                        aid = array_ids[0][1:]
+                        if aid in obj_args:
+                            for kv in obj_args[aid]:
+                                k, v = kv.split('=')
+                                kwargs[k] = v
+
                     if args[0] in ("set", "get", "define", "sum", "size", "random", "min", "max"):
                         n.pd_object = factory.make_by_name(name + " " + args[0], args[1:], **kwargs)
                     else:
@@ -311,6 +321,13 @@ class Parser(object):
                         n.pd_object.height = kwargs.get('h', 140)
                         yr = list(map(lambda x: float(x), kwargs.get('yr', "-1..1").split('..')))
                         n.pd_object.set_yrange(yr[0], yr[1])
+                        if 'style' in kwargs:
+                            values = ('line', 'point', 'curve')
+                            st = kwargs['style']
+                            if st in values:
+                                n.pd_object.set_style(values.index(st))
+                            else:
+                                logging.error("invalid style: '%s', supported values are: '%s'", st, ", ".join(values))
                 else:
                     # check options
                     opts = {}

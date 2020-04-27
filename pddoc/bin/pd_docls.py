@@ -27,6 +27,9 @@ __author__ = 'Serge Poltavski'
 
 def main():
     arg_parser = argparse.ArgumentParser(description='list PureData objects in pddoc')
+    arg_parser.add_argument('--properties', '-p', action='store_true', help='list properties')
+    arg_parser.add_argument('--objects', '-o', action='store_true', help='list objects')
+    arg_parser.add_argument('--methods', '-m', action='store_true', help='list methods')
     arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC(XML) format")
 
     args = vars(arg_parser.parse_args())

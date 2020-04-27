@@ -79,7 +79,7 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
 
         obj = PdObject('ui.slider', args=["@size", "120", "12", "@active_scale", "1"])
         obj.append_arg("@presetname")
-        obj.append_arg("/gui/{0}/slider{1}".format(main_obj.name, counter))
+        obj.append_arg("/gui/$1/{0}/slider{1}".format(main_obj.name, counter))
         obj.set_x(x + 2)
         obj.set_y(y)
 
@@ -129,7 +129,7 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
 
         nbx = PdObject('ui.number', args=["@size", "60", "12"])
         nbx.append_arg("@presetname")
-        nbx.append_arg("/gui/{0}/numbox{1}".format(main_obj.name, counter))
+        nbx.append_arg("/gui/$1/{0}/numbox{1}".format(main_obj.name, counter))
         nbx.set_x(x + 2)
         nbx.set_y(y)
 
@@ -161,7 +161,7 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
         tgl.set_y(y + 8)
         if el["label"] != "gate":
             tgl.append_arg("@presetname")
-            tgl.append_arg("/gui/{0}/checkbox{1}".format(main_obj.name, counter))
+            tgl.append_arg("/gui/$1/{0}/checkbox{1}".format(main_obj.name, counter))
 
         cnv.append_object(tgl)
 

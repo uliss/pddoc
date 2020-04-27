@@ -750,7 +750,18 @@ class DocEvent(DocItem):
     def from_xml(self, xmlobj):
         self._editmode = xmlobj.attrib.get("editmode", "false")
         self._type = xmlobj.attrib.get("type", "")
-        self._keys = xmlobj.attrib.get("keys", "")
+        self._keys = ""
+
+        kmap = {"alt": "\u2325", "shift": "\u21E7", "cmd": "\u2318"}
+        keys = []
+
+        for k in xmlobj.attrib.get("keys", "").split("+"):
+            k.strip()
+            k = k.lower()
+            if k in kmap:
+                keys.append(kmap[k])
+
+        self._keys = "+".join(keys)
         DocItem.from_xml(self, xmlobj)
 
     def edit_mode(self):

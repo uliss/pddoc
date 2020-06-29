@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-from setuptools import setup
+from distutils.core import setup
+import setuptools
 
 
 def readme():

@@ -250,7 +250,7 @@ class Parser(object):
             # skip spaces
             atoms = list(filter(lambda b: len(b) > 0, m.group(1).split(' ')))
             obj_args[atoms[0]] = atoms[1:]
-            logging.error(atoms[1:])
+            # logging.error(atoms[1:])
 
         for n in filter(lambda x: x.is_object(), self.nodes):
             if n.type == 'OBJECT':
@@ -337,10 +337,9 @@ class Parser(object):
                             opts.update(parse_object_options(arg))
                             args.remove(arg)
 
-                    # check for id
+                    # adding id arguments defined with '#id arg1 arg2...'
                     all_id = list(filter(lambda b: b.startswith("#"), all_atoms))
                     if len(all_id) > 0 and all_id[0][1:] in obj_args:
-                        logging.error(obj_args[all_id[0][1:]])
                         args += obj_args[all_id[0][1:]]
 
                     n.pd_object = factory.make_by_name(name, args, **kwargs)
@@ -349,7 +348,15 @@ class Parser(object):
             elif n.type == 'MESSAGE':
                 m = re.match(r_MESSAGE, n.value)
                 txt = m.group(1).replace(',', '\,')
-                args = list(filter(lambda a: len(a) > 0 and (not a.startswith('#')), txt.split(' ')))
+                all_atoms = txt.split(' ')
+                args = list(filter(lambda a: len(a) > 0 and (not a.startswith('#')), all_atoms))
+
+                # adding id arguments defined with '#id arg1 arg2...'
+                all_id = list(filter(lambda b: b.startswith("#"), all_atoms))
+                if len(all_id) > 0 and all_id[0][1:] in obj_args:
+                    # logging.error(obj_args[all_id[0][1:]])
+                    args += obj_args[all_id[0][1:]]
+
                 n.pd_object = Message(0, 0, args)
             elif n.type == 'COMMENT':
                 m = re.match(r_COMMENT, n.value)

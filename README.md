@@ -361,4 +361,11 @@ Number of **"."** specifies inlet index
 ```
 ![example01](pddoc/doc/img/example08.png)
 
+##### object aliases
+
+```
+[unknown object #a]
+#a arg0 arg1 arg2 etc...
+```
+![example01](pddoc/doc/img/example09.png)
 

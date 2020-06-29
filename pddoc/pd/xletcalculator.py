@@ -45,6 +45,7 @@ class XletCalculator(object):
                 self._dbs.append(txt_db)
 
             for calc_db in [f for f in paths[2] if f == "xletsdb.py"]:
+                extname = os.path.basename(paths[0])
                 calc_db = XletCalcDatabase(os.path.join(paths[0], calc_db), extname)
                 self._dbs.append(calc_db)
 
@@ -57,8 +58,9 @@ class XletCalculator(object):
     def add_db(self, path, name='user'):
         self._dbs.append(XletTextDatabase(path, name))
 
-    def has_ext_prefix(self, obj):
-        return "/" in obj.name and obj.name not in ("/", "/~")
+    @staticmethod
+    def has_ext_prefix(obj):
+        return "/" in obj.name and obj.name not in ("/", "/~", "1/x", "1/x~")
 
     def inlets(self, obj):
         from .obj import PdObject

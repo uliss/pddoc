@@ -5,6 +5,8 @@ import argparse
 import os
 import logging
 from pddoc.libraryparser import LibraryParser
+
+
 #   Copyright (C) 2016 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
@@ -36,6 +38,7 @@ def main():
     # lp.process_categories()
     with open(lp.lib_name() + "-help.pd", "w") as f:
         f.write(str(lp))
+
 
 if __name__ == '__main__':
     main()

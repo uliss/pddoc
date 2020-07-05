@@ -139,16 +139,32 @@ class LibraryParser(object):
         return h
 
     def add_footer(self):
-        f = self._pp.make_footer(self._current_y)
+        f = self._pp.make_footer(self._current_y, height=80)
         self._pp.append_object(f)
 
         info = self._pp.make_txt("version: v{0}, license: {1}".format(
             self._lib_version, self._lib_license), 20, f.top)
         self._pp.append_object(info)
+        self._current_y += info.height + 10
 
         if self._lib_website:
-            lnk = self._pp.make_link(20, f.top + info.height + 3, self._lib_website, self._lib_website)
+            lnk = self._pp.make_link(20, self._current_y, self._lib_website, self._lib_website)
             self._pp.append_object(lnk)
+            self._current_y += lnk.height + 10
+
+        pddoc_lnk = self._pp.make_link(20, self._current_y,
+                                           "http://github.com/uliss/pddoc",
+                                           "Generated with pddoc")
+        self._pp.append_object(pddoc_lnk)
+
+        rpos = f.width - 70
+        msg = PdObject("msg", args=["0"], x=rpos, y=f.top + 15)
+        sw = PdObject("switch~", x=rpos, y=f.top + 50)
+        self._pp.append_object(msg)
+        self._pp.append_object(sw)
+        self._pp.canvas.add_connection(msg.id, 0, sw.id, 0, False)
+
+
         return f
 
     def add_category_section(self, y, txt):

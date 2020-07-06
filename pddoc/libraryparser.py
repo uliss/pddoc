@@ -153,8 +153,8 @@ class LibraryParser(object):
             self._current_y += lnk.height + 10
 
         pddoc_lnk = self._pp.make_link(20, self._current_y,
-                                           "http://github.com/uliss/pddoc",
-                                           "Generated with pddoc")
+                                       "http://github.com/uliss/pddoc",
+                                       "Generated with pddoc")
         self._pp.append_object(pddoc_lnk)
 
         rpos = f.width - 70
@@ -163,7 +163,6 @@ class LibraryParser(object):
         self._pp.append_object(msg)
         self._pp.append_object(sw)
         self._pp.canvas.add_connection(msg.id, 0, sw.id, 0, False)
-
 
         return f
 

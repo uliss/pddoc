@@ -20,12 +20,14 @@ import argparse
 import logging
 import os
 import json
+import math
 
 from pddoc.pd import Canvas, PdExporter, PdObject, Comment, Message
 from pddoc.pd.gcanvas import GCanvas
 from pddoc.pd.coregui import Color
 
 GRID = 25
+
 
 def obj_props(json):
     lst = []
@@ -49,6 +51,7 @@ def obj_props(json):
 
     return lst
 
+
 def obj_prop_defs(json, d):
     def props(el):
         if el['type'] in ('vslider', 'hslider', 'nentry', 'checkbox', 'button'):
@@ -63,6 +66,7 @@ def obj_prop_defs(json, d):
             for ui in v:
                 props(ui)
 
+
 def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
     MSG_XOFF = 250
 
@@ -71,22 +75,21 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
         if 'meta' in el:
             for m in el['meta']:
                 if 'unit' in m:
-                     lbl_txt = "{0}({1}):".format(el['label'], m['unit'])
+                    lbl_txt = "{0}({1}):".format(el['label'], m['unit'])
 
-        lbl = Comment(x, y, args=[lbl_txt])
-        cnv.append_object(lbl)
-        y += 19
-
-        obj = PdObject('ui.slider', args=["@size", "120", "12", "@active_scale", "1"])
+        y += 20
+        obj = PdObject('ui.slider', args=["@size", "125", "12", "@active_scale", "1",
+                                          "@label", lbl_txt, "@label_side", "top",
+                                          "@label_align", "left", "@fontsize", "10"])
         obj.append_arg("@presetname")
-        obj.append_arg("/gui/$1/{0}/slider{1}".format(main_obj.name, counter))
+        obj.append_arg("/gui/\\$1/{0}/slider{1}".format(main_obj.name, counter))
         obj.set_x(x + 2)
         obj.set_y(y)
 
         cnv.append_object(obj)
 
-        nbx = PdObject('ui.number', args=["@size", "40", "12", "@digits", "3"])
-        nbx.set_x(x + 130)
+        nbx = PdObject('ui.number', args=["@size", "50", "12"])
+        nbx.set_x(x + 135)
         nbx.set_y(y)
         cnv.append_object(nbx)
         cnv.add_connection(obj.id, 0, nbx.id, 0, check_xlets=False)
@@ -103,8 +106,14 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
             nbx.append_arg("@max")
             nbx.append_arg(str(el['max']))
 
+        if 'min' in el and 'max' in el:
+            range = abs(el['max'] - el['min'])
+            ndig = int(math.ceil(math.log10(range))) - 4
+            nbx.append_arg("@digits")
+            nbx.append_arg(str(abs(ndig)))
+
         set_msg = PdObject('msg', args=['set'])
-        set_msg.set_x(x + 180)
+        set_msg.set_x(x + 190)
         set_msg.set_y(y)
         cnv.append_object(set_msg)
         cnv.add_connection(nbx.id, 0, set_msg.id, 0, check_xlets=False)
@@ -116,7 +125,7 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
         cnv.add_connection(msg.id, 0, main_obj.id, 0, check_xlets=False)
         cnv.add_connection(prop_route.id, counter, obj.id, 0, check_xlets=False)
 
-        y += 14
+        y += 12
         counter += 1
     elif el['type'] in ('nentry'):
         lbl_txt = "{0}:".format(el['label'])
@@ -125,11 +134,11 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
 
         lbl = Comment(x, y, args=[lbl_txt])
         cnv.append_object(lbl)
-        y += 19
+        y += 14
 
         nbx = PdObject('ui.number', args=["@size", "60", "12"])
         nbx.append_arg("@presetname")
-        nbx.append_arg("/gui/$1/{0}/numbox{1}".format(main_obj.name, counter))
+        nbx.append_arg("/gui/\\$1/{0}/numbox{1}".format(main_obj.name, counter))
         nbx.set_x(x + 2)
         nbx.set_y(y)
 
@@ -156,17 +165,16 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
         y += 14
         counter += 1
     elif el['type'] in ('checkbox', 'button'):
-        tgl = PdObject('ui.toggle', args=["@size", "12", "12"])
+        tgl = PdObject('ui.toggle', args=["@size", "12", "12",
+                                          "@label", el['label'], "@label_side", "right",
+                                          "@label_align", "left", "@fontsize", "10"])
         tgl.set_x(x + 2)
         tgl.set_y(y + 8)
         if el["label"] != "gate":
             tgl.append_arg("@presetname")
-            tgl.append_arg("/gui/$1/{0}/checkbox{1}".format(main_obj.name, counter))
+            tgl.append_arg("/gui/\\$1/{0}/checkbox{1}".format(main_obj.name, counter))
 
         cnv.append_object(tgl)
-
-        lbl = Comment(x + 16, y + 3, args=[el['label']])
-        cnv.append_object(lbl)
 
         msg = Message(x + MSG_XOFF, y, ["@" + el['label'], "$1"])
         cnv.append_object(msg)
@@ -174,7 +182,7 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
         cnv.add_connection(msg.id, 0, main_obj.id, 0, check_xlets=False)
         cnv.add_connection(prop_route.id, counter, tgl.id, 0, check_xlets=False)
 
-        y += 20
+        y += 18
         counter += 1
     elif 'items' in el:
         for i in el['items']:
@@ -193,7 +201,6 @@ def main():
     if not os.path.exists(in_file):
         logging.error("File not exists: \"%s\"", in_file)
         exit(1)
-
 
     fp = open(in_file)
 
@@ -228,7 +235,6 @@ def main():
                 if "ui" in item and item["ui"] == "disable":
                     logging.warning("Skipping UI generation for \"%s\"", in_file)
                     return
-
 
     main_obj = PdObject(name + '~')
     main_obj.set_x(GRID)
@@ -272,7 +278,7 @@ def main():
     print_err_prop.set_x(x_off + 550)
     print_err_prop.set_y(GRID * 14)
     cnv.append_object(print_err_prop)
-    cnv.add_connection(prop_route.id, len(prop_route.outlets())-1, print_err_prop.id, 0)
+    cnv.add_connection(prop_route.id, len(prop_route.outlets()) - 1, print_err_prop.id, 0)
 
     # default values
     default_msg = Message(x_off + 200, GRID * 3, atoms=[])
@@ -325,8 +331,7 @@ def main():
             for ui in v:
                 y_off, _ = export_ui(cnv, c, prop_route, ui, 10, y_off, main_obj)
 
-    cnv.set_graph_on_parent(True, xoff=2, yoff=200, width=200, height=y_off-200 + 8, hide_args=True)
-
+    cnv.set_graph_on_parent(True, xoff=2, yoff=200, width=200, height=y_off - 200 + 8, hide_args=True)
 
     pd_exporter = PdExporter()
     cnv.traverse(pd_exporter)

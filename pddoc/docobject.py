@@ -344,6 +344,7 @@ class DocPdascii(DocItem):
         self._y_pad = 0
         self._x_space = 0
         self._y_space = 0
+        self._id = 'main'
 
     def x_pad(self):
         return self._x_pad
@@ -357,6 +358,9 @@ class DocPdascii(DocItem):
     def y_space(self):
         return self._y_space
 
+    def id(self):
+        return self._id
+
     def from_xml(self, xmlobj):
         self.read_xml_data(xmlobj)
         try:
@@ -364,6 +368,7 @@ class DocPdascii(DocItem):
             self._y_pad = xmlobj.attrib.get('y-pad', 20)
             self._x_space = xmlobj.attrib.get('x-space', 1.2)
             self._y_space = xmlobj.attrib.get('y-space', 1.2)
+            self._id = xmlobj.attrib.get('id', 'main')
         except KeyError as e:
             logging.warning("attribute \"%s\" not found in <%s>", e.args[0], xmlobj.tag)
 

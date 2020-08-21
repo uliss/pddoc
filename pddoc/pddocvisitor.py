@@ -19,18 +19,17 @@
 
 __author__ = 'Serge Poltavski'
 
+from pddoc.docobject import DocPar, DocA, DocWiki
+from pddoc.pdpage import PdPage
+from pddoc.pdpage import PdPageStyle
 from .docobjectvisitor import DocObjectVisitor
-from .pd.coregui import Color
 from .pd.comment import Comment
+from .pd.coregui import Color
 from .pd.factory import make_by_name
 from .pd.message import Message
 from .pd.obj import PdObject
 from .pd.parser import Parser
-
-from pddoc.pdpage import PdPage
-from pddoc.docobject import DocPar, DocA, DocWiki
-from pddoc.pdpage import PdPageStyle
-import os
+import logging
 
 
 def add_text_dot(string):
@@ -92,11 +91,13 @@ class PdDocVisitor(DocObjectVisitor):
 
     def pdascii_begin(self, t):
         cnv = super(self.__class__, self).pdascii_begin(t)
-        self.copy_canvas_objects(cnv)
-        self.copy_canvas_connections(cnv)
+        # insert only first example
+        if t.id() == 'main':
+            self.copy_canvas_objects(cnv)
+            self.copy_canvas_connections(cnv)
 
-        self.current_yoff += cnv.height
-        self.current_yoff += self.PD_EXAMPLE_YOFFSET
+            self.current_yoff += cnv.height
+            # self.current_yoff += self.PD_EXAMPLE_YOFFSET
 
     def copy_canvas_connections(self, cnv):
         for conn in cnv.connections.values():

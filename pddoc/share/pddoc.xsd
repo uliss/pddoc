@@ -248,11 +248,12 @@
     </xs:complexType>
 
     <xs:complexType name="ExampleElementType">
-        <xs:all>
+        <xs:sequence maxOccurs="unbounded">
             <xs:element name="pdexample" type="PdExampleType" minOccurs="0"/>
             <xs:element name="pdinclude" type="PdIncludeType" minOccurs="0"/>
             <xs:element name="pdascii" type="PdAsciiType" minOccurs="0"/>
-        </xs:all>
+        </xs:sequence>
+        <xs:attribute name="name" use="optional" type="xs:string" default="main"/>
     </xs:complexType>
 
     <xs:simpleType name="PdAttrSize">
@@ -273,6 +274,7 @@
                 <xs:attribute name="y-pad" use="optional" type="xs:unsignedShort" default="20"/>
                 <xs:attribute name="x-space" use="optional" type="xs:float" default="1.2"/>
                 <xs:attribute name="y-space" use="optional" type="xs:float" default="1.2"/>
+                <xs:attribute name="id" use="optional" type="xs:string" default="main"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -346,8 +348,8 @@
         <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attribute name="on" use="optional" type="ControlDataType"/>
-                <xs:attribute name="minvalue" use="optional" type="xs:float"/>
-                <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
+                <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
+                <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -356,8 +358,8 @@
         <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attribute name="type" use="optional" type="XletType" default="control"/>
-                <xs:attribute name="minvalue" use="optional" type="xs:float"/>
-                <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
+                <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
+                <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
                 <xs:attribute name="number" use="optional" type="XletNumber" default=""/>
             </xs:extension>
         </xs:simpleContent>
@@ -403,8 +405,8 @@
                 <xs:attribute name="name" use="required" type="xs:string"/>
                 <xs:attribute name="type" use="required" type="ArgumentDataType"/>
                 <xs:attribute name="units" use="optional" type="UnitDataType"/>
-                <xs:attribute name="minvalue" use="optional" type="xs:float"/>
-                <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
+                <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
+                <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
                 <xs:attribute name="enum" use="optional" type="xs:string"/>
                 <xs:attribute name="required" use="optional" type="xs:boolean"/>
             </xs:extension>
@@ -441,8 +443,8 @@
         <xs:attribute name="type" type="PropertyDataType" use="required"/>
         <xs:attribute name="readonly" type="xs:boolean" default="false"/>
         <xs:attribute name="units" use="optional" type="UnitDataType"/>
-        <xs:attribute name="minvalue" use="optional" type="xs:float"/>
-        <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
+        <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
+        <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
         <xs:attribute name="default" use="optional" type="xs:string"/>
         <xs:attribute name="enum" use="optional" type="xs:string"/>
         <xs:attribute name="category" use="optional" type="CategoryType"/>

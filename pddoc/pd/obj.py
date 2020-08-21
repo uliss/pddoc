@@ -42,7 +42,6 @@ class PdObject(BaseObject):
     # fixed brect
     _fixed_size = False
 
-
     def __init__(self, name, x=0, y=0, w=0, h=0, args=None):
         BaseObject.__init__(self, x, y, w, h)
         if args is None:
@@ -127,7 +126,7 @@ class PdObject(BaseObject):
 
     @staticmethod
     def brect_calc():
-        from .brectcalculator import  BRectCalculator
+        from .brectcalculator import BRectCalculator
 
         if not PdObject._brect_calc:
             PdObject._brect_calc = BRectCalculator()

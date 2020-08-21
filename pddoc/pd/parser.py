@@ -146,6 +146,12 @@ class Parser:
         x = atoms[0]
         y = atoms[1]
 
+        if atoms[-2] == 'f':
+            ln = len(atoms[-3])
+            if atoms[-3][ln-1] == ',' and atoms[-3][ln-2] != '\\':
+                atoms = atoms[:-2]  # remove width specifiers
+                atoms[-1] = atoms[-1][:-1]  # remove last ,
+
         obj = make(atoms[2:])
         obj.x = x
         obj.y = y

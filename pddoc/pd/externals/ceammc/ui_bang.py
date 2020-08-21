@@ -20,7 +20,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from ui_base import UIBase
+from .ui_base import UIBase
 from pddoc.pd import XLET_GUI
 
 

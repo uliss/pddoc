@@ -85,14 +85,22 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
         obj.append_arg("/gui/\\$1/{0}/slider{1}".format(main_obj.name, counter))
         obj.set_x(x + 2)
         obj.set_y(y)
-
         cnv.append_object(obj)
+
+        sync = PdObject("sync")
+        sync.set_x(x + 180)
+        sync.set_y(y)
+        cnv.append_object(sync)
 
         nbx = PdObject('ui.number', args=["@size", "50", "12"])
         nbx.set_x(x + 135)
         nbx.set_y(y)
         cnv.append_object(nbx)
-        cnv.add_connection(obj.id, 0, nbx.id, 0, check_xlets=False)
+
+        cnv.add_connection(obj.id, 0, sync.id, 0, check_xlets=False)
+        cnv.add_connection(sync.id, 0, obj.id, 0, check_xlets=False)
+        cnv.add_connection(nbx.id, 0, sync.id, 1, check_xlets=False)
+        cnv.add_connection(sync.id, 1, nbx.id, 0, check_xlets=False)
 
         if 'min' in el:
             obj.append_arg("@min")
@@ -112,13 +120,6 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
             nbx.append_arg("@digits")
             nbx.append_arg(str(abs(ndig)))
 
-        set_msg = PdObject('msg', args=['set'])
-        set_msg.set_x(x + 190)
-        set_msg.set_y(y)
-        cnv.append_object(set_msg)
-        cnv.add_connection(nbx.id, 0, set_msg.id, 0, check_xlets=False)
-        cnv.add_connection(set_msg.id, 0, obj.id, 0, check_xlets=False)
-
         msg = Message(x + MSG_XOFF, y, ["@" + el['label'], "$1"])
         cnv.append_object(msg)
         cnv.add_connection(obj.id, 0, msg.id, 0, check_xlets=False)
@@ -132,11 +133,10 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
         if 'meta' in el and 'unit' in el['meta']:
             lbl_txt = "{0}({1}):".format(el['label'], el['meta']['unit'])
 
-        lbl = Comment(x, y, args=[lbl_txt])
-        cnv.append_object(lbl)
-        y += 14
-
-        nbx = PdObject('ui.number', args=["@size", "60", "12"])
+        y += 18
+        nbx = PdObject('ui.number', args=["@size", "60", "12",
+                                          "@label", lbl_txt, "@label_side", "top",
+                                          "@label_align", "left", "@fontsize", "10"])
         nbx.append_arg("@presetname")
         nbx.append_arg("/gui/\\$1/{0}/numbox{1}".format(main_obj.name, counter))
         nbx.set_x(x + 2)
@@ -162,7 +162,7 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
         cnv.add_connection(msg.id, 0, main_obj.id, 0, check_xlets=False)
         cnv.add_connection(prop_route.id, counter, nbx.id, 0, check_xlets=False)
 
-        y += 14
+        y += 12
         counter += 1
     elif el['type'] in ('checkbox', 'button'):
         tgl = PdObject('ui.toggle', args=["@size", "12", "12",

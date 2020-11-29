@@ -1,13 +1,13 @@
-[<<< reference home](ceammc_lib.md)
+[< reference home](ceammc_lib.md)
 ---
 
 # ${title | h}
+## ${description|h}
 
 ```
 ${pd_ascii}
 ```
----
-${description|h}
+
 ---
 arguments:
 

@@ -53,6 +53,7 @@ class MarkdownVisitor(DocObjectVisitor):
             license=self._license,
             version=self._version,
             examples=self._examples,
+            info=self._info,
             inlets=self._inlets,
             outlets=self._outlets,
             arguments=self._arguments,

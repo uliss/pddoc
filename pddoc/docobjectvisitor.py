@@ -31,6 +31,8 @@ from .pd.canvas import Canvas
 from .pd.pdexporter import PdExporter
 from .pd.obj import PdObject
 
+from pddoc.docobject import DocPar
+
 
 class DocObjectVisitor(IDocObjectVisitor):
     def __init__(self):
@@ -47,6 +49,7 @@ class DocObjectVisitor(IDocObjectVisitor):
         self._examples = []
         self._authors = []
         self._contacts = ""
+        self._info = ""
         self._inlets = {}
         self._outlets = {}
         self._arguments = []
@@ -116,7 +119,14 @@ class DocObjectVisitor(IDocObjectVisitor):
 
     def contacts_begin(self, cnt):
         self._contacts = cnt.text()
-
+    
+    ###
+    def info_begin(self, info):
+        for p in info.items():
+            if isinstance(p, DocPar):
+                self._info += p.text()
+    
+    ###
     def pdexample_begin(self, tag):
         self._layout.canvas = pd.Canvas(0, 0, 10, 10, name="10")
         self._layout.canvas.type = pd.Canvas.TYPE_WINDOW

@@ -77,6 +77,7 @@ class LibraryMaker(object):
     def process_object_file(self, f):
         try:
             xml = etree.parse(f, get_parser())
+            xml.xinclude()
         except etree.XMLSyntaxError as e:
             logging.error("XML syntax error:\n \"%s\"\n\twhile parsing file: \"%s\"", e, f)
             return

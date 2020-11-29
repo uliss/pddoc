@@ -3,14 +3,18 @@ atan            .       .
 atan2           .       .
 abs             .       .
 abs~            ~       ~
+array           .       .
 arraysize       ..      .
 append          .       .
+array_set       ...     .
+array_get       ...     .
 bag             ..      .
 bang,b          .       .
 bang~           .       .
 bendout         ..      -
 biquad~         ~       ~
 block~          .       -
+bob~            ~~~     ~
 bp~             ~..     ~
 catch~          -       ~
 change          .       .
@@ -70,7 +74,7 @@ makenote        ...     ..
 max             ..      .
 metro           ..      .
 midiin          -       ..
-midiout        ..      -
+midiout         ..      -
 min             ..      .
 mod             ..      .
 moses           ..      ..
@@ -133,6 +137,7 @@ switch~         .       -
 symbol          ..      .
 sysexin         -       ..
 system          .       -
+table           -       -
 tabosc4~        ~.      ~
 tabplay~        .       ~.
 tabread         .       .

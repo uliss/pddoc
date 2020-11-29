@@ -23,6 +23,7 @@ import logging
 
 
 def get_parser():
+    etree.register_namespace("xi", "http://www.w3.org/2001/XInclude")
     schema_root = etree.parse(os.path.join(os.path.dirname(__file__), 'share', 'pddoc.xsd')).getroot()
     schema = etree.XMLSchema(schema_root)
     return etree.XMLParser(schema=schema)
@@ -34,6 +35,8 @@ def parse_xml(path):
         return None
 
     try:
+        NSMAP = {'xi': "http://www.w3.org/2001/XInclude"}
+        etree.register_namespace("xi", "http://www.w3.org/2001/XInclude")
         xml = etree.parse(path, get_parser())
         xml.xinclude()
     except etree.XMLSyntaxError as e:
@@ -49,8 +52,8 @@ def parse_xml(path):
 
 def fix_section_order(obj_tag):
     sorted_children = sorted(obj_tag, key=lambda n: ('title',
-                                                     'meta', 'info',
-                                                     'example', 'arguments', 'properties', 'methods',
+                                                     'meta', 'info', 'example',
+                                                     'mouse', 'arguments', 'properties', 'methods',
                                                      'inlets', 'outlets').index(n.tag))
     for child in obj_tag:
         obj_tag.remove(child)

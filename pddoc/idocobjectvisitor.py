@@ -304,3 +304,21 @@ class IDocObjectVisitor(object):
 
     def property_end(self, p):
         pass
+
+    def mouse_begin(self, m):
+        pass
+
+    def mouse_end(self, m):
+        pass
+
+    def event_begin(self, e):
+        pass
+
+    def event_end(self, e):
+        pass
+
+    def wiki_begin(self, a):
+        pass
+
+    def wiki_end(self, a):
+        pass

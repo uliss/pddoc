@@ -9,4 +9,14 @@
 
 [f 0] X [+ 1]
 
-[A array1 size=111]
+                                   [A array1 size=111]
+
+[F]
+|
+|
+|*
+[pack f f f]
+
+[unpack f f f]
+*|*
+[pack f f f {w=25,i=~3,o=~1}]

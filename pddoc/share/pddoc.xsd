@@ -16,6 +16,18 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="CategoryType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="basic"/>
+            <xs:enumeration value="main"/>
+            <xs:enumeration value="preset"/>
+            <xs:enumeration value="color"/>
+            <xs:enumeration value="font"/>
+            <xs:enumeration value="label"/>
+            <xs:enumeration value="midi"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="ControlDataType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="bang"/>
@@ -60,6 +72,17 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="MouseEventClickType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="left-click"/>
+            <xs:enumeration value="right-click"/>
+            <xs:enumeration value="middle-click"/>
+            <xs:enumeration value="double-click"/>
+            <xs:enumeration value="drag"/>
+            <xs:enumeration value="wheel"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="UnitDataType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="herz"/>
@@ -69,6 +92,13 @@
             <xs:enumeration value="bpm"/>
             <xs:enumeration value="second"/>
             <xs:enumeration value="percent"/>
+            <xs:enumeration value="sample"/>
+            <xs:enumeration value="sec"/>
+            <xs:enumeration value="msec"/>
+            <xs:enumeration value="semitone"/>
+            <xs:enumeration value="cent"/>
+            <xs:enumeration value="radian"/>
+            <xs:enumeration value="degree"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -100,6 +130,12 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="FloatNumberExt">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="((\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?(π|e)?|(\+|-)?INF|NaN)"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:complexType name="RootElementType">
         <xs:sequence>
             <xs:element name="object" type="ObjectType" minOccurs="1" maxOccurs="unbounded"/>
@@ -128,6 +164,7 @@
             <xs:element name="inlets" type="InletsElementType" minOccurs="0"/>
             <xs:element name="outlets" type="OutletsElementType" minOccurs="0"/>
             <xs:element name="arguments" type="ArgumentsElementType" minOccurs="0"/>
+            <xs:element name="mouse" type="MouseEvents" minOccurs="0"/>
             <xs:element name="methods" type="MethodsElementType" minOccurs="0"/>
             <xs:element name="properties" type="PropertiesElementType" minOccurs="0"/>
             <xs:element name="info" type="InfoElementType" minOccurs="0"/>
@@ -211,11 +248,12 @@
     </xs:complexType>
 
     <xs:complexType name="ExampleElementType">
-        <xs:all>
+        <xs:sequence maxOccurs="unbounded">
             <xs:element name="pdexample" type="PdExampleType" minOccurs="0"/>
             <xs:element name="pdinclude" type="PdIncludeType" minOccurs="0"/>
             <xs:element name="pdascii" type="PdAsciiType" minOccurs="0"/>
-        </xs:all>
+        </xs:sequence>
+        <xs:attribute name="name" use="optional" type="xs:string" default="main"/>
     </xs:complexType>
 
     <xs:simpleType name="PdAttrSize">
@@ -236,6 +274,7 @@
                 <xs:attribute name="y-pad" use="optional" type="xs:unsignedShort" default="20"/>
                 <xs:attribute name="x-space" use="optional" type="xs:float" default="1.2"/>
                 <xs:attribute name="y-space" use="optional" type="xs:float" default="1.2"/>
+                <xs:attribute name="id" use="optional" type="xs:string" default="main"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -309,8 +348,8 @@
         <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attribute name="on" use="optional" type="ControlDataType"/>
-                <xs:attribute name="minvalue" use="optional" type="xs:float"/>
-                <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
+                <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
+                <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -319,8 +358,8 @@
         <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attribute name="type" use="optional" type="XletType" default="control"/>
-                <xs:attribute name="minvalue" use="optional" type="xs:float"/>
-                <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
+                <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
+                <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
                 <xs:attribute name="number" use="optional" type="XletNumber" default=""/>
             </xs:extension>
         </xs:simpleContent>
@@ -329,6 +368,22 @@
     <xs:complexType name="ArgumentsElementType">
         <xs:sequence>
             <xs:element name="argument" type="ArgumentElementType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MouseEventType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="editmode" use="required" type="xs:boolean"/>
+                <xs:attribute name="type" use="required" type="MouseEventClickType"/>
+                <xs:attribute name="keys" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="MouseEvents">
+        <xs:sequence>
+            <xs:element name="event" type="MouseEventType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -350,8 +405,10 @@
                 <xs:attribute name="name" use="required" type="xs:string"/>
                 <xs:attribute name="type" use="required" type="ArgumentDataType"/>
                 <xs:attribute name="units" use="optional" type="UnitDataType"/>
-                <xs:attribute name="minvalue" use="optional" type="xs:float"/>
-                <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
+                <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
+                <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
+                <xs:attribute name="enum" use="optional" type="xs:string"/>
+                <xs:attribute name="required" use="optional" type="xs:boolean"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -362,8 +419,8 @@
                 <xs:attribute name="name" use="optional" type="xs:string"/>
                 <xs:attribute name="type" use="required" type="ArgumentDataType"/>
                 <xs:attribute name="units" use="optional" type="UnitDataType"/>
-                <xs:attribute name="minvalue" use="optional" type="xs:float"/>
-                <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
+                <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
+                <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
                 <xs:attribute name="default" use="optional" type="xs:string"/>
                 <xs:attribute name="enum" use="optional" type="xs:string"/>
                 <xs:attribute name="required" use="optional" type="xs:boolean"/>
@@ -376,6 +433,9 @@
             <xs:element name="param" type="MethodArgumentElementType"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="internal" use="optional" type="xs:boolean"/>
+        <xs:attribute name="example" use="optional" type="xs:boolean"/>
+        <xs:attribute name="category" use="optional" type="CategoryType"/>
     </xs:complexType>
 
     <xs:complexType name="PropertyElementType" mixed="true">
@@ -383,10 +443,11 @@
         <xs:attribute name="type" type="PropertyDataType" use="required"/>
         <xs:attribute name="readonly" type="xs:boolean" default="false"/>
         <xs:attribute name="units" use="optional" type="UnitDataType"/>
-        <xs:attribute name="minvalue" use="optional" type="xs:float"/>
-        <xs:attribute name="maxvalue" use="optional" type="xs:float"/>
+        <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
+        <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
         <xs:attribute name="default" use="optional" type="xs:string"/>
         <xs:attribute name="enum" use="optional" type="xs:string"/>
+        <xs:attribute name="category" use="optional" type="CategoryType"/>
     </xs:complexType>
 
     <xs:complexType name="InfoElementType">
@@ -396,6 +457,7 @@
             <xs:element name="pdobject" type="PdObjectElementType"/>
             <xs:element name="pdsubpatch" type="PdObjectElementType"/>
             <xs:element name="a" type="MarkupA" minOccurs="0"/>
+            <xs:element name="wiki" type="MarkupWiki" minOccurs="0"/>
         </xs:choice>
     </xs:complexType>
 
@@ -407,7 +469,9 @@
 
     <xs:complexType name="MarkupText">
         <xs:simpleContent>
-            <xs:extension base="xs:string"/>
+            <xs:extension base="xs:string">
+                 <xs:attribute name="indent" type="xs:integer" use="optional"/>
+            </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
 
@@ -421,6 +485,14 @@
         <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attribute name="href" use="required" type="xs:anyURI"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="MarkupWiki">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="name" use="required" type="xs:string"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>

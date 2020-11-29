@@ -1,7 +1,13 @@
 #!/usr/bin/env python
 # coding=utf-8
+from __future__ import print_function
+import argparse
 
-#   Copyright (C) 2015 by Serge Poltavski                                 #
+from pddoc.docobject import DocObject
+from pddoc.listobjectvisitor import ListObjectVisitor
+from pddoc.parser import parse_xml
+
+#   Copyright (C) 2016 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -17,25 +23,30 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
 __author__ = 'Serge Poltavski'
 
-from ui_base import UIBase
-from pddoc.pd import XLET_GUI
+def main():
+    arg_parser = argparse.ArgumentParser(description='list PureData objects in pddoc')
+    arg_parser.add_argument('--properties', '-p', action='store_true', help='list properties')
+    arg_parser.add_argument('--objects', '-o', action='store_true', help='list objects')
+    arg_parser.add_argument('--methods', '-m', action='store_true', help='list methods')
+    arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC(XML) format")
+
+    args = vars(arg_parser.parse_args())
+    in_file = args['name']
+
+    xml = parse_xml(in_file)
+
+    if not xml:
+        exit(1)
+
+    pddoc = xml.getroot()
+    for child_tag in pddoc:
+        if child_tag.tag == "object":
+            dobj = DocObject()
+            dobj.from_xml(child_tag)
+            dobj.traverse(ListObjectVisitor())
 
 
-def create_by_name(name, args, **kwargs):
-    return UIRslider(0, 0, **kwargs)
-
-
-class UIRslider(UIBase):
-    def __init__(self, x, y, **kwargs):
-        if '@size' not in kwargs:
-            kwargs['@size'] = '120x16'
-        UIBase.__init__(self, "ui.rslider", x, y, **kwargs)
-
-    def inlets(self):
-        return [XLET_GUI]
-
-    def outlets(self):
-        return [XLET_GUI]
+if __name__ == '__main__':
+    main()

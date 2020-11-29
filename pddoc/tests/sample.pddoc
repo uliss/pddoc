@@ -46,6 +46,9 @@
         <methods>
             <method name="set">sets parameters</method>
         </methods>
+        <mouse>
+            <event editmode="true" type="double-click" keys="Ctrl"/>
+        </mouse>
         <example>
             <pdascii>
 <![CDATA[

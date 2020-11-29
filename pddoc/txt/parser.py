@@ -18,10 +18,11 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from __future__ import print_function
+import logging
 import re
 
 from .graph_lexer import *
-from pddoc.pd import Message, Comment, Canvas, Array
+from pddoc.pd import Message, Comment, Canvas, Array, XLET_SOUND, XLET_MESSAGE
 from six import string_types
 from pddoc.pd import factory
 from pddoc.pd.coregui import CoreGui
@@ -29,22 +30,37 @@ import copy
 import logging
 
 
+
 class Node(object):
     def __init__(self, tok, char_pos):
         self.tok = tok
         self.char_pos_ = char_pos
         self.pd_object = None
-        self.conn_src_id = None
+        self.conn_src_id = []
         self.conn_src_outlet = 0
-        self.conn_dest_id = None
+        self.conn_dest_id = []
         self.conn_dest_inlet = 0
         self.connected = False
+        self.multi_connect = None
+        self.conn_multi = {}
         self.obj_line_index = -1
 
         if self.tok and self.is_connection():
             # calc connection source outlet
             self.conn_src_outlet = self.tok.value.count('^')
             self.conn_dest_inlet = self.tok.value.count('.')
+
+            all_connect = list(map(lambda x: x.count('*'), self.tok.value.split('|')))
+            if len(all_connect) == 2:
+                if all_connect[0] > 0 and all_connect[1] > 0:
+                    self.multi_connect = 'all'
+                elif all_connect[0] > 0:
+                    self.multi_connect = 'all_in'
+                elif all_connect[1] > 0:
+                    self.multi_connect = 'all_out'
+            elif len(all_connect) == 1:
+                if all_connect[0] > 0:
+                    self.multi_connect = 'all_in'
 
             # only single \
             if self.tok.value == '\\':
@@ -59,8 +75,26 @@ class Node(object):
 
         return self.tok.type in ('OBJECT', 'MESSAGE', 'COMMENT')
 
+    def is_object_id(self):
+        if self.tok is None:
+            return False
+
+        return self.tok.type == 'OBJECT_ID'
+
     def is_connection(self):
         return self.tok.type in ('CONNECTION', 'CONNECTION_LEFT', 'CONNECTION_RIGHT', 'CONNECTION_X', 'CONNECTION_MANUAL')
+
+    def is_all_in_connection(self):
+        return self.multi_connect == 'all_in'
+
+    def is_all_out_connection(self):
+        return self.multi_connect == 'all_out'
+
+    def is_connect_all(self):
+        return self.multi_connect == 'all'
+
+    def is_multi_connect(self):
+        return self.multi_connect is not None
 
     @property
     def id(self):
@@ -209,11 +243,22 @@ class Parser(object):
         return False
 
     def parse_nodes(self):
+        obj_args = dict()
+
+        for n in filter(lambda x: x.is_object_id(), self.nodes):
+            m = re.match(r_OBJECT_ID, n.value)
+            # skip spaces
+            atoms = list(filter(lambda b: len(b) > 0, m.group(1).split(' ')))
+            obj_args[atoms[0]] = atoms[1:]
+            # logging.error(atoms[1:])
+
         for n in filter(lambda x: x.is_object(), self.nodes):
             if n.type == 'OBJECT':
                 m = re.match(r_OBJECT, n.value)
-                # filter spaces and #ID values
-                atoms = list(filter(lambda a: len(a) > 0 and (not a.startswith('#')), m.group(1).split(' ')))
+                # skip spaces
+                all_atoms = list(filter(lambda b: len(b) > 0, m.group(1).split(' ')))
+                # skip #ID values
+                atoms = list(filter(lambda b: not b.startswith('#'), all_atoms))
                 assert len(atoms) > 0
                 name, args = self.find_alias(atoms)
                 kwargs = dict()
@@ -232,10 +277,13 @@ class Parser(object):
                     str = atoms[1]
                     conn = []
 
+                    # syntax: SRC_ID(:OUTLET_N)->DEST_ID(:INLET_N)
                     for i in map(lambda x: x.split(':'), str.split('->')):
+                        # if xlet is not specified using first xlet
                         if len(i) == 1:
                             i.append(0)
 
+                        # i now is [OBJ_ID, XLET_IDX]
                         assert len(i) == 2
 
                         obj_id = self.find_node_id_by_hash(i[0])
@@ -246,23 +294,69 @@ class Parser(object):
                         i[0] = obj_id
                         conn.append(i)
 
+                    # conn at this moment: [[SRC, OUT_IDX], [DEST, IN_IDX]]
+                    assert len(conn) == 2
+
                     n.conn_src_id = conn[0][0]
                     n.conn_src_outlet = int(conn[0][1])
                     n.conn_dest_id = conn[1][0]
                     n.conn_dest_inlet = int(conn[1][1])
 
                 elif name == 'array':
-                    n.pd_object = Array(args[0], kwargs.get('size', 100), kwargs.get('save', 0))
-                    n.pd_object.width = kwargs.get('w', 200)
-                    n.pd_object.height = kwargs.get('h', 140)
-                    yr = list(map(lambda x: float(x), kwargs.get('yr', "-1..1").split('..')))
-                    n.pd_object.set_yrange(yr[0], yr[1])
+                    # check for id
+                    array_ids = list(filter(lambda b: b.startswith("#"), all_atoms))
+                    if len(array_ids) > 0:
+                        # trim '#'
+                        aid = array_ids[0][1:]
+                        if aid in obj_args:
+                            for kv in obj_args[aid]:
+                                k, v = kv.split('=')
+                                kwargs[k] = v
+
+                    if args[0] in ("set", "get", "define", "sum", "size", "random", "min", "max"):
+                        n.pd_object = factory.make_by_name(name + " " + args[0], args[1:], **kwargs)
+                    else:
+                        n.pd_object = Array(args[0], kwargs.get('size', 100), kwargs.get('save', 0))
+                        n.pd_object.width = kwargs.get('w', 200)
+                        n.pd_object.height = kwargs.get('h', 140)
+                        yr = list(map(lambda x: float(x), kwargs.get('yr', "-1..1").split('..')))
+                        n.pd_object.set_yrange(yr[0], yr[1])
+                        if 'style' in kwargs:
+                            values = ('line', 'point', 'curve')
+                            st = kwargs['style']
+                            if st in values:
+                                n.pd_object.set_style(values.index(st))
+                            else:
+                                logging.error("invalid style: '%s', supported values are: '%s'", st, ", ".join(values))
                 else:
+                    # check options
+                    opts = {}
+                    for arg in args[:]:
+                        # no spaces allowed: {x=1,y=1,etc=...}
+                        if arg[0] == '{' and arg[-1] == '}':
+                            opts.update(parse_object_options(arg))
+                            args.remove(arg)
+
+                    # adding id arguments defined with '#id arg1 arg2...'
+                    all_id = list(filter(lambda b: b.startswith("#"), all_atoms))
+                    if len(all_id) > 0 and all_id[0][1:] in obj_args:
+                        args += obj_args[all_id[0][1:]]
+
                     n.pd_object = factory.make_by_name(name, args, **kwargs)
+                    process_object_options(n.pd_object, opts)
+
             elif n.type == 'MESSAGE':
                 m = re.match(r_MESSAGE, n.value)
                 txt = m.group(1).replace(',', '\,')
-                args = list(filter(lambda a: len(a) > 0 and (not a.startswith('#')), txt.split(' ')))
+                all_atoms = txt.split(' ')
+                args = list(filter(lambda a: len(a) > 0 and (not a.startswith('#')), all_atoms))
+
+                # adding id arguments defined with '#id arg1 arg2...'
+                all_id = list(filter(lambda b: b.startswith("#"), all_atoms))
+                if len(all_id) > 0 and all_id[0][1:] in obj_args:
+                    # logging.error(obj_args[all_id[0][1:]])
+                    args += obj_args[all_id[0][1:]]
+
                 n.pd_object = Message(0, 0, args)
             elif n.type == 'COMMENT':
                 m = re.match(r_COMMENT, n.value)
@@ -333,7 +427,7 @@ class Parser(object):
         # find object on previous line
         src = self.find_connection(c.line_pos - 1, conn_start)
         if src is None:
-            print("connection source is not found for: {0:s}".format(str(c)))
+            logging.warning("connection source is not found for: {0:s}".format(str(c)))
             return
 
         c.conn_src_id = src.id
@@ -346,7 +440,7 @@ class Parser(object):
         # find on next line
         dest = self.find_connection(c.line_pos + 1, [c.char_pos, c.char_pos + c.width])
         if dest is None:
-            print("connection destination is not found for: {0:s}".format(c.tok.value))
+            logging.warning("connection destination is not found for: {0:s}".format(c.tok.value))
             return
 
         c.conn_dest_id = dest.id
@@ -376,17 +470,102 @@ class Parser(object):
             cnv.append_object(n.pd_object)
 
         for c in filter(lambda x: x.is_connection() and x.connected, self.nodes):
-            # print("connection %s -> %s" % (c.conn_src_id, c.conn_dest_id))
             src = self.node_by_id(c.conn_src_id)
             dest = self.node_by_id(c.conn_dest_id)
 
-            if src and dest:
-                if not src.pd_object or not dest.pd_object:
-                    logging.warning("can't connect {0:s} and {1:s}".format(src.tok, dest.tok))
-                    return
+            if not src or not dest:
+                continue
 
+            if not src.pd_object or not dest.pd_object:
+                logging.warning("can't connect {0:s} and {1:s}".format(src.tok, dest.tok))
+                return
+
+            if not c.is_multi_connect():
                 cnv.add_connection(
                     src.pd_object.id,
                     c.conn_src_outlet,
                     dest.pd_object.id,
                     c.conn_dest_inlet)
+            elif c.is_all_in_connection():
+                n = len(src.pd_object.outlets())
+                for i in range(n):
+                    cnv.add_connection(
+                        src.pd_object.id,
+                        i,
+                        dest.pd_object.id,
+                        c.conn_dest_inlet)
+            elif c.is_all_out_connection():
+                n = len(dest.pd_object.inlets())
+                for i in range(n):
+                    cnv.add_connection(
+                        src.pd_object.id,
+                        c.conn_src_outlet,
+                        dest.pd_object.id,
+                        i)
+            elif c.is_connect_all():
+                n_in = len(src.pd_object.outlets())
+                n_out = len(dest.pd_object.inlets())
+
+                # print("c:", src.pd_object.name, src.pd_object.outlets(), dest.pd_object.name, dest.pd_object.inlets())
+                for i in range(min(n_in, n_out)):
+                    cnv.add_connection(
+                        src.pd_object.id,
+                        i,
+                        dest.pd_object.id,
+                        i)
+
+
+def parse_object_option(name, txt):
+    if name == 'w':
+        return {'w' : int(txt) }
+    elif name == 'i':
+        res = {'i' : True}
+
+        opt_res = re.match(r"(\d*)(~?)(\d*)", txt)
+        if opt_res.group(1) != "":
+            res["in_sig"] = int(opt_res.group(1))
+        if opt_res.group(3) != "":
+            res["in_ctl"] = int(opt_res.group(3))
+
+        return res
+    elif name == 'o':
+        res = {'o' : True}
+
+        opt_res = re.match(r"(\d*)(~?)(\d*)", txt)
+        if opt_res.group(1) != "":
+            res["out_sig"] = int(opt_res.group(1))
+        if opt_res.group(3) != "":
+            res["out_ctl"] = int(opt_res.group(3))
+
+        return res
+
+
+def parse_object_options(arg):
+    res = {}
+    arg_str = arg[1:-1]
+    if len(arg_str) < 1:
+        return res
+
+    re_opt = re.compile(r"(\w{1})=(.+)")
+
+    for opt in arg_str.split(","):
+        res_opt = re.match(re_opt, opt)
+        if res_opt:
+            res.update(parse_object_option(res_opt.group(1), res_opt.group(2)))
+
+    return res
+
+
+def process_object_options(obj, opts: dict):
+    # print(opts)
+
+    if 'w' in opts:
+        obj.fixed_width = opts['w']
+
+    if 'i' in opts:
+        xin = opts.get('in_sig', 0) * [XLET_SOUND] + opts.get('in_ctl', 0) * [XLET_MESSAGE]
+        obj.set_inlets(xin)
+
+    if 'o' in opts:
+        xout = opts.get('out_sig', 0) * [XLET_SOUND] + opts.get('out_ctl', 0) * [XLET_MESSAGE]
+        obj.set_outlets(xout)

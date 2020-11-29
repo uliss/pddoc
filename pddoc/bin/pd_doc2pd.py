@@ -46,7 +46,7 @@ def main():
     arg_parser.add_argument('--version', '-v', metavar='version', default='0.0', help='library version')
     arg_parser.add_argument('--force', '-f', action='store_true', help='force to overwrite existing file')
     arg_parser.add_argument('--xlet-db', metavar='PATH', action='append',
-                            help='inlet/outlet database file path', default=[])
+                            help='inlet/outlet database file paths', default=[])
     arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC(XML) format")
     arg_parser.add_argument('output', metavar='OUTNAME', nargs='?', default='',
                             help="Pd output patch file name")
@@ -54,6 +54,9 @@ def main():
     args = vars(arg_parser.parse_args())
     in_file = args['name']
     output = args['output']
+
+    # add input pddoc file dir to search path for abstractions
+    PdObject.xlet_patch_finder.add_search_dir(os.path.dirname(in_file))
 
     if not output:
         output = os.path.splitext(os.path.basename(in_file))[0] + "-help.pd"

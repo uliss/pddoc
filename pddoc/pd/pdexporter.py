@@ -58,6 +58,15 @@ class PdExporter(AbstractVisitor):
 
     def visit_canvas_end(self, cnv):
         if cnv.type == Canvas.TYPE_WINDOW:
+            if cnv.is_graph_on_parent():
+                gr = cnv.gop_rect()
+                ha = 1
+                if cnv.gop_hide_args():
+                    ha = 2
+
+                line = "#X coords 0 -1 1 1 {2:d} {3:d} {4:d} {0:d} {1:d};".format(gr[0], gr[1], gr[2], gr[3], ha)
+                self.result.append(line)
+
             self.result.append("")
         elif cnv.type == Canvas.TYPE_SUBPATCH:
             line = "#X restore {0:d} {1:d} pd {2:s};".format(cnv.x, cnv.y, cnv.name)
@@ -69,10 +78,25 @@ class PdExporter(AbstractVisitor):
         self.result.append(line)
 
     def visit_comment(self, comment):
-        txt = re.sub('\s+', ' ', " ".join(comment.args).strip())
-        line = "#X text {0:d} {1:d} {2:s};".format(comment.x, comment.y, txt)
-        for l in textwrap.wrap(line):
-            self.result.append(l)
+        txt = "#X text {0:d} {1:d} ".format(comment.x, comment.y)
+        ncol = len(txt)
+        for atom in comment.args:
+            txt += atom.strip()
+            ncol += len(atom)
+
+            if atom == ';' or ncol > 65:
+                txt += '\n'
+                ncol = 0
+            else:
+                txt += ' '
+                ncol += 1
+
+        txt = txt.strip()
+        if comment.line_width():
+            txt += ', f {}'.format(comment.line_width())
+
+        txt += ';'
+        self.result += txt.split('\n')
 
     def visit_object(self, obj):
         if isinstance(obj, Array):
@@ -80,7 +104,7 @@ class PdExporter(AbstractVisitor):
                 format(obj._cnv_x, obj._cnv_y, obj._cnv_w, obj._cnv_h, "(subpatch)", 0)
             self.result.append(line)
 
-            line = "#X array {0:s} {1:d} float {2:d};".format(obj.name, obj.size(), obj.save_flag())
+            line = "#X array {0:s} {1:d} float {2:d};".format(obj.name, obj.size(), obj.flags())
             self.result.append(line)
 
             line = "#A 0 " + " ".join(map(lambda x: "{0:g}".format(x), obj.data())) + ";"
@@ -104,6 +128,9 @@ class PdExporter(AbstractVisitor):
 
         if len(obj.args):
             line += " " + " ".join(obj.args)
+
+        if obj.fixed_width is not None:
+            line += ", f {}".format(obj.fixed_width)
 
         line += ";"
 

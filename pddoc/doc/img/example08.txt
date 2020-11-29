@@ -1,0 +1,7 @@
+[uknown object {o=10,w=30}]  /*10 sound outlets*/
+
+[uknown object {o=10~,w=30}] /*10 sound outlets*/
+
+[uknown object {o=~10,w=30}] /*10 control outlets*/
+
+[uknown object {o=6~4,w=30}] /*6 sound outlets, 4 control outlets*/

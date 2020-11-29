@@ -94,7 +94,28 @@ class Parser:
     def parse_comments(self, atoms):
         x = atoms[0]
         y = atoms[1]
-        comment = Comment(x, y, atoms[2:])
+
+        wd_found = False
+        wd_atoms = []
+        txt_atoms = []
+
+        for a in atoms[2:]:
+            if wd_found:
+                wd_atoms.append(a)
+                continue
+            else:
+                txt_atoms.append(a)
+
+            if len(a) > 1 and a[-1] == ',' and a[-2] != '\\':
+                wd_found = True
+                # remove ,
+                txt_atoms[-1] = a[:-1]
+
+        wd = 0
+        if len(wd_atoms) == 2:
+            wd = int(wd_atoms[1])
+
+        comment = Comment(x, y, txt_atoms, width=wd)
         self.current_canvas().append_object(comment)
 
     def parse_restore(self, atoms):
@@ -124,6 +145,12 @@ class Parser:
     def parse_obj(self, atoms):
         x = atoms[0]
         y = atoms[1]
+
+        if atoms[-2] == 'f':
+            ln = len(atoms[-3])
+            if atoms[-3][ln-1] == ',' and atoms[-3][ln-2] != '\\':
+                atoms = atoms[:-2]  # remove width specifiers
+                atoms[-1] = atoms[-1][:-1]  # remove last ,
 
         obj = make(atoms[2:])
         obj.x = x

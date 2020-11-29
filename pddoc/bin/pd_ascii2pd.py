@@ -91,5 +91,6 @@ def main():
     else:
         print("Unknown output format: {0:s}".format(fmt))
 
+
 if __name__ == '__main__':
     main()

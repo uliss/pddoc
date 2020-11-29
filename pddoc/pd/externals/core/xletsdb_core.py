@@ -192,6 +192,10 @@ _objects = {
     "list": (
         lambda args: func_list_in(args) * [XLET_MESSAGE],
         lambda args: func_list_out(args) * [XLET_MESSAGE]
+    ),
+    "array set": (
+        lambda args: 3 * [XLET_MESSAGE],
+        lambda args: []
     )
 }
 

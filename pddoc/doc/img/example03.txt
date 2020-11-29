@@ -1,0 +1,5 @@
+[unpack f f f] /*connect second outlet to third inlet*/
+^|
+ |
+ |..
+[pack f f f]

@@ -121,6 +121,13 @@ class DocItem(object):
             obj.from_xml(child)
             self.add_child(obj)
 
+    def sort_by(self, fx):
+        lst = sorted(self._elements, key=fx)
+        self._elements.clear()
+
+        for el in lst:
+            self._elements.append(el)
+
 
 class DocTitle(DocItem):
     def __init__(self, *args):
@@ -337,6 +344,7 @@ class DocPdascii(DocItem):
         self._y_pad = 0
         self._x_space = 0
         self._y_space = 0
+        self._id = 'main'
 
     def x_pad(self):
         return self._x_pad
@@ -350,6 +358,9 @@ class DocPdascii(DocItem):
     def y_space(self):
         return self._y_space
 
+    def id(self):
+        return self._id
+
     def from_xml(self, xmlobj):
         self.read_xml_data(xmlobj)
         try:
@@ -357,6 +368,7 @@ class DocPdascii(DocItem):
             self._y_pad = xmlobj.attrib.get('y-pad', 20)
             self._x_space = xmlobj.attrib.get('x-space', 1.2)
             self._y_space = xmlobj.attrib.get('y-space', 1.2)
+            self._id = xmlobj.attrib.get('id', 'main')
         except KeyError as e:
             logging.warning("attribute \"%s\" not found in <%s>", e.args[0], xmlobj.tag)
 
@@ -518,6 +530,13 @@ class DocInlets(DocXlets):
     def is_valid_tag(self, tag_name):
         return tag_name == "inlet"
 
+class DocMouse(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
+
+    def is_valid_tag(self, tag_name):
+        return tag_name == "event"
+
 
 class DocTypeElement(DocItem):
     allowed_types = ("control", "audio", "gui")
@@ -622,7 +641,13 @@ class DocArgument(DocItem):
         'second': 'sec',
         'decibel': 'db',
         'bpm': 'bpm',
-        'percent': '%'
+        'percent': '%',
+        'sample': 'samp',
+        'msec': 'ms',
+        'sec': 'sec',
+        'semitone': 'semitone',
+        'radian': 'rad',
+        'degree': 'deg'
     }
 
     def __init__(self, *args):
@@ -720,6 +745,38 @@ class DocArgument(DocItem):
     def enum(self):
         return self._enum
 
+class DocEvent(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
+        self._editmode = ""
+        self._type = ""
+        self._keys = ""
+
+    def from_xml(self, xmlobj):
+        self._editmode = xmlobj.attrib.get("editmode", "false")
+        self._type = xmlobj.attrib.get("type", "")
+        self._keys = ""
+
+        kmap = {"alt": "\u2325", "shift": "\u21E7", "cmd": "\u2318"}
+        keys = []
+
+        for k in xmlobj.attrib.get("keys", "").split("+"):
+            k.strip()
+            k = k.lower()
+            if k in kmap:
+                keys.append(kmap[k])
+
+        self._keys = "+".join(keys)
+        DocItem.from_xml(self, xmlobj)
+
+    def edit_mode(self):
+        return self._editmode == "true"
+
+    def type(self):
+        return self._type
+
+    def keys(self):
+        return self._keys
 
 class DocArguments(DocXlets):
     def __init__(self, *args):
@@ -740,6 +797,7 @@ class DocMethods(DocXlets):
 class DocMethod(DocItem):
     def __init__(self, *args):
         self._name = ""
+        self._cat = 0
         DocItem.__init__(self, args)
 
     def name(self):
@@ -750,7 +808,23 @@ class DocMethod(DocItem):
 
     def from_xml(self, xmlobj):
         self._name = xmlobj.attrib.get("name", "")
+        cat = xmlobj.attrib.get("category", "")
+        cat_lst = ['main', 'preset', 'color', 'basic']
+        if cat in cat_lst:
+            self._cat = cat_lst.index(cat)
+        else:
+            if self._name == "dump":
+                self._cat = 4 # basic
+            else:
+                self._cat = 0 # main
+
         DocItem.from_xml(self, xmlobj)
+
+    def sort_name(self):
+        if not self._name[0].isalpha():
+            return "{0}_~{1}".format(self._cat, self.name())
+        else:
+            return "{0}_{1}".format(self._cat, self.name())
 
 
 class DocParam(DocArgument):
@@ -775,12 +849,21 @@ class DocInfo(DocItem):
         DocItem.__init__(self, args)
 
     def is_valid_tag(self, tag_name):
-        return tag_name in ("itemize", "par", "a")
+        return tag_name in ("itemize", "par", "a", "wiki")
 
 
 class DocPar(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
+        self._indent = 0
+
+    def from_xml(self, xmlobj):
+        self._indent = int(xmlobj.attrib.get("indent", "0"))
+        DocItem.from_xml(self, xmlobj)
+
+    @property
+    def indent(self):
+        return self._indent
 
 
 class DocA(DocItem):
@@ -794,6 +877,20 @@ class DocA(DocItem):
 
     def from_xml(self, xmlobj):
         self._url = xmlobj.attrib["href"]
+        DocItem.from_xml(self, xmlobj)
+
+
+class DocWiki(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
+        self._url = ""
+
+    @property
+    def url(self):
+        return self._url
+
+    def from_xml(self, xmlobj):
+        self._url = 'https://en.wikipedia.org/wiki/{}'.format(xmlobj.attrib["name"])
         DocItem.from_xml(self, xmlobj)
 
 
@@ -813,7 +910,7 @@ class DocObject(DocItem):
 
     def is_valid_tag(self, tag_name):
         return tag_name in ("title", "meta", "inlets", "outlets",
-                            "arguments", "properties", "info", "example", "methods")
+                            "arguments", "properties", "info", "example", "methods", "mouse")
 
     def from_xml(self, xobj):
         self._name = xobj.attrib["name"]
@@ -851,11 +948,32 @@ class DocProperty(DocArgument):
     def __init__(self, *args):
         DocArgument.__init__(self, args)
         self._readonly = False
+        self._cat = 0
 
     def from_xml(self, xmlobj):
         DocArgument.from_xml(self, xmlobj)
         self._readonly = xmlobj.attrib.get("readonly", "false") == "true"
         self._default = xmlobj.attrib.get("default", "")
+        cat = xmlobj.attrib.get("category", "")
+        cat_lst = ['main', 'midi', 'preset', 'color', 'label', 'font', 'basic']
+        if cat in cat_lst:
+            self._cat = cat_lst.index(cat)
+        else:
+            if self._name in ("@size", "@pinned", "@presetname"):
+                self._cat = 6  # lowest
+            elif 'color' in self._name:
+                self._cat = 3 # colors
+            elif 'font' in self._name:
+                self._cat = 5 # font
+            elif 'label' in self._name:
+                self._cat = 4 # label
+            elif 'midi' in self._name:
+                self._cat = 1  # midi
+            else:
+                self._cat = 0  # main
+
+    def sort_name(self):
+        return "{0}_{1}".format(self._cat, self.name())
 
     def readonly(self):
         return self._readonly

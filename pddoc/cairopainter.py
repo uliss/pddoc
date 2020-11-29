@@ -250,7 +250,12 @@ class CairoPainter(PdPainter):
 
         x = obj.x
         y = obj.y
-        w, h = self.box_size(txt)
+
+        if obj.fixed_width is not None:
+            lines = textwrap.wrap(txt.ljust(obj.fixed_width, "."), obj.fixed_width)
+            w, h = self.box_size("\n".join(lines))
+        else:
+            w, h = self.box_size(txt)
 
         obj.set_width(w)
         obj.set_height(h)
@@ -394,7 +399,11 @@ class CairoPainter(PdPainter):
 
     def draw_comment(self, comment):
         txt = comment.text()
-        lines = textwrap.wrap(txt, 59)
+        wd = 60
+        if comment.line_width():
+            wd = comment.line_width()
+
+        lines = textwrap.wrap(txt, wd)
 
         self.set_src_color(self.style.comment_color)
         line_height = self.cr.font_extents()[2]

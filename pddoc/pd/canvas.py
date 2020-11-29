@@ -224,6 +224,9 @@ class Canvas(PdObject):
     def gop_rect(self):
         return self._gop['xoff'], self._gop['yoff'], self._gop['width'], self._gop['height']
 
+    def gop_hide_args(self):
+        return self._gop['hide_args']
+
     def obj_is_gop(self, obj):
         x, y, w, h = self.gop_rect()
         left = x

@@ -26,9 +26,14 @@ from .obj import PdObject
 
 
 class Comment(BaseObject):
-    def __init__(self, x, y, args):
+    def __init__(self, x, y, args, width=0):
         super(Comment, self).__init__(x, y, 0, 0)
-        self.args = args
+        self.args = []
+        self._line_width = width
+
+        for a in args:
+            if a:
+                self.args.append(a.strip())
 
     @staticmethod
     def unescape(s):
@@ -37,6 +42,21 @@ class Comment(BaseObject):
             .replace(chr(10), "") \
             .replace("\\;", ";") \
             .replace("\\,", ",")
+
+    @staticmethod
+    def escape(s):
+        res = ""
+        for c in s:
+            if c == ';':
+                res += " \\; "
+            elif c == ',':
+                res += " \\, "
+            elif c in (chr(10), chr(13)):
+                continue
+            else:
+                res += c
+
+        return res
 
     def text(self):
         res = ""
@@ -56,7 +76,7 @@ class Comment(BaseObject):
         return res
 
     def __str__(self):
-        res = "# %-39s {x:%i,y:%i}" % (self.text(), self._x, self._y)
+        res = "# %-39s {x:%i,y:%i}, f %i" % (self.text(), self._x, self._y, self._line_width)
         return res
 
     def draw(self, painter):
@@ -74,3 +94,6 @@ class Comment(BaseObject):
         brect = PdObject.brect_calc().comment_brect(self)
         self._width = brect[2]
         self._height = brect[3]
+
+    def line_width(self):
+        return self._line_width

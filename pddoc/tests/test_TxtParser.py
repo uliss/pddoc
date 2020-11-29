@@ -44,6 +44,10 @@ class TestTxtParser(TestCase):
         self.p.parse('[dac~ 1 2 3]')
         self.assertEqual(self.p.tokens[1].type, 'OBJECT')
 
+    def test_parse_obj_id(self):
+        self.p.parse('#a 1 2 3 @p 123')
+        self.assertEqual(self.p.tokens[0].type, 'OBJECT_ID')
+
     def test_token_line_lex_pos(self):
         self.p.lines_len = [10, 2, 3, 4]
         self.assertEqual(self.p.token_line_lex_pos(0, 3), 3)
@@ -53,12 +57,12 @@ class TestTxtParser(TestCase):
         nl = NoLogging()
         self.p.parse_file(TEST_FILE)
 
-        self.assertEqual(self.p.num_lines(), 13)
-        self.assertEqual(len(self.p.nodes), 26)
-        self.assertEqual(self.p.num_elements('OBJECT'), 9)
+        self.assertEqual(self.p.num_lines(), 23)
+        self.assertEqual(len(self.p.nodes), 34)
+        self.assertEqual(self.p.num_elements('OBJECT'), 13)
         self.assertEqual(self.p.num_elements('MESSAGE'), 2)
         self.assertEqual(self.p.num_elements('COMMENT'), 1)
-        self.assertEqual(self.p.num_elements('CONNECTION'), 11)
+        self.assertEqual(self.p.num_elements('CONNECTION'), 15)
 
     def test_parse(self):
         pass
@@ -125,12 +129,14 @@ class TestTxtParser(TestCase):
         [float #a]
         [float #b]
         [X a:0->b:1]
+        #b 1 2 3
         ''')
         self.assertEqual(self.p.tokens[0].type, 'OBJECT')
         self.assertEqual(self.p.nodes[0].id, 1008)
         self.assertEqual(self.p.tokens[1].type, 'OBJECT')
         self.assertEqual(self.p.nodes[1].id, 2008)
         self.assertEqual(self.p.tokens[2].type, 'CONNECTION_MANUAL')
+        self.assertEqual(self.p.tokens[3].type, 'OBJECT_ID')
         self.assertEqual(self.p.nodes[2].conn_src_id, 1008)
         self.assertEqual(self.p.nodes[2].conn_dest_id, 2008)
         self.assertEqual(self.p.nodes[2].conn_src_outlet, 0)

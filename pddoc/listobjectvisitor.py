@@ -17,26 +17,35 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-
 __author__ = 'Serge Poltavski'
 
-from ui_base import UIBase
-from pddoc.pd import XLET_GUI
+import re
+import os
+import logging
+
+import pddoc.pd as pd
+from .txt.parser import Parser
+from .pd.canvas import Canvas
+from .pd.pdexporter import PdExporter
+from .idocobjectvisitor import IDocObjectVisitor
 
 
-def create_by_name(name, args, **kwargs):
-    return UIDisplay(0, 0, **kwargs)
+class ListObjectVisitor(IDocObjectVisitor):
+    def __init__(self):
+        IDocObjectVisitor.__init__(self)
 
+    def alias_begin(self, a):
+        print(a.text())
 
-class UIDisplay(UIBase):
-    def __init__(self, x, y, **kwargs):
-        if '@size' not in kwargs:
-            kwargs['@size'] = '150x18'
+    def pdascii_begin(self, pdascii):
+        self._pdascii = pdascii.text()
 
-        UIBase.__init__(self, "ui.display", x, y, **kwargs)
+        p = Parser()
+        if not p.parse(self._pdascii):
+            logging.info("<pdascii> parse failed: {0}".format(self._pdascii))
 
-    def inlets(self):
-        return [XLET_GUI]
+        for n in filter(lambda x: x.is_object() and x.pd_object is not None and x.type == 'OBJECT', p.nodes):
+            print(n.pd_object.to_string())
 
-    def outlets(self):
-        return []
+    def see_begin(self, see):
+        print(see.text())

@@ -4,6 +4,8 @@ import argparse
 import os
 import logging
 from pddoc.categoryparser import CategoryParser
+
+
 #   Copyright (C) 2016 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
@@ -32,6 +34,7 @@ def main():
 
     cp = CategoryParser(args['input'])
     cp.process()
+
 
 if __name__ == '__main__':
     main()

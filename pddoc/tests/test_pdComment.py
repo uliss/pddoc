@@ -33,3 +33,12 @@ class TestPdComment(TestCase):
     def test_text(self):
         c = Comment(0, 0, ['test', 'message', 'with', '\\,', '\\;', ' special', 'chars'])
         self.assertEqual(c.text(), 'test message with,; special chars')
+        c = Comment(0, 0, ['Comment', 'with', 'symbols:', '$"!@#$%^&*()[]', '\\;', 'new line'])
+        self.assertEqual(c.text(), 'Comment with symbols: $"!@#$%^&*()[]; new line')
+
+    def test_escape(self):
+        self.assertEqual(Comment.escape(""), "")
+        self.assertEqual(Comment.escape("abc"), "abc")
+        self.assertEqual(Comment.escape("a b c"), "a b c")
+        self.assertEqual(Comment.escape("a,b,c"), "a \\, b \\, c")
+        self.assertEqual(Comment.escape("a;b,c"), "a \\; b \\, c")

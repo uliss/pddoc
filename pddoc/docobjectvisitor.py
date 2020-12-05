@@ -124,7 +124,7 @@ class DocObjectVisitor(IDocObjectVisitor):
     def info_begin(self, info):
         for p in info.items():
             if isinstance(p, DocPar):
-                self._info += p.text()
+                self._info += p.text() + "\n"
     
     ###
     def pdexample_begin(self, tag):

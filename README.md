@@ -189,6 +189,21 @@ description
     <property enum="A B C"/>
     ```
     
+### methods
+```xml
+<methods>
+    <method name="NAME">
+        description
+        <param type="TYPE" name="XXX" required="true"></param>
+        ...
+    </method>
+    ...
+</methods>
+```
+- **method name** method name
+- **type** value type
+- **required** true if the parameter is required
+
 ### inlets
 ```xml
 <inlets dynamic="true">

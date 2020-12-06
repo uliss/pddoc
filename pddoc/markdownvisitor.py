@@ -28,15 +28,21 @@ from .docobjectvisitor import DocObjectVisitor
 
 
 class MarkdownVisitor(DocObjectVisitor):
-    def __init__(self):
+    def __init__(self, locale = "EN"):
         DocObjectVisitor.__init__(self)
         self._image_output_dir = MarkdownVisitor.image_output_dir
         self._image_extension = "png"
         self._image_output_dir = "img"
 
         # template config
-        tmpl_path = "{0:s}/share/md_object.tmpl.md".format(os.path.dirname(__file__))
-        self._html_template = Template(filename=tmpl_path)
+        if "EN" in locale:
+            tmpl_path = "{0:s}/share/md_object.tmpl.md".format(os.path.dirname(__file__))
+        elif "RU" in locale:
+            tmpl_path = "{0:s}/share/md_object_ru.tmpl.md".format(os.path.dirname(__file__))
+        else:
+            tmpl_path = "{0:s}/share/md_object.tmpl.md".format(os.path.dirname(__file__))
+        
+        self._html_template = Template(filename=tmpl_path, input_encoding="utf-8")
 
     def make_image_painter(self, w, h, fname):
         return CairoPainter(w, h, fname, "png",

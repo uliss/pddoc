@@ -33,7 +33,8 @@ def main():
     arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC format")
     arg_parser.add_argument('output', metavar='OUTNAME', nargs='?', default='',
                             help="Markdown output file name")
-
+    arg_parser.add_argument('--locale', '-l', metavar='locale', default='EN', help='locale (currently EN or RU)')
+    
     args = vars(arg_parser.parse_args())
     in_file = args['name']
     output = args['output']
@@ -57,7 +58,7 @@ def main():
             dobj = DocObject()
             dobj.from_xml(child_tag)
 
-            v = MarkdownVisitor()
+            v = MarkdownVisitor(args['locale'])
             v.set_image_prefix(child_tag.attrib["name"])
             v.set_search_dir(os.path.dirname(in_file))
 

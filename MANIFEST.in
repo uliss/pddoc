@@ -1,6 +1,7 @@
 include README.md
 include pddoc/share/html_object.tmpl
 include pddoc/share/md_object.tmpl.md
+include pddoc/share/md_object_ru.tmpl.md
 include pddoc/share/pddoc.xsd
 include pddoc/share/latex_object_tmpl.tex
 include pddoc/share/theme.css

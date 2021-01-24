@@ -14,9 +14,7 @@ ${info|h}<br>
 ---
 
 
-```
-${pd_ascii}
-```
+![example](examples/${title}-example.jpg)
 
 ---
 arguments:

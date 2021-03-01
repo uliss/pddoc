@@ -1,4 +1,4 @@
-[< справка — содержание](ceammc_lib.html)
+[< справка — содержание](index.html)
 ---
 
 # ${title | h}
@@ -14,9 +14,7 @@ ${info|h}<br>
 ---
 
 
-```
-${pd_ascii}
-```
+![example](examples/${title}-example.jpg)
 
 ---
 аргументы:

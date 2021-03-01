@@ -1,4 +1,4 @@
-[< reference home](ceammc_lib.html)
+[< reference home](index.html)
 ---
 
 # ${title | h}
@@ -14,9 +14,7 @@ ${info|h}<br>
 ---
 
 
-```
-${pd_ascii}
-```
+![example](examples/${title}-example.jpg)
 
 ---
 arguments:

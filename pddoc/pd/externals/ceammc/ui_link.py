@@ -24,6 +24,10 @@ from pddoc.pd.externals.ceammc.ui_base import UIBase
 from pddoc.cairopainter import CairoPainter
 
 
+def create(atoms):
+    return create_by_name(atoms[0], atoms[:1])
+
+
 def create_by_name(name, args, **kwargs):
     return UILink(0, 0, **kwargs)
 

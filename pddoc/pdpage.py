@@ -21,7 +21,6 @@ from .pd.canvas import Canvas
 from .pd.gcanvas import GCanvas
 from .pd.coregui import Color
 from .pd.brectcalculator import BRectCalculator
-from .pd.externals.pddp.pddplink import PddpLink
 from .pd.externals.ceammc.ui_link import UILink
 from .pd.comment import Comment
 from .pd.pdexporter import PdExporter

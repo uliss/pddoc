@@ -814,9 +814,9 @@ class DocMethod(DocItem):
             self._cat = cat_lst.index(cat)
         else:
             if self._name == "dump":
-                self._cat = 4 # basic
+                self._cat = 4  # basic
             else:
-                self._cat = 0 # main
+                self._cat = 0  # main
 
         DocItem.from_xml(self, xmlobj)
 

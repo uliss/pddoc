@@ -13,7 +13,8 @@ Requires: pycairo
 _    | _   
 --- | --- 
  **pd_doc2pd** | Converts pddoc file to PureData help patch 
- **pd_doc2html** | Converts pddoc file to HTML file 
+ **pd_doc2html** | Converts pddoc file to HTML file
+ **pd_doc2md** | Converts pddoc file to PureData help patch 
  **pd_makelibrary** | Creates XML file for set of pddoc files 
  **pd_lib2pd** | Converts XML file to PureData patch with objects links to help files 
  **pd_cat2pd** | Converts XML file with category info to separate patch with object links 
@@ -188,6 +189,21 @@ description
     <property enum="A B C"/>
     ```
     
+### methods
+```xml
+<methods>
+    <method name="NAME">
+        description
+        <param type="TYPE" name="XXX" required="true"></param>
+        ...
+    </method>
+    ...
+</methods>
+```
+- **method name** method name
+- **type** value type
+- **required** true if the parameter is required
+
 ### inlets
 ```xml
 <inlets dynamic="true">

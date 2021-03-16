@@ -137,6 +137,9 @@ class CairoPainter(PdPainter):
         if not xlets:
             return
 
+        if xlets is not list:
+            xlets = [xlets]
+
         inlet_space = 0
         if len(xlets) > 1:
             inlet_space = (obj_width - len(xlets) * self.style.xlet_width) / (len(xlets) - 1)

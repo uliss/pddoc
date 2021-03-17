@@ -39,9 +39,15 @@ __units:__ {{arg.units()}}<br>
 {% if m.items() %}  __parameters:__{% endif %}
 {%- for param in m.items() %}
   - **{{param.param_name()}}** {{param.text()|striptags}}<br>
-    {% if param.type() %}type: {{param.type()}} <br> {% endif -%}
-    {% if param.units() %}units: {{param.units()}} <br> {% endif -%}
-    {% if param.required() %}required: {{param.required()}} <br> {% endif -%}
+{%- if param.type() %}
+    type: {{param.type()}} <br>
+{%- endif %}
+{%- if param.units() %}
+    units: {{param.units()}} <br> 
+{%- endif %}
+{%- if param.required() %}
+    required: {{param.required()}} <br> 
+{%- endif %}
 {% endfor -%}
 {% endfor %}
 {% endif %}
@@ -49,7 +55,7 @@ __units:__ {{arg.units()}}<br>
 {% if properties %}
 ### properties:
 {% for prop in properties %}
-**{{prop.name()|trim}}** {% if prop.readonly() %}(readonly){% endif %}
+* **{{prop.name()|trim}}** {% if prop.readonly() %}(readonly){% endif %}
 {% if prop.readonly() %}Get {% else %}Get/set {% endif -%}
 {{prop.text()|striptags|wordwrap}}<br>
 {%- if prop.type() %}

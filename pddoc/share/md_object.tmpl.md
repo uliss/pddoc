@@ -90,3 +90,8 @@ __default:__ {{prop.default()}}<br>
 {% if license %}
 **License:** [![{{license['name']}}]({{license['url']}})]({{license['url']}})
 {% endif %}
+
+{% if website %}**Website:** [![{{website}}]({{website}})]({{website}}){% endif %}
+
+{% if contacts %}**Contacts:** [![{{contacts}}](mailto:{{contacts}})](mailto:{{contacts}}){% endif %}
+

@@ -19,9 +19,8 @@ ${info|h}<br>
 
 {% if arguments %}
 ### arguments:
-
 {% for arg in arguments %}
-**{{arg.name()|trim}}**
+* **{{arg.name()|trim}}**
 {{arg.text()|striptags|wordwrap}}<br>
 {%- if arg.type() %}
 __type:__ {{arg.type()}}<br>
@@ -29,12 +28,26 @@ __type:__ {{arg.type()}}<br>
 {%- if arg.units() %}
 __units:__ {{arg.units()}}<br>
 {%- endif %}
+{% endfor -%}
+{% endif %}
+
+{% if methods %}
+### methods:
+{% for m in methods %}
+* **{{m.name()|trim}}**
+{{m.text()|striptags|wordwrap}}<br>
+{% if m.items() %}  __parameters:__{% endif %}
+{%- for param in m.items() %}
+  - **{{param.param_name()}}** {{param.text()|striptags}}<br>
+    {% if param.type() %}type: {{param.type()}} <br> {% endif -%}
+    {% if param.units() %}units: {{param.units()}} <br> {% endif -%}
+    {% if param.required() %}required: {{param.required()}} <br> {% endif -%}
+{% endfor -%}
 {% endfor %}
 {% endif %}
 
 {% if properties %}
 ### properties:
-
 {% for prop in properties %}
 **{{prop.name()|trim}}** {% if prop.readonly() %}(readonly){% endif %}
 {% if prop.readonly() %}Get {% else %}Get/set {% endif -%}
@@ -58,7 +71,7 @@ __max value:__ {{prop.max()}}<br>
 {%- if prop.default() %}
 __default:__ {{prop.default()}}<br>
 {%- endif %}
-{% endfor %}
+{% endfor -%}
 {% endif %}
 
 {% if see_also %}

@@ -50,6 +50,11 @@
         </info>
         <methods>
             <method name="set">sets parameters</method>
+            <method name="test">check
+                object
+                <param name="P0" type="int" required="true">PARAM0</param>
+                <param name="P1" type="symbol">PARAM1</param>
+            </method>
         </methods>
         <mouse>
             <event editmode="true" type="double-click" keys="Ctrl"/>

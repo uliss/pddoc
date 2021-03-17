@@ -5,8 +5,6 @@
 
 {{description}}
 
-{{author}}
-
 ---
 
 ${info|h}<br>
@@ -85,4 +83,10 @@ __default:__ {{prop.default()}}<br>
 {% for obj in see_also %}
 [![{{obj['name']}}]({{obj['image']|urlencode}})]({{obj['name']|urlencode}}.html)
 {%- endfor %}
+{% endif %}
+
+{% if authors %}**Authors:** {{authors|join(', ')}}{% endif %}
+
+{% if license %}
+**License:** [![{{license['name']}}]({{license['url']}})]({{license['url']}})
 {% endif %}

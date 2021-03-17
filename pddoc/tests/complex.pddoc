@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pddoc version="1.0">
+    <object name="complex" type="box">
+        <title>osc~</title>
+        <meta>
+            <description>Documentation system for PureData</description>
+            <authors>
+                <author>Serge Poltavski</author>
+                 <author>Alex Nadzharov</author>
+            </authors>
+            <license url="http://www.gnu.org/copyleft/gpl.html">GPL v3</license>
+            <contacts>serj@poltavski.ru</contacts>
+            <version>0.1</version>
+            <website>http://github.com</website>
+            <keywords>doc puredata python pddp</keywords>
+            <library>pddoc</library>
+            <category view="link">misc</category>
+            <also>
+                <see view="link">double</see>
+            </also>
+            <aliases>
+                <alias>pddoc</alias>
+            </aliases>
+        </meta>
+        <properties>
+            <property name="@int_prop" type="int" readonly="false" units="herz" minvalue="0" maxvalue="1">
+                test property</property>
+            <property name="@float_prop" type="float" readonly="true" units="radian" minvalue="0">float
+                property</property>
+            <property name="@fmax" type="float" maxvalue="100" default="33">fmax value</property>
+            <property name="@sym_prop" type="symbol" enum="A B C" default="C">enum symbol property</property>
+        </properties>
+        <inlets>
+            <inlet type="control">
+                <xinfo minvalue="0.0" maxvalue="1.0">outputs the currently stored value</xinfo>
+            </inlet>
+            <inlet type="audio">
+                <xinfo>outputs the currently stored value.</xinfo>
+            </inlet>
+            <inlet><xinfo>range parameter.</xinfo></inlet>
+        </inlets>
+        <outlets>
+            <outlet>outputs bang all the time</outlet>
+        </outlets>
+        <arguments>
+            <argument name="FREQ" type="float">test</argument>
+        </arguments>
+        <info>
+            <par>sample text</par>
+        </info>
+        <methods>
+            <method name="set">sets parameters</method>
+        </methods>
+        <mouse>
+            <event editmode="true" type="double-click" keys="Ctrl"/>
+        </mouse>
+        <example>
+            <pdascii>
+<![CDATA[
+[floatatom]
+|
+|
+[nbx]
+]]>
+            </pdascii>
+        </example>
+    </object>
+</pddoc>

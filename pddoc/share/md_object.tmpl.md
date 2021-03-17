@@ -28,21 +28,27 @@ ${info|h}<br>
 ### properties:
 
 {% for prop in properties %}
-**{{prop.main_info_prefix()}}{% if prop.readonly() %}(readonly){% endif %}** 
+**{{prop.name()|trim}}** {% if prop.readonly() %}(readonly){% endif %}
 {% if prop.readonly() %}Get {% else %}Get/set {% endif -%}
-{{prop.text()|striptags|wordwrap}}
-{%- if prop.type_info() %}
-__type:__ {{prop.type_info()}}
+{{prop.text()|striptags|wordwrap}}<br>
+{%- if prop.type() %}
+__type:__ {{prop.type()}}<br>
+{%- endif %}
+{%- if prop.units() %}
+__units:__ {{prop.units()}}<br>
 {%- endif %}
 {%- if prop.enum() %}
-__enum:__ {{prop.enum()|join(', ')}}
+__enum:__ {{prop.enum()|join(', ')}}<br>
 {%- endif %}
-{%- if prop.range()|length == 2 %}
-__range:__ {{prop.range()|join('..')}}
+{%- if prop.range()|length == 2 and prop.range()[0] and prop.range()[1] %}
+__range:__ {{prop.range()|join('..')}}<br>
 {%- elif prop.min() %}
-__min value:__ {{prop.min()}}
+__min value:__ {{prop.min()}}<br>
 {%- elif prop.max() %}
-__max value:__ {{prop.max()}}
+__max value:__ {{prop.max()}}<br>
+{%- endif %}
+{%- if prop.default() %}
+__default:__ {{prop.default()}}<br>
 {%- endif %}
 {% endfor %}
 

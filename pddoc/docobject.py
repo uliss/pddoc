@@ -280,7 +280,7 @@ class DocPdobject(DocItem):
 
             DocItem.from_xml(self, xmlobj)
         except KeyError as e:
-            logging.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
+            logging.warning("required attribute not found: \"%s\" in <%s>" % (e, xmlobj.tag))
 
     @property
     def comment(self):
@@ -309,12 +309,13 @@ class DocPdmessage(DocPdobject):
             # after parent method
             self._text = xmlobj.attrib["text"]
         except KeyError as e:
-            logging.warning("required attribute not found: \"%s\" in <%s>" % (e.message, xmlobj.tag))
+            logging.warning("required attribute not found: \"%s\" in <%s>" % (e, xmlobj.tag))
 
 
 class DocPdinlet(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
+
 
 class DocPdinclude(DocItem):
     def __init__(self, *args):
@@ -529,6 +530,7 @@ class DocInlets(DocXlets):
 
     def is_valid_tag(self, tag_name):
         return tag_name == "inlet"
+
 
 class DocMouse(DocItem):
     def __init__(self, *args):
@@ -778,6 +780,7 @@ class DocEvent(DocItem):
 
     def keys(self):
         return self._keys
+
 
 class DocArguments(DocXlets):
     def __init__(self, *args):

@@ -19,7 +19,6 @@
 
 __author__ = 'Serge Poltavski'
 
-import os
 
 from jinja2 import Environment, PackageLoader, select_autoescape
 
@@ -47,6 +46,12 @@ class MarkdownVisitor(DocObjectVisitor):
             autoescape=select_autoescape(['md'])
         )
         self._template = self._env.get_template(tmpl_path)
+
+    def inlets_begin(self, inlets):
+        self._inlets = inlets.items()
+
+    def outlets_begin(self, outlets):
+        self._outlets = outlets.items()
 
     def make_image_painter(self, w, h, fname):
         return CairoPainter(w, h, fname, "png",

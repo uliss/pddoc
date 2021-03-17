@@ -50,7 +50,7 @@ class DocObjectVisitor(IDocObjectVisitor):
         self._authors = []
         self._contacts = ""
         self._info = ""
-        self._inlets = {}
+        self._inlets = []
         self._outlets = {}
         self._arguments = []
         self._props = []
@@ -275,7 +275,7 @@ class DocObjectVisitor(IDocObjectVisitor):
             if not os.path.isdir(self._image_output_dir):
                 raise RuntimeError("not a directory: %s".format(self._image_output_dir))
         except Exception as e:
-            raise RuntimeError(e.message)
+            raise RuntimeError(str(e))
 
     def make_image_id_name(self):
         self._image_counter += 1

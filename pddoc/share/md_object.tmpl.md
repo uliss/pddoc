@@ -78,6 +78,20 @@ __default:__ {{prop.default()}}<br>
 {% endfor -%}
 {% endif %}
 
+{% if inlets %}
+### inlets:
+{% for x in inlets %}
+* {{x.items()[0].text()}} type: __{{x.type()}}__
+{%- endfor %}
+{% endif %}
+
+{% if outlets %}
+### outlets:
+{% for x in outlets %}
+* {{x.text()}} type: __{{x.type()}}__
+{%- endfor %}
+{% endif %}
+
 {% if see_also %}
 ### see also:
 {% for obj in see_also %}
@@ -85,11 +99,11 @@ __default:__ {{prop.default()}}<br>
 {%- endfor %}
 {% endif %}
 
+{% if version %}**Version:** {{version}}{% endif %}
+
 {% if authors %}**Authors:** {{authors|join(', ')}}{% endif %}
 
-{% if license %}
-**License:** [![{{license['name']}}]({{license['url']}})]({{license['url']}})
-{% endif %}
+{% if license %}**License:** [![{{license['name']}}]({{license['url']}})]({{license['url']}}){% endif %}
 
 {% if website %}**Website:** [![{{website}}]({{website}})]({{website}}){% endif %}
 

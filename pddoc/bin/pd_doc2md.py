@@ -31,13 +31,17 @@ __author__ = 'Serge Poltavski'
 def main():
     arg_parser = argparse.ArgumentParser(description='PureData pddoc to Markdown converter')
     arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC format")
+    arg_parser.add_argument('--stdout', action='store_true', default=False, help='output to stdout')
     arg_parser.add_argument('output', metavar='OUTNAME', nargs='?', default='',
                             help="Markdown output file name")
+    arg_parser.add_argument('--xlet-db', metavar='PATH', action='append',
+                            help='inlet/outlet database file paths', default=[])
     arg_parser.add_argument('--locale', '-l', metavar='locale', default='EN', help='locale (currently EN or RU)')
     
     args = vars(arg_parser.parse_args())
     in_file = args['name']
     output = args['output']
+    stdout = args['stdout']
 
     if not os.path.exists(in_file):
         logging.error("File not exists: \"%s\"", in_file)
@@ -68,10 +72,14 @@ def main():
             # generate images
             v.generate_images()
 
-            html_data = v.render()
-            f = open(output, "w")
-            f.write(html_data)
-            f.close()
+            md_data = v.render()
+
+            if stdout:
+                print(md_data)
+            else:
+                with open(output, "w") as f:
+                    f.write(md_data)
+                    f.close()
 
 
 if __name__ == '__main__':

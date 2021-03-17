@@ -20,11 +20,19 @@ ${info|h}<br>
 {% if arguments %}
 ### arguments:
 
-{% for obj in arguments %}
-{{obj.main_info_prefix()}}<br>
+{% for arg in arguments %}
+**{{arg.name()|trim}}**
+{{arg.text()|striptags|wordwrap}}<br>
+{%- if arg.type() %}
+__type:__ {{arg.type()}}<br>
+{%- endif %}
+{%- if arg.units() %}
+__units:__ {{arg.units()}}<br>
+{%- endif %}
 {% endfor %}
-{% endif %}oc
+{% endif %}
 
+{% if properties %}
 ### properties:
 
 {% for prop in properties %}
@@ -51,6 +59,7 @@ __max value:__ {{prop.max()}}<br>
 __default:__ {{prop.default()}}<br>
 {%- endif %}
 {% endfor %}
+{% endif %}
 
 {% if see_also %}
 ### see also:

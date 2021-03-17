@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-# Copyright (C) 2014 by Serge Poltavski                                 #
-#   serge.poltavski@gmail.com                                            #
+# Copyright (C) 2014 by Serge Poltavski                                   #
+#   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
 #   it under the terms of the GNU General Public License as published by  #
@@ -21,14 +21,14 @@ __author__ = 'Serge Poltavski'
 
 import os
 
-from mako.template import Template
+from jinja2 import Environment, PackageLoader, select_autoescape
 
 from .cairopainter import CairoPainter
 from .docobjectvisitor import DocObjectVisitor
 
 
 class MarkdownVisitor(DocObjectVisitor):
-    def __init__(self, locale = "EN"):
+    def __init__(self, locale="EN"):
         DocObjectVisitor.__init__(self)
         self._image_output_dir = MarkdownVisitor.image_output_dir
         self._image_extension = "png"
@@ -36,13 +36,17 @@ class MarkdownVisitor(DocObjectVisitor):
 
         # template config
         if "EN" in locale:
-            tmpl_path = "{0:s}/share/md_object.tmpl.md".format(os.path.dirname(__file__))
+            tmpl_path = "md_object.tmpl.md"
         elif "RU" in locale:
-            tmpl_path = "{0:s}/share/md_object_ru.tmpl.md".format(os.path.dirname(__file__))
+            tmpl_path = "md_object_ru.tmpl.md"
         else:
-            tmpl_path = "{0:s}/share/md_object.tmpl.md".format(os.path.dirname(__file__))
-        
-        self._html_template = Template(filename=tmpl_path, input_encoding="utf-8")
+            tmpl_path = "md_object.tmpl.md"
+
+        self._env = Environment(
+            loader=PackageLoader('pddoc', 'share'),
+            autoescape=select_autoescape(['md'])
+        )
+        self._template = self._env.get_template(tmpl_path)
 
     def make_image_painter(self, w, h, fname):
         return CairoPainter(w, h, fname, "png",
@@ -50,11 +54,11 @@ class MarkdownVisitor(DocObjectVisitor):
                                          yoffset=self._canvas_padding)
 
     def render(self):
-        return self._html_template.render(
+        return self._template.render(
             title=self._title,
             description=self._description,
             keywords=self._keywords,
-            pd_ascii = self._pdascii,
+            pd_ascii=self._pdascii,
             aliases=self._aliases,
             license=self._license,
             version=self._version,
@@ -64,6 +68,7 @@ class MarkdownVisitor(DocObjectVisitor):
             outlets=self._outlets,
             arguments=self._arguments,
             properties=self._props,
+            methods=self._methods,
             see_also=self._see_also,
             website=self._website,
             authors=self._authors,

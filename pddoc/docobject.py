@@ -745,6 +745,7 @@ class DocArgument(DocItem):
     def enum(self):
         return self._enum
 
+
 class DocEvent(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
@@ -962,11 +963,11 @@ class DocProperty(DocArgument):
             if self._name in ("@size", "@pinned", "@presetname"):
                 self._cat = 6  # lowest
             elif 'color' in self._name:
-                self._cat = 3 # colors
+                self._cat = 3  # colors
             elif 'font' in self._name:
-                self._cat = 5 # font
+                self._cat = 5  # font
             elif 'label' in self._name:
-                self._cat = 4 # label
+                self._cat = 4  # label
             elif 'midi' in self._name:
                 self._cat = 1  # midi
             else:

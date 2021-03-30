@@ -156,11 +156,11 @@ class PdExporter(AbstractVisitor):
         line = "#X msg {0:d} {1:d} {2:s};".format(msg.x, msg.y, txt)
         self.result.append(line)
 
-    def save(self, fname):
+    def save(self, fname: str):
         f = open(fname, 'w')
         f.write("\n".join(self.result))
         f.close()
 
     @classmethod
-    def escape_tokens(cls, s):
+    def escape_tokens(cls, s: str) -> str:
         return s.replace(',', ' \\,').replace('$', '\\$')

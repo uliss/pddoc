@@ -517,9 +517,9 @@ class Parser(object):
 
 def parse_object_option(name, txt):
     if name == 'w':
-        return {'w' : int(txt) }
+        return {'w': int(txt)}
     elif name == 'i':
-        res = {'i' : True}
+        res = {'i': True}
 
         opt_res = re.match(r"(\d*)(~?)(\d*)", txt)
         if opt_res.group(1) != "":
@@ -529,7 +529,7 @@ def parse_object_option(name, txt):
 
         return res
     elif name == 'o':
-        res = {'o' : True}
+        res = {'o': True}
 
         opt_res = re.match(r"(\d*)(~?)(\d*)", txt)
         if opt_res.group(1) != "":
@@ -546,7 +546,7 @@ def parse_object_options(arg):
     if len(arg_str) < 1:
         return res
 
-    re_opt = re.compile(r"(\w{1})=(.+)")
+    re_opt = re.compile(r"(\w)=(.+)")
 
     for opt in arg_str.split(","):
         res_opt = re.match(re_opt, opt)

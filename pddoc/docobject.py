@@ -730,6 +730,12 @@ class DocArgument(DocItem):
     def main_info(self):
         res = self.main_info_prefix()
         res += self.text()
+        if res and len(self._enum) > 0:
+            res += ". Allowed values: {0}. ".format(", ".join(self._enum))
+
+        if res and self._type:
+            res += ". Type:  {0}".format(self._type)
+
         return res.strip()
 
     def range(self):
@@ -833,19 +839,22 @@ class DocMethod(DocItem):
 
 class DocParam(DocArgument):
     def param_name(self):
-        if self._units:
-            return self.units().upper()
-        elif self._name:
+        name = ""
+
+        if self._name:
             name = self.name()
-            if self.default():
-                name += '=' + self.default()
-
-            if self.optional():
-                name = "[{0}]".format(name)
-
-            return name
+        elif self._units:
+            name = self.units().upper()
         else:
-            return "X"
+            name = "X"
+
+        if self.default():
+            name += '=' + self.default()
+
+        if self.optional():
+            name = "[{0}]".format(name)
+
+        return name
 
 
 class DocInfo(DocItem):

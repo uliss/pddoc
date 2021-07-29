@@ -89,13 +89,16 @@ class BRectCalculator(AbstractVisitor):
             wd = comment.line_width()
         return self.text_brect(comment.text(), line_width=wd)
 
-    def subpatch_brect(self, cnv):
-        assert isinstance(cnv, Canvas)
+    def subpatch_brect(self, cnv: Canvas):
         assert cnv.type == Canvas.TYPE_SUBPATCH
 
         txt = "pd " + cnv.args_to_string()
         w, h = self._cairo.box_size(txt)
         return cnv.x, cnv.y, int(w), int(h)
+
+    def box_brect(self, boxstr: str):
+        w, h = self._cairo.box_size(boxstr)
+        return 0, 0, w, h
 
     def string_brect(self, string, font_size):
         w, h = self._cairo.text_size(string, font_size)

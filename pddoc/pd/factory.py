@@ -106,7 +106,7 @@ def add_import(name):
         logging.warning("import path not found: \"%s\"", name)
 
 
-def make_by_name(name, args=None, **kwargs):
+def make_by_name(name: str, args=None, **kwargs):
     if args is None:
         args = []
 

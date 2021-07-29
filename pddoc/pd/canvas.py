@@ -52,7 +52,7 @@ class Canvas(PdObject):
         return c
 
     @classmethod
-    def graph(clscls, name, x=0, y=0, w=200, h=100):
+    def graph(cls, name, x=0, y=0, w=200, h=100):
         c = Canvas(x, y, w, h, open_on_load=0, name=name)
         c.type = cls.TYPE_GRAPH
         return c
@@ -324,3 +324,12 @@ class Canvas(PdObject):
         for k, v in self.connections.items():
             print("[{0:s}:{1:d} ({2:d},{3:d})] => [{4:s}:{5:d} ({6:d},{7:d})]".format(v[0].name, v[1], v[0].x, v[0].y,
                                                                                       v[2].name, v[3], v[2].x, v[2].y))
+
+    def calc_brect(self, use_cached=True):
+        if use_cached and (self._width != 0 and self._height != 0):
+            return
+
+        if self.is_graph_on_parent():
+            return PdObject.calc_brect(self, use_cached)
+        else:
+            return self.brect_calc().subpatch_brect(self)

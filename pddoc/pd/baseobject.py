@@ -64,25 +64,25 @@ class BaseObject(object):
     def get_x(self):
         return self._x
 
-    def set_x(self, x):
+    def set_x(self, x: float):
         self._x = int(x)
 
     def get_y(self):
         return self._y
 
-    def set_y(self, y):
+    def set_y(self, y: float):
         self._y = int(y)
 
     def get_height(self):
         return self._height
 
-    def set_height(self, h):
+    def set_height(self, h: float):
         self._height = int(h)
 
     def get_width(self):
         return self._width
 
-    def set_width(self, w):
+    def set_width(self, w: float):
         self._width = int(w)
 
     def draw(self, painter):

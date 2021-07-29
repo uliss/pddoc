@@ -124,7 +124,7 @@ class PdPage(object):
         kw = {'@url': url, '@title': name}
         return UILink(x, y + 3, **kw)
 
-    def make_header_alias_link(self, objname, title):
+    def make_header_alias_link(self, objname: str, title: str):
         lnk = self.make_link(0, 0, "{0}-help.pd".format(objname), "[{0}]".format(title))
         lnk.set_bg_color(PdPageStyle.HEADER_BG_COLOR)
         return lnk
@@ -140,7 +140,7 @@ class PdPage(object):
 
         return Comment(x, y, txt.split(' '))
 
-    def make_subpatch(self, name, x, y, w, h):
+    def make_subpatch(self, name: str, x: float, y: float, w: float, h: float):
         pd = Canvas(x, y, w, h, name=name)
         pd.type = Canvas.TYPE_SUBPATCH
         self._pd[name] = pd
@@ -189,7 +189,7 @@ class PdPage(object):
         self._canvas.append_object(r)
         return l, r, brect
 
-    def add_subpatch_txt(self, name, txt, x, y):
+    def add_subpatch_txt(self, name, txt, x: float, y: float):
         return self.add_pd_txt(self._pd[name], txt, x, y)
 
     def add_subpatch_obj(self, name, obj):
@@ -206,7 +206,8 @@ class PdPage(object):
         for o in obj:
             self.append_object(o)
 
-    def group_brect(self, seq):
+    @staticmethod
+    def group_brect(seq):
         for el in seq:
             el.calc_brect()
 
@@ -216,7 +217,8 @@ class PdPage(object):
         bottom = max(seq, key=lambda x: x.bottom).bottom
         return left, top, right - left, bottom - top
 
-    def move_to_x(self, seq, x):
+    @staticmethod
+    def move_to_x(seq, x: float):
         if len(seq) < 1:
             return
 
@@ -225,7 +227,8 @@ class PdPage(object):
         for o in seq:
             o.x += x_off
 
-    def move_to_y(self, seq, y):
+    @staticmethod
+    def move_to_y(seq, y: float):
         if len(seq) < 1:
             return
 
@@ -233,21 +236,25 @@ class PdPage(object):
         for o in seq:
             o.y += y_off
 
-    def move_to(self, seq, x, y):
+    @staticmethod
+    def move_to(seq, x: float, y: float):
         for o in seq:
             o.x = x
             o.y = y
 
-    def move_by(self, seq, x, y):
+    @staticmethod
+    def move_by(seq, x: float, y: float):
         for o in seq:
             o.x += x
             o.y += y
 
-    def move_by_x(self, seq, x):
+    @staticmethod
+    def move_by_x(seq, x: float):
         for o in seq:
             o.x += x
 
-    def move_by_y(self, seq, y):
+    @staticmethod
+    def move_by_y(seq, y: float):
         for o in seq:
             o.x += y
 
@@ -280,7 +287,8 @@ class PdPage(object):
         obj.x = x_pad
         obj.y = self._height - obj.height - y_pad
 
-    def place_in_row(self, seq, x, x_pad=0):
+    @staticmethod
+    def place_in_row(seq, x: float, x_pad: float = 0):
         for o in seq:
             o.calc_brect()
 
@@ -288,7 +296,8 @@ class PdPage(object):
             o.x = x
             x += o.width + x_pad
 
-    def place_in_col(self, seq, y, y_pad=0):
+    @staticmethod
+    def place_in_col(seq, y: float, y_pad: float = 0):
         for o in seq:
             o.calc_brect()
 

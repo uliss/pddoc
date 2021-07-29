@@ -208,7 +208,10 @@ class PdDocVisitor(DocObjectVisitor):
                 arg_descr += " " + add_text_dot(value_range)
 
             if len(i.enum()) > 0:
-                arg_descr = "{0} Allowed values: {1}.".format(add_text_dot(arg_descr), ', '.join(i.enum()))
+                arg_descr = "{0} Allowed values: {1}. ".format(add_text_dot(arg_descr), ', '.join(i.enum()))
+
+            if i.units():
+                arg_descr = "{0} Units: {1}. ".format(add_text_dot(arg_descr), i.units())
 
             # param name highlight with background canvas
             hl_text = self._pp.make_txt(param_name, 0, 0)
@@ -453,7 +456,7 @@ class PdDocVisitor(DocObjectVisitor):
 
     def add_header_example_object(self, lbl, title):
         seq = []
-        alias_objects = filter(lambda n: n["name"] != title, self._aliases)
+        alias_objects = list(filter(lambda n: n["name"] != title, self._aliases))
 
         for a in alias_objects:
             if 'is_link' in a and a['is_link'] is True:
@@ -461,20 +464,50 @@ class PdDocVisitor(DocObjectVisitor):
             else:
                 seq.append(make_by_name(a['name']))
 
-        # append main object name
-        # UI object added as link
-        if self._is_gui:
-            seq.append(self._pp.make_header_alias_link(title, title))
-        else:
-            seq.append(make_by_name(title))
+        # too many aliases - show them in subpatch
+        if len(alias_objects) > 3:
+            pd = self._pp.make_subpatch('aliases', 0, 0, 250, 400)
 
-        self._pp.place_in_row(seq, 0, 20)
-        _, _, w, h = self._pp.group_brect(seq)
-        y = (lbl.height - h) / 2
-        x = (lbl.width - w) - 20
-        self._pp.move_to_x(seq, x)
-        self._pp.move_to_y(seq, y)
-        self._pp.append_list(seq)
+            self._pp.place_in_col(seq, 40, 20)
+            self._pp.move_to_x(seq, 30)
+
+            for obj in seq:
+                pd.append_object(obj)
+
+            self._pp.canvas.append_subpatch(pd)
+
+            # append main object name
+            # UI object added as link
+            if self._is_gui:
+                mobj = self._pp.make_header_alias_link(title, title)
+            else:
+                mobj = make_by_name(title)
+
+            _, _, w, h = self._pp.brect_calc.object_brect(mobj)
+            x = (lbl.width - w) - 20
+            y = (lbl.height - h) / 2
+            mobj.set_x(x)
+            mobj.set_y(y)
+            self._pp.append_object(mobj)
+
+            _, _, w, _ = self._pp.brect_calc.box_brect("pd aliases")
+            pd.set_x(x - (w + 20))
+            pd.set_y(y)
+        else:
+            # append main object name
+            # UI object added as link
+            if self._is_gui:
+                seq.append(self._pp.make_header_alias_link(title, title))
+            else:
+                seq.append(make_by_name(title))
+
+            self._pp.place_in_row(seq, 0, 20)
+            _, _, w, h = self._pp.group_brect(seq)
+            y = (lbl.height - h) / 2
+            x = (lbl.width - w) - 20
+            self._pp.move_to_x(seq, x)
+            self._pp.move_to_y(seq, y)
+            self._pp.append_list(seq)
 
     def add_header_label(self):
         return self._pp.add_header("{0}".format(self._title))

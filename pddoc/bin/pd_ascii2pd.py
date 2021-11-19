@@ -35,10 +35,14 @@ def main():
     arg_parser.add_argument('--auto', '-a', help='calculate output image size', action='store_true')
     arg_parser.add_argument('--format', '-f', metavar='FMT', nargs=1, choices=fmt_list,
                             help='output format ({0})'.format(",".join(fmt_list)), default=["pd"])
-    arg_parser.add_argument('--width', '-wd', metavar='X', type=int, nargs=1,
+    arg_parser.add_argument('--width', '-wd', metavar='X', type=int,
                             help='image width in pixels', default=400)
-    arg_parser.add_argument('--height', '-ht', metavar='X', type=int, nargs=1,
+    arg_parser.add_argument('--height', '-ht', metavar='X', type=int,
                             help='image height in pixels', default=300)
+    arg_parser.add_argument('--xspace', '-xs', metavar='X', type=int,
+                            help='x space in pixels', default=8)
+    arg_parser.add_argument('--yspace', '-ys', metavar='Y', type=int,
+                            help='y space in pixels', default=12)
     arg_parser.add_argument('--xlet-db', metavar='PATH', action='append',
                             help='inlet/outlet database file path', default=[])
     arg_parser.add_argument('input', metavar='INPUT', help="Documentation file in pd ascii format")
@@ -68,6 +72,8 @@ def main():
     factory.add_import('ceammc')
 
     p = Parser()
+    p.X_SPACE = args['xspace']
+    p.Y_SPACE = args['yspace']
     p.parse_file(in_file)
 
     cnv = Canvas(0, 0, wd, ht)
@@ -85,6 +91,13 @@ def main():
         painter = CairoPainter(wd, ht, output, fmt)
         cnv.draw(painter)
     elif fmt == 'pd':
+        if args['auto']:
+            br_calc = cnv.brect_calc()
+            cnv.traverse(br_calc)
+            bbox = br_calc.brect()
+            cnv.width = bbox[0] + bbox[2] + Parser.X_PAD * 2
+            cnv.height = bbox[1] + bbox[3] + Parser.Y_PAD
+
         pd_exporter = PdExporter()
         cnv.traverse(pd_exporter)
         pd_exporter.save(output)

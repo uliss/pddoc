@@ -32,6 +32,8 @@ class MarkdownVisitor(DocObjectVisitor):
         self._image_output_dir = MarkdownVisitor.image_output_dir
         self._image_extension = "png"
         self._image_output_dir = "img"
+        self._example_img_dir = "examples/"
+        self._example_pd_dir = "examples/"
 
         # template config
         if "EN" in locale:
@@ -46,6 +48,22 @@ class MarkdownVisitor(DocObjectVisitor):
             autoescape=select_autoescape(['md'])
         )
         self._template = self._env.get_template(tmpl_path)
+
+    @property
+    def example_img_dir(self):
+        return self._example_img_dir
+
+    @example_img_dir.setter
+    def example_img_dir(self, value):
+        self._example_img_dir = value
+
+    @property
+    def example_pd_dir(self):
+        return self._example_pd_dir
+
+    @example_pd_dir.setter
+    def example_pd_dir(self, value):
+        self._example_pd_dir = value
 
     def inlets_begin(self, inlets):
         self._inlets = inlets.items()
@@ -79,4 +97,7 @@ class MarkdownVisitor(DocObjectVisitor):
             authors=self._authors,
             contacts=self._contacts,
             library=self._library,
-            category=self._category)
+            category=self._category,
+            example_img_dir=self._example_img_dir,
+            example_pd_dir=self._example_pd_dir,
+            since=self._since)

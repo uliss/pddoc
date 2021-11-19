@@ -31,9 +31,13 @@ __author__ = 'Serge Poltavski'
 def main():
     arg_parser = argparse.ArgumentParser(description='PureData pddoc to Markdown converter')
     arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC format")
-    arg_parser.add_argument('--stdout', action='store_true', default=False, help='output to stdout')
     arg_parser.add_argument('output', metavar='OUTNAME', nargs='?', default='',
                             help="Markdown output file name")
+    arg_parser.add_argument('--stdout', action='store_true', default=False, help='output to stdout')
+    arg_parser.add_argument('--example-img', metavar='PATH', type=str, default='example/',
+                            help="relative path to example folder with example image files")
+    arg_parser.add_argument('--example-pd', metavar='PATH', type=str, default='',
+                            help="relative path to example folder with example Pd files")
     arg_parser.add_argument('--xlet-db', metavar='PATH', action='append',
                             help='inlet/outlet database file paths', default=[])
     arg_parser.add_argument('--locale', '-l', metavar='locale', default='EN', help='locale (currently EN or RU)')
@@ -65,6 +69,8 @@ def main():
             v = MarkdownVisitor(args['locale'])
             v.set_image_prefix(child_tag.attrib["name"])
             v.set_search_dir(os.path.dirname(in_file))
+            v.example_img_dir = args['example_img']
+            v.example_pd_dir = args['example_pd']
 
             # traverse doc
             dobj.traverse(v)

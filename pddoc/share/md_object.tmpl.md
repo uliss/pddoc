@@ -1,22 +1,27 @@
-[< reference home](index.html)
+[index](index.html) :: [{{category}}]({{category|urlencode}}.html)
 ---
 
 # {{title|striptags}}
 
-{{description}}
+###### {{description}}
+
+{% if since %}*available since version:* {{since}}{% endif %}
 
 ---
 
-${info|h}<br>
+{% if info %}
+## information
+{{info}}
+{%- endif %}
 
-
----
-
-
-![example](examples/{{title}}-example.jpg)
+{% if example_pd_dir %}
+[![example]({{example_img_dir}}{{title|urlencode}}.jpg)]({{example_pd_dir}}{{title|urlencode}}.pd)
+{% else %}
+![example]({{example_img_dir}}{{title|urlencode}}.jpg)
+{% endif %}
 
 {% if arguments %}
-### arguments:
+## arguments:
 {% for arg in arguments %}
 * **{{arg.name()|trim}}**
 {{arg.text()|striptags|wordwrap}}<br>
@@ -30,7 +35,7 @@ __units:__ {{arg.units()}}<br>
 {% endif %}
 
 {% if methods %}
-### methods:
+## methods:
 {% for m in methods %}
 * **{{m.name()|trim}}**
 {{m.text()|striptags|wordwrap}}<br>
@@ -51,7 +56,7 @@ __units:__ {{arg.units()}}<br>
 {% endif %}
 
 {% if properties %}
-### properties:
+## properties:
 {% for prop in properties %}
 * **{{prop.name()|trim}}** {% if prop.readonly() %}(readonly){% endif %}
 {% if prop.readonly() %}Get {% else %}Get/set {% endif -%}
@@ -79,23 +84,32 @@ __default:__ {{prop.default()}}<br>
 {% endif %}
 
 {% if inlets %}
-### inlets:
+## inlets:
 {% for x in inlets %}
-* {{x.items()[0].text()}} type: __{{x.type()}}__
+* {{x.items()[0].text()}} 
+__type:__ {{x.type()}}<br>
 {%- endfor %}
 {% endif %}
 
 {% if outlets %}
-### outlets:
+## outlets:
 {% for x in outlets %}
-* {{x.text()}} type: __{{x.type()}}__
+* {{x.text()}}
+__type:__ {{x.type()}}<br>
+{%- endfor %}
+{% endif %}
+
+{% if keywords %}
+## keywords:
+{% for k in keywords %}
+[{{k}}](keywords/{{k|urlencode}}.html)
 {%- endfor %}
 {% endif %}
 
 {% if see_also %}
-### see also:
-{% for obj in see_also %}
-[![{{obj['name']}}]({{obj['image']|urlencode}})]({{obj['name']|urlencode}}.html)
+**See also:**
+{%- for obj in see_also %}
+[\[{{obj['name']}}\]]({{obj['name']|urlencode}}.html)
 {%- endfor %}
 {% endif %}
 
@@ -103,7 +117,14 @@ __default:__ {{prop.default()}}<br>
 
 {% if authors %}**Authors:** {{authors|join(', ')}}{% endif %}
 
-{% if license %}**License:** [![{{license['name']}}]({{license['url']}})]({{license['url']}}){% endif %}
+{% if license and license['url'] %}
+**License:** 
+[![{{license['name']}}]({{license['url']}})]({{license['url']}})
+{% endif %}
+
+{% if license and not license['url'] %}
+**License:** {{license['name']}}
+{% endif %}
 
 {% if website %}**Website:** [![{{website}}]({{website}})]({{website}}){% endif %}
 

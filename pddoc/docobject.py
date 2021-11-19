@@ -649,7 +649,8 @@ class DocArgument(DocItem):
         'sec': 'sec',
         'semitone': 'semitone',
         'radian': 'rad',
-        'degree': 'deg'
+        'degree': 'deg',
+        'cent': 'cent'
     }
 
     def __init__(self, *args):

@@ -3,6 +3,10 @@
 
 # {{title|striptags}}
 
+{%- if aliases %}
+**aliases:** {{aliases|join(", ")|striptags|replace('~','\~')}}
+{% endif %}
+
 ###### {{description|striptags}}
 
 {% if since %}*available since version:* {{since}}{% endif %}

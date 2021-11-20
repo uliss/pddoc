@@ -67,6 +67,9 @@ class MarkdownVisitor(DocObjectVisitor):
     def example_pd_dir(self, value):
         self._example_pd_dir = value
 
+    def alias_begin(self, tag):
+        self._aliases.append("[%s]" % tag.text())
+
     def inlets_begin(self, inlets):
         self._inlets = inlets.items()
 

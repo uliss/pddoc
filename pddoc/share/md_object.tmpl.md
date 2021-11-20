@@ -3,7 +3,7 @@
 
 # {{title|striptags}}
 
-###### {{description}}
+###### {{description|striptags}}
 
 {% if since %}*available since version:* {{since}}{% endif %}
 
@@ -11,7 +11,7 @@
 
 {% if info %}
 ## information
-{{info}}
+{{info|striptags}}
 {%- endif %}
 
 {% if example_pd_dir %}
@@ -26,10 +26,10 @@
 * **{{arg.name()|trim}}**
 {{arg.text()|striptags|wordwrap}}<br>
 {%- if arg.type() %}
-__type:__ {{arg.type()}}<br>
+_type:_ {{arg.type()}}<br>
 {%- endif %}
 {%- if arg.units() %}
-__units:__ {{arg.units()}}<br>
+_units:_ {{arg.units()}}<br>
 {%- endif %}
 {% endfor -%}
 {% endif %}
@@ -62,23 +62,23 @@ __units:__ {{arg.units()}}<br>
 {% if prop.readonly() %}Get {% else %}Get/set {% endif -%}
 {{prop.text()|striptags|wordwrap}}<br>
 {%- if prop.type() %}
-__type:__ {{prop.type()}}<br>
+_type:_ {{prop.type()}}<br>
 {%- endif %}
 {%- if prop.units() %}
-__units:__ {{prop.units()}}<br>
+_units:_ {{prop.units()}}<br>
 {%- endif %}
 {%- if prop.enum() %}
-__enum:__ {{prop.enum()|join(', ')}}<br>
+_enum:_ {{prop.enum()|join(', ')}}<br>
 {%- endif %}
 {%- if prop.range()|length == 2 and prop.range()[0] and prop.range()[1] %}
-__range:__ {{prop.range()|join('..')}}<br>
+_range:_ {{prop.range()|join('..')}}<br>
 {%- elif prop.min() %}
-__min value:__ {{prop.min()}}<br>
+_min value:_ {{prop.min()}}<br>
 {%- elif prop.max() %}
-__max value:__ {{prop.max()}}<br>
+_max value:_ {{prop.max()}}<br>
 {%- endif %}
 {%- if prop.default() %}
-__default:__ {{prop.default()}}<br>
+_default:_ {{prop.default()}}<br>
 {%- endif %}
 {% endfor -%}
 {% endif %}
@@ -86,16 +86,16 @@ __default:__ {{prop.default()}}<br>
 {% if inlets %}
 ## inlets:
 {% for x in inlets %}
-* {{x.items()[0].text()}} 
-__type:__ {{x.type()}}<br>
+* {{x.items()[0].text()|striptags}}<br>
+_type:_ {{x.type()}}
 {%- endfor %}
 {% endif %}
 
 {% if outlets %}
 ## outlets:
 {% for x in outlets %}
-* {{x.text()}}
-__type:__ {{x.type()}}<br>
+* {{x.text()|striptags}}<br>
+_type:_ {{x.type()}}
 {%- endfor %}
 {% endif %}
 

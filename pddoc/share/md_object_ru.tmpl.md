@@ -1,39 +1,132 @@
-[< справка — содержание](index.html)
+[index](index.html) :: [{{category}}](category_{{category|urlencode}}.html)
 ---
 
-# ${title | h}
+# {{title|striptags}}
 
+###### {{description|striptags}}
 
-${description|h}
-
----
-
-${info|h}<br>
-
+{% if since %}*доступно с версии:* {{since}}{% endif %}
 
 ---
 
+{% if info %}
+## информация
+{{info|striptags}}
+{%- endif %}
 
-![example](examples/${title}-example.jpg)
+{% if example_pd_dir %}
+[![example]({{example_img_dir}}{{title|urlencode}}.jpg)]({{example_pd_dir}}{{title|urlencode}}.pd)
+{% else %}
+![example]({{example_img_dir}}{{title|urlencode}}.jpg)
+{% endif %}
 
----
-аргументы:
+{% if arguments %}
+## аргументы:
+{% for arg in arguments %}
+* **{{arg.name()|trim}}**
+{{arg.text()|striptags|wordwrap}}<br>
+{%- if arg.type() %}
+_тип:_ {{arg.type()}}<br>
+{%- endif %}
+{%- if arg.units() %}
+_единица:_ {{arg.units()}}<br>
+{%- endif %}
+{% endfor -%}
+{% endif %}
 
-% for obj in arguments:
-${obj.main_info()|h}<br>
-% endfor
+{% if methods %}
+## методы:
+{% for m in methods %}
+* **{{m.name()|trim}}**
+{{m.text()|striptags|wordwrap}}<br>
+{% if m.items() %}  __параметры:__{% endif %}
+{%- for param in m.items() %}
+  - **{{param.param_name()}}** {{param.text()|striptags}}<br>
+{%- if param.type() %}
+    тип: {{param.type()}} <br>
+{%- endif %}
+{%- if param.units() %}
+    единица: {{param.units()}} <br> 
+{%- endif %}
+{%- if param.required() %}
+    обязательно: {{param.required()}} <br> 
+{%- endif %}
+{% endfor -%}
+{% endfor %}
+{% endif %}
 
----
-свойства:
+{% if properties %}
+## свойства:
+{% for prop in properties %}
+* **{{prop.name()|trim}}** {% if prop.readonly() %}(readonly){% endif %}
+{% if prop.readonly() %}Получить {% else %}Получить/установить {% endif -%}
+{{prop.text()|striptags|wordwrap}}<br>
+{%- if prop.type() %}
+_тип:_ {{prop.type()}}<br>
+{%- endif %}
+{%- if prop.units() %}
+_единица:_ {{prop.units()}}<br>
+{%- endif %}
+{%- if prop.enum() %}
+_варианты:_ {{prop.enum()|join(', ')}}<br>
+{%- endif %}
+{%- if prop.range()|length == 2 and prop.range()[0] and prop.range()[1] %}
+_диапазон:_ {{prop.range()|join('..')}}<br>
+{%- elif prop.min() %}
+_минимальное значение:_ {{prop.min()}}<br>
+{%- elif prop.max() %}
+_максимальное значение:_ {{prop.max()}}<br>
+{%- endif %}
+{%- if prop.default() %}
+_по умолчанию:_ {{prop.default()}}<br>
+{%- endif %}
+{% endfor -%}
+{% endif %}
 
-% for obj in properties:
-${obj.main_info()|h}<br>
-% endfor
+{% if inlets %}
+## входы:
+{% for x in inlets %}
+* {{x.items()[0].text()|striptags}}<br>
+_тип:_ {{x.type()}}
+{%- endfor %}
+{% endif %}
 
-% if see_also:
----
-смотрите также:<br>
-% for obj in see_also:
-[![${obj['name']|h}](${obj['image']|h})](${obj['name']}.html)
-% endfor
-% endif
+{% if outlets %}
+## выходы:
+{% for x in outlets %}
+* {{x.text()|striptags}}<br>
+_тип:_ {{x.type()}}
+{%- endfor %}
+{% endif %}
+
+{% if keywords %}
+## ключевые слова:
+{% for k in keywords %}
+[{{k}}](keywords/{{k|urlencode}}.html)
+{%- endfor %}
+{% endif %}
+
+{% if see_also %}
+**Смотрите также:**
+{%- for obj in see_also %}
+[\[{{obj['name']}}\]]({{obj['name']|urlencode}}.html)
+{%- endfor %}
+{% endif %}
+
+{% if version %}**Версия:** {{version}}{% endif %}
+
+{% if authors %}**Авторы:** {{authors|join(', ')}}{% endif %}
+
+{% if license and license['url'] %}
+**Лицензия:** 
+[![{{license['name']}}]({{license['url']}})]({{license['url']}})
+{% endif %}
+
+{% if license and not license['url'] %}
+**Лицензия:** {{license['name']}}
+{% endif %}
+
+{% if website %}**Website:** [![{{website}}]({{website}})]({{website}}){% endif %}
+
+{% if contacts %}**Контакты:** [![{{contacts}}](mailto:{{contacts}})](mailto:{{contacts}}){% endif %}
+

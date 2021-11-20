@@ -3,11 +3,11 @@
 
 # {{info["name"]|striptags}}
 
-##### Version {{info["version"]}}
+##### Версия {{info["version"]}}
 
 {{info["descr"]}}
 
-## categories
+## категории
 
 {% for cat in data %}
 [### {{cat["name"]}}](category_{{cat["name"]|urlencode}}.html)
@@ -20,8 +20,8 @@
 {% endfor %}
 
 ---
-**Website:** [{{info["website"]}}]({{info["website"]}})
+**Сайт:** [{{info["website"]}}]({{info["website"]}})
 
-**License:** {{info["license"]}}
+**Лицензия:** {{info["license"]}}
 
-**Authors:** {{info["authors"]|map(attribute="text")|join(', ')}}
+**Авторы:** {{info["authors"]|map(attribute="text")|join(', ')}}

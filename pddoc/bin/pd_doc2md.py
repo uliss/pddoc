@@ -34,6 +34,7 @@ def main():
     arg_parser.add_argument('output', metavar='OUTNAME', nargs='?', default='',
                             help="Markdown output file name")
     arg_parser.add_argument('--stdout', action='store_true', default=False, help='output to stdout')
+    arg_parser.add_argument('--no-images', action='store_true', default=False, help='do not generate images')
     arg_parser.add_argument('--example-img', metavar='PATH', type=str, default='example/',
                             help="relative path to example folder with example image files")
     arg_parser.add_argument('--example-pd', metavar='PATH', type=str, default='',
@@ -76,7 +77,8 @@ def main():
             dobj.traverse(v)
 
             # generate images
-            v.generate_images()
+            if not args["no_images"]:
+                v.generate_images()
 
             md_data = v.render()
 

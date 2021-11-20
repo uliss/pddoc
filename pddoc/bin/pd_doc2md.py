@@ -67,7 +67,7 @@ def main():
             dobj = DocObject()
             dobj.from_xml(child_tag)
 
-            v = MarkdownVisitor(args['locale'])
+            v = MarkdownVisitor(args['locale'], no_images=args['no_images'])
             v.set_image_prefix(child_tag.attrib["name"])
             v.set_search_dir(os.path.dirname(in_file))
             v.example_img_dir = args['example_img']

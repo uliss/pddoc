@@ -6,8 +6,8 @@
 {{cat["descr"]}}
 
 {% for obj in cat["objects"] %}
-[**{{obj["name"]}}**]({{obj["name"]|urlencode}}.html): {{obj["descr"]}} {% if obj["aliases"] %}<br>
-_aliases:_ {{obj["aliases"]|join(", ")}}
+[**{{obj["name"]|replace('~','\~')}}**]({{obj["name"]|urlencode}}.html): {{obj["descr"]}} {% if obj["aliases"] %}<br>
+_aliases:_ {{obj["aliases"]|join(", ")|replace('~','\~')}}
 {% endif %}
 {% endfor %}
 

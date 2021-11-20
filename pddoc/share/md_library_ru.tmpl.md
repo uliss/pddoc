@@ -1,4 +1,4 @@
-[index](index.html) 
+[Главная](https://ceammc.github.io/pd-help/) 
 ---
 
 # {{info["name"]|striptags}}
@@ -10,7 +10,7 @@
 ## категории
 
 {% for cat in data %}
-[### {{cat["name"]}}](category_{{cat["name"]|urlencode}}.html)
+### [{{cat["name"]}}](category_{{cat["name"]|urlencode}}.html)
 {% if cat["info"] %}###### {{cat["info"]|trim}}{% endif %}
 ---
 

@@ -1,4 +1,4 @@
-[index](index.html) 
+[Home](https://ceammc.github.io/pd-help/) 
 ---
 
 # {{info["name"]|striptags}}
@@ -10,12 +10,12 @@
 ## categories
 
 {% for cat in data %}
-[### {{cat["name"]}}](category_{{cat["name"]|urlencode}}.html)
+### [{{cat["name"]}}](category_{{cat["name"]|urlencode}}.html)
 {% if cat["info"] %}###### {{cat["info"]|trim}}{% endif %}
 ---
 
 {% for obj in cat["objects"] %}
-[**{{obj["name"]}}**]({{obj["name"]|urlencode}}.html): {{obj["descr"]}} 
+[**{{obj["name"]|replace('~','\~')}}**]({{obj["name"]|urlencode}}.html): {{obj["descr"]}} 
 {% endfor %}
 {% endfor %}
 

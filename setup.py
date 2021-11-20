@@ -28,7 +28,7 @@ setup(name='pddoc',
       license='GPLv3',
       packages=['pddoc', 'pddoc.bin', 'pddoc.pd', 'pddoc.txt'],
       install_requires=[
-          'termcolor', 'colorama', 'six', 'mako', 'argparse', 'lxml', 'ply', 'docutils', 'sphinx'
+          'termcolor', 'colorama', 'six', 'mako', 'argparse', 'lxml', 'ply', 'docutils', 'sphinx', 'jinja2'
       ],
       test_suite='nose.collector',
       tests_require=['nose'],
@@ -47,7 +47,8 @@ setup(name='pddoc',
                               'pd_lib2deken = pddoc.bin.pd_lib2deken:main',
                               'pd_lib2md   = pddoc.bin.pd_lib2md:main',
                               'pd_faust2ui = pddoc.bin.pd_faust2gui:main',
-                              'pd_cat2pd   = pddoc.bin.pd_cat2pd:main']
+                              'pd_cat2pd   = pddoc.bin.pd_cat2pd:main',
+                              'pd_cat2md   = pddoc.bin.pd_cat2md:main']
       },
       include_package_data=True,
       zip_safe=False)

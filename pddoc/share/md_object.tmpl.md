@@ -1,4 +1,4 @@
-[index](index.html) :: [{{category}}]({{category|urlencode}}.html)
+[index](index.html) :: [{{category}}](category_{{category|urlencode}}.html)
 ---
 
 # {{title|striptags}}

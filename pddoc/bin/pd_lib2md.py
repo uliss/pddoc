@@ -85,7 +85,7 @@ def main():
 
             if args['aliases']:
                 for a in obj.xpath("pddoc/object/meta/aliases/alias"):
-                    category["aliases"].append(a.text)
+                    item["aliases"].append("\\[%s\\]" % a.text)
 
     # print(data)
 

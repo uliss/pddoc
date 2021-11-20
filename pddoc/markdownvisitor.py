@@ -23,17 +23,19 @@ __author__ = 'Serge Poltavski'
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 from .cairopainter import CairoPainter
+from .pdpainter import PdPainter
 from .docobjectvisitor import DocObjectVisitor
 
 
 class MarkdownVisitor(DocObjectVisitor):
-    def __init__(self, locale="EN"):
+    def __init__(self, locale="EN", no_images=False):
         DocObjectVisitor.__init__(self)
         self._image_output_dir = MarkdownVisitor.image_output_dir
         self._image_extension = "png"
         self._image_output_dir = "img"
         self._example_img_dir = "examples/"
         self._example_pd_dir = "examples/"
+        self._no_images = no_images
 
         # template config
         if "EN" in locale:
@@ -72,9 +74,12 @@ class MarkdownVisitor(DocObjectVisitor):
         self._outlets = outlets.items()
 
     def make_image_painter(self, w, h, fname):
-        return CairoPainter(w, h, fname, "png",
-                                         xoffset=self._canvas_padding,
-                                         yoffset=self._canvas_padding)
+        if self._no_images:
+            return PdPainter()
+        else:
+            return CairoPainter(w, h, fname, "png",
+                                             xoffset=self._canvas_padding,
+                                             yoffset=self._canvas_padding)
 
     def render(self):
         return self._template.render(

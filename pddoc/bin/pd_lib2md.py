@@ -24,23 +24,6 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-def print_entry(file, name, desc):
-    # remove multiple spaces
-    desc = " ".join(desc.split()).strip()
-    output_str = f"[**{name}**]({name}.md)\t{desc}<br>"
-    if file is None:
-        print(output_str)
-    else:
-        file.write(output_str+"\n")
-
-
-def print_category(file, name):
-    if file is None:
-        print(f"#### {name}")
-    else:
-        file.write(f"#### {name}<br>\n")
-
-
 def main():
     arg_parser = argparse.ArgumentParser(description='Converts XML library to markdown page')
     arg_parser.add_argument('input', metavar='LIB_FILE', help="Library description file in XML format")

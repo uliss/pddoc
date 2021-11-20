@@ -5,7 +5,7 @@ import argparse
 import os
 import logging
 from lxml import etree
-import re
+from jinja2 import Environment, PackageLoader, select_autoescape
 
 
 #   Copyright (C) 2020 by Serge Poltavski                                 #
@@ -33,27 +33,32 @@ def print_entry(file, name, desc):
     else:
         file.write(output_str+"\n")
 
+
 def print_category(file, name):
     if file is None:
         print(f"#### {name}")
     else:
         file.write(f"#### {name}<br>\n")
 
+
 def main():
-    arg_parser = argparse.ArgumentParser(description='Converts XML library to deken object list')
+    arg_parser = argparse.ArgumentParser(description='Converts XML library to markdown page')
     arg_parser.add_argument('input', metavar='LIB_FILE', help="Library description file in XML format")
     arg_parser.add_argument('--aliases', '-a', action='store_true', help='output object aliases')
     arg_parser.add_argument('--force', '-f', action='store_true', help='force to overwrite existing file')
     arg_parser.add_argument('--output', '-o', metavar='OUTPUT', help="output file name")
+    arg_parser.add_argument('--locale', '-l', metavar='NAME', choices=("EN", "RU"), default='EN',
+                            help='locale (currently EN or RU)')
+
     args = vars(arg_parser.parse_args())
 
     if not os.path.exists(args['input']):
         logging.error('no such file: "%s"', args['input'])
         exit(1)
 
-    doc = etree.parse(args['input'])
-    doc.xinclude()
-    root = doc.getroot()
+    xml = etree.parse(args['input'])
+    xml.xinclude()
+    root = xml.getroot()
 
     if args['output'] and os.path.exists(args['output']) and not args['force']:
         print("Error: file already exists: '{0}'. Use --force flag to overwrite.".format(args['output']))
@@ -63,15 +68,56 @@ def main():
     if args['output']:
         f = open(args['output'], "w")
 
+    locale = args["locale"]
+    # template config
+    if "EN" in locale:
+        tmpl_path = "md_library_en.tmpl.md"
+    elif "RU" in locale:
+        tmpl_path = "md_library_ru.tmpl.md"
+    else:
+        tmpl_path = "md_library_en.tmpl.md"
+
+    info = {
+        "name": root.get("name"),
+        "version": root.xpath("//library/meta/version")[0].text,
+        "descr": root.xpath("//library/meta/library-info/description")[0].text,
+        "website": root.xpath("//library/meta/library-info/website")[0].text,
+        "license": root.xpath("//library/meta/library-info/license")[0].text,
+        "authors": root.xpath("//library/meta/authors/author")
+    }
+
+    data = []
+
     for c in root.findall("category"):
-        print_category(f, c.get("name"))
+        category = {"name": c.get("name"), "info": "", "objects": []}
+        cat_info = c.findall("category-info")
+        if len(cat_info) > 0:
+            category["info"] = cat_info[0].text
+
+        data.append(category)
+        # iterate category objects
         for obj in c.findall('entry'):
-            print_entry(f, obj.get("name"), obj.get("descr"))
+            item = {"name": obj.get("name"), "descr": obj.get("descr"), "aliases": []}
+            category["objects"].append(item)
+
             if args['aliases']:
                 for a in obj.xpath("pddoc/object/meta/aliases/alias"):
-                    print_entry(f, a.text, obj.get("descr"))
+                    category["aliases"].append(a.text)
 
-    if f:
+    # print(data)
+
+    env = Environment(
+        loader=PackageLoader('pddoc', 'share'),
+        autoescape=select_autoescape(['md'])
+    )
+
+    template = env.get_template(tmpl_path)
+    output_str = template.render(info=info, data=data)
+
+    if f is None:
+        print(output_str)
+    else:
+        f.write(output_str + "\n")
         f.close()
 
 

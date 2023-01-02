@@ -23,7 +23,7 @@
             </aliases>
         </meta>
         <properties>
-            <property name="@test" type="int" readonly="false" units="herz" minvalue="0" maxvalue="1">test property</property>
+            <property name="@test" type="int" access="readonly" units="herz" minvalue="0" maxvalue="1">test property</property>
         </properties>
         <inlets>
             <inlet type="control">

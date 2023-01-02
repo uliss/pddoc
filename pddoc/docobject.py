@@ -961,12 +961,12 @@ class DocProperties(DocItem):
 class DocProperty(DocArgument):
     def __init__(self, *args):
         DocArgument.__init__(self, args)
-        self._readonly = False
+        self._access = "readwrite"
         self._cat = 0
 
     def from_xml(self, xmlobj):
         DocArgument.from_xml(self, xmlobj)
-        self._readonly = xmlobj.attrib.get("readonly", "false") == "true"
+        self._access = xmlobj.attrib.get("access", "readwrite")
         self._default = xmlobj.attrib.get("default", "")
         cat = xmlobj.attrib.get("category", "")
         cat_lst = ['main', 'midi', 'preset', 'color', 'label', 'font', 'basic']
@@ -989,8 +989,8 @@ class DocProperty(DocArgument):
     def sort_name(self):
         return "{0}_{1}".format(self._cat, self.name())
 
-    def readonly(self):
-        return self._readonly
+    def access(self):
+        return self._access
 
     def is_flag(self):
         return self._type == "flag"

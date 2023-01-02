@@ -321,10 +321,12 @@ class PdDocVisitor(DocObjectVisitor):
         # props description
         prop_descr = ""
         if not (m.is_alias() or m.is_flag()):
-            if m.readonly():
-                prop_descr += "(readonly) Get "
-            else:
+            if m.access() == "readwrite":
                 prop_descr += "Get/Set "
+            elif m.access() == "initonly":
+                prop_descr += "(initonly) Get/Set "
+            else:
+                prop_descr += f"(readonly) Get "
 
         prop_descr += m.text()
 

@@ -29,7 +29,6 @@ from .pd.factory import make_by_name
 from .pd.message import Message
 from .pd.obj import PdObject
 from .pd.parser import Parser
-import logging
 
 
 def add_text_dot(string):
@@ -186,8 +185,7 @@ class PdDocVisitor(DocObjectVisitor):
         if len(m.items()) > 0:
             info_text += " Arguments are: "
 
-        info = []
-        info.append(self._pp.add_txt(info_text, self.PD_XLET_INFO_XPOS, self.current_yoff))
+        info = [self._pp.add_txt(info_text, self.PD_XLET_INFO_XPOS, self.current_yoff)]
 
         # add method arguments
         for i in m.items():
@@ -326,7 +324,7 @@ class PdDocVisitor(DocObjectVisitor):
             elif m.access() == "initonly":
                 prop_descr += "(initonly) Get/Set "
             else:
-                prop_descr += f"(readonly) Get "
+                prop_descr += "(readonly) Get "
 
         prop_descr += m.text()
 
@@ -526,8 +524,8 @@ class PdDocVisitor(DocObjectVisitor):
         # more info
         pd = self._pp.make_subpatch('info', 10, y + 22, self.PD_INFO_WINDOW_WIDTH, self.PD_INFO_WINDOW_HEIGHT)
 
-        def add_subpatch_text(x, y, txt):
-            self._pp.add_subpatch_txt('info', txt, x, y)
+        def add_subpatch_text(x, y0, txt):
+            self._pp.add_subpatch_txt('info', txt, x, y0)
 
         bg = self._pp.make_background(1, 1, 107, self.PD_INFO_WINDOW_HEIGHT - 3, self.PD_FOOTER_COLOR)
         self._pp.add_subpatch_obj('info', bg)

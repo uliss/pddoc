@@ -16,7 +16,7 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="PropAcessType">
+    <xs:simpleType name="PropAccessType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="readonly"/>
             <xs:enumeration value="initonly"/>
@@ -93,8 +93,8 @@
 
     <xs:simpleType name="UnitDataType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="herz"/>
-            <xs:enumeration value="kiloherz"/>
+            <xs:enumeration value="hertz"/>
+            <xs:enumeration value="kilohertz"/>
             <xs:enumeration value="decibel"/>
             <xs:enumeration value="millisecond"/>
             <xs:enumeration value="bpm"/>
@@ -134,7 +134,7 @@
 
     <xs:simpleType name="XletNumber">
         <xs:restriction base="xs:string">
-            <xs:pattern value="([\d]{1,2}|n|n\+1|n-1|\.\.\.|.{0})"/>
+            <xs:pattern value="(\d{1,2}|n|n\+1|n-1|\.\.\.|.{0})"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -178,7 +178,7 @@
             <xs:element name="info" type="InfoElementType" minOccurs="0"/>
         </xs:all>
         <xs:attribute name="name" use="required" type="ObjectNameType"/>
-        <xs:attribute name="type" use="optional" type="ObjectTypeType" default="box"/>
+        <xs:attribute name="type" type="ObjectTypeType" default="box"/>
     </xs:complexType>
 
     <xs:complexType name="MetaElementType">
@@ -208,21 +208,21 @@
     <xs:complexType name="ObjectCategory">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="view" type="ObjectCategoryView" use="optional" default="object"/>
+                <xs:attribute name="view" type="ObjectCategoryView" default="object"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
 
     <xs:complexType name="AuthorsElementType">
         <xs:sequence>
-            <xs:element name="author" minOccurs="1" maxOccurs="unbounded" type="xs:string"/>
+            <xs:element name="author" maxOccurs="unbounded" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="LicenseElementType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="url" type="xs:anyURI" use="optional"/>
+                <xs:attribute name="url" type="xs:anyURI"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -296,7 +296,7 @@
             <xs:element name="pdconnect" type="PdConnectType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="title" type="xs:string" use="optional"/>
-        <xs:attribute name="width" use="optional" type="xs:unsignedShort"/>
+        <xs:attribute name="width" type="xs:unsignedShort"/>
         <xs:attribute name="height" use="optional" type="xs:unsignedShort"/>
         <xs:attribute name="size" use="optional" type="PdAttrSize"/>
     </xs:complexType>
@@ -449,7 +449,7 @@
     <xs:complexType name="PropertyElementType" mixed="true">
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="type" type="PropertyDataType" use="required"/>
-        <xs:attribute name="access" type="PropAcessType" use="optional"  default="readwrite"/>
+        <xs:attribute name="access" type="PropAccessType" use="optional"  default="readwrite"/>
         <xs:attribute name="units" use="optional" type="UnitDataType"/>
         <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
         <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>

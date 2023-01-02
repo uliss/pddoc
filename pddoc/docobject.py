@@ -637,8 +637,8 @@ class DocOutlet(DocXlet):
 
 class DocArgument(DocItem):
     UNIT_MAP = {
-        'herz': 'Hz',
-        'kiloherz': 'KHz',
+        'hertz': 'Hz',
+        'kilohertz': 'KHz',
         'millisecond': 'ms',
         'second': 'sec',
         'decibel': 'db',

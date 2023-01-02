@@ -2,7 +2,8 @@
 PureData documentation generator
 
  
-This is a generator that creates *-help.pd files from single **pddoc**-formatted files and another .pd file from XML that contains objects, short descriptions and links to help files.
+This is a generator that creates *-help.pd files from single **pddoc**-formatted files and another .pd file from 
+XML that contains objects, short descriptions and links to help files.
 
 ---
 
@@ -10,15 +11,14 @@ Requires: pycairo
   
 
   
-_    | _   
---- | --- 
- **pd_doc2pd** | Converts pddoc file to PureData help patch 
- **pd_doc2html** | Converts pddoc file to HTML file
- **pd_doc2md** | Converts pddoc file to PureData help patch 
- **pd_makelibrary** | Creates XML file for set of pddoc files 
- **pd_lib2pd** | Converts XML file to PureData patch with objects links to help files 
- **pd_cat2pd** | Converts XML file with category info to separate patch with object links 
-
+| _                  | _                                                                        |
+|--------------------|--------------------------------------------------------------------------|
+| **pd_doc2pd**      | Converts pddoc file to PureData help patch                               |
+| **pd_doc2html**    | Converts pddoc file to HTML file                                         |
+| **pd_doc2md**      | Converts pddoc file to PureData help patch                               |
+| **pd_makelibrary** | Creates XML file for set of pddoc files                                  |
+| **pd_lib2pd**      | Converts XML file to PureData patch with objects links to help files     |
+| **pd_cat2pd**      | Converts XML file with category info to separate patch with object links |
 
 ---
 ## 1. XML file
@@ -159,11 +159,14 @@ description
     - list - list of atoms
     - alias - alias for other property
     - flag - property that is **True** when specified, otherwise **False**
-- **readonly**
+- **access** - value from list:
+    - readwrite
+    - readonly
+    - initonly
 - **units** - value unit from list:
-    - herz
-    - kiloherz
-    - decibell (db)
+    - hertz
+    - kilohertz
+    - decibel (db)
     - millisecond (msec)
     - second (sec)
     - bpm
@@ -194,7 +197,7 @@ description
 <methods>
     <method name="NAME">
         description
-        <param type="TYPE" name="XXX" required="true"></param>
+        <param type="TYPE" name="XXX" required="true">description</param>
         ...
     </method>
     ...
@@ -208,7 +211,7 @@ description
 ```xml
 <inlets dynamic="true">
     <inlet type="TYPE" number="XXX">
-        <xinfo on="symbol"></xinfo>
+        <xinfo on="symbol">description</xinfo>
     </inlet>
 </inlets>
 ```
@@ -245,7 +248,7 @@ description
 ### mouse
 ```xml
 <mouse>
-    <event type="drag" keys="Shift" editmode="false"></event>
+    <event type="drag" keys="Shift" editmode="false">description</event>
 </mouse>
 ```
 

@@ -58,6 +58,7 @@
     <xs:simpleType name="PropertyDataType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="atom"/>
+            <xs:enumeration value="bool"/>
             <xs:enumeration value="int"/>
             <xs:enumeration value="float"/>
             <xs:enumeration value="list"/>
@@ -71,6 +72,7 @@
     <xs:simpleType name="ArgumentDataType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="atom"/>
+            <xs:enumeration value="bool"/>
             <xs:enumeration value="int"/>
             <xs:enumeration value="float"/>
             <xs:enumeration value="symbol"/>

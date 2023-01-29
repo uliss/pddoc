@@ -22,7 +22,7 @@ import os
 import json
 import math
 
-from pddoc.pd import Canvas, PdExporter, PdObject, Comment, Message
+from pddoc.pd import Canvas, PdExporter, PdObject, Message
 from pddoc.pd.gcanvas import GCanvas
 from pddoc.pd.coregui import Color
 
@@ -67,7 +67,7 @@ def obj_prop_defs(json, d):
                 props(ui)
 
 
-def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
+def export_ui(cnv, counter, prop_route, el, x, y, main_obj, **kwargs):
     MSG_XOFF = 250
 
     if el['type'] in ('vslider', 'hslider'):
@@ -77,7 +77,7 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
                 if 'unit' in m:
                     lbl_txt = "{0}({1}):".format(el['label'], m['unit'])
 
-        y += 20
+        y += 18
         obj = PdObject('ui.slider', args=["@size", "125", "12", "@active_scale", "1",
                                           "@label", lbl_txt, "@label_side", "top",
                                           "@label_align", "left", "@fontsize", "10"])
@@ -88,9 +88,15 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
         cnv.append_object(obj)
 
         sync = PdObject("sync")
-        sync.set_x(x + 180)
+        sync.set_x(x + 205)
         sync.set_y(y)
         cnv.append_object(sync)
+
+        # range and type checks
+        has_min = 'min' in el
+        has_max = 'max' in el
+        is_meta_int = 'meta' in el and 'type' in el['meta'] and (el['meta']['type'] == 'int')
+        is_step_int = 'step' in el and (el['step'] == 1)
 
         nbx = PdObject('ui.number', args=["@size", "50", "12"])
         nbx.set_x(x + 135)
@@ -102,23 +108,28 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
         cnv.add_connection(nbx.id, 0, sync.id, 1, check_xlets=False)
         cnv.add_connection(sync.id, 1, nbx.id, 0, check_xlets=False)
 
-        if 'min' in el:
+        if has_min:
             obj.append_arg("@min")
             obj.append_arg(str(el['min']))
             nbx.append_arg("@min")
             nbx.append_arg(str(el['min']))
 
-        if 'max' in el:
+        if has_max:
             obj.append_arg("@max")
             obj.append_arg(str(el['max']))
             nbx.append_arg("@max")
             nbx.append_arg(str(el['max']))
 
-        if 'min' in el and 'max' in el:
+        ndig = 3
+        if has_min and has_max:
             range = abs(el['max'] - el['min'])
             ndig = int(math.ceil(math.log10(range))) - 4
-            nbx.append_arg("@digits")
-            nbx.append_arg(str(abs(ndig)))
+
+        if is_meta_int or is_step_int:
+            ndig = 0
+
+        nbx.append_arg("@digits")
+        nbx.append_arg(str(abs(ndig)))
 
         msg = Message(x + MSG_XOFF, y, ["@" + el['label'], "$1"])
         cnv.append_object(msg)
@@ -165,11 +176,22 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
         y += 12
         counter += 1
     elif el['type'] in ('checkbox', 'button'):
-        tgl = PdObject('ui.toggle', args=["@size", "12", "12",
-                                          "@label", el['label'], "@label_side", "right",
-                                          "@label_align", "left", "@fontsize", "10"])
-        tgl.set_x(x + 2)
-        tgl.set_y(y + 8)
+        is_bypass = (el['type'] == 'checkbox' and el['label'] == 'bypass')
+        if is_bypass:
+            tgl = PdObject('ui.toggle', args=["@size", "12", "12",
+                                              "@label", el['label'], "@label_side", "left",
+                                              "@label_align", "right", "@fontsize", "10"])
+
+            wd = kwargs.get("width", 200)
+            tgl.set_x(wd - 15)
+            tgl.set_y(kwargs.get("top", 200))
+        else:
+            tgl = PdObject('ui.toggle', args=["@size", "12", "12",
+                                              "@label", el['label'], "@label_side", "right",
+                                              "@label_align", "left", "@fontsize", "10"])
+            tgl.set_x(x + 2)
+            tgl.set_y(y + 8)
+
         if el["label"] != "gate":
             tgl.append_arg("@presetname")
             tgl.append_arg("/gui/\\$1/{0}/checkbox{1}".format(main_obj.name, counter))
@@ -182,11 +204,13 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj):
         cnv.add_connection(msg.id, 0, main_obj.id, 0, check_xlets=False)
         cnv.add_connection(prop_route.id, counter, tgl.id, 0, check_xlets=False)
 
-        y += 18
+        if not is_bypass:
+            y += 18
+
         counter += 1
     elif 'items' in el:
         for i in el['items']:
-            y, counter = export_ui(cnv, counter, prop_route, i, x, y, main_obj)
+            y, counter = export_ui(cnv, counter, prop_route, i, x, y, main_obj, **kwargs)
 
     return y, counter
 
@@ -258,27 +282,72 @@ def main():
     ctl_inlet.set_y(GRID)
     cnv.append_object(ctl_inlet)
 
-    in_route = PdObject('route', args=[name])
+    # object name router
+    # [route OBJ_NAME * .]
+    # |               / /
+    # [route..          ]
+    in_route = PdObject('route', args=[name, '*', '.'])
     in_route.set_x(x_off + CTL_XOFF)
-    in_route.set_y(GRID * 8)
+    in_route.set_y(GRID * 5)
     cnv.append_object(in_route)
     cnv.add_connection(ctl_inlet.id, 0, in_route.id, 0)
+
+    # check route property
+    # [route.prop]
+    is_prop = PdObject('route.prop', x=x_off+CTL_XOFF+200, y=GRID*6)
+    cnv.append_object(is_prop)
+    cnv.add_connection(in_route.id, 3, is_prop.id, 0, check_xlets=False)
+
+    # [msg *]
+    msg_ast = PdObject('msg', x=x_off+CTL_XOFF+50, y=GRID*8, args=['*'])
+    cnv.append_object(msg_ast)
+    cnv.add_connection(in_route.id, 1, msg_ast.id, 0, check_xlets=False)
 
     # property checker
     prop_route = PdObject('route')
     for p in obj_props(json_root):
         prop_route.append_arg(p)
 
+    prop_route.append_arg('default')
+    prop_route.append_arg('reset')
+
     cnv.append_object(prop_route)
     prop_route.set_x(x_off + CTL_XOFF)
     prop_route.set_y(GRID * 10)
+    # connect target route
     cnv.add_connection(in_route.id, 0, prop_route.id, 0, check_xlets=False)
+    # connect '*'
+    cnv.add_connection(in_route.id, 1, prop_route.id, 0, check_xlets=False)
+    # connect '.'
+    cnv.add_connection(in_route.id, 2, prop_route.id, 0, check_xlets=False)
+    # connect 'prop ok'
+    cnv.add_connection(is_prop.id, 0, prop_route.id, 0, check_xlets=False)
 
-    print_err_prop = PdObject('print', args=['unknown property'])
-    print_err_prop.set_x(x_off + 550)
-    print_err_prop.set_y(GRID * 14)
+    # error print
+    # [t b a          ]
+    # |               |
+    # [supported...( [print unknown message]
+    # |
+    # [print]
+    err_x = x_off + 550
+    err_trig = PdObject('t', x=err_x, y=GRID * 14, args=['b', 'a'])
+    cnv.append_object(err_trig)
+    cnv.add_connection(prop_route.id, len(prop_route.outlets()) - 1, err_trig.id, 0)
+
+    err_msg_args = 'supported messages are:'.split(' ') + prop_route.args
+    err_msg = Message(err_x, GRID * 15, atoms=err_msg_args)
+    cnv.append_object(err_msg)
+    cnv.add_connection(err_trig.id, 0, err_msg.id, 0)
+
+    err_msg_print0 = PdObject('print', x=err_x, y=GRID*17)
+    cnv.append_object(err_msg_print0)
+    cnv.add_connection(err_msg.id, 0, err_msg_print0.id, 0)
+
+    print_err_prop = PdObject('print', args=[f'[g{name}~] unknown message'])
+    print_err_prop.set_x(err_x + 50)
+    print_err_prop.set_y(GRID * 17)
     cnv.append_object(print_err_prop)
-    cnv.add_connection(prop_route.id, len(prop_route.outlets()) - 1, print_err_prop.id, 0)
+    cnv.add_connection(err_trig.id, 1, print_err_prop.id, 0)
 
     # default values
     default_msg = Message(x_off + 200, GRID * 3, atoms=[])
@@ -291,6 +360,28 @@ def main():
 
     cnv.append_object(default_msg)
     cnv.add_connection(default_msg.id, 0, prop_route.id, 0)
+
+    # connect to default
+    def_idx = prop_route.args.index('default')
+    if def_idx >= 0:
+        cnv.add_connection(prop_route.id, def_idx, default_msg.id, 0)
+
+    # reset message
+    # [route ... reset]
+    # |
+    # [t b b  ]
+    # |       |
+    # [reset( [default(
+    reset_trig = PdObject("t", GRID, GRID * 2, args=['b', 'b'])
+    cnv.append_object(reset_trig)
+    reset_msg = Message(GRID, GRID * 3, atoms=['reset'])
+    cnv.append_object(reset_msg)
+    cnv.add_connection(reset_trig.id, 1, reset_msg.id, 0, check_xlets=False)
+    cnv.add_connection(reset_trig.id, 0, default_msg.id, 0, check_xlets=False)
+    cnv.add_connection(reset_msg.id, 0, main_obj.id, 0, check_xlets=False)
+    reset_idx = prop_route.args.index('reset')
+    if reset_idx >= 0:
+        cnv.add_connection(prop_route.id, reset_idx, reset_trig.id, 0, check_xlets=False)
 
     default_loadbang = PdObject('msg.onload')
     default_loadbang.set_x(x_off + 200)
@@ -313,7 +404,14 @@ def main():
     outlet.set_x(x_off)
     outlet.set_y(GRID * 22)
     cnv.append_object(outlet)
-    cnv.add_connection(in_route.id, 1, outlet.id, 0, check_xlets=False)
+    # connect route to unmatched objects
+    cnv.add_connection(is_prop.id, 1, outlet.id, 0, check_xlets=False)
+    # connect route to '*' objects
+    cnv.add_connection(msg_ast.id, 0, outlet.id, 0, check_xlets=False)
+
+    # background
+    bg_cnv = GCanvas(3, 202, size=8, width=198, height=18, bg_color="#AAAAAA")
+    cnv.append_object(bg_cnv)
 
     # label
     lbl_cnv = GCanvas(3, 202, size=8, width=198, height=18, label_xoff=3, label_yoff=9, font_size=12)
@@ -322,16 +420,15 @@ def main():
     lbl_cnv._label = f"[{name}~]"
     cnv.append_object(lbl_cnv)
 
-    # msg_name = Comment(10, 200, args=[f"[{name}~]"])
-    # cnv.append_object(msg_name)
     for k, v in json_root.items():
         if k == "ui":
             y_off = 218
             c = 0
             for ui in v:
-                y_off, _ = export_ui(cnv, c, prop_route, ui, 10, y_off, main_obj)
+                y_off, _ = export_ui(cnv, c, prop_route, ui, 10, y_off, main_obj, top=205, width=200)
 
     cnv.set_graph_on_parent(True, xoff=2, yoff=200, width=200, height=y_off - 200 + 8, hide_args=True)
+    bg_cnv.height = y_off - 200 + 3
 
     pd_exporter = PdExporter()
     cnv.traverse(pd_exporter)

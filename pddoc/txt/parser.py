@@ -148,7 +148,8 @@ class Parser(object):
         'vsl': 'vslider',
         'HS': 'hslider',
         'VS': 'vslider',
-        'A': 'array'
+        'A': 'array',
+        'L': 'listbox',
     }
 
     def __init__(self):

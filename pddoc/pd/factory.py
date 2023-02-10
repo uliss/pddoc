@@ -26,6 +26,7 @@ import logging
 import importlib
 
 from .floatatom import FloatAtom
+from .listbox import PdListBox
 from . import EXTERNALS_DIR
 from .obj import PdObject
 from .bng import PdBng
@@ -114,6 +115,8 @@ def make_by_name(name: str, args=None, **kwargs):
         return FloatAtom(0, 0, **kwargs)
     elif name == "symbolatom":
         return PdSymbolAtom(0, 0, **kwargs)
+    elif name == "listbox":
+        return PdListBox(0, 0, **kwargs)
     elif name == "bng":
         return PdBng(0, 0, **kwargs)
     elif name == "tgl":

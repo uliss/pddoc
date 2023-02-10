@@ -348,7 +348,7 @@ class Parser(object):
 
             elif n.type == 'MESSAGE':
                 m = re.match(r_MESSAGE, n.value)
-                txt = m.group(1).replace(',', '\,')
+                txt = m.group(1).replace(',', '\\,')
                 all_atoms = txt.split(' ')
                 args = list(filter(lambda a: len(a) > 0 and (not a.startswith('#')), all_atoms))
 
@@ -361,7 +361,7 @@ class Parser(object):
                 n.pd_object = Message(0, 0, args)
             elif n.type == 'COMMENT':
                 m = re.match(r_COMMENT, n.value)
-                txt = m.group(1).replace(';', ' \;').replace(',', ' \,')
+                txt = m.group(1).replace(';', ' \\;').replace(',', ' \\,')
                 n.pd_object = Comment(0, 0, txt.split(' '))
             else:
                 logging.warning("Unknown type {0:s}".format(n.type))

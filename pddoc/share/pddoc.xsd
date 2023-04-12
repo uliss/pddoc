@@ -52,6 +52,7 @@
             <xs:enumeration value="data:mlist"/>
             <xs:enumeration value="data:string"/>
             <xs:enumeration value="data:fifo"/>
+            <xs:enumeration value="data:color"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -79,6 +80,12 @@
             <xs:enumeration value="list"/>
             <xs:enumeration value="any"/>
             <xs:enumeration value="property"/>
+            <xs:enumeration value="data:set"/>
+            <xs:enumeration value="data:dict"/>
+            <xs:enumeration value="data:mlist"/>
+            <xs:enumeration value="data:string"/>
+            <xs:enumeration value="data:fifo"/>
+            <xs:enumeration value="data:color"/>
         </xs:restriction>
     </xs:simpleType>
 

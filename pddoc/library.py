@@ -6,7 +6,7 @@ import os
 import os.path
 import urllib.parse as ul
 
-from .parser import get_parser
+from .parser import get_parser, get_schema
 #   Copyright (C) 2016 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
@@ -76,8 +76,10 @@ class LibraryMaker(object):
 
     def process_object_file(self, f):
         try:
-            xml = etree.parse(f, get_parser())
+            xml = etree.parse(f)
             xml.xinclude()
+            schema = get_schema()
+            schema.assertValid(xml)
         except etree.XMLSyntaxError as e:
             logging.error("XML syntax error:\n \"%s\"\n\twhile parsing file: \"%s\"", e, f)
             return

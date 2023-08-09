@@ -987,7 +987,13 @@ class DocProperty(DocArgument):
                 self._cat = 0  # main
 
     def sort_name(self):
-        return "{0}_{1}".format(self._cat, self.name())
+        acc = 1  # rw
+        if self._access == "readonly":
+            acc = 2
+        elif self._access == "initonly":
+            acc = 0
+
+        return "{0}_{1}_{2}".format(acc, self._cat, self.name())
 
     def access(self):
         return self._access

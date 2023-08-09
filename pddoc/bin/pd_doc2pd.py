@@ -98,7 +98,7 @@ def main():
 
             patch_data = v.render()
             if not patch_data:
-                print("convertion error")
+                print("conversion error")
                 exit(1)
 
             with open(output, 'w') as f:

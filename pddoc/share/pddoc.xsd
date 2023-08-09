@@ -41,6 +41,7 @@
             <xs:enumeration value="bang"/>
             <xs:enumeration value="atom"/>
             <xs:enumeration value="int"/>
+            <xs:enumeration value="bool"/>
             <xs:enumeration value="float"/>
             <xs:enumeration value="list"/>
             <xs:enumeration value="symbol"/>
@@ -413,6 +414,7 @@
     <xs:complexType name="PropertiesElementType">
         <xs:sequence>
             <xs:element name="property" type="PropertyElementType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="propref" type="PropertyRefElementType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -465,6 +467,11 @@
         <xs:attribute name="default" use="optional" type="xs:string"/>
         <xs:attribute name="enum" use="optional" type="xs:string"/>
         <xs:attribute name="category" use="optional" type="CategoryType"/>
+    </xs:complexType>
+
+    <xs:complexType name="PropertyRefElementType" mixed="true">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="data" type="xs:string" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="InfoElementType">

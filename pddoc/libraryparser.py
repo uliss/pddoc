@@ -17,6 +17,7 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from lxml import etree
+import pkg_resources
 from .pd.factory import make_by_name
 from .pd.obj import PdObject
 from .pdpage import PdPage
@@ -57,7 +58,7 @@ class LibraryParser(object):
 
     def process_xml(self):
         self.get_meta()
-        # order matters! add_xlet_db() should called after get_meta()
+        # order matters! add_xlet_db() should be called after get_meta()
         self.add_xlet_db()
         self.add_lib_description()
         self.process_xml_categories()
@@ -152,13 +153,15 @@ class LibraryParser(object):
             self._pp.append_object(lnk)
             self._current_y += lnk.height + 10
 
+        vers = pkg_resources.require("pddoc")[0].version
+
         pddoc_lnk = self._pp.make_link(20, self._current_y,
                                        "http://github.com/uliss/pddoc",
-                                       "Generated with pddoc")
+                                       f"Generated with pddoc v{vers}")
         self._pp.append_object(pddoc_lnk)
 
         rpos = f.width - 70
-        msg = PdObject("msg", args=["0"], x=rpos, y=f.top + 15)
+        msg = PdObject("loadmsg", args=["0"], x=rpos, y=f.top + 15)
         sw = PdObject("switch~", x=rpos, y=f.top + 50)
         self._pp.append_object(msg)
         self._pp.append_object(sw)

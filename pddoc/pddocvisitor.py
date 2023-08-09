@@ -313,6 +313,9 @@ class PdDocVisitor(DocObjectVisitor):
 
         # add message with property name
         prop_get_name = "{0}".format(m.name())
+        if m.access() == "readonly":
+            prop_get_name += '?'
+
         props.append(Message(self.PD_XLET_INDX_XPOS, self.current_yoff, [prop_get_name]))
         self._pp.append_list(props)
 
@@ -320,7 +323,10 @@ class PdDocVisitor(DocObjectVisitor):
         prop_descr = ""
         if not (m.is_alias() or m.is_flag()):
             if m.access() == "readwrite":
-                prop_descr += "Get/Set "
+                if m.text().startswith("on/off"):
+                    prop_descr += "Turn "
+                else:
+                    prop_descr += "Get/Set "
             elif m.access() == "initonly":
                 prop_descr += "(initonly) Get/Set "
             else:

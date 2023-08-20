@@ -117,7 +117,12 @@
             <xs:enumeration value="cent"/>
             <xs:enumeration value="radian"/>
             <xs:enumeration value="degree"/>
+            <xs:enumeration value="smpte"/>
         </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="UnitDataTypeEnum">
+        <xs:list itemType="UnitDataType"/>
     </xs:simpleType>
 
     <xs:simpleType name="LabelPos">
@@ -423,7 +428,7 @@
             <xs:extension base="xs:string">
                 <xs:attribute name="name" use="required" type="xs:string"/>
                 <xs:attribute name="type" use="required" type="ArgumentDataType"/>
-                <xs:attribute name="units" use="optional" type="UnitDataType"/>
+                <xs:attribute name="units" use="optional" type="UnitDataTypeEnum"/>
                 <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
                 <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
                 <xs:attribute name="enum" use="optional" type="xs:string"/>
@@ -437,7 +442,7 @@
             <xs:extension base="xs:string">
                 <xs:attribute name="name" use="optional" type="xs:string"/>
                 <xs:attribute name="type" use="required" type="ArgumentDataType"/>
-                <xs:attribute name="units" use="optional" type="UnitDataType"/>
+                <xs:attribute name="units" use="optional" type="UnitDataTypeEnum"/>
                 <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
                 <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
                 <xs:attribute name="default" use="optional" type="xs:string"/>
@@ -461,7 +466,7 @@
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="type" type="PropertyDataType" use="required"/>
         <xs:attribute name="access" type="PropAccessType" use="optional"  default="readwrite"/>
-        <xs:attribute name="units" use="optional" type="UnitDataType"/>
+        <xs:attribute name="units" use="optional" type="UnitDataTypeEnum"/>
         <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
         <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
         <xs:attribute name="default" use="optional" type="xs:string"/>

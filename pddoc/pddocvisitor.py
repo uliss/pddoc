@@ -55,6 +55,10 @@ def remove_text_dot(string):
         return string
 
 
+def units_str(units) -> str:
+    return ", ".join(map(lambda x: f"'{x}'", units))
+
+
 class PdDocVisitor(DocObjectVisitor):
     PD_WINDOW_WIDTH = 785
     PD_WINDOW_HEIGHT = 555
@@ -208,8 +212,8 @@ class PdDocVisitor(DocObjectVisitor):
             if len(i.enum()) > 0:
                 arg_descr = "{0} Allowed values: {1}. ".format(add_text_dot(arg_descr), ', '.join(i.enum()))
 
-            if i.units():
-                arg_descr = "{0} Units: {1}. ".format(add_text_dot(arg_descr), i.units())
+            if i.units() and len(i.units()) > 0:
+                arg_descr = "{0} Units: {1}. ".format(add_text_dot(arg_descr), units_str(i.units()))
 
             # param name highlight with background canvas
             hl_text = self._pp.make_txt(param_name, 0, 0)
@@ -337,8 +341,8 @@ class PdDocVisitor(DocObjectVisitor):
         if m.type() and not (m.is_alias() or m.is_flag()):
             prop_descr = "{0} Type: {1}. ".format(add_text_dot(prop_descr), m.type())
 
-        if m.units():
-            prop_descr = "{0} Units: {1}. ".format(add_text_dot(prop_descr), m.units())
+        if m.units() and len(m.units()) > 0:
+            prop_descr = "{0} Units: {1}. ".format(add_text_dot(prop_descr), units_str(m.units()))
 
         if m.default():
             prop_descr = "{0} Default value: {1}. ".format(add_text_dot(prop_descr), m.default())
@@ -627,3 +631,4 @@ class PdDocVisitor(DocObjectVisitor):
         self._pp.move_to_y(also_objects, y)
         self._pp.move_to_x(also_objects, (self._pp.width - w) - 40)
         self._pp.append_list(also_objects)
+

@@ -11,7 +11,7 @@ def readme():
 
 
 setup(name='pddoc',
-      version='0.7.2',
+      version='0.7.3',
       description='PureData documentation tools',
       long_description=readme(),
       classifiers=[
@@ -48,7 +48,9 @@ setup(name='pddoc',
                               'pd_lib2md   = pddoc.bin.pd_lib2md:main',
                               'pd_faust2ui = pddoc.bin.pd_faust2gui:main',
                               'pd_cat2pd   = pddoc.bin.pd_cat2pd:main',
-                              'pd_cat2md   = pddoc.bin.pd_cat2md:main']
+                              'pd_cat2md   = pddoc.bin.pd_cat2md:main',
+                              'pd_docfmt   = pddoc.bin.pd_docfmt:main'
+                              ]
       },
       include_package_data=True,
       zip_safe=False)

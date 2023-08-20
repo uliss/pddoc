@@ -650,14 +650,15 @@ class DocArgument(DocItem):
         'semitone': 'semitone',
         'radian': 'rad',
         'degree': 'deg',
-        'cent': 'cent'
+        'cent': 'cent',
+        'smpte': 'smpte'
     }
 
     def __init__(self, *args):
         DocItem.__init__(self, args)
         self._number = ""
         self._type = ""
-        self._units = ""
+        self._units = []
         self._name = ""
         self._minvalue = ""
         self._maxvalue = ""
@@ -669,7 +670,13 @@ class DocArgument(DocItem):
         self._name = xmlobj.attrib.get("name", "anonym")
         self._number = xmlobj.attrib.get("number", "")
         self._type = xmlobj.attrib.get("type", "")
-        self._units = xmlobj.attrib.get("units", "")
+        self._units = xmlobj.attrib.get("units", "").strip()
+
+        if len(self._units) != 0:
+            self._units = self._units.split(" ")
+        else:
+            self._units = []
+
         self._minvalue = xmlobj.attrib.get("minvalue", "")
         self._maxvalue = xmlobj.attrib.get("maxvalue", "")
         self._default = xmlobj.attrib.get("default", "")
@@ -683,11 +690,11 @@ class DocArgument(DocItem):
     def type(self):
         return self._type
 
-    def units(self):
-        if not self._units:
-            return ""
+    def units(self) -> list:
+        if not self._units or len(self._units) == 0:
+            return []
 
-        return self.UNIT_MAP[self._units]
+        return list(map(lambda x: self.UNIT_MAP[x], self._units))
 
     def name(self):
         return self._name
@@ -722,7 +729,7 @@ class DocArgument(DocItem):
         if self._name:
             res += "{0}".format(self._name)
         if self._units:
-            res += "({0})".format(self.units())
+            res += "({0})".format("|".join(self.units()))
 
         if res:
             res += ": "

@@ -30,7 +30,7 @@ def get_schema():
 
 
 def get_parser():
-    return etree.XMLParser(schema=get_schema())
+    return etree.XMLParser(schema=get_schema(), strip_cdata=False)
 
 
 def parse_xml(path):
@@ -46,20 +46,13 @@ def parse_xml(path):
         for ref in xml.xpath('//pddoc/object/properties/*[local-name()="include"]'):
             # manual XInclude implementation with template substitution
             prop_xml = etree.parse(dirname + "/" + ref.attrib["href"])
-            if "data" in ref.attrib:  # expected format: $key: the value, $key2: value2, ...
-                data = list(ref.attrib["data"].split(","))
+            if ref.attrib.get("subst", "true") != "false":
                 tmpl = Template(prop_xml.getroot().text)
-                kargs = dict()
-                for entry in data:
-                    kv = list(map(lambda x: x.strip(), entry.split(":")))
-                    if len(kv) != 2 or not kv[0].startswith("$"):
-                        continue
-
-                    kargs[kv[0][1:]] = kv[1]
-
-                txt = tmpl.substitute(kargs)
+                obj_name = os.path.basename(path)[:-6]  # strip .pddoc extension
+                obj_name = obj_name.replace("~", "")
+                obj_name = obj_name.replace(".", "_")
+                txt = tmpl.substitute(obj=obj_name)
                 prop_xml.getroot().text = txt
-                pass
 
             new_tag = prop_xml.getroot()
             ref.getparent().replace(ref, new_tag)

@@ -9,8 +9,12 @@
 
 ## категории
 
+{%- for cat in data %}
+[{{cat["name"]}}](#cat_{{cat["name"]}})
+{%- endfor %}
+
 {% for cat in data %}
-### [{{cat["name"]}}](category_{{cat["name"]|urlencode}}.html)
+### <a id="cat_{{cat["name"]}}" href="category_{{cat["name"]|urlencode}}.html">{{cat["name"]}}</a>
 {% if cat["info"] %}###### {{cat["info"]|trim}}{% endif %}
 ---
 

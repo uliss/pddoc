@@ -33,7 +33,7 @@
 _type:_ {{arg.type()}}<br>
 {%- endif %}
 {%- if arg.units() %}
-_units:_ {{arg.units()}}<br>
+_units:_ {{arg.units()|join(', ')}}<br>
 {%- endif %}
 {% endfor -%}
 {% endif %}
@@ -50,7 +50,7 @@ _units:_ {{arg.units()}}<br>
     type: {{param.type()}} <br>
 {%- endif %}
 {%- if param.units() %}
-    units: {{param.units()}} <br> 
+    units: {{param.units()|join(', ')}} <br> 
 {%- endif %}
 {%- if param.required() %}
     required: {{param.required()}} <br> 
@@ -62,14 +62,14 @@ _units:_ {{arg.units()}}<br>
 {% if properties %}
 ## properties:
 {% for prop in properties %}
-* **{{prop.name()|trim}}** {% if prop.readonly() %}(readonly){% endif %}
-{% if prop.readonly() %}Get {% else %}Get/set {% endif -%}
+* **{{prop.name()|trim}}** {% if prop.access() != 'readwrite' %}({{prop.access()}}){% endif %}
+{% if prop.access() == 'readonly' %}Get {% else %}Get/set {% endif -%}
 {{prop.text()|striptags|wordwrap}}<br>
 {%- if prop.type() %}
 _type:_ {{prop.type()}}<br>
 {%- endif %}
 {%- if prop.units() %}
-_units:_ {{prop.units()}}<br>
+_units:_ {{prop.units()|join(', ')}}<br>
 {%- endif %}
 {%- if prop.enum() %}
 _enum:_ {{prop.enum()|join(', ')}}<br>
@@ -90,7 +90,9 @@ _default:_ {{prop.default()}}<br>
 {% if inlets %}
 ## inlets:
 {% for x in inlets %}
+{%- if x.items() %}
 * {{x.items()[0].text()|striptags}}<br>
+{%- endif %}
 _type:_ {{x.type()}}
 {%- endfor %}
 {% endif %}

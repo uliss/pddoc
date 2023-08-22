@@ -29,7 +29,7 @@
 _тип:_ {{arg.type()}}<br>
 {%- endif %}
 {%- if arg.units() %}
-_единица:_ {{arg.units()}}<br>
+_единица:_ {{arg.units()|join(', ')}}<br>
 {%- endif %}
 {% endfor -%}
 {% endif %}
@@ -46,7 +46,7 @@ _единица:_ {{arg.units()}}<br>
     тип: {{param.type()}} <br>
 {%- endif %}
 {%- if param.units() %}
-    единица: {{param.units()}} <br> 
+    единица: {{param.units()|join(', ')}} <br> 
 {%- endif %}
 {%- if param.required() %}
     обязательно: {{param.required()}} <br> 
@@ -58,14 +58,14 @@ _единица:_ {{arg.units()}}<br>
 {% if properties %}
 ## свойства:
 {% for prop in properties %}
-* **{{prop.name()|trim}}** {% if prop.readonly() %}(readonly){% endif %}
-{% if prop.readonly() %}Получить {% else %}Получить/установить {% endif -%}
+* **{{prop.name()|trim}}** {% if prop.access() != 'readwrite' %}({{prop.access()}}){% endif %}
+{% if prop.access() == 'readonly' %}Запросить {% else %}Запросить/установить {% endif -%}
 {{prop.text()|striptags|wordwrap}}<br>
 {%- if prop.type() %}
 _тип:_ {{prop.type()}}<br>
 {%- endif %}
 {%- if prop.units() %}
-_единица:_ {{prop.units()}}<br>
+_единица:_ {{prop.units()|join(', ')}}<br>
 {%- endif %}
 {%- if prop.enum() %}
 _варианты:_ {{prop.enum()|join(', ')}}<br>
@@ -86,7 +86,9 @@ _по умолчанию:_ {{prop.default()}}<br>
 {% if inlets %}
 ## входы:
 {% for x in inlets %}
+{%- if x.items() %}
 * {{x.items()[0].text()|striptags}}<br>
+{%- endif %}
 _тип:_ {{x.type()}}
 {%- endfor %}
 {% endif %}

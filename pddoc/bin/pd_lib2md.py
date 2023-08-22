@@ -87,7 +87,16 @@ def main():
                 for a in obj.xpath("pddoc/object/meta/aliases/alias"):
                     item["aliases"].append("\\[%s\\]" % a.text)
 
-    # print(data)
+    keywords = dict()
+    for tag in root.findall(".//keywords"):
+        for kw in tag.text.strip().split(" "):
+            if len(kw) == 0:
+                continue
+
+            if kw in keywords:
+                keywords[kw] += 1
+            else:
+                keywords[kw] = 1
 
     env = Environment(
         loader=PackageLoader('pddoc', 'share'),
@@ -95,7 +104,7 @@ def main():
     )
 
     template = env.get_template(tmpl_path)
-    output_str = template.render(info=info, data=data)
+    output_str = template.render(info=info, data=data, keywords=keywords)
 
     if f is None:
         print(output_str)

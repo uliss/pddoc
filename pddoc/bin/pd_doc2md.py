@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 # coding=utf-8
 import argparse
-import shutil
 import logging
 import os
-from pddoc.parser import parse_xml
-from pddoc.pd import factory
 
+from pddoc.parser import parse_xml
+from pddoc.pd import factory, PdObject
 from pddoc.markdownvisitor import MarkdownVisitor
 from pddoc.docobject import DocObject
-#   Copyright (C) 2015 by Serge Poltavski                                 #
+#   Copyright (C) 2023 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -26,6 +25,14 @@ from pddoc.docobject import DocObject
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 __author__ = 'Serge Poltavski'
+
+
+def add_xlet_db(path_list):
+    for db_path in path_list:
+        if not os.path.exists(db_path):
+            logging.warning("xlet database file not found: '%s'. skipping...", db_path)
+        else:
+            PdObject.xlet_calculator.add_db(db_path)
 
 
 def main():
@@ -51,6 +58,8 @@ def main():
     if not os.path.exists(in_file):
         logging.error("File not exists: \"%s\"", in_file)
         exit(1)
+
+    add_xlet_db(args['xlet_db'])
 
     if not output:
         output = os.path.splitext(os.path.basename(in_file))[0] + ".md"

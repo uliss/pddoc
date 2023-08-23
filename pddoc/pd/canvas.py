@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 from __future__ import print_function
+
 #   Copyright (C) 2014 by Serge Poltavski                                 #
 # serge.poltavski@gmail.com                                             #
 #                                                                         #
@@ -18,6 +19,8 @@ from __future__ import print_function
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 __author__ = 'Serge Poltavski'
+
+from typing import Optional
 
 from .obj import *
 from . import XLET_MESSAGE, XLET_SOUND, XLET_IGNORE
@@ -105,7 +108,7 @@ class Canvas(PdObject):
         self._id_counter += 1
         return res
 
-    def append_object(self, obj):
+    def append_object(self, obj) -> bool:
         assert self != obj
         assert issubclass(obj.__class__, BaseObject)
 
@@ -117,7 +120,7 @@ class Canvas(PdObject):
         self.objects.append(obj)
         return True
 
-    def find_object_by_id(self, oid):
+    def find_object_by_id(self, oid) -> Optional[PdObject]:
         for obj in self._objects:
             if issubclass(obj.__class__, PdObject):
                 if obj.id == oid:
@@ -125,7 +128,7 @@ class Canvas(PdObject):
 
         return None
 
-    def is_graph_on_parent(self):
+    def is_graph_on_parent(self) -> bool:
         return self._graph_on_parent
 
     def set_graph_on_parent(self, value, **kwargs):
@@ -142,14 +145,23 @@ class Canvas(PdObject):
         self._gop['hide_args'] = int(kwargs.get('hide_args', False))
 
     @staticmethod
-    def make_connection_key(sid, soutl, did, dinl):
+    def make_connection_key(sid: int, soutl: int, did: int, dinl: int) -> str:
         return "%i:%i => %i:%i" % (sid, soutl, did, dinl)
 
-    def add_connection(self, sid, soutl, did, dinl, check_xlets=True):
-        assert sid != did
-        assert sid >= 0 and did >= 0 and soutl >= 0 and dinl >= 0
+    def add_connection(self, sid, soutl: int, did, dinl: int, check_xlets: bool = True) -> bool:
+        if sid == did:
+            logging.error("self connection: %s:%d => %s:%d in canvas: %s" % (sid, soutl, did, dinl, self.name))
+            return False
 
-        def str_bbox(obj, xlet):
+        if soutl < 0:
+            logging.error(f"invalid src outlet: {soutl} in canvas: {self.name}")
+            return False
+
+        if dinl < 0:
+            logging.error(f"invalid dest inlet: {dinl} in canvas: {self.name}")
+            return False
+
+        def str_bbox(obj, xlet) -> str:
             if obj:
                 return "[%s:%d]" % (obj.name, xlet)
             else:
@@ -158,7 +170,7 @@ class Canvas(PdObject):
         src_obj = self.find_object_by_id(sid)
         dest_obj = self.find_object_by_id(did)
 
-        def do_check_xlets(xlets):
+        def do_check_xlets(xlets: list):
             if len(xlets) < 1:
                 return True
 

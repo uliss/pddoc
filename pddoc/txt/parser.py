@@ -18,8 +18,8 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from __future__ import print_function
-import logging
-import re
+from typing import Optional
+from ply.lex import LexToken
 
 from .graph_lexer import *
 from pddoc.pd import Message, Comment, Canvas, Array, XLET_SOUND, XLET_MESSAGE
@@ -30,9 +30,8 @@ import copy
 import logging
 
 
-
 class Node(object):
-    def __init__(self, tok, char_pos):
+    def __init__(self, tok: LexToken, char_pos: int):
         self.tok = tok
         self.char_pos_ = char_pos
         self.pd_object = None
@@ -69,35 +68,35 @@ class Node(object):
     def group(self, n=1):
         return self.tok.lexmatch.group(n)
 
-    def is_object(self):
+    def is_object(self) -> bool:
         if self.tok is None:
             return False
 
         return self.tok.type in ('OBJECT', 'MESSAGE', 'COMMENT')
 
-    def is_object_id(self):
+    def is_object_id(self) -> bool:
         if self.tok is None:
             return False
 
         return self.tok.type == 'OBJECT_ID'
 
-    def is_connection(self):
+    def is_connection(self) -> bool:
         return self.tok.type in ('CONNECTION', 'CONNECTION_LEFT', 'CONNECTION_RIGHT', 'CONNECTION_X', 'CONNECTION_MANUAL')
 
-    def is_all_in_connection(self):
+    def is_all_in_connection(self) -> bool:
         return self.multi_connect == 'all_in'
 
-    def is_all_out_connection(self):
+    def is_all_out_connection(self) -> bool:
         return self.multi_connect == 'all_out'
 
-    def is_connect_all(self):
+    def is_connect_all(self) -> bool:
         return self.multi_connect == 'all'
 
-    def is_multi_connect(self):
+    def is_multi_connect(self) -> bool:
         return self.multi_connect is not None
 
     @property
-    def id(self):
+    def id(self) -> int:
         return self.line_pos * 1000 + self.char_pos
 
     @property
@@ -108,7 +107,7 @@ class Node(object):
         return self.tok.type
 
     @property
-    def width(self):
+    def width(self) -> int:
         return len(self.tok.value)
 
     @property
@@ -116,14 +115,14 @@ class Node(object):
         return self.tok.value
 
     @property
-    def line_pos(self):
+    def line_pos(self) -> int:
         return self.tok.lineno - 1
 
     @property
-    def char_pos(self):
+    def char_pos(self) -> int:
         return self.char_pos_
 
-    def contains(self, char_pos):
+    def contains(self, char_pos) -> bool:
         return self.char_pos <= char_pos <= (self.char_pos + self.width)
 
 
@@ -166,18 +165,18 @@ class Parser(object):
         self.nodes = []
         self.lexer = lexer()
 
-    def parse_file(self, fname):
+    def parse_file(self, fname: str):
         with open(fname) as f:
             self.parse(f.read())
 
-    def node_by_id(self, id):
+    def node_by_id(self, id: int) -> Optional[Node]:
         res = list(filter(lambda n: id == n.id, self.nodes))
         if len(res) < 1:
             return None
 
         return res[0]
 
-    def parse(self, string):
+    def parse(self, string: str):
         assert isinstance(string, string_types)
 
         self.lines = string.split('\n')
@@ -190,7 +189,7 @@ class Parser(object):
         self.layout_nodes()
         return True
 
-    def token_line_lex_pos(self, lexline, lexpos):
+    def token_line_lex_pos(self, lexline: int, lexpos: int):
         assert lexpos >= 0
         assert lexline >= 0
         assert lexline < len(self.lines_len)
@@ -211,6 +210,7 @@ class Parser(object):
                 break
 
             self.tokens.append(tok)
+            # logging.debug(f"{tok.type}: {tok.value}")
 
             ln = tok.lineno - 1
             char_pos = self.token_line_lex_pos(ln, tok.lexpos)
@@ -225,7 +225,7 @@ class Parser(object):
             return cls.ALIASES[name], args
         return name, args
 
-    def find_node_id_by_hash(self, hash):
+    def find_node_id_by_hash(self, hash: str) -> int:
         for n in filter(lambda x: x.is_object(), self.nodes):
             if n.value.startswith('X'):
                 continue
@@ -241,7 +241,7 @@ class Parser(object):
             if '#' + hash in atoms:
                 return n.id
 
-        return False
+        return -1
 
     def parse_nodes(self):
         obj_args = dict()
@@ -273,35 +273,53 @@ class Parser(object):
                     n.pd_object = factory.make_by_name(name, **kwargs)
                 elif name == 'pd':
                     n.pd_object = Canvas.subpatch(args[0])
-                elif name == 'X':
+                elif name == 'X':  # connection object
                     n.tok.type = 'CONNECTION_MANUAL'
-                    str = atoms[1]
+                    conn_str = atoms[1]
                     conn = []
 
                     # syntax: SRC_ID(:OUTLET_N)->DEST_ID(:INLET_N)
-                    for i in map(lambda x: x.split(':'), str.split('->')):
-                        # if xlet is not specified using first xlet
-                        if len(i) == 1:
-                            i.append(0)
+                    src_dest = conn_str.split('->')
+                    if len(src_dest) != 2:
+                        logging.error(f"invalid connection string: '{conn_str}'")
+                        continue
 
-                        # i now is [OBJ_ID, XLET_IDX]
-                        assert len(i) == 2
+                    src_data = src_dest[0].split(':')
+                    if len(src_data) > 2:
+                        logging.error(f"invalid source: '{src_dest[0]}'")
+                        continue
 
-                        obj_id = self.find_node_id_by_hash(i[0])
-                        if obj_id is False:
-                            logging.error("can't find node with id: {0:s}".format(i[0]))
-                            return
+                    # process source
+                    src_hash = src_data[0]
+                    src_out = 0
+                    if len(src_data) == 2:
+                        src_out = int(src_data[1])
 
-                        i[0] = obj_id
-                        conn.append(i)
+                    src_id = self.find_node_id_by_hash(src_hash)
+                    if src_id < 0:
+                        logging.error(f"can't find source node with hash #id: {src_hash}")
+                        continue
 
-                    # conn at this moment: [[SRC, OUT_IDX], [DEST, IN_IDX]]
-                    assert len(conn) == 2
+                    # process destination
+                    dest_data = src_dest[1].split(':')
+                    if len(dest_data) > 2:
+                        logging.error(f"invalid destination: '{src_dest[1]}'")
+                        continue
 
-                    n.conn_src_id = conn[0][0]
-                    n.conn_src_outlet = int(conn[0][1])
-                    n.conn_dest_id = conn[1][0]
-                    n.conn_dest_inlet = int(conn[1][1])
+                    dest_hash = dest_data[0]
+                    dest_inl = 0
+                    if len(dest_data) == 2:
+                        dest_inl = int(dest_data[1])
+
+                    dest_id = self.find_node_id_by_hash(dest_hash)
+                    if dest_id < 0:
+                        logging.error(f"can't find destination node with hash #id: {dest_hash}")
+                        continue
+
+                    n.conn_src_id = src_id
+                    n.conn_src_outlet = src_out
+                    n.conn_dest_id = dest_id
+                    n.conn_dest_inlet = dest_inl
 
                 elif name == 'array':
                     # check for id
@@ -370,7 +388,7 @@ class Parser(object):
         for c in filter(lambda n: n.is_connection(), self.nodes):
             self.process_connection(c)
 
-    def find_connection(self, line, char_pos):
+    def find_connection(self, line: int, char_pos):
         """
         :type line: int
         :type char_pos: list
@@ -379,19 +397,34 @@ class Parser(object):
             lambda x:
             x.line_pos == line and any(list(map(lambda c: x.contains(c), char_pos))), self.nodes), None)
 
-    def find_by_line_idx(self, line, idx):
+    def find_by_line_idx(self, line: int, idx: int) -> Optional[Node]:
         return next((filter(lambda n: n.line_pos == line and n.obj_line_index == idx, self.nodes)), None)
 
-    def process_cross_connection(self, conn):
+    def process_cross_connection(self, conn: Node):
         assert isinstance(conn, Node)
         line = conn.line_pos
         src_idx = conn.obj_line_index - 1
         dest_idx = conn.obj_line_index + 1
 
         src = self.find_by_line_idx(line, src_idx)
+        if not src:
+            logging.error(f"X-connection source not found: {line} {src_idx}")
+            return
+
         dest = self.find_by_line_idx(line, dest_idx)
+        if not src:
+            logging.error(f"X-connection destination not found: {line} {dest_idx}")
+            return
 
         if src and dest:
+            if len(src.pd_object.outlets()) == 0:
+                logging.error(f"no outlets in source object: {src.id}")
+                return
+
+            if len(src.pd_object.inlets()) == 0:
+                logging.error(f"no inlets in source object: {src.id}")
+                return
+
             c1 = copy.deepcopy(conn)
             c1.tok.type = 'CONNECTION'
             c1.conn_src_id = src.id
@@ -411,12 +444,15 @@ class Parser(object):
             self.nodes.append(c1)
             self.nodes.append(c2)
 
-    def process_connection(self, c):
+    def process_connection(self, c: Node):
+        if c.type == 'CONNECTION' and c.connected:
+            return
+
         if c.type == 'CONNECTION_MANUAL':
             c.connected = True
             return
 
-        if c.type == 'CONNECTION_X':
+        if c.type == 'CONNECTION_X':  # replace cross-connections with common connections
             self.process_cross_connection(c)
             return
 
@@ -428,7 +464,7 @@ class Parser(object):
         # find object on previous line
         src = self.find_connection(c.line_pos - 1, conn_start)
         if src is None:
-            logging.warning("connection source is not found for: {0:s}".format(str(c)))
+            logging.warning("connection source (type {1:s}) is not found for: {0:s}".format(str(c.value), c.type))
             return
 
         c.conn_src_id = src.id
@@ -465,7 +501,7 @@ class Parser(object):
     def elements_in_line(self, type, line_pos):
         return list(filter(lambda x: x.type == type and x.line_pos == line_pos, self.nodes))
 
-    def export(self, cnv):
+    def export(self, cnv: Canvas):
         assert isinstance(cnv, Canvas)
         for n in filter(lambda x: x.is_object() and x.pd_object is not None, self.nodes):
             cnv.append_object(n.pd_object)

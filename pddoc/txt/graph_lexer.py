@@ -36,20 +36,20 @@ tokens = (
 )
 
 # token regexp
-r_OBJECT = r'\[((?:[^\[\\]|\\.)+)\]'
-r_MESSAGE = r'\[((?:[^\(\\]|\\.)+)\('
+r_OBJECT = r'\[((?:[^\[\\\n]|\\.)+)\]'
+r_MESSAGE = r'\[((?:[^\(\\\n]|\\.)+)\('
 r_COMMENT = r'/\*(.+?)\*/'
 r_OBJECT_ID = r'#(.+)'
 r_NEWLINE = r'\n+'
+r_CONNECTION_X = r'(?<=[^\[])X'
 t_CONNECTION = r'[*^]*\|[.*]*'          # ^^|.. connection
 t_CONNECTION_RIGHT = r'\^*\\_*\.*'  # ^^\______..
 t_CONNECTION_LEFT = r'\.*_*/\^*'    # ^^\______..
-t_CONNECTION_X = r'(x|X)'
 t_ignore = ' \r\t\f'
 
 
 def t_error(t):
-    logging.error("Illegal character '{0:s}'".format(t.value[0]))
+    logging.error("Illegal character '{0:s}' at line {1:d}".format(t.value.split("\n")[0], t.lexer.lineno))
     t.lexer.skip(1)
 
 
@@ -72,9 +72,16 @@ def t_MESSAGE(t):
 def t_COMMENT(t):
     return t
 
+
 @TOKEN(r_OBJECT_ID)
 def t_OBJECT_ID(t):
     return t
 
+
+@TOKEN(r_CONNECTION_X)
+def t_CONNECTION_X(t):
+    return t
+
+
 def lexer():
-    return lex.lex(reflags=re.UNICODE)
+    return lex.lex(reflags=re.UNICODE, debug=False)

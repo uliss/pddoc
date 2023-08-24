@@ -1,7 +1,7 @@
 [index](index.html) 
 ---
 
-# {{cat["name"]|striptags}}
+# Category: {{cat["name"]|striptags}}
 
 {{cat["descr"]}}
 

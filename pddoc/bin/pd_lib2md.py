@@ -55,10 +55,13 @@ def main():
     # template config
     if "EN" in locale:
         tmpl_path = "md_library_en.tmpl.md"
+        tmpl_keys = "md_keys_en.tmpl.md"
     elif "RU" in locale:
         tmpl_path = "md_library_ru.tmpl.md"
+        tmpl_keys = "md_keys_ru.tmpl.md"
     else:
         tmpl_path = "md_library_en.tmpl.md"
+        tmpl_keys = "md_keys_en.tmpl.md"
 
     info = {
         "name": root.get("name"),
@@ -89,14 +92,19 @@ def main():
 
     keywords = dict()
     for tag in root.findall(".//keywords"):
+        obj = tag.getparent().getparent().findall(".//title")
+        obj_name = None
+        if len(obj) > 0:
+            obj_name = obj[0].text
+
         for kw in tag.text.strip().split(" "):
             if len(kw) == 0:
                 continue
 
             if kw in keywords:
-                keywords[kw] += 1
+                keywords[kw].add(obj_name)
             else:
-                keywords[kw] = 1
+                keywords[kw] = {obj_name}
 
     env = Environment(
         loader=PackageLoader('pddoc', 'share'),
@@ -111,6 +119,18 @@ def main():
     else:
         f.write(output_str + "\n")
         f.close()
+
+    out_dir = os.path.dirname(args['output'])
+    keywords_dir = os.path.join(out_dir, 'keywords')
+    if not os.path.exists(keywords_dir):
+        os.mkdir(keywords_dir)
+
+    template = env.get_template(tmpl_keys)
+    for k, w in keywords.items():
+        output_str = template.render(info=info, key=k, obj=sorted(w))
+        with open(f"{keywords_dir}/{k}.md", 'w') as f:
+            f.write(output_str + "\n")
+            f.close()
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 [index](index.html) 
 ---
 
-# {{cat["name"]|striptags}}
+# Категория: {{cat["name"]|striptags}}
 
 {{cat["descr"]}}
 

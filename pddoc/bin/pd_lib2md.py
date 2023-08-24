@@ -56,12 +56,18 @@ def main():
     if "EN" in locale:
         tmpl_path = "md_library_en.tmpl.md"
         tmpl_keys = "md_keys_en.tmpl.md"
+        tmpl_methods = "md_methods_en.tmpl.md"
+        tmpl_props = "md_props_en.tmpl.md"
     elif "RU" in locale:
         tmpl_path = "md_library_ru.tmpl.md"
         tmpl_keys = "md_keys_ru.tmpl.md"
+        tmpl_methods = "md_methods_ru.tmpl.md"
+        tmpl_props = "md_props_ru.tmpl.md"
     else:
         tmpl_path = "md_library_en.tmpl.md"
         tmpl_keys = "md_keys_en.tmpl.md"
+        tmpl_methods = "md_methods_en.tmpl.md"
+        tmpl_props = "md_props_en.tmpl.md"
 
     info = {
         "name": root.get("name"),
@@ -120,6 +126,7 @@ def main():
         f.write(output_str + "\n")
         f.close()
 
+    # write keywords
     out_dir = os.path.dirname(args['output'])
     keywords_dir = os.path.join(out_dir, 'keywords')
     if not os.path.exists(keywords_dir):
@@ -131,6 +138,48 @@ def main():
         with open(f"{keywords_dir}/{k}.md", 'w') as f:
             f.write(output_str + "\n")
             f.close()
+
+    # make methods page
+    methods = dict()
+    for tag in root.findall(".//methods"):
+        if "name" not in tag.getparent().attrib:
+            continue
+
+        obj_name = tag.getparent().attrib["name"]
+
+        for m in tag:
+            if m.tag == "method":
+                name = m.attrib["name"]
+                if name not in methods:
+                    methods[name] = {obj_name}
+                else:
+                    methods[name].add(obj_name)
+
+    with open(os.path.join(out_dir, "methods.md"), 'w') as f:
+        template = env.get_template(tmpl_methods)
+        f.write(template.render(info=info, data=methods) + "\n")
+        f.close()
+
+    # make properties page
+    props = dict()
+    for tag in root.findall(".//properties"):
+        if "name" not in tag.getparent().attrib:
+            continue
+
+        obj_name = tag.getparent().attrib["name"]
+
+        for p in tag:
+            if p.tag == "property":
+                name = p.attrib["name"]
+                if name not in props:
+                    props[name] = {obj_name}
+                else:
+                    props[name].add(obj_name)
+
+    with open(os.path.join(out_dir, "properties.md"), 'w') as f:
+        template = env.get_template(tmpl_props)
+        f.write(template.render(info=info, data=props) + "\n")
+        f.close()
 
 
 if __name__ == '__main__':

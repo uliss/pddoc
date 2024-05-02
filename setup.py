@@ -2,7 +2,6 @@
 # coding=utf-8
 
 from distutils.core import setup
-import setuptools
 
 
 def readme():
@@ -18,7 +17,7 @@ setup(name='pddoc',
           'Development Status :: 4 - Beta',
           'Topic :: Software Development :: Documentation',
           'Topic :: Multimedia :: Sound/Audio',
-          'Programming Language :: Python :: 3.3',
+          'Programming Language :: Python :: 3.6',
           'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)'
       ],
       url='https://github.com/uliss/pddoc',

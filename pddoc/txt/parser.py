@@ -22,7 +22,7 @@ from typing import Optional
 from ply.lex import LexToken
 
 from .graph_lexer import *
-from pddoc.pd import Message, Comment, Canvas, Array, XLET_SOUND, XLET_MESSAGE
+from pddoc.pd import Message, Comment, Canvas, Array, XLET_SOUND, XLET_MESSAGE, PdObject
 from six import string_types
 from pddoc.pd import factory
 from pddoc.pd.coregui import CoreGui
@@ -122,7 +122,11 @@ class Node(object):
     def char_pos(self) -> int:
         return self.char_pos_
 
-    def contains(self, char_pos) -> bool:
+    @char_pos.setter
+    def char_pos(self, pos: int):
+        self.char_pos_ = pos
+
+    def contains(self, char_pos: int) -> bool:
         return self.char_pos <= char_pos <= (self.char_pos + self.width)
 
 
@@ -165,12 +169,12 @@ class Parser(object):
         self.nodes = []
         self.lexer = lexer()
 
-    def parse_file(self, fname: str):
-        with open(fname) as f:
+    def parse_file(self, filename: str):
+        with open(filename) as f:
             self.parse(f.read())
 
-    def node_by_id(self, id: int) -> Optional[Node]:
-        res = list(filter(lambda n: id == n.id, self.nodes))
+    def node_by_id(self, node_id: int) -> Optional[Node]:
+        res = list(filter(lambda n: node_id == n.id, self.nodes))
         if len(res) < 1:
             return None
 
@@ -189,12 +193,12 @@ class Parser(object):
         self.layout_nodes()
         return True
 
-    def token_line_lex_pos(self, lexline: int, lexpos: int):
-        assert lexpos >= 0
-        assert lexline >= 0
-        assert lexline < len(self.lines_len)
+    def token_line_lex_pos(self, lex_line: int, lex_pos: int):
+        assert lex_pos >= 0
+        assert lex_line >= 0
+        assert lex_line < len(self.lines_len)
 
-        return lexpos - sum(self.lines_len[0:lexline]) - lexline
+        return lex_pos - sum(self.lines_len[0:lex_line]) - lex_line
 
     def enumerate_objects(self):
         for l in range(0, self.num_lines()):
@@ -225,7 +229,7 @@ class Parser(object):
             return cls.ALIASES[name], args
         return name, args
 
-    def find_node_id_by_hash(self, hash: str) -> int:
+    def find_node_id_by_hash(self, node_hash: str) -> int:
         for n in filter(lambda x: x.is_object(), self.nodes):
             if n.value.startswith('X'):
                 continue
@@ -238,7 +242,7 @@ class Parser(object):
 
             # filter spaces and #ID values
             atoms = filter(lambda a: len(a) > 0 and a.startswith('#'), m.group(1).split(' '))
-            if '#' + hash in atoms:
+            if '#' + node_hash in atoms:
                 return n.id
 
         return -1
@@ -362,7 +366,7 @@ class Parser(object):
                         args += obj_args[all_id[0][1:]]
 
                     n.pd_object = factory.make_by_name(name, args, **kwargs)
-                    process_object_options(n.pd_object, opts)
+                    process_object_options(n, opts)
 
             elif n.type == 'MESSAGE':
                 m = re.match(r_MESSAGE, n.value)
@@ -388,7 +392,7 @@ class Parser(object):
         for c in filter(lambda n: n.is_connection(), self.nodes):
             self.process_connection(c)
 
-    def find_connection(self, line: int, char_pos):
+    def find_connection(self, line: int, char_pos: list):
         """
         :type line: int
         :type char_pos: list
@@ -498,7 +502,7 @@ class Parser(object):
     def elements(self, type):
         return list(filter(lambda x: x.type == type, self.nodes))
 
-    def elements_in_line(self, type, line_pos):
+    def elements_in_line(self, type, line_pos: int):
         return list(filter(lambda x: x.type == type and x.line_pos == line_pos, self.nodes))
 
     def export(self, cnv: Canvas):
@@ -552,9 +556,11 @@ class Parser(object):
                         i)
 
 
-def parse_object_option(name, txt):
+def parse_object_option(name: str, txt: str):
     if name == 'w':
         return {'w': int(txt)}
+    elif name == 'x':
+        return {'x': int(txt)}
     elif name == 'i':
         res = {'i': True}
 
@@ -575,9 +581,12 @@ def parse_object_option(name, txt):
             res["out_ctl"] = int(opt_res.group(3))
 
         return res
+    else:
+        logging.warning(f"invalid object option: {txt}")
+        return {}
 
 
-def parse_object_options(arg):
+def parse_object_options(arg: list):
     res = {}
     arg_str = arg[1:-1]
     if len(arg_str) < 1:
@@ -593,16 +602,19 @@ def parse_object_options(arg):
     return res
 
 
-def process_object_options(obj, opts: dict):
+def process_object_options(node: Node, opts: dict):
     # print(opts)
 
     if 'w' in opts:
-        obj.fixed_width = opts['w']
+        node.pd_object.fixed_width = opts['w']
+
+    if 'x' in opts:
+        node.char_pos = opts['x']
 
     if 'i' in opts:
         xin = opts.get('in_sig', 0) * [XLET_SOUND] + opts.get('in_ctl', 0) * [XLET_MESSAGE]
-        obj.set_inlets(xin)
+        node.pd_object.set_inlets(xin)
 
     if 'o' in opts:
         xout = opts.get('out_sig', 0) * [XLET_SOUND] + opts.get('out_ctl', 0) * [XLET_MESSAGE]
-        obj.set_outlets(xout)
+        node.pd_object.set_outlets(xout)

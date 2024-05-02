@@ -342,6 +342,14 @@ Number of **"."** specifies inlet index
 
 #### options
 
+##### object x-position in pddoc spaces
+
+```
+[mtof {x=10}]
+
+[mtof {x=40}]
+```
+
 ##### object width in chars
 
 ```

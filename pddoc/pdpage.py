@@ -51,7 +51,7 @@ class PdPageStyle(object):
 class PdPage(object):
     brect_calc = BRectCalculator()
 
-    def __init__(self, title, width=700, height=500):
+    def __init__(self, title: str, width: int = 700, height: int = 500):
         self._title = title.replace(' ', '_')
         self._width = int(width)
         self._height = int(height)

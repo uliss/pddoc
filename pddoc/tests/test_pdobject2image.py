@@ -19,10 +19,10 @@
 
 __author__ = 'Serge Poltavski'
 
-import unittest
-import subprocess
 import os
 import os.path
+import subprocess
+import unittest
 
 BIN_PATH = os.path.join(os.path.dirname(__file__), "..", "bin", "pd_obj2img.py")
 
@@ -44,15 +44,15 @@ class TestCairoPainter(unittest.TestCase):
 
     def test_run_simple(self):
         self.assertFalse(os.path.exists("line.png"))
-        rc = subprocess.call(["python", BIN_PATH, "line"])
+        rc = subprocess.call(["python3", BIN_PATH, "line"])
         self.assertEqual(rc, 0)
         self.assertTrue(os.path.exists("line.png"))
 
     def test_args(self):
-        rc = subprocess.call(["python", BIN_PATH, "--format", "pdf", "line"])
+        rc = subprocess.call(["python3", BIN_PATH, "--format", "pdf", "line"])
         self.assertEqual(rc, 0)
         self.assertTrue(os.path.exists("line.pdf"))
 
-        rc = subprocess.call(["python", BIN_PATH, "--format", "pdf", "line", "line2.pdf"])
+        rc = subprocess.call(["python3", BIN_PATH, "--format", "pdf", "line", "line2.pdf"])
         self.assertEqual(rc, 0)
         self.assertTrue(os.path.exists("line2.pdf"))

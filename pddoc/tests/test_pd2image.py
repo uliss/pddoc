@@ -19,10 +19,10 @@
 
 __author__ = 'Serge Poltavski'
 
-import unittest
-import subprocess
 import os
 import os.path
+import subprocess
+import unittest
 
 from .nologging import *
 
@@ -45,13 +45,13 @@ class TestCairoPainter(unittest.TestCase):
 
     def test_run_simple(self):
         nolog = NoLogging()
-        rc = subprocess.call(["python", BIN_PATH, "not-exists"])
+        rc = subprocess.call(["python3", BIN_PATH, "not-exists"])
         self.assertNotEqual(rc, 0)
 
-        rc = subprocess.call(["python", BIN_PATH, "comments.pd"])
+        rc = subprocess.call(["python3", BIN_PATH, "comments.pd"])
         self.assertEqual(rc, 0)
         self.assertTrue(os.path.exists("image.png"))  # default output name
 
-        rc = subprocess.call(["python", BIN_PATH, "--format", "pdf", "comments.pd", "comments.pdf"])
+        rc = subprocess.call(["python3", BIN_PATH, "--format", "pdf", "comments.pd", "comments.pdf"])
         self.assertEqual(rc, 0)
         self.assertTrue(os.path.exists("comments.pdf"))

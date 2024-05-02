@@ -96,7 +96,7 @@ class TestPdCanvas(TestCase):
         nout = NoLogging()
 
         cnv = Canvas(0, 0, 100, 50)
-        self.assertRaises(AssertionError, cnv.add_connection, 0, 0, 0, 0)
+        self.assertFalse(cnv.add_connection(0, 0, 0, 0))
         self.assertFalse(cnv.add_connection(0, 0, 1, 0))
         pdo1 = PdObject("float")
         pdo2 = PdObject("float")

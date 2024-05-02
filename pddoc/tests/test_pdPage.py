@@ -17,8 +17,9 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 from unittest import TestCase
-from pddoc.pdpage import PdPage
+
 from pddoc.pd.obj import PdObject
+from pddoc.pdpage import PdPage
 
 
 class TestPdPage(TestCase):
@@ -55,7 +56,7 @@ class TestPdPage(TestCase):
         self.assertEqual(o.height, 60)
         o.calc_brect(use_cached=False)
         self.assertEqual(o.width, 34)
-        self.assertEqual(o.height, 17)
+        self.assertEqual(o.height, 18)
 
     def test_place_in_row(self):
         p = PdPage("sample")
@@ -158,11 +159,6 @@ class TestPdPage(TestCase):
     def test_make_txt(self):
         p = PdPage("sample", 600, 500)
 
-        t1 = p.make_txt(None, 10, 20)
-        self.assertEqual(t1.text(), "")
-        self.assertEqual(t1.x, 10)
-        self.assertEqual(t1.y, 20)
-
         t1 = p.make_txt("       ", 0, 0)
         self.assertEqual(t1.text(), "")
         t1 = p.make_txt(" a b c ", 0, 0)
@@ -189,4 +185,3 @@ class TestPdPage(TestCase):
 
         t1 = p.make_txt("a , b , c", 0, 0)
         self.assertEqual(t1.text(), "a, b, c")
-

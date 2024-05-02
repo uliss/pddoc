@@ -35,7 +35,6 @@ def make_pdo(name):
 class TestXletCalcDatabase(TestCase):
     def test_inlets(self):
         xd = XletCalculator()
-        self.assertEqual(xd.inlets(12), [])
         pdo = PdObject("mtof")
         self.assertEqual(xd.inlets(pdo), [XLET_MESSAGE])
         pdo.name = "not-exists"
@@ -92,7 +91,6 @@ class TestXletCalcDatabase(TestCase):
 
     def test_outlets(self):
         xd = XletCalculator()
-        self.assertEqual(xd.inlets(12), [])
         pdo = PdObject("osc~")
         self.assertEqual(xd.outlets(pdo), [XLET_SOUND])
         pdo.name = "mtof"

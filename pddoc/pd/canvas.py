@@ -148,7 +148,7 @@ class Canvas(PdObject):
     def make_connection_key(sid: int, soutl: int, did: int, dinl: int) -> str:
         return "%i:%i => %i:%i" % (sid, soutl, did, dinl)
 
-    def add_connection(self, sid, soutl: int, did, dinl: int, check_xlets: bool = True) -> bool:
+    def add_connection(self, sid: int, soutl: int, did: int, dinl: int, check_xlets: bool = True) -> bool:
         if sid == did:
             logging.error("self connection: %s:%d => %s:%d in canvas: %s" % (sid, soutl, did, dinl, self.name))
             return False
@@ -289,7 +289,7 @@ class Canvas(PdObject):
 
         objects = filter(lambda obj: issubclass(obj.__class__, PdObject), self._objects)
 
-        for o in objects:
+        for o in sorted(objects, key=lambda k: k.x):
             if issubclass(o.__class__, PdObject):
                 if o.name == "inlet":
                     res.append(XLET_MESSAGE)

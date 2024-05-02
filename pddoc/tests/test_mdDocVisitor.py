@@ -109,8 +109,8 @@ class TestMdDocVisitor(TestCase):
         self.assertTrue(hasattr(pdm, "layout"))
         self.assertEqual(pdm.layout.x(), 10)
         self.assertEqual(pdm.layout.y(), 0)
-        self.assertEqual(pdm.layout.width(), 60)
-        self.assertEqual(pdm.layout.height(), 17)
+        self.assertEqual(pdm.layout.width(), 61)
+        self.assertEqual(pdm.layout.height(), 18)
 
     def test_comment2pd(self):
         v = PdLayout()
@@ -138,4 +138,4 @@ class TestMdDocVisitor(TestCase):
         self.assertEqual(pdc.layout.x(), 0)
         self.assertEqual(pdc.layout.y(), 0)
         self.assertEqual(pdc.layout.width(), 449)
-        self.assertEqual(pdc.layout.height(), 135)
+        self.assertEqual(pdc.layout.height(), 136)

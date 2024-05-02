@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # coding=utf-8
-from unittest import TestCase
 import os.path as path
+from unittest import TestCase
+
+from pddoc.pd.xletcalculator import XletCalculator
 
 
 #   Copyright (C) 2016 by Serge Poltavski                                 #

@@ -18,7 +18,5 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from .graph_lexer import *
-
-from .parser import Parser
 from .parser import Node
-
+from .parser import Parser

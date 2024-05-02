@@ -20,11 +20,9 @@
 __author__ = 'Serge Poltavski'
 
 import ctypes
-import cairo
 import os
+
 import cairo
-import pango
-import pangocairo
 
 _initialized = False
 

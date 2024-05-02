@@ -1,11 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
 import argparse
-
-from pddoc.pd import factory
-from pddoc.pd import PdObject
-from pddoc.pd import XletCalculator
 import logging
+import os
 
 #   Copyright (C) 2015 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -25,9 +22,12 @@ import logging
 
 __author__ = 'Serge Poltavski'
 
-import os
+from pddoc.pd import factory
+from pddoc.pd.obj import PdObject
+from pddoc.pd.xletcalculator import XletCalculator
 
 xcalc = XletCalculator()
+
 
 def add_xlet_db(path_list):
     for db_path in path_list:
@@ -68,6 +68,7 @@ def main():
     else:
         logging.error(f"ERROR: [%s] not found", obj.name)
         return 1
+
 
 if __name__ == '__main__':
     main()

@@ -18,13 +18,12 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 __author__ = 'Serge Poltavski'
-
-
+ 
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 from .cairopainter import CairoPainter
-from .pdpainter import PdPainter
 from .docobjectvisitor import DocObjectVisitor
+from .pdpainter import PdPainter
 
 
 class MarkdownVisitor(DocObjectVisitor):
@@ -92,8 +91,8 @@ class MarkdownVisitor(DocObjectVisitor):
             return PdPainter()
         else:
             return CairoPainter(w, h, fname, "png",
-                                             xoffset=self._canvas_padding,
-                                             yoffset=self._canvas_padding)
+                                xoffset=self._canvas_padding,
+                                yoffset=self._canvas_padding)
 
     def render(self):
         return self._template.render(

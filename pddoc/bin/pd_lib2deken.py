@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # coding=utf-8
 from __future__ import print_function
+
 import argparse
-import os
 import logging
+import os
+
 from lxml import etree
-import re
 
 
 #   Copyright (C) 2020 by Serge Poltavski                                 #

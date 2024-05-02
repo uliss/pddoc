@@ -29,7 +29,7 @@ from .docobjectvisitor import DocObjectVisitor
 
 class HtmlDocVisitor(DocObjectVisitor):
     def __init__(self):
-        DocObjectVisitor.__init__(self)
+        super().__init__()
         self._image_output_dir = HtmlDocVisitor.image_output_dir
         self._image_extension = "png"
         self._image_output_dir = "img"
@@ -43,7 +43,7 @@ class HtmlDocVisitor(DocObjectVisitor):
     def css_file(self):
         return self._css_file
 
-    def set_css_file(self, filename):
+    def set_css_file(self, filename: str):
         self._css_file = filename
 
     def css(self):
@@ -52,10 +52,10 @@ class HtmlDocVisitor(DocObjectVisitor):
     def set_css(self, content):
         self._css = content
 
-    def make_image_painter(self, w, h, fname):
+    def make_image_painter(self, w: int, h: int, fname: str):
         return CairoPainter(w, h, fname, "png",
-                                         xoffset=self._canvas_padding,
-                                         yoffset=self._canvas_padding)
+                            xoffset=self._canvas_padding,
+                            yoffset=self._canvas_padding)
 
     def render(self):
         return self._html_template.render(

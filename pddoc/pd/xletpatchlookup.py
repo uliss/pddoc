@@ -20,12 +20,12 @@
 
 __author__ = 'Serge Poltavski'
 
-from .xletdatabase import XletDatabase
+import logging
 import os
 import re
-import logging
 
 from .constants import XLET_MESSAGE, XLET_SOUND
+from .xletdatabase import XletDatabase
 
 
 class ObjectRecord(object):

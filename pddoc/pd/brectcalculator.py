@@ -21,11 +21,11 @@ __author__ = 'Serge Poltavski'
 import textwrap
 from typing import List
 
-from .obj import BaseObject, PdObject
+from .abstractvisitor import AbstractVisitor
+from .canvas import Canvas
 from .comment import Comment
 from .message import Message
-from .canvas import Canvas
-from .abstractvisitor import AbstractVisitor
+from .obj import BaseObject, PdObject
 
 
 class BRectCalculator(AbstractVisitor):

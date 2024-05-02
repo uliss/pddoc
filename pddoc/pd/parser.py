@@ -21,13 +21,12 @@
 __author__ = 'Serge Poltavski'
 
 from os import path
-from typing import List
 
-from .canvas import Canvas
-from .message import Message
-from .comment import Comment
 from .array import Array
+from .canvas import Canvas
+from .comment import Comment
 from .factory import *
+from .message import Message
 
 
 class Parser:
@@ -149,7 +148,7 @@ class Parser:
 
         if atoms[-2] == 'f':
             ln = len(atoms[-3])
-            if atoms[-3][ln-1] == ',' and atoms[-3][ln-2] != '\\':
+            if atoms[-3][ln - 1] == ',' and atoms[-3][ln - 2] != '\\':
                 atoms = atoms[:-2]  # remove width specifiers
                 atoms[-1] = atoms[-1][:-1]  # remove last ,
 
@@ -177,7 +176,7 @@ class Parser:
 
     def parse_coords(self, atoms: List[str]):
         # syntax
-        #X coords [x_from]? [y_to]? [x_to]? [y_from]? [width]? [heigth]? [graph_on_parent]?;\r\n
+        # X coords [x_from]? [y_to]? [x_to]? [y_from]? [width]? [heigth]? [graph_on_parent]?;\r\n
 
         if not self._array:
             if int(atoms[7]) > 0:

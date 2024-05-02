@@ -19,8 +19,8 @@
 
 __author__ = 'Serge Poltavski'
 
-from .coregui import CoreGui
 from .constants import XLET_MESSAGE
+from .coregui import CoreGui
 
 
 class FloatAtom(CoreGui):

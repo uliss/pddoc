@@ -19,9 +19,9 @@
 
 __author__ = 'Serge Poltavski'
 
-from .obj import PdObject
-from .constants import XLET_MESSAGE
 from .abstractvisitor import AbstractVisitor
+from .constants import XLET_MESSAGE
+from .obj import PdObject
 
 
 class Message(PdObject):

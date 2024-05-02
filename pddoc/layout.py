@@ -224,7 +224,7 @@ class Layout(object):
             res += "\n"
             fmt = "| %{0:d}s |\n".format(col_len)
             for e in els:
-                res += fmt % (e)
+                res += fmt % e
             res += "-" * (col_len + 4)
 
         return res

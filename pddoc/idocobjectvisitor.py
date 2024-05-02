@@ -29,7 +29,7 @@ class IDocObjectVisitor(object):
         return self._name
 
     @name.setter
-    def name(self, n):
+    def name(self, n: str):
         self._name = n
 
     def a_begin(self, a):
@@ -152,10 +152,10 @@ class IDocObjectVisitor(object):
     def library_end(self, lib):
         pass
 
-    def license_begin(self, license):
+    def license_begin(self, xlicense):
         pass
 
-    def license_end(self, license):
+    def license_end(self, xlicense):
         pass
 
     def meta_begin(self, meta):

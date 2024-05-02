@@ -17,15 +17,15 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
- 
+
 __author__ = 'Serge Poltavski'
 
 from .abstractvisitor import AbstractVisitor
 from .brectcalculator import BRectCalculator
-from .obj import PdObject
-from .message import Message
-from .comment import Comment
 from .canvas import Canvas
+from .comment import Comment
+from .message import Message
+from .obj import PdObject
 
 
 class ObjectBRectVisitor(AbstractVisitor):
@@ -74,6 +74,9 @@ class ObjectBRectVisitor(AbstractVisitor):
             return None
 
         return self._left, self._top, self._right - self._left, self._bottom - self._top
+
+    def visit_connection(self, conn):
+        pass
 
     def visit_comment(self, comment):
         assert isinstance(comment, Comment)

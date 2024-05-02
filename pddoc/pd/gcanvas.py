@@ -22,7 +22,7 @@ __author__ = 'Serge Poltavski'
 
 from .coregui import CoreGui
 
-
+ 
 class GCanvas(CoreGui):
     # X [size]? [width]? [height]? [send]? [receive]? [label]?
     # [x_off]? [y_off]? [font]? [font_size]? [bg_color]? [label_color]? [?]?;\r\n

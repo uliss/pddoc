@@ -19,12 +19,11 @@
 
 __author__ = 'Serge Poltavski'
 
-
 import logging
 from typing import Optional
 
-from .baseobject import BaseObject
 from .abstractvisitor import AbstractVisitor
+from .baseobject import BaseObject
 
 
 class PdObject(BaseObject):

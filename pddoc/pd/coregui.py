@@ -19,13 +19,11 @@
 
 __author__ = 'Serge Poltavski'
 
-from .obj import *
-from termcolor import colored
 import six
-import logging
+from termcolor import colored
 
 from .constants import XLET_GUI
-from .abstractvisitor import AbstractVisitor
+from .obj import *
 
 
 class Color:
@@ -63,7 +61,7 @@ class Color:
         self._b = int(round(b / 63.0 * 255.0)) % 256
 
     @staticmethod
-    def from_hex(hex_str):
+    def from_hex(hex_str: str):
         c = Color()
 
         if hex_str[0] == '#':
@@ -136,7 +134,7 @@ class CoreGui(PdObject):
     @classmethod
     def is_coregui(cls, name):
         return name in ("bng", "tgl", "floatatom", "symbolatom",
-                        "nbx", "hslider", "vslider",  "vsl", "hsl", "vu",
+                        "nbx", "hslider", "vslider", "vsl", "hsl", "vu",
                         "hrd", "vrd", "hradio", "vradio")
 
     def __init__(self, name, x, y, args, **kwargs):

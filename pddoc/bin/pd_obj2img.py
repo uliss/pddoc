@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
 import argparse
+import logging
 
-from pddoc.cairopainter import *
-from pddoc.pd import PdObject, BRectCalculator
 from format import detect_format
 
 #   Copyright (C) 2015 by Serge Poltavski                                 #
@@ -26,16 +25,21 @@ __author__ = 'Serge Poltavski'
 
 import os
 
+from pddoc import CairoPainter
+from pddoc.pd.obj import PdObject
+
 
 def add_xlet_db(path_list):
     for db_path in path_list:
         if not os.path.exists(db_path):
             logging.warning("xlet database file not found: '%s'. skipping...", db_path)
         else:
+            from pddoc.pd.obj import PdObject
             PdObject.xlet_calculator.add_db(db_path)
 
 
 def draw_object(obj, fname, fmt, **kwargs):
+    from pddoc.pd.brectcalculator import BRectCalculator
     w, h = BRectCalculator().object_brect(obj)[2:]
 
     pad = kwargs['pad'][0]

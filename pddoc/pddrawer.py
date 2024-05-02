@@ -24,5 +24,6 @@ class PdDrawer:
     def __init__(self):
         pass
 
-    def draw(self, canvas, painter):
+    @staticmethod
+    def draw(canvas, painter):
         canvas.draw(painter)

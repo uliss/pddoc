@@ -28,7 +28,7 @@ from .idocobjectvisitor import IDocObjectVisitor
 def make_class_name(tag_name):
     return "Doc%s" % (tag_name.capitalize())
 
-
+ 
 def create_instance(tag_name, *args):
     class_name = None
     try:

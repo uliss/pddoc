@@ -16,10 +16,12 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
+import logging
+
 from lxml import etree
+
 from .pd.factory import make_by_name
 from .pdpage import PdPage
-import logging
 
 
 class CategoryParser(object):
@@ -29,7 +31,7 @@ class CategoryParser(object):
     OBJECT_OFFSET = 30
     DESCRIPTION_OFFSET = 200
 
-    def __init__(self, fname):
+    def __init__(self, fname: str):
         self._fname = fname
         self._xml = None
         self._root = None

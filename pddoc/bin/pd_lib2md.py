@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # coding=utf-8
 from __future__ import print_function
+
 import argparse
-import os
 import logging
-from lxml import etree
+import os
+
 from jinja2 import Environment, PackageLoader, select_autoescape
+from lxml import etree
 
 
 #   Copyright (C) 2020 by Serge Poltavski                                 #

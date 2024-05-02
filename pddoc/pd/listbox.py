@@ -19,8 +19,8 @@
 
 __author__ = 'Serge Poltavski'
 
-from .coregui import CoreGui
 from .constants import XLET_MESSAGE
+from .coregui import CoreGui
 
 
 class PdListBox(CoreGui):
@@ -63,13 +63,13 @@ class PdListBox(CoreGui):
         y = atoms[1]
 
         return PdListBox(x, y,
-                            digits=int(atoms[2]),
-                            min=int(atoms[3]),
-                            max=int(atoms[4]),
-                            label_pos=int(atoms[5]),
-                            label=atoms[6],
-                            send=atoms[7],
-                            receive=atoms[8])
+                         digits=int(atoms[2]),
+                         min=int(atoms[3]),
+                         max=int(atoms[4]),
+                         label_pos=int(atoms[5]),
+                         label=atoms[6],
+                         send=atoms[7],
+                         receive=atoms[8])
 
     def get_height(self):
         return self.ATOM_HEIGHT

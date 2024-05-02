@@ -18,10 +18,12 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from __future__ import print_function
+
+import re
+
 import ply.lex as lex
 import ply.yacc as yacc
 from ply.lex import TOKEN
-import re
 
 tokens = (
     'COMMENT_START',
@@ -99,8 +101,8 @@ def global_tags(name, value):
 
 
 def p_pddoc(p):
-    '''pddoc : pddoc eol
-             | COMMENT_START pdbody COMMENT_END'''
+    """pddoc : pddoc eol
+             | COMMENT_START pdbody COMMENT_END"""
     # javaDoc ::=  <COMMENT_START > asteriskFound (eol(line)? ) * < COMMENT_END >
     if len(p) == 3:
         if p[1]:
@@ -112,14 +114,14 @@ def p_pddoc(p):
 
 
 def p_pdbody(p):
-    '''pdbody : pdcontent'''
+    """pdbody : pdcontent"""
     if len(p) > 1:
         p[0] = p[1]
 
 
 def p_pdcontent(p):
-    '''pdcontent : line
-                 | line pdcontent'''
+    """pdcontent : line
+                 | line pdcontent"""
     lst = filter(None, p[1:])
     p[0] = ' '.join(lst)
 
@@ -133,12 +135,12 @@ def p_line(p):
 
 
 def p_rest_of_line(p):
-    '''rest_of_line : eol
+    """rest_of_line : eol
                     | WORD rest_of_line
                     | ASTERISK rest_of_line
-                    | TAG rest_of_line'''
+                    | TAG rest_of_line"""
 
-    ln = filter(None, p[1:])
+    ln = list(filter(None, p[1:]))
     # last word of line
     if len(ln) == 1:
         # empty tag
@@ -158,7 +160,7 @@ def p_rest_of_line(p):
 
 
 def p_eol(p):
-    '''eol : EOL'''
+    """eol : EOL"""
 
 
 def p_error(p):
@@ -173,14 +175,14 @@ def parse_string(data):
 
 
 def do_lex(data, func=print):
-    l = lexer()
-    l.input(data)
+    lx = lexer()
+    lx.input(data)
 
     while True:
-        tok = l.token()
+        tok = lx.token()
         if not tok:
             break
-        if func:
+        if func is not None:
             func(tok)
 
 

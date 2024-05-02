@@ -18,20 +18,21 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from __future__ import print_function
-from typing import Optional
-from ply.lex import LexToken
 
-from .graph_lexer import *
-from pddoc.pd.message import Message
-from pddoc.pd.comment import Comment
-from pddoc.pd.canvas import Canvas
-from pddoc.pd.array import Array
-from pddoc.pd.constants import XLET_SOUND, XLET_MESSAGE
-from six import string_types
-from pddoc.pd import factory
-from pddoc.pd.coregui import CoreGui
 import copy
 import logging
+from typing import Optional
+
+from ply.lex import LexToken
+
+from pddoc.pd import factory
+from pddoc.pd.array import Array
+from pddoc.pd.canvas import Canvas
+from pddoc.pd.comment import Comment
+from pddoc.pd.constants import XLET_SOUND, XLET_MESSAGE
+from pddoc.pd.coregui import CoreGui
+from pddoc.pd.message import Message
+from .graph_lexer import *
 
 
 class Node(object):
@@ -91,7 +92,8 @@ class Node(object):
         return self.tok.type == 'OBJECT_ID'
 
     def is_connection(self) -> bool:
-        return self.tok.type in ('CONNECTION', 'CONNECTION_LEFT', 'CONNECTION_RIGHT', 'CONNECTION_X', 'CONNECTION_MANUAL')
+        return self.tok.type in (
+        'CONNECTION', 'CONNECTION_LEFT', 'CONNECTION_RIGHT', 'CONNECTION_X', 'CONNECTION_MANUAL')
 
     def is_all_in_connection(self) -> bool:
         return self.multi_connect == 'all_in'

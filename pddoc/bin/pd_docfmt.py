@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # coding=utf-8
 from __future__ import print_function
-import argparse
-import os.path
 
-from pddoc.parser import parse_xml
+import argparse
+
 from lxml import etree
 
 #   Copyright (C) 2023 by Serge Poltavski                                 #
@@ -44,7 +43,10 @@ def main():
         exit(1)
 
     def tag_index(name):
-        return ("title", "meta", "info", "mouse", "arguments", "properties", "methods", "inlets", "outlets", "example").index(name)
+        return (
+            "title", "meta", "info", "mouse", "arguments", "properties", "methods", "inlets", "outlets",
+            "example").index(
+            name)
 
     pddoc = xml.getroot()
     obj = pddoc.getchildren()[0]

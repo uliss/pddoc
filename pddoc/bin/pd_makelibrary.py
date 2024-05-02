@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # coding=utf-8
 from __future__ import print_function
+
 import argparse
-import os
 import logging
+import os
+
 from pddoc.library import LibraryMaker
+
 
 #   Copyright (C) 2016 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -23,7 +26,7 @@ from pddoc.library import LibraryMaker
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 
-def check_file(fname):
+def check_file(fname: str):
     if os.path.exists(fname):
         return True
     else:

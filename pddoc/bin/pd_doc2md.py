@@ -4,10 +4,11 @@ import argparse
 import logging
 import os
 
-from pddoc.parser import parse_xml
-from pddoc.pd import factory, PdObject
-from pddoc.markdownvisitor import MarkdownVisitor
 from pddoc.docobject import DocObject
+from pddoc.markdownvisitor import MarkdownVisitor
+from pddoc.parser import parse_xml
+from pddoc.pd import factory
+
 #   Copyright (C) 2023 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
@@ -25,6 +26,8 @@ from pddoc.docobject import DocObject
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 __author__ = 'Serge Poltavski'
+
+from pddoc.pd.obj import PdObject
 
 
 def add_xlet_db(path_list):
@@ -49,7 +52,7 @@ def main():
     arg_parser.add_argument('--xlet-db', metavar='PATH', action='append',
                             help='inlet/outlet database file paths', default=[])
     arg_parser.add_argument('--locale', '-l', metavar='locale', default='EN', help='locale (currently EN or RU)')
-    
+
     args = vars(arg_parser.parse_args())
     in_file = args['name']
     output = args['output']

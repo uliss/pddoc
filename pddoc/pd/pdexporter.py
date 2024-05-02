@@ -2,9 +2,9 @@
 # coding=utf-8
 import textwrap
 
-from .message import Message
-from .canvas import Canvas
 from .abstractvisitor import AbstractVisitor
+from .canvas import Canvas
+from .message import Message
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
@@ -24,9 +24,7 @@ from .abstractvisitor import AbstractVisitor
 
 __author__ = 'Serge Poltavski'
 
-
 from .array import Array
-import re
 
 from .obj import PdObject
 

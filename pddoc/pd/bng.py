@@ -21,7 +21,6 @@
 __author__ = 'Serge Poltavski'
 
 from .coregui import *
-import six
 
 
 class PdBng(CoreGui):
@@ -70,7 +69,7 @@ class PdBng(CoreGui):
         return self._size
 
     def center(self):
-        return self.x + self.width/2 + 0.75, self.y + self.height/2 + 0.75
+        return self.x + self.width / 2 + 0.75, self.y + self.height / 2 + 0.75
 
     def draw(self, painter):
         self.draw_bbox(painter)
@@ -79,7 +78,7 @@ class PdBng(CoreGui):
         circle_color = self.bgcolor()
         if self._pressed:
             circle_color = self.fgcolor()
-        painter.draw_circle(cx, cy, (self.width-1.5)/2, fill=circle_color)
+        painter.draw_circle(cx, cy, (self.width - 1.5) / 2, fill=circle_color)
 
         self.draw_label(painter)
         self.draw_xlets(painter)

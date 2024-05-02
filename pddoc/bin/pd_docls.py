@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 from __future__ import print_function
+
 import argparse
 
 from pddoc.docobject import DocObject
@@ -24,6 +25,7 @@ from pddoc.parser import parse_xml
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 __author__ = 'Serge Poltavski'
+
 
 def main():
     arg_parser = argparse.ArgumentParser(description='list PureData objects in pddoc')

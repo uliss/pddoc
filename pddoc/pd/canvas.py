@@ -20,11 +20,10 @@ from __future__ import print_function
 
 __author__ = 'Serge Poltavski'
 
-from typing import Optional, List
+from typing import List
 
-from .comment import Comment
-from .obj import *
 from .constants import XLET_MESSAGE, XLET_SOUND, XLET_IGNORE
+from .obj import *
 from ..pdpainter import PdPainter
 
 

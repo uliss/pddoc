@@ -19,25 +19,25 @@
 
 __author__ = 'Serge Poltavski'
 
+import importlib
+import logging
 import os
 import re
 import sys
-import logging
-import importlib
 from typing import List
 
-from .floatatom import FloatAtom
-from .listbox import PdListBox
-from .constants import EXTERNALS_DIR
-from .obj import PdObject
 from .bng import PdBng
-from .toggle import PdToggle
-from .slider import PdSlider, PdHSlider, PdVSlider
-from .radio import Radio, PdVRadio, PdHRadio
+from .constants import EXTERNALS_DIR
+from .floatatom import FloatAtom
 from .gcanvas import GCanvas
+from .listbox import PdListBox
 from .nbx import Nbx
-from .vu import PdVu
+from .obj import PdObject
+from .radio import Radio, PdVRadio, PdHRadio
+from .slider import PdSlider, PdHSlider, PdVSlider
 from .symbolatom import PdSymbolAtom
+from .toggle import PdToggle
+from .vu import PdVu
 
 sys.path.append(EXTERNALS_DIR)
 
@@ -186,6 +186,7 @@ def find_external_object(name):
         logging.debug("module \"%s.py\" imported from \"%s\".", mod_name, mod_dir)
         return True
     except ImportError as e:
-        logging.error("Error while importing extension: %s - \"%s\". Search paths: = %s", mod_name, e, "\n\t".join(sys.path))
+        logging.error("Error while importing extension: %s - \"%s\". Search paths: = %s", mod_name, e,
+                      "\n\t".join(sys.path))
         not_found.add(clean_ext_name)
         return None

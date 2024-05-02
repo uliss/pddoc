@@ -19,13 +19,14 @@
 
 __author__ = 'Serge Poltavski'
 
+import os
+
 from .baseobject import BaseObject
-from .xlettextdatabase import XletTextDatabase
+from .constants import EXTERNALS_DIR
 from .xletcalcdatabase import XletCalcDatabase
 from .xletdatabase import XletMemoryDatabase
 from .xletpatchlookup import XletPatchLookup
-from .constants import EXTERNALS_DIR
-import os
+from .xlettextdatabase import XletTextDatabase
 
 
 class XletCalculator(object):

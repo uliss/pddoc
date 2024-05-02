@@ -19,25 +19,25 @@
 
 __author__ = 'Serge Poltavski'
 
-import re
-import os
 import logging
 
-import pddoc.pd as pd
-from .txt.parser import Parser
-from .pd.canvas import Canvas
-from .pd.pdexporter import PdExporter
+from .docobject import DocPdascii
 from .idocobjectvisitor import IDocObjectVisitor
+from .txt.parser import Parser
 
 
 class ListObjectVisitor(IDocObjectVisitor):
+    def render(self):
+        pass
+
     def __init__(self):
         IDocObjectVisitor.__init__(self)
+        self._pdascii = None
 
     def alias_begin(self, a):
         print(a.text())
 
-    def pdascii_begin(self, pdascii):
+    def pdascii_begin(self, pdascii: DocPdascii):
         self._pdascii = pdascii.text()
 
         p = Parser()

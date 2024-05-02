@@ -23,10 +23,12 @@ import argparse
 import logging
 import os
 
-from pddoc.txt import Parser
-from pddoc.pd import Canvas, PdExporter, PdObject
-from pddoc import CairoPainter
 import pddoc.pd.factory as factory
+from pddoc import CairoPainter
+from pddoc.pd.canvas import Canvas
+from pddoc.pd.obj import PdObject
+from pddoc.pd.pdexporter import PdExporter
+from pddoc.txt import Parser
 
 
 def main():

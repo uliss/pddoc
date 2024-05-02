@@ -20,6 +20,7 @@
 __author__ = 'Serge Poltavski'
 
 import os.path
+
 from mako.template import Template
 
 from .cairopainter import CairoPainter
@@ -28,7 +29,7 @@ from .docobjectvisitor import DocObjectVisitor
 
 class LatexDocObjectVisitor(DocObjectVisitor):
     def __init__(self):
-        DocObjectVisitor.__init__(self)
+        super().__init__()
         self._image_extension = "pdf"
         self._image_output_dir = "pdf"
         self._includegraphics_scale = 0.7
@@ -38,8 +39,8 @@ class LatexDocObjectVisitor(DocObjectVisitor):
 
     def make_image_painter(self, w, h, fname):
         return CairoPainter(w, h, fname, "pdf",
-                                         xoffset=self._canvas_padding,
-                                         yoffset=self._canvas_padding)
+                            xoffset=self._canvas_padding,
+                            yoffset=self._canvas_padding)
 
     def render(self):
         return self._latex_template.render(

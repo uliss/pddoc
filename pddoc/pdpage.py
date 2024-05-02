@@ -1,8 +1,19 @@
 #!/usr/bin/env python
 # coding=utf-8
+import re
 from typing import List
 
+from .pd.baseobject import BaseObject
+from .pd.brectcalculator import BRectCalculator
+from .pd.canvas import Canvas
+from .pd.comment import Comment
+from .pd.coregui import Color
+from .pd.externals.ceammc.ui_link import UILink
+from .pd.gcanvas import GCanvas
 from .pd.obj import PdObject
+from .pd.pdexporter import PdExporter
+
+
 #   Copyright (C) 2016 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
@@ -18,15 +29,6 @@ from .pd.obj import PdObject
 #                                                                         #
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
-
-from .pd.canvas import Canvas
-from .pd.gcanvas import GCanvas
-from .pd.coregui import Color
-from .pd.brectcalculator import BRectCalculator
-from .pd.externals.ceammc.ui_link import UILink
-from .pd.comment import Comment
-from .pd.pdexporter import PdExporter
-import re
 
 
 class PdPageStyle(object):
@@ -55,7 +57,7 @@ class PdPage(object):
         self._height = int(height)
         self._canvas = Canvas(0, 0, self._width, self._height, font_size=12)
         self._canvas.type = Canvas.TYPE_WINDOW
-        self._pd = {} # subpatches dict
+        self._pd = {}  # subpatches dict
 
     @property
     def width(self):
@@ -79,7 +81,8 @@ class PdPage(object):
         return self.make_background(x, y, width, height, color)
 
     def make_styled_hrule(self, y: int) -> GCanvas:
-        return self.make_hrule(20, y, width=self._width - (PdPageStyle.HRULE_LEFT_MARGIN + PdPageStyle.HRULE_RIGHT_MARGIN),
+        return self.make_hrule(20, y,
+                               width=self._width - (PdPageStyle.HRULE_LEFT_MARGIN + PdPageStyle.HRULE_RIGHT_MARGIN),
                                color=PdPageStyle.HRULE_COLOR)
 
     def make_label(self, x: int, y: int, txt: str, font_size, color=Color.black(), bg_color=Color.white()) -> GCanvas:
@@ -138,14 +141,14 @@ class PdPage(object):
         if txt:
             #  match only number with end dot: 1. - used for enums
             txt = re.sub(r'(\d+)\\.(?!\d)', '\\1\\.', txt)
-            txt = re.sub(' *, *', ' \\, ', txt)
+            txt = re.sub(r' *, *', ' \\, ', txt)
             txt = re.sub(r'\s+', ' ', txt)
         else:
             txt = ""
 
         return Comment(x, y, txt.split(' '))
 
-    def make_subpatch(self, name: str, x: float, y: float, w: float, h: float):
+    def make_subpatch(self, name: str, x: int, y: int, w: int, h: int):
         pd = Canvas(x, y, w, h, name=name)
         pd.type = Canvas.TYPE_SUBPATCH
         self._pd[name] = pd
@@ -175,7 +178,7 @@ class PdPage(object):
         self._canvas.append_object(lnk)
         return lnk
 
-    def add_bg_txt(self, txt: str, color, x, y):
+    def add_bg_txt(self, txt: str, color: Color, x: int, y: int):
         t = self.make_txt(txt, x, y)
         t.calc_brect()
         bg = self.make_background(x, y, t.width + 8, t.height + 8, color=color)
@@ -183,21 +186,21 @@ class PdPage(object):
         self._canvas.append_object(t)
         return t, bg
 
-    def add_description(self, txt, y):
+    def add_description(self, txt: str, y: int):
         d = self.add_bg_txt(txt, PdPageStyle.INFO_BG_COLOR, 0, y)
-        br = self.group_brect(d)
+        br = self.group_brect(list(d))
         self.move_to_x(d, self._width - br[2] - 20)
 
-    def add_section(self, title, y):
+    def add_section(self, title: str, y: int):
         l, r, brect = self.make_section(y, title)
         self._canvas.append_object(l)
         self._canvas.append_object(r)
         return l, r, brect
 
-    def add_subpatch_txt(self, name, txt, x: float, y: float):
+    def add_subpatch_txt(self, name, txt: str, x: int, y: int):
         return self.add_pd_txt(self._pd[name], txt, x, y)
 
-    def add_subpatch_obj(self, name, obj):
+    def add_subpatch_obj(self, name: str, obj):
         self._pd[name].append_object(obj)
         obj.calc_brect()
         return obj
@@ -207,8 +210,8 @@ class PdPage(object):
         obj.calc_brect()
         return obj
 
-    def append_list(self, obj):
-        for o in obj:
+    def append_list(self, objects: List[PdObject]):
+        for o in objects:
             self.append_object(o)
 
     @staticmethod
@@ -269,31 +272,33 @@ class PdPage(object):
 
         max(lambda x: x.bottom, self._canvas.objects)
 
-    def place_under(self, old_obj, new_obj, y_off=0):
+    @staticmethod
+    def place_under(old_obj: PdObject, new_obj: BaseObject, y_off: int = 0):
         old_obj.calc_brect()
         new_obj.y = old_obj.bottom + y_off
 
-    def place_right_side(self, old_obj, new_obj, x_space=0):
+    @staticmethod
+    def place_right_side(old_obj: PdObject, new_obj: BaseObject, x_space: int = 0):
         old_obj.calc_brect()
         new_obj.x = old_obj.right + x_space
 
-    def place_top_right(self, obj, x_pad=0, y_pad=0):
+    def place_top_right(self, obj: PdObject, x_pad: int = 0, y_pad: int = 0):
         obj.calc_brect()
         obj.x = self._width - obj.width - x_pad
         obj.y = y_pad
 
-    def place_bottom_right(self, obj, x_pad=0, y_pad=0):
+    def place_bottom_right(self, obj: PdObject, x_pad: int = 0, y_pad: int = 0):
         obj.calc_brect()
         obj.x = self._width - obj.width - x_pad
         obj.y = self._height - obj.height - y_pad
 
-    def place_bottom_left(self, obj, x_pad=0, y_pad=0):
+    def place_bottom_left(self, obj: PdObject, x_pad: int = 0, y_pad: int = 0):
         obj.calc_brect()
         obj.x = x_pad
         obj.y = self._height - obj.height - y_pad
 
     @staticmethod
-    def place_in_row(seq, x: float, x_pad: float = 0):
+    def place_in_row(seq, x: int, x_pad: int = 0):
         for o in seq:
             o.calc_brect()
 
@@ -302,7 +307,7 @@ class PdPage(object):
             x += o.width + x_pad
 
     @staticmethod
-    def place_in_col(seq, y: float, y_pad: float = 0):
+    def place_in_col(seq: List[PdObject], y: int, y_pad: int = 0):
         for o in seq:
             o.calc_brect()
 

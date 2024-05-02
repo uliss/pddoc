@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # coding=utf-8
 import argparse
-import os
 import logging
+import os
+
 from pddoc.categoryparser import CategoryParser
 
 

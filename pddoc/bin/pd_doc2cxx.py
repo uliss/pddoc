@@ -3,11 +3,10 @@
 import argparse
 import logging
 import os
+
 from pddoc.parser import parse_xml
 from pddoc.pd import factory
 
-from pddoc.htmldocvisitor import HtmlDocVisitor
-from pddoc.docobject import DocObject
 #   Copyright (C) 2015 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #

@@ -25,18 +25,16 @@
 """
 
 import posixpath
+from hashlib import sha1
 from os import path
 from subprocess import Popen, PIPE
-from hashlib import sha1
-
-from docutils import nodes
-from docutils.parsers.rst import directives
-from docutils.statemachine import ViewList
 
 import sphinx
+from docutils import nodes
+from docutils.parsers.rst import directives, Directive
+from docutils.statemachine import ViewList
 from sphinx.errors import SphinxError
-from sphinx.util.osutil import ensuredir, ENOENT, EPIPE, EINVAL
-from sphinx.util.compat import Directive
+=from sphinx.util.osutil import ensuredir, ENOENT, EPIPE, EINVAL
 
 
 class PdError(SphinxError):
@@ -135,7 +133,7 @@ def render_pd(self, code, options, format, prefix='pd'):
     try:
         p = Popen(pd_args, stdout=PIPE, stdin=PIPE, stderr=PIPE)
     except OSError as err:
-        if err.errno != ENOENT:   # No such file or directory
+        if err.errno != ENOENT:  # No such file or directory
             raise
         self.builder.warn('pdascii command cannot be run (needed for pd '
                           'output), check the pdgraph setting')

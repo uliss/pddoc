@@ -22,6 +22,9 @@ from .pd.obj import PdObject
 
 
 class XletDocVisitor(IDocObjectVisitor):
+    def render(self):
+        pass
+
     def __init__(self, write_to_file=True, add_to_mem_db=True):
         IDocObjectVisitor.__init__(self)
         self._inlet_types = []

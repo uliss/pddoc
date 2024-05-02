@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # coding=utf-8
 from __future__ import print_function
+
 import argparse
-import os
 import logging
+import os
+
 from pddoc.libraryparser import LibraryParser
 
 

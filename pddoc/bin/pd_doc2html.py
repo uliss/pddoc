@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # coding=utf-8
 import argparse
-import shutil
 import logging
 import os
+import shutil
+
+from pddoc.docobject import DocObject
+from pddoc.htmldocvisitor import HtmlDocVisitor
 from pddoc.parser import parse_xml
 from pddoc.pd import factory
 
-from pddoc.htmldocvisitor import HtmlDocVisitor
-from pddoc.docobject import DocObject
 #   Copyright (C) 2015 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #

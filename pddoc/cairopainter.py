@@ -21,15 +21,15 @@ from __future__ import print_function
 
 __author__ = 'Serge Poltavski'
 
+import logging
+import textwrap
+from math import pi
 from typing import Optional
 
 import cairo
-import textwrap
-from math import pi
-import logging
 
-from .pdpainter import PdPainter
 from .pd.constants import XLET_GUI, XLET_SOUND, XLET_MESSAGE
+from .pdpainter import PdPainter
 
 
 class CairoPainter(PdPainter):

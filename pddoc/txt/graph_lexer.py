@@ -18,10 +18,12 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from __future__ import print_function
+
+import logging
+import re
+
 import ply.lex as lex
 from ply.lex import TOKEN
-import re
-import logging
 
 # token names
 tokens = (
@@ -42,9 +44,9 @@ r_COMMENT = r'/\*(.+?)\*/'
 r_OBJECT_ID = r'#(.+)'
 r_NEWLINE = r'\n+'
 r_CONNECTION_X = r'(?<=[^\[])X'
-t_CONNECTION = r'[*^]*\|[.*]*'          # ^^|.. connection
+t_CONNECTION = r'[*^]*\|[.*]*'  # ^^|.. connection
 t_CONNECTION_RIGHT = r'\^*\\_*\.*'  # ^^\______..
-t_CONNECTION_LEFT = r'\.*_*/\^*'    # ^^\______..
+t_CONNECTION_LEFT = r'\.*_*/\^*'  # ^^\______..
 t_ignore = ' \r\t\f'
 
 

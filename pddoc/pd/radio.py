@@ -17,7 +17,7 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
- 
+
 __author__ = 'Serge Poltavski'
 
 from .coregui import CoreGui
@@ -82,6 +82,7 @@ class Radio(CoreGui):
                 self._font_type, self._font_size,
                 self._bg_color.to_pd(), self._fg_color.to_pd(), self._label_color.to_pd(),
                 "0"]
+
 
 class PdHRadio(Radio):
     def __init__(self, x, y, **kwargs):

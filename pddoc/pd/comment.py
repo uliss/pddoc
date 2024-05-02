@@ -22,8 +22,8 @@ __author__ = 'Serge Poltavski'
 
 from typing import List
 
-from .baseobject import *
 from .abstractvisitor import AbstractVisitor
+from .baseobject import *
 from .obj import PdObject
 from ..pdpainter import PdPainter
 

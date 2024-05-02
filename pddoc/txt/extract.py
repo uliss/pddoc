@@ -18,16 +18,16 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from __future__ import print_function
-from ext_lexer import parse_string
+
+import argparse
 import os
 import re
 import sys
-import pprint
+
 from mako.template import Template
-from pddoc.txt import Parser
-from pddoc.pd import Canvas, PdExporter, PdObject
-from pddoc import CairoPainter
-import argparse
+
+from ext_lexer import parse_string
+from pddoc.pd.obj import PdObject
 
 
 def extract_doc_comment(data):
@@ -129,17 +129,15 @@ def generate_pddoc(data, args):
     pddoc_template = Template(filename=tmpl_path)
     doc = data['doc'][1]
 
-
-    template_data = {}
-    template_data['name'] = doc['name']
-    template_data['description'] = doc.get('brief')
-    template_data['license'] = doc.get('license', 'Unknown')
-    template_data['library'] = doc.get('library', 'misc')
-    template_data['version'] = doc.get('version', '0.0.0')
-    template_data['category'] = doc.get('category', '')
-    template_data['website'] = doc.get('website', '')
-    template_data['authors'] = doc['author'].split(',')
-    template_data['example'] = data.get('example')
+    template_data = {'name': doc['name'],
+                     'description': doc.get('brief'),
+                     'license': doc.get('license', 'Unknown'),
+                     'library': doc.get('library', 'misc'),
+                     'version': doc.get('version', '0.0.0'),
+                     'category': doc.get('category', ''),
+                     'website': doc.get('website', ''),
+                     'authors': doc['author'].split(','),
+                     'example': data.get('example')}
 
     if 'inlet' in doc:
         PdObject.xlet_calculator.mem_db.add_object(doc['name'], [0], [0])
@@ -213,4 +211,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

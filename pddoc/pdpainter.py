@@ -50,16 +50,16 @@ class PdPainter(object):
     def draw_poly(self, vertexes, **kwargs):
         print("Draw poly:", vertexes)
 
-    def draw_text(self, x, y, text, **kwargs):
+    def draw_text(self, x: int, y: int, text, **kwargs):
         print("Draw text:", text)
 
-    def draw_inlets(self, inlets, x, y, width):
+    def draw_inlets(self, inlets, x: int, y: int, width: int):
         print("Draw inlets:", inlets)
 
-    def draw_outlets(self, outlets, x, y, width):
+    def draw_outlets(self, outlets, x: int, y: int, width: int):
         print("Draw outlets:", outlets)
 
-    def draw_circle(self, x, y, width, **kwargs):
+    def draw_circle(self, x: int, y: int, width, **kwargs):
         print("Draw circle")
 
     def draw_arc(self, x, y, radius, start_angle, end_angle, **kwargs):

@@ -17,14 +17,17 @@
 __author__ = 'Serge Poltavski'
 
 import argparse
-import logging
-import os
 import json
+import logging
 import math
+import os
 
-from pddoc.pd import Canvas, PdExporter, PdObject, Message
-from pddoc.pd.gcanvas import GCanvas
+from pddoc.pd.canvas import Canvas
 from pddoc.pd.coregui import Color
+from pddoc.pd.gcanvas import GCanvas
+from pddoc.pd.message import Message
+from pddoc.pd.obj import PdObject
+from pddoc.pd.pdexporter import PdExporter
 
 GRID = 25
 
@@ -67,7 +70,7 @@ def obj_prop_defs(json, d):
                 props(ui)
 
 
-def export_ui(cnv, counter, prop_route, el, x, y, main_obj, **kwargs):
+def export_ui(cnv: Canvas, counter: int, prop_route, el, x: int, y: int, main_obj: PdObject, **kwargs):
     MSG_XOFF = 250
 
     if el['type'] in ('vslider', 'hslider'):
@@ -83,13 +86,13 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj, **kwargs):
                                           "@label_align", "left", "@fontsize", "10"])
         obj.append_arg("@presetname")
         obj.append_arg("/gui/\\$1/{0}/slider{1}".format(main_obj.name, counter))
-        obj.set_x(x + 2)
-        obj.set_y(y)
+        obj.x = (x + 2)
+        obj.y = y
         cnv.append_object(obj)
 
         sync = PdObject("sync")
-        sync.set_x(x + 205)
-        sync.set_y(y)
+        sync.x = (x + 205)
+        sync.y = y
         cnv.append_object(sync)
 
         # range and type checks
@@ -99,8 +102,8 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj, **kwargs):
         is_step_int = 'step' in el and (el['step'] == 1)
 
         nbx = PdObject('ui.number', args=["@size", "50", "12"])
-        nbx.set_x(x + 135)
-        nbx.set_y(y)
+        nbx.x = (x + 135)
+        nbx.y = y
         cnv.append_object(nbx)
 
         cnv.add_connection(obj.id, 0, sync.id, 0, check_xlets=False)
@@ -122,8 +125,8 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj, **kwargs):
 
         ndig = 3
         if has_min and has_max:
-            range = abs(el['max'] - el['min'])
-            ndig = int(math.ceil(math.log10(range))) - 4
+            rng = abs(el['max'] - el['min'])
+            ndig = int(math.ceil(math.log10(rng))) - 4
 
         if is_meta_int or is_step_int:
             ndig = 0
@@ -150,8 +153,8 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj, **kwargs):
                                           "@label_align", "left", "@fontsize", "10"])
         nbx.append_arg("@presetname")
         nbx.append_arg("/gui/\\$1/{0}/numbox{1}".format(main_obj.name, counter))
-        nbx.set_x(x + 2)
-        nbx.set_y(y)
+        nbx.x = (x + 2)
+        nbx.y = y
 
         if 'min' in el:
             nbx.append_arg("@min")
@@ -183,14 +186,14 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj, **kwargs):
                                               "@label_align", "right", "@fontsize", "10"])
 
             wd = kwargs.get("width", 200)
-            tgl.set_x(wd - 15)
-            tgl.set_y(kwargs.get("top", 200))
+            tgl.x = (wd - 15)
+            tgl.y = (kwargs.get("top", 200))
         else:
             tgl = PdObject('ui.toggle', args=["@size", "12", "12",
                                               "@label", el['label'], "@label_side", "right",
                                               "@label_align", "left", "@fontsize", "10"])
-            tgl.set_x(x + 2)
-            tgl.set_y(y + 8)
+            tgl.x = (x + 2)
+            tgl.y = (y + 8)
 
         if el["label"] != "gate":
             tgl.append_arg("@presetname")
@@ -216,6 +219,7 @@ def export_ui(cnv, counter, prop_route, el, x, y, main_obj, **kwargs):
 
 
 def main():
+    y_off = 0
     arg_parser = argparse.ArgumentParser(description='Create PureData GUI abstraction by Faust JSON file')
     arg_parser.add_argument('json', metavar='JSON', help="Faust json file")
 
@@ -261,16 +265,16 @@ def main():
                     return
 
     main_obj = PdObject(name + '~')
-    main_obj.set_x(GRID)
-    main_obj.set_y(GRID * 5)
+    main_obj.x = GRID
+    main_obj.y = (GRID * 5)
     cnv.append_object(main_obj)
 
     # create signal inlets
     x_off = GRID
     for i in range(n_ins):
         inlet = PdObject('inlet~')
-        inlet.set_x(x_off)
-        inlet.set_y(GRID)
+        inlet.x = x_off
+        inlet.y = GRID
         x_off += GRID * 4
         cnv.append_object(inlet)
         cnv.add_connection(inlet.id, 0, main_obj.id, i, check_xlets=False)
@@ -278,8 +282,8 @@ def main():
     CTL_XOFF = 300
     # create control inlet
     ctl_inlet = PdObject('inlet')
-    ctl_inlet.set_x(x_off + CTL_XOFF)
-    ctl_inlet.set_y(GRID)
+    ctl_inlet.x = (x_off + CTL_XOFF)
+    ctl_inlet.y = GRID
     cnv.append_object(ctl_inlet)
 
     # object name router
@@ -287,19 +291,19 @@ def main():
     # |               / /
     # [route..          ]
     in_route = PdObject('route', args=[name, '*', '.'])
-    in_route.set_x(x_off + CTL_XOFF)
-    in_route.set_y(GRID * 5)
+    in_route.x = (x_off + CTL_XOFF)
+    in_route.y = (GRID * 5)
     cnv.append_object(in_route)
     cnv.add_connection(ctl_inlet.id, 0, in_route.id, 0)
 
     # check route property
     # [route.prop]
-    is_prop = PdObject('route.prop', x=x_off+CTL_XOFF+200, y=GRID*6)
+    is_prop = PdObject('route.prop', x=x_off + CTL_XOFF + 200, y=GRID * 6)
     cnv.append_object(is_prop)
     cnv.add_connection(in_route.id, 3, is_prop.id, 0, check_xlets=False)
 
     # [msg *]
-    msg_ast = PdObject('msg', x=x_off+CTL_XOFF+50, y=GRID*8, args=['*'])
+    msg_ast = PdObject('msg', x=x_off + CTL_XOFF + 50, y=GRID * 8, args=['*'])
     cnv.append_object(msg_ast)
     cnv.add_connection(in_route.id, 1, msg_ast.id, 0, check_xlets=False)
 
@@ -312,8 +316,8 @@ def main():
     prop_route.append_arg('reset')
 
     cnv.append_object(prop_route)
-    prop_route.set_x(x_off + CTL_XOFF)
-    prop_route.set_y(GRID * 10)
+    prop_route.x = (x_off + CTL_XOFF)
+    prop_route.y = (GRID * 10)
     # connect target route
     cnv.add_connection(in_route.id, 0, prop_route.id, 0, check_xlets=False)
     # connect '*'
@@ -339,13 +343,13 @@ def main():
     cnv.append_object(err_msg)
     cnv.add_connection(err_trig.id, 0, err_msg.id, 0)
 
-    err_msg_print0 = PdObject('print', x=err_x, y=GRID*17)
+    err_msg_print0 = PdObject('print', x=err_x, y=GRID * 17)
     cnv.append_object(err_msg_print0)
     cnv.add_connection(err_msg.id, 0, err_msg_print0.id, 0)
 
     print_err_prop = PdObject('print', args=[f'[g{name}~] unknown message'])
-    print_err_prop.set_x(err_x + 50)
-    print_err_prop.set_y(GRID * 17)
+    print_err_prop.x = (err_x + 50)
+    print_err_prop.y = (GRID * 17)
     cnv.append_object(print_err_prop)
     cnv.add_connection(err_trig.id, 1, print_err_prop.id, 0)
 
@@ -384,8 +388,8 @@ def main():
         cnv.add_connection(prop_route.id, reset_idx, reset_trig.id, 0, check_xlets=False)
 
     default_loadbang = PdObject('msg.onload')
-    default_loadbang.set_x(x_off + 200)
-    default_loadbang.set_y(GRID)
+    default_loadbang.x = (x_off + 200)
+    default_loadbang.y = GRID
     cnv.append_object(default_loadbang)
     cnv.add_connection(default_loadbang.id, 0, default_msg.id, 0, check_xlets=False)
 
@@ -393,16 +397,16 @@ def main():
     x_off = GRID * 20
     for i in range(n_outs):
         outlet = PdObject('outlet~')
-        outlet.set_x(x_off)
-        outlet.set_y(GRID * 22)
+        outlet.x = x_off
+        outlet.y = (GRID * 22)
         x_off += GRID * 4
         cnv.append_object(outlet)
         cnv.add_connection(main_obj.id, i, outlet.id, 0, check_xlets=False)
 
     # create control outlet
     outlet = PdObject('outlet ctl')
-    outlet.set_x(x_off)
-    outlet.set_y(GRID * 22)
+    outlet.x = x_off
+    outlet.y = (GRID * 22)
     cnv.append_object(outlet)
     # connect route to unmatched objects
     cnv.add_connection(is_prop.id, 1, outlet.id, 0, check_xlets=False)

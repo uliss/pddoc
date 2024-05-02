@@ -19,23 +19,25 @@
 
 __author__ = 'Serge Poltavski'
 
-import re
-import os
 import logging
-
-import pddoc.pd as pd
-from .pdlayout import PdLayout
-from .idocobjectvisitor import IDocObjectVisitor
-from .txt.parser import Parser
-from .pd.canvas import Canvas
-from .pd.pdexporter import PdExporter
-from .pd.obj import PdObject
+import os
+import re
 
 from pddoc.docobject import DocPar
+from .idocobjectvisitor import IDocObjectVisitor
+from .pd.canvas import Canvas
+from .pd.pdexporter import PdExporter
+from .pdlayout import PdLayout
+from .txt.parser import Parser
 
 
 class DocObjectVisitor(IDocObjectVisitor):
+    def render(self):
+        pass
+
     def __init__(self):
+        super().__init__()
+        
         self._title = ""
         self._description = ""
         self._keywords = []
@@ -120,17 +122,17 @@ class DocObjectVisitor(IDocObjectVisitor):
 
     def contacts_begin(self, cnt):
         self._contacts = cnt.text()
-    
+
     ###
     def info_begin(self, info):
         for p in info.items():
             if isinstance(p, DocPar):
                 self._info += p.text() + "\n"
-    
+
     ###
     def pdexample_begin(self, tag):
-        self._layout.canvas = pd.Canvas(0, 0, 10, 10, name="10")
-        self._layout.canvas.type = pd.Canvas.TYPE_WINDOW
+        self._layout.canvas = Canvas(0, 0, 10, 10, name="10")
+        self._layout.canvas.type = Canvas.TYPE_WINDOW
 
     def pdexample_end(self, tag):
         img_id, img_path = self.make_image_id_name()
@@ -321,8 +323,11 @@ class DocObjectVisitor(IDocObjectVisitor):
         if os.path.exists(fname):
             logging.warning("image exists: \"%s\"", fname)
 
-        pdo = pd.make_by_name(name)
-        x, y, w, h = pd.BRectCalculator().object_brect(pdo)
+        from pddoc.pd.factory import make_by_name
+        pdo = make_by_name(name)
+
+        from pddoc.pd.brectcalculator import BRectCalculator
+        x, y, w, h = BRectCalculator().object_brect(pdo)
         w = int(w + self._image_object_padding * 2)
         h = int(h + self._image_object_padding * 2)
         old_pad = self._canvas_padding

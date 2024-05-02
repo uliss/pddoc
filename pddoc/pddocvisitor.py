@@ -633,4 +633,3 @@ class PdDocVisitor(DocObjectVisitor):
         self._pp.move_to_y(also_objects, y)
         self._pp.move_to_x(also_objects, (self._pp.width - w) - 40)
         self._pp.append_list(also_objects)
-

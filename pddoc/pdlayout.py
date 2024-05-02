@@ -19,12 +19,11 @@
 
 __author__ = 'Serge Poltavski'
 
+import logging
 from typing import Optional
 
+from .docobject import DocPdobject, DocPdmessage, DocPdconnect
 from .layout import *
-from .docobject import DocPdobject, DocPdmessage
-import logging
-
 from .pd.brectcalculator import BRectCalculator
 from .pd.canvas import Canvas
 from .pd.comment import Comment
@@ -116,8 +115,10 @@ class PdLayout(object):
         return pdm
 
     def doc2obj(self, doc_obj: DocPdobject):
+        from pddoc.pd.factory import make_by_name
+
         args = list(filter(None, doc_obj.args()))
-        pd_obj = factory.make_by_name(doc_obj.name(), args, **doc_obj.attrs())
+        pd_obj = make_by_name(doc_obj.name(), args, **doc_obj.attrs())
         obj_bbox = list(self.calc_brect(pd_obj))
         litem = LayoutItem(doc_obj.offset(), 0, obj_bbox[2], obj_bbox[3])
         setattr(pd_obj, "layout", litem)
@@ -127,7 +128,9 @@ class PdLayout(object):
 
         return pd_obj
 
-    def connect_begin(self, c):
+    def connect_begin(self, c: DocPdconnect):
+        dest_in = None
+        src_out = None
         try:
             src_id = self._pdobj_id_map[c.src_id()]
             dest_id = self._pdobj_id_map[c.dest_id()]

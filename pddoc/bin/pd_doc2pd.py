@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # coding=utf-8
 from __future__ import print_function
+
 import argparse
-import os
 import logging
+import os
 
 from pddoc.docobject import DocObject
+from pddoc.parser import parse_xml
+from pddoc.pd import factory
+from pddoc.pd.obj import PdObject
 from pddoc.pddocvisitor import PdDocVisitor
 from pddoc.xletdocvisitor import XletDocVisitor
-from pddoc.parser import parse_xml
-from pddoc.pd.obj import PdObject
-from pddoc.pd import factory
 
 #   Copyright (C) 2016 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #

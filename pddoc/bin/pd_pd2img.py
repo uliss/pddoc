@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # coding=utf-8
 import argparse
+import logging
 import os.path
 
-from pddoc.cairopainter import *
-from pddoc.pd import Parser
 from format import detect_format
 
 # Copyright (C) 2014 by Serge Poltavski                                 #
@@ -25,6 +24,9 @@ from format import detect_format
 
 
 __author__ = 'Serge Poltavski'
+
+from pddoc import CairoPainter
+from pddoc.pd.parser import Parser
 
 
 def main():

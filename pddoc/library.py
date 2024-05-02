@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 # coding=utf-8
-from lxml import etree
 import logging
 import os
 import os.path
 import urllib.parse as ul
 
-from .parser import get_parser, get_schema
+from lxml import etree
+
+from .parser import get_schema
+
+
 #   Copyright (C) 2016 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
@@ -158,11 +161,13 @@ class LibraryMaker(object):
         entry.append(self.xi_include(os.path.basename(fname)))
         self._cats[cat_name].append(entry)
 
-    def xi_include(self, fname):
+    @staticmethod
+    def xi_include(fname):
         url = ul.quote(fname)
         return etree.Element('{http://www.w3.org/2001/XInclude}include', href=url, parse="xml")
 
-    def sort_cat(self, cat):
+    @staticmethod
+    def sort_cat(cat):
         entries = cat.findall('entry')
         sorted_entries = sorted(entries, key=lambda x: x.get('name'))
 

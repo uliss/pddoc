@@ -17,10 +17,11 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-from lxml import etree
-import os
 import logging
+import os
 from string import Template
+
+from lxml import etree
 
 
 def get_schema():
@@ -81,4 +82,3 @@ def fix_section_order(obj_tag):
 
     for child in reversed(sorted_children):
         obj_tag.insert(0, child)
-

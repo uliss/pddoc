@@ -22,15 +22,15 @@ __author__ = 'Serge Poltavski'
 import unittest
 
 from pddoc.cairopainter import CairoPainter
+from pddoc.pd.parser import Parser
 from pddoc.pddrawer import PdDrawer
-import pddoc.pd as pd
 
 
 class TestCairoPainter(unittest.TestCase):
     def test_simple(self):
-        parser = pd.Parser()
+        parser = Parser()
         # f = "/Applications/Pd-extended.app/Contents/Resources/doc/5.reference/float-help.pd"
-        f = "/Applications/Pd-ceammc_2020.12.app/Contents/Resources/extra/ceammc/ceammc-help.pd"
+        f = "/Applications/Pd-ceammc_2023.10.app/Contents/Resources/extra/ceammc/ceammc-help.pd"
         parser.parse(f)
 
         canvas = parser.canvas

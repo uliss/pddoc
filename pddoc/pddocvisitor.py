@@ -19,7 +19,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.docobject import DocPar, DocA, DocWiki
+from pddoc.docobject import DocPar, DocA, DocWiki, DocArgument
 from pddoc.pdpage import PdPage
 from pddoc.pdpage import PdPageStyle
 from .docobjectvisitor import DocObjectVisitor
@@ -31,28 +31,28 @@ from .pd.obj import PdObject
 from .pd.parser import Parser
 
 
-def add_text_dot(string):
-    if string is None:
+def add_text_dot(txt) -> str:
+    if txt is None:
         return ''
-    string = string.strip()
-    if len(string) == 0:
-        return string
+    txt = txt.strip()
+    if len(txt) == 0:
+        return txt
 
-    if string[-1] == '.':
-        return string
+    if txt[-1] == '.':
+        return txt
     else:
-        return string + '.'
+        return txt + '.'
 
 
-def remove_text_dot(string):
-    string = string.strip()
-    if len(string) == 0:
-        return string
+def remove_text_dot(txt: str) -> str:
+    txt = txt.strip()
+    if len(txt) == 0:
+        return txt
 
-    if string[-1] == '.':
-        return string[0:-1]
+    if txt[-1] == '.':
+        return txt[0:-1]
     else:
-        return string
+        return txt
 
 
 def units_str(units) -> str:
@@ -60,6 +60,7 @@ def units_str(units) -> str:
 
 
 class PdDocVisitor(DocObjectVisitor):
+    current_yoff: int
     PD_WINDOW_WIDTH = 785
     PD_WINDOW_HEIGHT = 555
     PD_HEADER_HEIGHT = 40
@@ -402,7 +403,7 @@ class PdDocVisitor(DocObjectVisitor):
         self._pp.append_list(lst)
         self.current_yoff = brect[1] + brect[3]
 
-    def argument_begin(self, arg):
+    def argument_begin(self, arg: DocArgument):
         y = self.current_yoff
         super(self.__class__, self).argument_begin(arg)
 
@@ -414,7 +415,7 @@ class PdDocVisitor(DocObjectVisitor):
                                     self.PD_ARG_NAME_COLOR)
 
         rng = self.format_range(arg)
-        t3 = self._pp.add_txt("{0}. {1}".format(arg.main_info(), rng), self.PD_XLET_INFO_XPOS, y)
+        t3 = self._pp.add_txt("{0}. {1}".format(remove_text_dot(arg.main_info()), rng), self.PD_XLET_INFO_XPOS, y)
         _, _, _, h = self._pp.group_brect([t1, t2, t3])
         self.current_yoff += h + 5
 

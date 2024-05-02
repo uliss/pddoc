@@ -708,7 +708,7 @@ class DocArgument(DocItem):
     def default(self):
         return self._default
 
-    def number(self):
+    def number(self) -> str:
         return self._number
 
     def enumerate(self, n):
@@ -735,14 +735,27 @@ class DocArgument(DocItem):
             res += ": "
         return res
 
-    def main_info(self):
+    @classmethod
+    def remove_end_dot(cls, txt: str) -> str:
+        txt = txt.strip()
+        if len(txt) > 0 and txt[-1] == '.':
+            return txt[0:-1]
+        else:
+            return txt
+
+    @classmethod
+    def append_after_dot(cls, txt: str, suffix: str):
+        txt = cls.remove_end_dot(txt)
+        return f"{txt}. {suffix}"
+
+    def main_info(self) -> str:
         res = self.main_info_prefix()
         res += self.text()
         if res and len(self._enum) > 0:
-            res += ". Allowed values: {0}. ".format(", ".join(self._enum))
+            res = self.append_after_dot(res, "Allowed values: {}".format(", ".join(self._enum)))
 
         if res and self._type:
-            res += ". Type:  {0}".format(self._type)
+            res = self.append_after_dot(res, "Type: {}".format(self._type))
 
         return res.strip()
 

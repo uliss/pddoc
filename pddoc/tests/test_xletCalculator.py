@@ -2,7 +2,7 @@
 # coding=utf-8
 from unittest import TestCase
 import os.path as path
-from pddoc.pd import XletCalculator, PdObject
+
 
 #   Copyright (C) 2016 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #

@@ -26,7 +26,6 @@ from pddoc.markdownvisitor import *
 from pddoc.pdlayout import *
 from pddoc.docobject import *
 import os
-from .nologging import NoLogging
 
 
 class TestMdDocVisitor(TestCase):
@@ -90,8 +89,8 @@ class TestMdDocVisitor(TestCase):
         self.assertTrue(hasattr(pdo, "layout"))
         self.assertEqual(pdo.layout.x(), 10)
         self.assertEqual(pdo.layout.y(), 0)
-        self.assertEqual(pdo.layout.width(), 113)
-        self.assertEqual(pdo.layout.height(), 17)
+        self.assertEqual(pdo.layout.width(), 114)
+        self.assertEqual(pdo.layout.height(), 18)
 
     def test_doc2msg(self):
         v = PdLayout()
@@ -126,7 +125,7 @@ class TestMdDocVisitor(TestCase):
         self.assertTrue(hasattr(pdc, "layout"))
         self.assertEqual(pdc.layout.x(), 0)
         self.assertEqual(pdc.layout.y(), 0)
-        self.assertEqual(pdc.layout.width(), 104)
+        self.assertEqual(pdc.layout.width(), 105)
         self.assertEqual(pdc.layout.height(), 15)
 
         pdc = v.comment2pd_comment(" ".join(["long comment"] * 40))

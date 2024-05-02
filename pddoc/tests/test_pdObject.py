@@ -90,7 +90,8 @@ class TestPdObject(unittest.TestCase):
             def visit_object(self, o):
                 self._o = o
 
-        po = pd.PdObject("float")
+        from pddoc.pd.obj import PdObject
+        po = PdObject("float")
         visitor = T()
 
         self.assertEqual(hasattr(visitor, "_o"), False)

@@ -17,15 +17,14 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-from unittest import TestCase
 import sys
 from io import StringIO
+from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
 from pddoc.pddrawer import *
 from pddoc.pdpainter import *
-import pddoc.pd as pd
 
 
 class TestPdDrawer(TestCase):
@@ -34,7 +33,8 @@ class TestPdDrawer(TestCase):
         cout = sys.stdout
         sys.stdout = StringIO()
 
-        parser = pd.Parser()
+        from pddoc.pd.parser import Parser
+        parser = Parser()
         parser.parse("simple.pd")
 
         painter = PdPainter()

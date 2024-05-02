@@ -21,7 +21,7 @@ from unittest import TestCase
 __author__ = 'Serge Poltavski'
 
 from pddoc.pd.message import *
-from pddoc.pd import XLET_MESSAGE
+from pddoc.pd.constants import XLET_MESSAGE
 
 
 class TestPdMessage(TestCase):

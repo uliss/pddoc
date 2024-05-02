@@ -19,12 +19,11 @@
 
 __author__ = 'Serge Poltavski'
 
-from unittest import TestCase
 import copy
+from unittest import TestCase
 
-from .nologging import NoLogging
 from pddoc.pd.canvas import *
-import pddoc.pd as pd
+from .nologging import NoLogging
 
 
 class TestPdCanvas(TestCase):
@@ -134,9 +133,9 @@ class TestPdCanvas(TestCase):
         for o in (pdo1, pdo2, pdo3):
             cnv.append_object(o)
 
-        self.assertEqual(cnv.inlets(), [pd.XLET_MESSAGE, pd.XLET_SOUND, pd.XLET_MESSAGE])
+        self.assertEqual(cnv.inlets(), [XLET_MESSAGE, XLET_SOUND, XLET_MESSAGE])
         pdo1.x = 0
-        self.assertEqual(cnv.inlets(), [pd.XLET_MESSAGE, pd.XLET_MESSAGE, pd.XLET_SOUND])
+        self.assertEqual(cnv.inlets(), [XLET_MESSAGE, XLET_MESSAGE, XLET_SOUND])
 
     def test_outlets(self):
         cnv = Canvas(0, 0, 100, 50)
@@ -149,9 +148,9 @@ class TestPdCanvas(TestCase):
         for o in (pdo1, pdo2, pdo3):
             cnv.append_object(o)
 
-        self.assertEqual(cnv.outlets(), [pd.XLET_MESSAGE, pd.XLET_SOUND, pd.XLET_MESSAGE])
+        self.assertEqual(cnv.outlets(), [XLET_MESSAGE, XLET_SOUND, XLET_MESSAGE])
         pdo1.x = 0
-        self.assertEqual(cnv.outlets(), [pd.XLET_MESSAGE, pd.XLET_MESSAGE, pd.XLET_SOUND])
+        self.assertEqual(cnv.outlets(), [XLET_MESSAGE, XLET_MESSAGE, XLET_SOUND])
 
     def test_traverse(self):
         class T(AbstractVisitor):
@@ -178,6 +177,6 @@ class TestPdCanvas(TestCase):
 
         cnv.traverse(t)
         # CHECK and TODO
-#        self.assertEqual(t.o, 2)
+        #        self.assertEqual(t.o, 2)
         self.assertEqual(t.cb, 1)
         self.assertEqual(t.ce, 1)

@@ -23,6 +23,7 @@ import logging
 import os
 import re
 
+import pddoc.pd.parser
 from pddoc.docobject import DocPar
 from .idocobjectvisitor import IDocObjectVisitor
 from .pd.canvas import Canvas
@@ -37,7 +38,7 @@ class DocObjectVisitor(IDocObjectVisitor):
 
     def __init__(self):
         super().__init__()
-        
+
         self._title = ""
         self._description = ""
         self._keywords = []
@@ -156,7 +157,7 @@ class DocObjectVisitor(IDocObjectVisitor):
             logging.error("Error in tag <pdinclude>: file not exists: \"{0:s}\"".format(pd_file_path))
             return
 
-        parser = pd.Parser()
+        parser = pddoc.pd.parser.Parser()
         if not parser.parse(pd_file_path):
             logging.error("Error in tag <pdexample>: can't process file: {0:s}".format(pd_file_path))
             return

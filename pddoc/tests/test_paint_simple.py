@@ -22,8 +22,8 @@ __author__ = 'Serge Poltavski'
 import unittest
 
 from pddoc.cairopainter import *
+from pddoc.pd.parser import Parser
 from pddoc.pddrawer import *
-from pddoc.pd import Parser
 
 
 class TestPaintSimple(unittest.TestCase):

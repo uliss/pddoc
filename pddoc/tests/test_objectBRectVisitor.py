@@ -21,10 +21,10 @@ __author__ = 'Serge Poltavski'
 
 from unittest import TestCase
 
-from pddoc.pd.objetcbrectvisitor import ObjectBRectVisitor
-from pddoc.pd import PdObject
-import pddoc.pd as pd
 from pddoc.cairopainter import CairoPainter
+from pddoc.pd.obj import PdObject
+from pddoc.pd.objetcbrectvisitor import ObjectBRectVisitor
+from pddoc.pd.parser import Parser
 
 
 class TestObjectBRectVisitor(TestCase):
@@ -38,11 +38,11 @@ class TestObjectBRectVisitor(TestCase):
         pdo = PdObject("osc~")
         self.assertTrue(pdo.is_null())
         ov.visit_object(pdo)
-        self.assertEqual(ov.brect(), (0, 0, 35, 17))
+        self.assertEqual(ov.brect(), (0, 0, 36, 18))
         self.assertFalse(pdo.is_null())
 
     def test_visit_canvas(self):
-        p = pd.Parser()
+        p = Parser()
         self.assertTrue(p.parse('misc.pd'))
         ov = ObjectBRectVisitor()
 

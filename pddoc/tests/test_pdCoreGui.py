@@ -22,25 +22,27 @@ from unittest import TestCase
 __author__ = 'Serge Poltavski'
 
 from pddoc.cairopainter import *
+from pddoc.pd.coregui import CoreGui
+from pddoc.pd.parser import Parser
 from pddoc.pddrawer import *
-import pddoc.pd as pd
 
 tgl = ['15', '0', 'empty', 'empty', 'empty', '17', '7', '0', '10', '-262144', '-1', '-1', '0', '1']
 
+
 class TestPdCoreGui(TestCase):
     def test_init(self):
-        pco = pd.CoreGui("tgl", 0, 0, tgl)
-        self.assertEqual(pco.inlets(), [pd.XLET_GUI])
-        self.assertEqual(pco.outlets(), [pd.XLET_GUI])
+        pco = CoreGui("tgl", 0, 0, tgl)
+        self.assertEqual(pco.inlets(), [XLET_GUI])
+        self.assertEqual(pco.outlets(), [XLET_GUI])
         self.assertEqual(pco.send, "empty")
         self.assertEqual(pco.receive, "empty")
 
     def test_str__(self):
-        pco = pd.CoreGui("tgl", 5, 6, tgl)
+        pco = CoreGui("tgl", 5, 6, tgl)
         self.assertEqual(str(pco), "[GUI:tgl]                                 {x:5,y:6,id:-1}")
 
     def test_draw(self):
-        p = pd.Parser()
+        p = Parser()
         p.parse("core_gui.pd")
         canvas = p.canvas
         self.assertTrue(canvas)
@@ -51,6 +53,6 @@ class TestPdCoreGui(TestCase):
         drawer.draw(canvas, painter)
 
     def test_is_core_gui(self):
-        self.assertFalse(pd.CoreGui.is_coregui("ui.scope"))
-        self.assertTrue(pd.CoreGui.is_coregui("vsl"))
-        self.assertFalse(pd.CoreGui.is_coregui("unknown"))
+        self.assertFalse(CoreGui.is_coregui("ui.scope"))
+        self.assertTrue(CoreGui.is_coregui("vsl"))
+        self.assertFalse(CoreGui.is_coregui("unknown"))

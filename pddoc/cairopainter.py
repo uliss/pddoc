@@ -28,6 +28,7 @@ from typing import Optional
 
 import cairo
 
+from .pd.canvas import Canvas
 from .pd.constants import XLET_GUI, XLET_SOUND, XLET_MESSAGE
 from .pdpainter import PdPainter
 
@@ -335,7 +336,6 @@ class CairoPainter(PdPainter):
         return x, y
 
     def outlet_connection_coords(self, obj, outlet_no: int):
-        from .pd import Canvas
         outlets = obj.outlets()
 
         xlet_space = 0

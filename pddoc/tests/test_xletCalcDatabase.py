@@ -21,59 +21,61 @@ from unittest import TestCase
 
 __author__ = 'Serge Poltavski'
 
-import pddoc.pd as pd
+from pddoc.pd.constants import XLET_SOUND, XLET_MESSAGE
+from pddoc.pd.obj import PdObject
+from pddoc.pd.xletcalculator import XletCalculator
 
 
 def make_pdo(name):
     a = name.split(" ")
-    pdo = pd.PdObject(a[0], args=a[1:])
+    pdo = PdObject(a[0], args=a[1:])
     return pdo
 
 
 class TestXletCalcDatabase(TestCase):
     def test_inlets(self):
-        xd = pd.XletCalculator()
+        xd = XletCalculator()
         self.assertEqual(xd.inlets(12), [])
-        pdo = pd.PdObject("mtof")
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_MESSAGE])
+        pdo = PdObject("mtof")
+        self.assertEqual(xd.inlets(pdo), [XLET_MESSAGE])
         pdo.name = "not-exists"
         self.assertEqual(xd.inlets(pdo), [])
         pdo.name = "min"
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_MESSAGE] * 2)
+        self.assertEqual(xd.inlets(pdo), [XLET_MESSAGE] * 2)
         pdo.name = "line"
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_MESSAGE] * 3)
+        self.assertEqual(xd.inlets(pdo), [XLET_MESSAGE] * 3)
 
         pdo.name = "s"
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_MESSAGE] * 2)
+        self.assertEqual(xd.inlets(pdo), [XLET_MESSAGE] * 2)
         pdo.append_arg(12)
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_MESSAGE])
+        self.assertEqual(xd.inlets(pdo), [XLET_MESSAGE])
         pdo.name = "s~"
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_SOUND])
+        self.assertEqual(xd.inlets(pdo), [XLET_SOUND])
 
         pdo.name = "dac~"
         pdo._args = []
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_SOUND] * 2)
+        self.assertEqual(xd.inlets(pdo), [XLET_SOUND] * 2)
         pdo.append_arg(1)
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_SOUND] * 1)
+        self.assertEqual(xd.inlets(pdo), [XLET_SOUND] * 1)
         pdo.append_arg(2)
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_SOUND] * 2)
+        self.assertEqual(xd.inlets(pdo), [XLET_SOUND] * 2)
         pdo.append_arg(3)
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_SOUND] * 3)
+        self.assertEqual(xd.inlets(pdo), [XLET_SOUND] * 3)
         pdo.append_arg(4)
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_SOUND] * 4)
+        self.assertEqual(xd.inlets(pdo), [XLET_SOUND] * 4)
 
         pdo.name = "osc~"
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_SOUND, pd.XLET_MESSAGE])
+        self.assertEqual(xd.inlets(pdo), [XLET_SOUND, XLET_MESSAGE])
         pdo._args = []
         pdo.name = "*~"
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_SOUND] * 2)
+        self.assertEqual(xd.inlets(pdo), [XLET_SOUND] * 2)
         pdo.append_arg(0.5)
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_SOUND, pd.XLET_MESSAGE])
+        self.assertEqual(xd.inlets(pdo), [XLET_SOUND, XLET_MESSAGE])
         pdo.name = "writesf~"
         pdo._args = []
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_SOUND])
+        self.assertEqual(xd.inlets(pdo), [XLET_SOUND])
         pdo.append_arg("4")
-        self.assertEqual(xd.inlets(pdo), [pd.XLET_SOUND] * 4)
+        self.assertEqual(xd.inlets(pdo), [XLET_SOUND] * 4)
         pdo.name = "sprintf"
         pdo._args = []
         self.assertEqual(xd.inlets(pdo), [0] * 1)
@@ -89,12 +91,12 @@ class TestXletCalcDatabase(TestCase):
         self.assertEqual(xd.inlets(pdo), [0] * 3)
 
     def test_outlets(self):
-        xd = pd.XletCalculator()
+        xd = XletCalculator()
         self.assertEqual(xd.inlets(12), [])
-        pdo = pd.PdObject("osc~")
-        self.assertEqual(xd.outlets(pdo), [pd.XLET_SOUND])
+        pdo = PdObject("osc~")
+        self.assertEqual(xd.outlets(pdo), [XLET_SOUND])
         pdo.name = "mtof"
-        self.assertEqual(xd.outlets(pdo), [pd.XLET_MESSAGE])
+        self.assertEqual(xd.outlets(pdo), [XLET_MESSAGE])
         pdo.name = "writesf~"
         pdo.append_arg("1")
         self.assertEqual(xd.outlets(pdo), [])
@@ -119,7 +121,7 @@ class TestXletCalcDatabase(TestCase):
         self.assertEqual(xd.outlets(pdo), [0] * 2)
 
     def test_xlets(self):
-        xd = pd.XletCalculator()
+        xd = XletCalculator()
         self.assertEqual(xd.inlets(make_pdo("sel")), [0] * 2)
         self.assertEqual(xd.inlets(make_pdo("sel .")), [0] * 2)
         self.assertEqual(xd.inlets(make_pdo("sel . .")), [0])

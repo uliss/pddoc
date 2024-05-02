@@ -18,16 +18,15 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 from unittest import TestCase
 
-
 __author__ = 'Serge Poltavski'
 
-
 from pddoc.pd.xlettextdatabase import XletTextDatabase
-from pddoc.pd import EXTERNALS_DIR
+from pddoc.pd.constants import EXTERNALS_DIR
 import os
 from .nologging import *
 
 pddoc_db = os.path.join(EXTERNALS_DIR, 'core/pd_objects.db')
+
 
 class TestXletTextDatabase(TestCase):
     def test_load(self):

@@ -17,15 +17,16 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-from unittest import TestCase
-from pddoc.txt import Parser, Node
 import os.path
-from pddoc.pd import Canvas
-from pddoc.pd.pdexporter import PdExporter
+from unittest import TestCase
+
 from pddoc import CairoPainter
 from pddoc.pd import factory
-from pddoc.pd import PdObject
+from pddoc.pd.pdexporter import PdExporter
+from pddoc.txt import Parser, Node
 from .nologging import NoLogging
+from ..pd.canvas import Canvas
+from ..pd.obj import PdObject
 
 TEST_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "ascii.txt")
 
@@ -141,5 +142,3 @@ class TestTxtParser(TestCase):
         self.assertEqual(self.p.nodes[2].conn_dest_id, 2008)
         self.assertEqual(self.p.nodes[2].conn_src_outlet, 0)
         self.assertEqual(self.p.nodes[2].conn_dest_inlet, 1)
-
-

@@ -17,30 +17,31 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
- 
+
 __author__ = 'Serge Poltavski'
 
-import pddoc.pd as pd
 from pddoc.cairopainter import CairoPainter
+from pddoc.pd.obj import PdObject
 
 
 def create(atoms):
     assert len(atoms) > 1
     # X obj 10 45 pddplink URL -text TXT;
     if len(atoms) == 2:
-        return PddpLink(0, 0, atoms[1])
+        return PddpLink(0, 0, atoms[1], "pddplink")
     elif len(atoms) == 4:
         return PddpLink(0, 0, atoms[1], atoms[3])
     else:
         assert False
 
 
-class PddpLink(pd.PdObject):
-    def __init__(self, x, y, url, text=None):
+class PddpLink(PdObject):
+    def __init__(self, x, y, url, name: str, text=None):
+        super().__init__(name, x, y)
         if text:
-            pd.PdObject.__init__(self, "pddp/pddplink", x, y, 0, 0, [url, "-text", text])
+            PdObject.__init__(self, "pddp/pddplink", x, y, 0, 0, [url, "-text", text])
         else:
-            pd.PdObject.__init__(self, "pddp/pddplink", x, y, 0, 0, [url])
+            PdObject.__init__(self, "pddp/pddplink", x, y, 0, 0, [url])
 
         self._text = text
         self._url = url
@@ -64,7 +65,7 @@ class PddpLink(pd.PdObject):
         assert isinstance(painter, CairoPainter)
         painter.draw_text(self.x + 4, self.y + 12, self.text(), color=(0, 0, 1))
 
-    def calc_brect(self):
+    def calc_brect(self, **kwargs):
         x, y, w, h = self.brect_calc().string_brect(self.text(), None)
         self.width = w
         self.height = h

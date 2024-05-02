@@ -34,7 +34,7 @@ class Parser:
     split_re = re.compile(" |\r\n?|\n", re.MULTILINE)
 
     def __init__(self):
-        self.canvas = None
+        self.canvas: Canvas = None
         self.canvas_stack = []
         self._array = None
         self._fname = None

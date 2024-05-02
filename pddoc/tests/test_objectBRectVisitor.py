@@ -47,9 +47,10 @@ class TestObjectBRectVisitor(TestCase):
         ov = ObjectBRectVisitor()
 
         p.canvas.traverse(ov)
-        # self.assertEqual(ov.brect(), (31, 25, 755, 207))
+        bbox = ov.brect()
+        self.assertEqual(bbox, (31, 25, 936, 217))
 
         painter = CairoPainter(p.canvas.width, p.canvas.height, "out/TestObjectBRectVisitor.png")
         p.canvas.draw(painter)
-        x, y, w, h = ov.brect()
-        painter.draw_rect(x, y, w, h, color=(1, 0, 0))
+
+        painter.draw_rect(bbox[0], bbox[1], bbox[2], bbox[3], color=(1, 0, 0))

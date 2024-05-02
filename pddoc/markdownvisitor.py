@@ -45,10 +45,21 @@ class MarkdownVisitor(DocObjectVisitor):
         else:
             tmpl_path = "md_object.tmpl.md"
 
+        def ws(txt):
+            if isinstance(txt, str):
+                return ' '.join(txt.replace('\n', ' ').split())
+            else:
+                return ' '
+
+        def nnl(txt):
+            return txt.replace('\n', ' ')
+
         self._env = Environment(
             loader=PackageLoader('pddoc', 'share'),
-            autoescape=select_autoescape(['md'])
+            autoescape=select_autoescape(['md'], default=True, default_for_string=True)
         )
+        self._env.filters['nnl'] = nnl
+        self._env.filters['ws'] = ws
         self._template = self._env.get_template(tmpl_path)
 
     @property

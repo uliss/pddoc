@@ -1,13 +1,13 @@
 [index](index.html) :: [{{category}}](category_{{category|urlencode}}.html)
 ---
 
-# {{title|striptags}}
+# {{title|ws}}
 
 {%- if aliases %}
-**aliases:** {{aliases|join(", ")|striptags|replace('~','\~')}}
+**aliases:** {{aliases|join(", ")|ws|replace('~','\~')}}
 {% endif %}
 
-###### {{description|striptags}}
+###### {{description|ws}}
 
 {% if since %}*available since version:* {{since}}{% endif %}
 
@@ -15,7 +15,7 @@
 
 {% if info %}
 ## information
-{{info|striptags}}
+{{info|ws|escape}}
 {%- endif %}
 
 {% if example_pd_dir %}
@@ -28,7 +28,7 @@
 ## arguments:
 {% for arg in arguments %}
 * **{{arg.name()|trim}}**
-{{arg.text()|striptags|wordwrap}}<br>
+{{arg.text()|ws|wordwrap}}<br>
 {%- if arg.type() %}
 _type:_ {{arg.type()}}<br>
 {%- endif %}
@@ -42,10 +42,10 @@ _units:_ {{arg.units()|join(', ')}}<br>
 ## methods:
 {% for m in methods %}
 * **{{m.name()|trim}}**
-{{m.text()|striptags|wordwrap}}<br>
+{{m.text()|ws|wordwrap}}<br>
 {% if m.items() %}  __parameters:__{% endif %}
 {%- for param in m.items() %}
-  - **{{param.param_name()}}** {{param.text()|striptags}}<br>
+  - **{{param.param_name()}}** {{param.text()|ws}}<br>
 {%- if param.type() %}
     type: {{param.type()}} <br>
 {%- endif %}
@@ -64,7 +64,7 @@ _units:_ {{arg.units()|join(', ')}}<br>
 {% for prop in properties %}
 * **{{prop.name()|trim}}** {% if prop.access() != 'readwrite' %}({{prop.access()}}){% endif %}
 {% if prop.access() == 'readonly' %}Get {% else %}Get/set {% endif -%}
-{{prop.text()|striptags|wordwrap}}<br>
+{{prop.text()|ws|wordwrap}}<br>
 {%- if prop.type() %}
 _type:_ {{prop.type()}}<br>
 {%- endif %}
@@ -91,7 +91,7 @@ _default:_ {{prop.default()}}<br>
 ## inlets:
 {% for x in inlets %}
 {%- if x.items() %}
-* {{x.items()[0].text()|striptags}}<br>
+* {{x.items()[0].text()|ws}}<br>
 {%- endif %}
 _type:_ {{x.type()}}
 {%- endfor %}
@@ -100,7 +100,7 @@ _type:_ {{x.type()}}
 {% if outlets %}
 ## outlets:
 {% for x in outlets %}
-* {{x.text()|striptags}}<br>
+* {{x.text()|ws}}<br>
 _type:_ {{x.type()}}
 {%- endfor %}
 {% endif %}

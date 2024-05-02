@@ -1,9 +1,9 @@
 [index](index.html) :: [{{category}}](category_{{category|urlencode}}.html)
 ---
 
-# {{title|striptags}}
+# {{title|ws}}
 
-###### {{description|striptags}}
+###### {{description|ws}}
 
 {% if since %}*доступно с версии:* {{since}}{% endif %}
 
@@ -11,7 +11,7 @@
 
 {% if info %}
 ## информация
-{{info|striptags}}
+{{info|ws}}
 {%- endif %}
 
 {% if example_pd_dir %}
@@ -24,7 +24,7 @@
 ## аргументы:
 {% for arg in arguments %}
 * **{{arg.name()|trim}}**
-{{arg.text()|striptags|wordwrap}}<br>
+{{arg.text()|ws|wordwrap}}<br>
 {%- if arg.type() %}
 _тип:_ {{arg.type()}}<br>
 {%- endif %}
@@ -38,10 +38,10 @@ _единица:_ {{arg.units()|join(', ')}}<br>
 ## методы:
 {% for m in methods %}
 * **{{m.name()|trim}}**
-{{m.text()|striptags|wordwrap}}<br>
+{{m.text()|ws|wordwrap}}<br>
 {% if m.items() %}  __параметры:__{% endif %}
 {%- for param in m.items() %}
-  - **{{param.param_name()}}** {{param.text()|striptags}}<br>
+  - **{{param.param_name()}}** {{param.text()|ws}}<br>
 {%- if param.type() %}
     тип: {{param.type()}} <br>
 {%- endif %}
@@ -60,7 +60,7 @@ _единица:_ {{arg.units()|join(', ')}}<br>
 {% for prop in properties %}
 * **{{prop.name()|trim}}** {% if prop.access() != 'readwrite' %}({{prop.access()}}){% endif %}
 {% if prop.access() == 'readonly' %}Запросить {% else %}Запросить/установить {% endif -%}
-{{prop.text()|striptags|wordwrap}}<br>
+{{prop.text()|ws|wordwrap}}<br>
 {%- if prop.type() %}
 _тип:_ {{prop.type()}}<br>
 {%- endif %}
@@ -87,7 +87,7 @@ _по умолчанию:_ {{prop.default()}}<br>
 ## входы:
 {% for x in inlets %}
 {%- if x.items() %}
-* {{x.items()[0].text()|striptags}}<br>
+* {{x.items()[0].text()|ws}}<br>
 {%- endif %}
 _тип:_ {{x.type()}}
 {%- endfor %}
@@ -96,7 +96,7 @@ _тип:_ {{x.type()}}
 {% if outlets %}
 ## выходы:
 {% for x in outlets %}
-* {{x.text()|striptags}}<br>
+* {{x.text()|ws}}<br>
 _тип:_ {{x.type()}}
 {%- endfor %}
 {% endif %}

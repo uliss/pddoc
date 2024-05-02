@@ -19,7 +19,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.docobject import DocPar, DocA, DocWiki, DocArgument
+from pddoc.docobject import DocPar, DocA, DocWiki, DocArgument, DocArguments, DocProperties, DocOutlet
 from pddoc.pdpage import PdPage
 from pddoc.pdpage import PdPageStyle
 from .docobjectvisitor import DocObjectVisitor
@@ -285,7 +285,7 @@ class PdDocVisitor(DocObjectVisitor):
         if outlets.is_empty():
             self.current_yoff += 10
 
-    def outlet_begin(self, outlet):
+    def outlet_begin(self, outlet: DocOutlet):
         y = self.current_yoff
         t1 = self._pp.add_txt("{0}.".format(outlet.number()), self.PD_XLET_INDX_XPOS, y)
         t2 = self._pp.add_txt(add_text_dot(outlet.text()), self.PD_XLET_INFO_XPOS, y)
@@ -293,23 +293,31 @@ class PdDocVisitor(DocObjectVisitor):
         _, _, _, h = self._pp.group_brect([t1, t2])
         self.current_yoff += h + 5
 
-    def arguments_begin(self, args):
+    def add_section_help(self, txt: str, url: str, y: int):
+        a = self._pp.make_link(self.PD_WINDOW_WIDTH - 50, y, url, txt)
+        a.set_bg_color(PdPageStyle.MAIN_BG_COLOR)
+        self._pp.append_object(a)
+        pass
+
+    def arguments_begin(self, args: DocArguments):
         super(self.__class__, self).arguments_begin(args)
-        self.add_section("arguments:", self.PD_SECTION_YMARGIN)
+        lbl = self.add_section("arguments:", self.PD_SECTION_YMARGIN)
+        self.add_section_help("[?]", "ceammc.args-help.pd", lbl.top)
         args.enumerate()
 
-    def arguments_end(self, args):
+    def arguments_end(self, args: DocArguments):
         self.current_yoff += 10
         if args.is_empty():
             self.current_yoff += 10
 
-    def properties_begin(self, p):
+    def properties_begin(self, p: DocProperties):
         super(self.__class__, self).properties_begin(p)
-        self.add_section("properties:", self.PD_SECTION_YMARGIN)
+        lbl = self.add_section("properties:", self.PD_SECTION_YMARGIN)
+        self.add_section_help("[?]", "ceammc.props-help.pd", lbl.top)
         # sort by names
         p.sort_by(lambda n: n.sort_name())
 
-    def properties_end(self, p):
+    def properties_end(self, p: DocProperties):
         self.current_yoff += 10
         if p.is_empty():
             self.current_yoff += 10
@@ -455,12 +463,13 @@ class PdDocVisitor(DocObjectVisitor):
         else:
             return ""
 
-    def add_section(self, txt: str, yoff: int):
+    def add_section(self, txt: str, yoff: int) -> GCanvas:
         hr = self._pp.make_styled_hrule(self.current_yoff)
         self._pp.append_object(hr)
         lbl = self._pp.make_section_label(self.current_yoff + 5, txt, font_size=14)
         self.current_yoff += yoff
         self._pp.append_object(lbl)
+        return lbl
 
     def add_header(self):
         lbl = self.add_header_label()

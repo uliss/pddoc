@@ -20,26 +20,28 @@
  
 __author__ = 'Serge Poltavski'
 
+from typing import Optional
+
 
 class XletDatabase(object):
-    def __init__(self, extname=None):
+    def __init__(self, extname: Optional[str] = None):
         self._extname = extname
 
-    def has_object(self, name):
+    def has_object(self, name: str):
         return False
 
-    def ignore_inlets(self, objname):
+    def ignore_inlets(self, objname: str):
         return False
 
-    def ignore_outlets(self, objname):
+    def ignore_outlets(self, objname: str):
         return False
 
-    def inlets(self, name, args=None):
+    def inlets(self, name: str, args=None):
         if args is None:
             args = []
         return []
 
-    def outlets(self, name, args=None):
+    def outlets(self, name: str, args=None):
         if args is None:
             args = []
         return []
@@ -50,15 +52,15 @@ class XletDatabase(object):
 
 
 class XletMemoryDatabase(XletDatabase):
-    def __init__(self, extname):
+    def __init__(self, extname: str):
         super(XletMemoryDatabase, self).__init__(extname)
         self._extname = extname
         self._objects = {}
 
-    def has_object(self, objname):
+    def has_object(self, objname: str):
         return objname in self._objects
 
-    def inlets(self, objname, args=None):
+    def inlets(self, objname: str, args=None):
         if args is None:
             args = []
         if not self.has_object(objname):
@@ -66,7 +68,7 @@ class XletMemoryDatabase(XletDatabase):
 
         return self._objects[objname][0]
 
-    def outlets(self, objname, args=None):
+    def outlets(self, objname: str, args=None):
         if args is None:
             args = []
         if not self.has_object(objname):
@@ -74,14 +76,14 @@ class XletMemoryDatabase(XletDatabase):
 
         return self._objects[objname][1]
 
-    def add_object(self, name, inlets, outlets):
+    def add_object(self, name: str, inlets, outlets):
         self._objects[name] = (inlets, outlets)
 
-    def remove_object(self, name):
+    def remove_object(self, name: str):
         del self._objects[name]
 
-    def set_inlets(self, name, inlets):
+    def set_inlets(self, name: str, inlets):
         self._objects[name][0] = inlets
 
-    def set_outlets(self, name, outlets):
+    def set_outlets(self, name: str, outlets):
         self._objects[name][1] = outlets

@@ -20,7 +20,7 @@
 __author__ = 'Serge Poltavski'
 
 from .coregui import CoreGui
-from . import XLET_MESSAGE
+from .constants import XLET_MESSAGE
 
 
 class PdSymbolAtom(CoreGui):

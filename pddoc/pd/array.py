@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
+from typing import List
+
 from .obj import PdObject
 import logging
 
@@ -78,9 +80,9 @@ class Array(PdObject):
             self._style = style
 
     @staticmethod
-    def from_atoms(atoms):
+    def from_atoms(atoms: List[str]):
         assert len(atoms) == 4 or len(atoms) == 6
-        return Array(atoms[0], atoms[1], atoms[3])
+        return Array(atoms[0], atoms[1], int(atoms[3]))
 
     def draw(self, painter):
         painter.draw_rect(*self.brect())

@@ -21,13 +21,13 @@
 __author__ = 'Serge Poltavski'
 
 import re
-from pddoc.pd import XLET_MESSAGE, XLET_SOUND
+from pddoc.pd.constants import XLET_MESSAGE, XLET_SOUND
 
 
 def expr_args_parse(args):
     if len(args) == 0:
         return 1
-    params = list(set(re.findall("(\$[fsi][0-9])", " ".join(args))))
+    params = list(set(re.findall(r"($[fsi][0-9])", " ".join(args))))
     if len(params) == 0:
         return 1
     else:
@@ -37,7 +37,7 @@ def expr_args_parse(args):
 def expr_tilde_args_parse(args):
     if len(args) == 0:
         return []
-    inl = list(set(re.findall("(\$[fsiv][0-9])", " ".join(args))))
+    inl = list(set(re.findall(r"($[fsiv][0-9])", " ".join(args))))
     if len(inl) == 0:
         return []
     else:
@@ -74,7 +74,7 @@ def func_list_out(args):
 def fexpr_tilde_args_parse(args):
     if len(args) == 0:
         return []
-    inl = list(set(re.findall("(\$[fsixy][0-9])", " ".join(args))))
+    inl = list(set(re.findall(r"($[fsixy][0-9])", " ".join(args))))
     if len(inl) == 0:
         return []
     else:
@@ -88,6 +88,7 @@ def fexpr_tilde_args_parse(args):
             else:
                 res.append(XLET_MESSAGE)
         return res
+
 
 _re_num = re.compile(r"^\d+$")
 

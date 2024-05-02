@@ -17,7 +17,7 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
- 
+
 __author__ = 'Serge Poltavski'
 
 from .xletdatabase import XletDatabase
@@ -25,7 +25,7 @@ import os
 import re
 import logging
 
-from . import XLET_MESSAGE, XLET_SOUND
+from .constants import XLET_MESSAGE, XLET_SOUND
 
 
 class ObjectRecord(object):
@@ -73,31 +73,32 @@ class XletPatchLookup(XletDatabase):
         self._dirs.append(os.getcwd())
         self._cache = {}
 
-    def add_search_dir(self, path):
+    def add_search_dir(self, path: str):
         self._dirs.append(path)
 
-    def clean_name(self, name):
-        return re.sub("/[\W]+/", '', name) + ".pd"
+    @staticmethod
+    def clean_name(name: str) -> str:
+        return re.sub(r"/\W+/", '', name) + ".pd"
 
-    def get_object(self, name):
-        cleanName = self.clean_name(name)
-        return self._cache.get(cleanName)
+    def get_object(self, name: str):
+        x = self.clean_name(name)
+        return self._cache.get(x)
 
-    def has_object(self, name):
-        cleanName = self.clean_name(name)
+    def has_object(self, name: str) -> bool:
+        x = self.clean_name(name)
 
-        if cleanName in self._cache:
+        if x in self._cache:
             return True
 
         for directory in self._dirs:
-            path = os.path.join(directory, cleanName)
+            path = os.path.join(directory, x)
             if os.path.exists(path):
-                self._cache[cleanName] = ObjectRecord(path)
+                self._cache[x] = ObjectRecord(path)
                 return True
 
         return False
 
-    def inlets(self, name, args=None):
+    def inlets(self, name: str, args=None):
         if args is None:
             args = []
         cname = self.clean_name(name)
@@ -109,7 +110,7 @@ class XletPatchLookup(XletDatabase):
 
         return self._cache[cname].inlets
 
-    def outlets(self, name, args=None):
+    def outlets(self, name: str, args=None):
         if args is None:
             args = []
         cname = self.clean_name(name)
@@ -142,7 +143,9 @@ class XletPatchLookup(XletDatabase):
 
                 if subpatch_counter == 0:
                     if atoms[1] == "obj":
-                        x = lambda: int(atoms[2])
+                        def x():
+                            return int(float(atoms[2]))
+
                         if atoms[4] == "inlet":
                             inlets_coords.append((XLET_MESSAGE, x()))
                         if atoms[4] == "inlet~":

@@ -24,10 +24,11 @@ import re
 import sys
 import logging
 import importlib
+from typing import List
 
 from .floatatom import FloatAtom
 from .listbox import PdListBox
-from . import EXTERNALS_DIR
+from .constants import EXTERNALS_DIR
 from .obj import PdObject
 from .bng import PdBng
 from .toggle import PdToggle
@@ -56,8 +57,7 @@ def _clean_ext_name(name):
     return name
 
 
-def make(atoms):
-    assert isinstance(atoms, list)
+def make(atoms: List[str]):
     assert len(atoms) > 0
     name = atoms[0]
 

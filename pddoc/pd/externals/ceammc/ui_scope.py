@@ -18,7 +18,7 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from pddoc.pd.externals.ceammc.ui_base import UIBase
-from pddoc.pd import XLET_SOUND
+from pddoc.pd.constants import XLET_SOUND
 
 
 def create_by_name(name, args=None, **kwargs):

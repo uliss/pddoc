@@ -19,15 +19,22 @@
 
 __author__ = 'Serge Poltavski'
 
-from .pd import *
+from typing import Optional
+
 from .layout import *
 from .docobject import DocPdobject, DocPdmessage
 import logging
 
+from .pd.brectcalculator import BRectCalculator
+from .pd.canvas import Canvas
+from .pd.comment import Comment
+from .pd.message import Message
+from .pd.obj import PdObject
+
 
 class PdLayout(object):
     def __init__(self):
-        self._canvas = None
+        self._canvas: Optional[Canvas] = None
         self._cur_layout = []
         self._example_brect = ()
         self._pdobj_id_map = {}
@@ -43,12 +50,11 @@ class PdLayout(object):
         return self._example_brect
 
     @property
-    def canvas(self):
+    def canvas(self) -> Optional[Canvas]:
         return self._canvas
 
     @canvas.setter
-    def canvas(self, cnv):
-        assert isinstance(cnv, Canvas)
+    def canvas(self, cnv: Canvas):
         self._canvas = cnv
 
     def update(self):
@@ -109,8 +115,7 @@ class PdLayout(object):
         setattr(pdm, "layout", litem)
         return pdm
 
-    def doc2obj(self, doc_obj):
-        assert isinstance(doc_obj, DocPdobject)
+    def doc2obj(self, doc_obj: DocPdobject):
         args = list(filter(None, doc_obj.args()))
         pd_obj = factory.make_by_name(doc_obj.name(), args, **doc_obj.attrs())
         obj_bbox = list(self.calc_brect(pd_obj))

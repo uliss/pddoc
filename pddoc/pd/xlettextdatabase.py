@@ -23,7 +23,7 @@ __author__ = 'Serge Poltavski'
 import logging
 import re
 
-from . import XLET_MESSAGE, XLET_SOUND, XLET_IGNORE
+from .constants import XLET_MESSAGE, XLET_SOUND, XLET_IGNORE
 from .xletdatabase import XletDatabase
 
 

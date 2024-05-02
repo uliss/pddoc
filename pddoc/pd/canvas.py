@@ -20,18 +20,20 @@ from __future__ import print_function
 
 __author__ = 'Serge Poltavski'
 
-from typing import Optional
+from typing import Optional, List
 
+from .comment import Comment
 from .obj import *
-from . import XLET_MESSAGE, XLET_SOUND, XLET_IGNORE
+from .constants import XLET_MESSAGE, XLET_SOUND, XLET_IGNORE
+from ..pdpainter import PdPainter
 
 
 class Canvas(PdObject):
     TYPE_NONE, TYPE_WINDOW, TYPE_SUBPATCH, TYPE_GRAPH = range(0, 4)
 
-    def __init__(self, x, y, w, h, **kwargs):
+    def __init__(self, x: int, y: int, w: int, h: int, **kwargs):
         PdObject.__init__(self, "cnv", x, y, w, h)
-        self._objects = []
+        self._objects: List[BaseObject] = []
         self._id_counter = 0
         self._name = ""
         self._type = self.TYPE_NONE
@@ -90,11 +92,11 @@ class Canvas(PdObject):
         self._type = t
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
     @name.setter
-    def name(self, name):
+    def name(self, name: str):
         self._name = name
 
     def append_graph(self, obj):
@@ -108,9 +110,8 @@ class Canvas(PdObject):
         self._id_counter += 1
         return res
 
-    def append_object(self, obj) -> bool:
+    def append_object(self, obj: BaseObject) -> bool:
         assert self != obj
-        assert issubclass(obj.__class__, BaseObject)
 
         if obj in self._objects:
             logging.warning("object already on canvas: {0:s}".format(str(obj)))
@@ -170,7 +171,7 @@ class Canvas(PdObject):
         src_obj = self.find_object_by_id(sid)
         dest_obj = self.find_object_by_id(did)
 
-        def do_check_xlets(xlets: list):
+        def do_check_xlets(xlets: List[int]):
             if len(xlets) < 1:
                 return True
 
@@ -251,7 +252,7 @@ class Canvas(PdObject):
 
         return False
 
-    def draw_gop(self, painter):
+    def draw_gop(self, painter: PdPainter):
         if self.type != self.TYPE_WINDOW:
             return
 
@@ -260,7 +261,7 @@ class Canvas(PdObject):
             if self.obj_is_gop(obj):
                 obj.draw(painter)
 
-    def draw(self, painter):
+    def draw(self, painter: PdPainter):
         if self.type == self.TYPE_NONE:
             return
 
@@ -284,10 +285,10 @@ class Canvas(PdObject):
                                   width=1,
                                   color=(1, 0.5, 0.5))
 
-    def inlets(self):
+    def inlets(self) -> List[int]:
         res = []
 
-        objects = sorted(self._objects, key=lambda obj: obj.x)
+        objects = filter(lambda obj: issubclass(obj.__class__, PdObject), self._objects)
 
         for o in objects:
             if issubclass(o.__class__, PdObject):
@@ -298,23 +299,20 @@ class Canvas(PdObject):
 
         return res
 
-    def outlets(self):
+    def outlets(self) -> List[int]:
         res = []
 
-        objects = sorted(self._objects, key=lambda obj: obj.x)
+        objects = filter(lambda obj: issubclass(obj.__class__, PdObject), self._objects)
 
-        for o in objects:
-            if issubclass(o.__class__, PdObject):
-                if o.name == "outlet":
-                    res.append(XLET_MESSAGE)
-                elif o.name == "outlet~":
-                    res.append(XLET_SOUND)
+        for o in sorted(objects, key=lambda k: k.x):
+            if o.name == "outlet":
+                res.append(XLET_MESSAGE)
+            elif o.name == "outlet~":
+                res.append(XLET_SOUND)
 
         return res
 
-    def traverse(self, visitor):
-        assert isinstance(visitor, AbstractVisitor)
-
+    def traverse(self, visitor: AbstractVisitor):
         if visitor.skip_canvas(self):
             return
 

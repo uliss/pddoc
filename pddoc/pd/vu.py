@@ -21,7 +21,7 @@
 __author__ = 'Serge Poltavski'
 
 from .coregui import CoreGui
-from . import XLET_GUI
+from .constants import XLET_GUI
 
 # [width]? - horizontal size of element
 # [height]? - vertical size of element

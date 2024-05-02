@@ -21,17 +21,19 @@ from __future__ import print_function
 
 __author__ = 'Serge Poltavski'
 
+from typing import Optional
+
 import cairo
 import textwrap
 from math import pi
 import logging
 
 from .pdpainter import PdPainter
-from .pd import XLET_GUI, XLET_SOUND, XLET_MESSAGE, Canvas
+from .pd.constants import XLET_GUI, XLET_SOUND, XLET_MESSAGE
 
 
 class CairoPainter(PdPainter):
-    def __init__(self, width, height, output, fmt="png", **kwargs):
+    def __init__(self, width: int, height: int, output, fmt="png", **kwargs):
         PdPainter.__init__(self)
 
         from .pd.drawstyle import DrawStyle
@@ -212,7 +214,7 @@ class CairoPainter(PdPainter):
         self.cr.restore()
         pass
 
-    def text_size(self, txt, font_size=None):
+    def text_size(self, txt: str, font_size: Optional[float] = None):
         self.cr.save()
         self.cr.select_font_face(self.style.font_family)
 
@@ -226,7 +228,7 @@ class CairoPainter(PdPainter):
         self.cr.restore()
         return w, h
 
-    def box_size(self, txt):
+    def box_size(self, txt: str):
         w, h = self.text_size(txt)
         # box padding
         w += self.style.obj_pad_x * 3  # set by empirical way
@@ -332,7 +334,8 @@ class CairoPainter(PdPainter):
 
         return x, y
 
-    def outlet_connection_coords(self, obj, outlet_no):
+    def outlet_connection_coords(self, obj, outlet_no: int):
+        from .pd import Canvas
         outlets = obj.outlets()
 
         xlet_space = 0

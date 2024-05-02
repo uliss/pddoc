@@ -21,11 +21,12 @@
 __author__ = 'Serge Poltavski'
 
 from os import path
-from .canvas import *
-from .message import *
-from .comment import *
-from .coregui import *
-from .array import *
+from typing import List
+
+from .canvas import Canvas
+from .message import Message
+from .comment import Comment
+from .array import Array
 from .factory import *
 
 
@@ -43,12 +44,12 @@ class Parser:
         pass  # TODO
         # print atoms
 
-    def parse_canvas(self, atoms):
+    def parse_canvas(self, atoms: List[str]):
         # get positions
         values = []
         for i in range(3, -1, -1):
             if len(atoms) > i:
-                values.insert(0, int(atoms[i]))
+                values.insert(0, int(float(atoms[i])))
             else:
                 values.insert(0, 0)
 
@@ -71,20 +72,20 @@ class Parser:
 
         self.canvas_stack.append(c)
 
-    def current_canvas(self):
+    def current_canvas(self) -> Canvas:
         assert len(self.canvas_stack) > 0
         return self.canvas_stack[-1]
 
-    def parse_frameset(self, atoms):
-        if atoms[0] == "canvas":
+    def parse_frameset(self, atoms: List[str]):
+        if len(atoms) > 0 and atoms[0] == "canvas":
             atoms.pop(0)
             self.parse_canvas(atoms)
         else:
             logging.warning("unknown frameset type: {0:s}".format(atoms[0]))
 
     def parse_messages(self, atoms):
-        x = atoms[0]
-        y = atoms[1]
+        x = int(round(float(atoms[0])))
+        y = int(round(float(atoms[1])))
         atoms.pop(0)
         atoms.pop(0)
 
@@ -92,12 +93,12 @@ class Parser:
         self.current_canvas().append_object(msg)
 
     def parse_comments(self, atoms):
-        x = atoms[0]
-        y = atoms[1]
+        x = int(round(float(atoms[0])))
+        y = int(round(float(atoms[1])))
 
         wd_found = False
         wd_atoms = []
-        txt_atoms = []
+        txt_atoms: List[str] = []
 
         for a in atoms[2:]:
             if wd_found:
@@ -118,7 +119,7 @@ class Parser:
         comment = Comment(x, y, txt_atoms, width=wd)
         self.current_canvas().append_object(comment)
 
-    def parse_restore(self, atoms):
+    def parse_restore(self, atoms: List[str]):
         # restore X, Y, TYPE, ARGS
         cnv_type = atoms[2]
         if cnv_type == "graph":
@@ -126,16 +127,16 @@ class Parser:
             # remove canvas from stack
             self.canvas_stack.pop()
 
-            self._array.x = int(atoms[0])
-            self._array.y = int(atoms[1])
+            self._array.x = int(float(atoms[0]))
+            self._array.y = int(float(atoms[1]))
             # put array instead
             self.current_canvas().append_object(self._array)
             self._array = None
         elif cnv_type == "pd":
             c = self.canvas_stack.pop()
             c.type = Canvas.TYPE_SUBPATCH
-            c.x = int(atoms[0])
-            c.y = int(atoms[1])
+            c.x = int(float(atoms[0]))
+            c.y = int(float(atoms[1]))
             c._args = atoms[3:]
             self.current_canvas().append_subpatch(c)
         else:
@@ -153,12 +154,12 @@ class Parser:
                 atoms[-1] = atoms[-1][:-1]  # remove last ,
 
         obj = make(atoms[2:])
-        obj.x = x
-        obj.y = y
+        obj.x = int(round(float(x)))
+        obj.y = int(round(float(y)))
 
         self.current_canvas().append_object(obj)
 
-    def parse_array(self, atoms):
+    def parse_array(self, atoms: List[str]):
         c = self.current_canvas()
         self._array = Array.from_atoms(atoms[1:])
         self._array._cnv_x = c.x
@@ -166,15 +167,15 @@ class Parser:
         self._array._cnv_w = c.width
         self._array._cnv_h = c.height
 
-    def parse_array_content(self, atoms):
+    def parse_array_content(self, atoms: List[str]):
         assert self._array
         self._array.set_data(atoms)
 
-    def parse_connect(self, atoms):
+    def parse_connect(self, atoms: List[str]):
         c = self.current_canvas()
         c.connect(atoms)
 
-    def parse_coords(self, atoms):
+    def parse_coords(self, atoms: List[str]):
         # syntax
         #X coords [x_from]? [y_to]? [x_to]? [y_from]? [width]? [heigth]? [graph_on_parent]?;\r\n
 
@@ -193,7 +194,11 @@ class Parser:
         self._array.width = int(atoms[5])
         self._array.height = int(atoms[6])
 
-    def parse_objects(self, atoms):
+    def parse_objects(self, atoms: List[str]):
+        if len(atoms) == 1:
+            logging.error("empty atom list")
+            return
+
         name = atoms[0]
         if name == 'msg':
             self.parse_messages(atoms[1:])
@@ -206,7 +211,7 @@ class Parser:
         elif name == "restore":
             # end canvas definition
             self.parse_restore(atoms[1:])
-        elif name in("floatatom", "symbolatom"):
+        elif name in ("floatatom", "symbolatom"):
             obj = make(atoms)
             self.current_canvas().append_object(obj)
         elif name == "array":
@@ -218,7 +223,7 @@ class Parser:
         else:
             logging.warning("unknown atom: {0:s}, in file \"{1:s}\"".format(name, self._fname))
 
-    def parse_atoms(self, atoms):
+    def parse_atoms(self, atoms: List[str]):
         if atoms[0] == '#X':
             self.parse_objects(atoms[1:])
         elif atoms[0] == '#N':
@@ -228,17 +233,17 @@ class Parser:
         else:
             logging.info("unknown token: {0:s}".format(atoms[0]))
 
-    def parse_imports(self, lines):
+    def parse_imports(self, lines: str):
         for found in self.lines_re.finditer(lines):
             line = found.group(1)
             atoms = self.split_re.split(line)
             if atoms[0] == "#X" and atoms[1] == "obj" and atoms[4] == "import":
                 add_import(atoms[5])
 
-    def parse_line(self, line):
+    def parse_line(self, line: str):
         self.parse_atoms(self.split_re.split(line))
 
-    def parse(self, file_name):
+    def parse(self, file_name: str) -> bool:
         if not path.exists(file_name):
             logging.warning("File not exists: \"{0:s}\"".format(file_name))
             return False

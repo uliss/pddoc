@@ -20,14 +20,17 @@
 
 __author__ = 'Serge Poltavski'
 
+from typing import List
+
 from .baseobject import *
 from .abstractvisitor import AbstractVisitor
 from .obj import PdObject
+from ..pdpainter import PdPainter
 
 
 class Comment(BaseObject):
-    def __init__(self, x, y, args, width=0):
-        super(Comment, self).__init__(x, y, 0, 0)
+    def __init__(self, x: int, y: int, args: List[str], width: int = 0):
+        super(Comment, self).__init__("", x, y, 0, 0)
         self.args = []
         self._line_width = width
 
@@ -36,7 +39,7 @@ class Comment(BaseObject):
                 self.args.append(a.strip())
 
     @staticmethod
-    def unescape(s):
+    def unescape(s: str):
         return s.strip() \
             .replace(chr(13), "") \
             .replace(chr(10), "") \
@@ -44,7 +47,7 @@ class Comment(BaseObject):
             .replace("\\,", ",")
 
     @staticmethod
-    def escape(s):
+    def escape(s: str):
         res = ""
         for c in s:
             if c == ';':
@@ -79,12 +82,10 @@ class Comment(BaseObject):
         res = "# %-39s {x:%i,y:%i}, f %i" % (self.text(), self._x, self._y, self._line_width)
         return res
 
-    def draw(self, painter):
+    def draw(self, painter: PdPainter):
         painter.draw_comment(self)
 
-    def traverse(self, visitor):
-        assert isinstance(visitor, AbstractVisitor)
-
+    def traverse(self, visitor: AbstractVisitor):
         if visitor.skip_comment(self):
             return
 

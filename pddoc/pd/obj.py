@@ -19,16 +19,18 @@
 
 __author__ = 'Serge Poltavski'
 
-import six
+
 import logging
+from typing import Optional
 
 from .baseobject import BaseObject
-from .xletcalculator import XletCalculator
-from .xletpatchlookup import XletPatchLookup
 from .abstractvisitor import AbstractVisitor
 
 
 class PdObject(BaseObject):
+    from .xletcalculator import XletCalculator
+    from .xletpatchlookup import XletPatchLookup
+
     xlet_calculator = XletCalculator()
     xlet_patch_finder = XletPatchLookup()
     # calculates xlets number
@@ -39,17 +41,11 @@ class PdObject(BaseObject):
     _patch_cache = {}
     # brect calc
     _brect_calc = None
-    # fixed brect
-    _fixed_size = False
 
-    def __init__(self, name, x=0, y=0, w=0, h=0, args=None):
-        BaseObject.__init__(self, x, y, w, h)
+    def __init__(self, name: str, x: int = 0, y: int = 0, w: int = 0, h: int = 0, args=None):
+        BaseObject.__init__(self, name, x, y, w, h)
         if args is None:
             args = []
-        assert isinstance(name, six.string_types)
-        assert len(name) > 0
-
-        self._name = name
 
         assert isinstance(args, list)
         self._args = args
@@ -100,21 +96,11 @@ class PdObject(BaseObject):
                 PdObject._patch_cache[self.name] = None
 
     @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, n):
-        assert isinstance(n, six.string_types)
-        assert len(n) > 0
-        self._name = n
-
-    @property
-    def fixed_width(self):
+    def fixed_width(self) -> Optional[int]:
         return self._fixed_width
 
     @fixed_width.setter
-    def fixed_width(self, n):
+    def fixed_width(self, n: int):
         self._fixed_width = n
 
     @property

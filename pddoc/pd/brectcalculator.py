@@ -19,7 +19,10 @@
 __author__ = 'Serge Poltavski'
 
 import textwrap
+from typing import List
 
+from .obj import BaseObject, PdObject
+from .comment import Comment
 from .message import Message
 from .canvas import Canvas
 from .abstractvisitor import AbstractVisitor
@@ -29,7 +32,7 @@ class BRectCalculator(AbstractVisitor):
     def __init__(self):
         from pddoc.cairopainter import CairoPainter
         self._cairo = CairoPainter(1, 1, None, "png")
-        self._bboxes = []
+        self._bboxes: List[tuple[int, int, int, int]] = []
 
     def clear(self):
         self._bboxes = []
@@ -48,9 +51,9 @@ class BRectCalculator(AbstractVisitor):
 
         return left, top, right - left, bottom - top
 
-    def object_brect(self, obj):
-        if obj._fixed_size:
-            return obj.x, obj.y, obj.width, obj.height
+    def object_brect(self, obj: PdObject):
+        # if obj.fixed_size:
+        #     return int(obj.x), obj.y, obj.width, obj.height
 
         if obj.fixed_width:
             lines = textwrap.wrap(obj.to_string().ljust(obj.fixed_width, "."), obj.fixed_width)
@@ -59,9 +62,10 @@ class BRectCalculator(AbstractVisitor):
         else:
             w, h = self._cairo.box_size(obj.to_string())
 
-        return obj.x, obj.y, int(w), int(h)
+        return int(round(obj.x)), int(round(obj.y)), int(round(w)), int(round(h))
 
-    def break_lines(self, text, width=61):
+    @staticmethod
+    def break_lines(text: str, width: int = 61):
         lines = []
         for line in textwrap.wrap(text, width, break_long_words=False, break_on_hyphens=False):
             line = ";\n".join(line.split(";")).split("\n")
@@ -71,7 +75,7 @@ class BRectCalculator(AbstractVisitor):
 
         return lines
 
-    def text_brect(self, text, line_width=61):
+    def text_brect(self, text: str, line_width: int = 61):
         lines = self.break_lines(text, width=line_width)
 
         max_w = 0
@@ -81,9 +85,9 @@ class BRectCalculator(AbstractVisitor):
             max_w = max(max_w, w)
             max_h = max(max_h, h)
 
-        return 0, 0, int(max_w * 1.06), int(len(lines) * max_h * 1.08)
+        return 0, 0, int(round(max_w * 1.06)), int(round(len(lines) * max_h * 1.08))
 
-    def comment_brect(self, comment):
+    def comment_brect(self, comment: Comment):
         wd = 61
         if comment.line_width():
             wd = comment.line_width()
@@ -94,38 +98,37 @@ class BRectCalculator(AbstractVisitor):
 
         txt = "pd " + cnv.args_to_string()
         w, h = self._cairo.box_size(txt)
-        return cnv.x, cnv.y, int(w), int(h)
+        return cnv.x, cnv.y, int(round(w)), int(round(h))
 
     def box_brect(self, boxstr: str):
         w, h = self._cairo.box_size(boxstr)
-        return 0, 0, w, h
+        return 0, 0, int(round(w)), int(round(h))
 
-    def string_brect(self, string, font_size):
+    def string_brect(self, string: str, font_size):
         w, h = self._cairo.text_size(string, font_size)
-        return 0, 0, w, h
+        return 0, 0, int(round(w)), int(round(h))
 
-    def message_brect(self, message):
-        assert isinstance(message, Message)
+    def message_brect(self, message: Message):
         w, h = self._cairo.message_size(message.to_string())
-        return message.x, message.y, int(w), int(h)
+        return int(message.x), int(message.y), int(round(w)), int(round(h))
 
-    def visit_object(self, obj):
+    def visit_object(self, obj: PdObject):
         bbox = self.object_brect(obj)
         obj.set_width(bbox[2])
         obj.set_height(bbox[3])
         self._bboxes.append(bbox)
 
-    def visit_message(self, msg):
+    def visit_message(self, msg: Message):
         bbox = self.message_brect(msg)
         msg.set_width(bbox[2])
         msg.set_height(bbox[3])
         self._bboxes.append(bbox)
 
-    def visit_comment(self, comment):
+    def visit_comment(self, comment: Comment):
         (x, y, w, h) = self.comment_brect(comment)
         self._bboxes.append((comment.x, comment.y, w, h))
 
-    def visit_core_gui(self, gui):
+    def visit_core_gui(self, gui: BaseObject):
         self._bboxes.append((gui.x, gui.y, gui.width, gui.height))
 
     def visit_graph(self, g):

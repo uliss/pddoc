@@ -20,7 +20,7 @@
  
 __author__ = 'Serge Poltavski'
 
-from pddoc.pd import XLET_SOUND, XLET_MESSAGE
+from pddoc.pd.constants import XLET_SOUND, XLET_MESSAGE
 
 
 _objects = {
@@ -63,18 +63,18 @@ _objects = {
 }
 
 
-def has_object(name):
+def has_object(name: str):
     return name in _objects
 
 
-def inlets(name, args):
+def inlets(name: str, args):
     if name in _objects:
         return _objects[name][0](args)
 
     return []
 
 
-def outlets(name, args):
+def outlets(name: str, args):
     if name in _objects:
         return _objects[name][1](args)
 

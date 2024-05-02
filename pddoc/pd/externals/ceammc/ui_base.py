@@ -18,7 +18,7 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from __future__ import print_function
-from pddoc.pd import PdObject
+from pddoc.pd.obj import PdObject
 from pddoc.cairopainter import CairoPainter
 
 

@@ -2,6 +2,7 @@
 # coding=utf-8
 import textwrap
 
+from .message import Message
 from .canvas import Canvas
 from .abstractvisitor import AbstractVisitor
 
@@ -27,14 +28,14 @@ __author__ = 'Serge Poltavski'
 from .array import Array
 import re
 
+from .obj import PdObject
+
 
 class PdExporter(AbstractVisitor):
     def __init__(self):
         self.result = []
 
-    def visit_canvas_begin(self, cnv):
-        assert isinstance(cnv, Canvas)
-
+    def visit_canvas_begin(self, cnv: Canvas):
         if cnv.type == Canvas.TYPE_WINDOW:
             line = "#N canvas {0:d} {1:d} {2:d} {3:d} {4};". \
                 format(cnv.x, cnv.y, cnv.width, cnv.height, cnv.font_size)
@@ -56,7 +57,7 @@ class PdExporter(AbstractVisitor):
     def visit_subpatch(self, spatch):
         pass
 
-    def visit_canvas_end(self, cnv):
+    def visit_canvas_end(self, cnv: Canvas):
         if cnv.type == Canvas.TYPE_WINDOW:
             if cnv.is_graph_on_parent():
                 gr = cnv.gop_rect()
@@ -98,7 +99,7 @@ class PdExporter(AbstractVisitor):
         txt += ';'
         self.result += txt.split('\n')
 
-    def visit_object(self, obj):
+    def visit_object(self, obj: PdObject):
         if isinstance(obj, Array):
             line = "#N canvas {0:d} {1:d} {2:d} {3:d} {4:s} {5:d};". \
                 format(obj._cnv_x, obj._cnv_y, obj._cnv_w, obj._cnv_h, "(subpatch)", 0)
@@ -151,16 +152,16 @@ class PdExporter(AbstractVisitor):
         for l in textwrap.wrap(line, 70):
             self.result.append(l)
 
-    def visit_message(self, msg):
+    def visit_message(self, msg: Message):
         txt = self.escape_tokens(msg.args_to_string())
         line = "#X msg {0:d} {1:d} {2:s};".format(msg.x, msg.y, txt)
         self.result.append(line)
 
-    def save(self, fname: str):
-        f = open(fname, 'w')
+    def save(self, filename: str):
+        f = open(filename, 'w')
         f.write("\n".join(self.result))
         f.close()
 
-    @classmethod
-    def escape_tokens(cls, s: str) -> str:
+    @staticmethod
+    def escape_tokens(s: str) -> str:
         return s.replace(',', ' \\,').replace('$', '\\$')

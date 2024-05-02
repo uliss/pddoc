@@ -22,7 +22,11 @@ from typing import Optional
 from ply.lex import LexToken
 
 from .graph_lexer import *
-from pddoc.pd import Message, Comment, Canvas, Array, XLET_SOUND, XLET_MESSAGE, PdObject
+from pddoc.pd.message import Message
+from pddoc.pd.comment import Comment
+from pddoc.pd.canvas import Canvas
+from pddoc.pd.array import Array
+from pddoc.pd.constants import XLET_SOUND, XLET_MESSAGE
 from six import string_types
 from pddoc.pd import factory
 from pddoc.pd.coregui import CoreGui
@@ -67,6 +71,12 @@ class Node(object):
 
     def group(self, n=1):
         return self.tok.lexmatch.group(n)
+
+    def is_comment(self) -> bool:
+        if self.tok is None:
+            return False
+
+        return self.tok.type == 'COMMENT'
 
     def is_object(self) -> bool:
         if self.tok is None:
@@ -181,8 +191,6 @@ class Parser(object):
         return res[0]
 
     def parse(self, string: str):
-        assert isinstance(string, string_types)
-
         self.lines = string.split('\n')
         self.lines_len = list(map(lambda x: len(x), self.lines))
         self.lexer.input(string)

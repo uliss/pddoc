@@ -23,17 +23,13 @@ import re
 
 
 class BaseObject(object):
-    def __init__(self, x=0, y=0, w=0, h=0):
+    def __init__(self, name: str, x: int = 0, y: int = 0, w: int = 0, h: int = 0):
         self._id = -1
-        self._x = int(x)
-        self._y = int(y)
-        self._height = int(h)
-        self._width = int(w)
-
-    x = property(lambda self: self.get_x(), lambda self, v: self.set_x(v))
-    y = property(lambda self: self.get_y(), lambda self, v: self.set_y(v))
-    height = property(lambda self: self.get_height(), lambda self, v: self.set_height(v))
-    width = property(lambda self: self.get_width(), lambda self, v: self.set_width(v))
+        self._x = x
+        self._y = y
+        self._height = h
+        self._width = w
+        self._name = name
 
     def is_null(self):
         return not self.x and not self.y and not self.width and not self.height
@@ -46,40 +42,69 @@ class BaseObject(object):
         self.y += y
 
     @property
-    def top(self):
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, n: str):
+        assert len(n) > 0
+        self._name = n
+
+    @property
+    def x(self) -> int:
+        return int(self._x)
+
+    @x.setter
+    def x(self, x: int):
+        self._x = x
+
+    @property
+    def y(self) -> int:
+        return int(self._y)
+
+    @y.setter
+    def y(self, y: int):
+        self._y = y
+
+    @property
+    def height(self) -> int:
+        return self._height
+
+    @height.setter
+    def height(self, h: int):
+        self._height = h
+
+    @property
+    def width(self) -> int:
+        return self._width
+
+    @width.setter
+    def width(self, w: int):
+        self._width = w
+
+    @property
+    def top(self) -> int:
         return self.y
 
     @property
-    def bottom(self):
+    def bottom(self) -> int:
         return self.y + self.height
 
     @property
-    def left(self):
+    def left(self) -> int:
         return self.x
 
     @property
-    def right(self):
+    def right(self) -> int:
         return self.x + self.width
 
-    def get_x(self):
-        return self._x
-
-    def set_x(self, x: float):
-        self._x = int(x)
-
-    def get_y(self):
-        return self._y
-
-    def set_y(self, y: float):
-        self._y = int(y)
-
-    def get_height(self):
+    def get_height(self) -> int:
         return self._height
 
     def set_height(self, h: float):
         self._height = int(h)
 
-    def get_width(self):
+    def get_width(self) -> int:
         return self._width
 
     def set_width(self, w: float):

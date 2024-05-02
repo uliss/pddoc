@@ -24,7 +24,7 @@ from termcolor import colored
 import six
 import logging
 
-from . import XLET_GUI
+from .constants import XLET_GUI
 from .abstractvisitor import AbstractVisitor
 
 

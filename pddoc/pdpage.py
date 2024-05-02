@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
+from typing import List
 
+from .pd.obj import PdObject
 #   Copyright (C) 2016 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
@@ -67,19 +69,20 @@ class PdPage(object):
     def canvas(self):
         return self._canvas
 
-    def make_background(self, x, y, width, height, color):
+    @staticmethod
+    def make_background(x: int, y: int, width: int, height: int, color: Color):
         cnv = GCanvas(x, y, width=width, height=height, size=1)
         cnv._bg_color = color
         return cnv
 
-    def make_hrule(self, x, y, width, height=1, color=Color(200, 200, 200)):
+    def make_hrule(self, x: int, y: int, width: int, height: int = 1, color: Color = Color(200, 200, 200)) -> GCanvas:
         return self.make_background(x, y, width, height, color)
 
-    def make_styled_hrule(self, y):
+    def make_styled_hrule(self, y: int) -> GCanvas:
         return self.make_hrule(20, y, width=self._width - (PdPageStyle.HRULE_LEFT_MARGIN + PdPageStyle.HRULE_RIGHT_MARGIN),
                                color=PdPageStyle.HRULE_COLOR)
 
-    def make_label(self, x, y, txt, font_size, color=Color.black(), bg_color=Color.white()):
+    def make_label(self, x: int, y: int, txt: str, font_size, color=Color.black(), bg_color=Color.white()) -> GCanvas:
         w, h = self.brect_calc.string_brect(txt, font_size)[2:]
 
         cnv = GCanvas(x, y, width=w + 10, height=h * 1.6, size=5, font_size=font_size, label_xoff=4,
@@ -89,7 +92,7 @@ class PdPage(object):
         cnv._bg_color = bg_color
         return cnv
 
-    def make_header(self, title):
+    def make_header(self, title: str):
         cnv = GCanvas(1, 1,
                       width=self._width - PdPageStyle.HEADER_RIGHT_MARGIN,
                       height=PdPageStyle.HEADER_HEIGHT,
@@ -112,15 +115,16 @@ class PdPage(object):
         cnv._bg_color = PdPageStyle.FOOTER_BG_COLOR
         return cnv
 
-    def make_section_label(self, y, txt, font_size=PdPageStyle.SECTION_FONT_SIZE):
+    def make_section_label(self, y: int, txt: str, font_size: int = PdPageStyle.SECTION_FONT_SIZE):
         return self.make_label(20, y, txt, font_size, PdPageStyle.SECTION_FONT_COLOR)
 
-    def make_section(self, y, txt):
-        l = self.make_section_label(y, txt)
-        r = self.make_styled_hrule(y + l.height + 10)
-        return l, r, self.group_brect([l, r])
+    def make_section(self, y: int, txt: str):
+        label = self.make_section_label(y, txt)
+        r = self.make_styled_hrule(y + label.height + 10)
+        return label, r, self.group_brect([label, r])
 
-    def make_link(self, x, y, url, name):
+    @staticmethod
+    def make_link(x: int, y: int, url: str, name: str):
         kw = {'@url': url, '@title': name}
         return UILink(x, y + 3, **kw)
 
@@ -129,12 +133,13 @@ class PdPage(object):
         lnk.set_bg_color(PdPageStyle.HEADER_BG_COLOR)
         return lnk
 
-    def make_txt(self, txt, x, y):
+    @staticmethod
+    def make_txt(txt: str, x: int, y: int):
         if txt:
             #  match only number with end dot: 1. - used for enums
-            txt = re.sub('(\d+)\\.(?!\d)', '\\1\\.', txt)
+            txt = re.sub(r'(\d+)\\.(?!\d)', '\\1\\.', txt)
             txt = re.sub(' *, *', ' \\, ', txt)
-            txt = re.sub('[\s]+', ' ', txt)
+            txt = re.sub(r'\s+', ' ', txt)
         else:
             txt = ""
 
@@ -146,7 +151,7 @@ class PdPage(object):
         self._pd[name] = pd
         return pd
 
-    def add_header(self, title):
+    def add_header(self, title: str):
         h = self.make_header(title)
         h.calc_brect()
         self._canvas.append_object(h)
@@ -156,21 +161,21 @@ class PdPage(object):
         assert name in self._pd
         self._pd[name].append_object(obj)
 
-    def add_pd_txt(self, pd, txt, x, y):
+    def add_pd_txt(self, pd, txt: str, x: int, y: int):
         t = self.make_txt(txt, x, y)
         pd.append_object(t)
         t.calc_brect()
         return t
 
-    def add_txt(self, txt, x, y):
+    def add_txt(self, txt: str, x: int, y: int):
         return self.add_pd_txt(self._canvas, txt, x, y)
 
-    def add_link(self, txt, url, x, y):
+    def add_link(self, txt: str, url: str, x: int, y: int):
         lnk = self.make_link(x, y, url, txt)
         self._canvas.append_object(lnk)
         return lnk
 
-    def add_bg_txt(self, txt, color, x, y):
+    def add_bg_txt(self, txt: str, color, x, y):
         t = self.make_txt(txt, x, y)
         t.calc_brect()
         bg = self.make_background(x, y, t.width + 8, t.height + 8, color=color)
@@ -197,7 +202,7 @@ class PdPage(object):
         obj.calc_brect()
         return obj
 
-    def append_object(self, obj):
+    def append_object(self, obj: PdObject):
         self._canvas.append_object(obj)
         obj.calc_brect()
         return obj
@@ -207,7 +212,7 @@ class PdPage(object):
             self.append_object(o)
 
     @staticmethod
-    def group_brect(seq):
+    def group_brect(seq: List[PdObject]):
         for el in seq:
             el.calc_brect()
 

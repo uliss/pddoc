@@ -21,7 +21,7 @@
 __author__ = 'Serge Poltavski'
 
 from pddoc.pd.externals.ceammc.ui_base import UIBase
-from pddoc.pd import XLET_GUI
+from pddoc.pd.constants import XLET_GUI
 
 
 def create_by_name(name, args, **kwargs):

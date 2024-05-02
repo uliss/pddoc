@@ -21,7 +21,7 @@ __author__ = 'Serge Poltavski'
 
 from sys import platform as _platform
 
-from . import XLET_MESSAGE, XLET_GUI, XLET_SOUND
+from .constants import XLET_MESSAGE, XLET_GUI, XLET_SOUND
 
 
 class DrawStyle(object):

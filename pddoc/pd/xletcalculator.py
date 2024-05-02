@@ -19,11 +19,12 @@
 
 __author__ = 'Serge Poltavski'
 
+from .baseobject import BaseObject
 from .xlettextdatabase import XletTextDatabase
 from .xletcalcdatabase import XletCalcDatabase
 from .xletdatabase import XletMemoryDatabase
 from .xletpatchlookup import XletPatchLookup
-from . import EXTERNALS_DIR
+from .constants import EXTERNALS_DIR
 import os
 
 
@@ -59,45 +60,37 @@ class XletCalculator(object):
         self._dbs.append(XletTextDatabase(path, name))
 
     @staticmethod
-    def has_ext_prefix(obj):
+    def has_ext_prefix(obj: BaseObject):
         return "/" in obj.name and obj.name not in ("/", "/~", "1/x", "1/x~")
 
-    def inlets(self, obj):
-        from .obj import PdObject
-        if not issubclass(obj.__class__, PdObject):
-            return []
-
+    def inlets(self, obj: BaseObject):
         if self.has_ext_prefix(obj):
             ext, name = obj.name.split("/")[:2]
             return self.search_in_named_ext(ext, name, obj.args)[0]
 
         return self.inlets_by_name(obj.name, obj.args)
 
-    def inlets_by_name(self, name, args=None):
+    def inlets_by_name(self, name: str, args=None):
         for db in self._dbs:
             if db.has_object(name):
                 return db.inlets(name, args)
         return []
 
-    def outlets(self, obj):
-        from .obj import PdObject
-        if not issubclass(obj.__class__, PdObject):
-            return []
-
+    def outlets(self, obj: BaseObject):
         if self.has_ext_prefix(obj):
             ext, name = obj.name.split("/")[:2]
             return self.search_in_named_ext(ext, name, obj.args)[1]
 
         return self.outlets_by_name(obj.name, obj.args)
 
-    def outlets_by_name(self, name, args=None):
+    def outlets_by_name(self, name: str, args=None):
         for db in self._dbs:
             if db.has_object(name):
                 return db.outlets(name, args)
 
         return []
 
-    def search_in_named_ext(self, extname, name, args):
+    def search_in_named_ext(self, extname: str, name: str, args):
         for db in self._dbs:
             if db.extname != extname:
                 continue

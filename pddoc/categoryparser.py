@@ -17,6 +17,8 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 import logging
+from typing import Optional
+from xml.etree import ElementTree
 
 from lxml import etree
 
@@ -31,10 +33,10 @@ class CategoryParser(object):
     OBJECT_OFFSET = 30
     DESCRIPTION_OFFSET = 200
 
-    def __init__(self, fname: str):
-        self._fname = fname
-        self._xml = None
-        self._root = None
+    def __init__(self, filename: str):
+        self._fname = filename
+        self._xml: Optional[ElementTree] = None
+        self._root: Optional[ElementTree] = None
         self._cat = None
         self._cat_name = ""
         self._lib_name = ""

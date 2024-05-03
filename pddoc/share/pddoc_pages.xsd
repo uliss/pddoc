@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="pddoc-pages" type="Root"/>
+
+    <xs:complexType name="Root">
+        <xs:sequence>
+            <xs:element name="page" type="Page" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="version" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="[0-9]+\.[0-9]+"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="Page">
+        <xs:all>
+            <xs:element name="title" type="xs:string"/>
+            <xs:element name="sections" type="Sections"/>
+        </xs:all>
+        <xs:attribute name="output" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="Sections">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="a" type="MarkupA" minOccurs="0"/>
+            <xs:element name="h1" minOccurs="0"/>
+            <xs:element name="h2" minOccurs="0"/>
+            <xs:element name="h3" minOccurs="0"/>
+            <xs:element name="li" type="MarkupList" minOccurs="0"/>
+            <xs:element name="par" type="MarkupText" minOccurs="0"/>
+            <xs:element name="pdascii" type="PdAscii" minOccurs="0"/>
+            <xs:element name="section" minOccurs="0"/>
+            <xs:element name="ul" type="MarkupList" minOccurs="0"/>
+            <xs:element name="wiki" type="MarkupWiki" minOccurs="0"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="PdAscii">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="x-pad" use="optional" type="xs:unsignedShort" default="20"/>
+                <xs:attribute name="y-pad" use="optional" type="xs:unsignedShort" default="20"/>
+                <xs:attribute name="x-space" use="optional" type="xs:float" default="1.2"/>
+                <xs:attribute name="y-space" use="optional" type="xs:float" default="1.2"/>
+                <xs:attribute name="indent" default="0" type="xs:int"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="MarkupList">
+        <xs:sequence>
+            <xs:element name="item" minOccurs="1" maxOccurs="unbounded" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="indent" type="xs:integer"/>
+    </xs:complexType>
+
+    <xs:complexType name="MarkupText">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <!-- paragraph indent in chars-->
+                <xs:attribute name="indent" type="xs:integer"/>
+                <!-- paragraph width in chars-->
+                <xs:attribute name="width" type="xs:integer" default="80"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="MarkupA">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="href" use="required" type="xs:anyURI"/>
+                <xs:attribute name="indent" type="xs:int" default="0"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="MarkupWiki">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="name" use="required" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+</xs:schema>

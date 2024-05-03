@@ -302,7 +302,7 @@ class PdDocVisitor(DocObjectVisitor):
     def arguments_begin(self, args: DocArguments):
         super(self.__class__, self).arguments_begin(args)
         lbl = self.add_section("arguments:", self.PD_SECTION_YMARGIN)
-        self.add_section_help("[?]", "ceammc.args-help.pd", lbl.top)
+        self.add_section_help("[?]", "ceammc.args-info.pd", lbl.top)
         args.enumerate()
 
     def arguments_end(self, args: DocArguments):
@@ -313,7 +313,7 @@ class PdDocVisitor(DocObjectVisitor):
     def properties_begin(self, p: DocProperties):
         super(self.__class__, self).properties_begin(p)
         lbl = self.add_section("properties:", self.PD_SECTION_YMARGIN)
-        self.add_section_help("[?]", "ceammc.props-help.pd", lbl.top)
+        self.add_section_help("[?]", "ceammc.props-info.pd", lbl.top)
         # sort by names
         p.sort_by(lambda n: n.sort_name())
 

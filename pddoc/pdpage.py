@@ -85,17 +85,25 @@ class PdPage(object):
                                width=self._width - (PdPageStyle.HRULE_LEFT_MARGIN + PdPageStyle.HRULE_RIGHT_MARGIN),
                                color=PdPageStyle.HRULE_COLOR)
 
-    def make_label(self, x: int, y: int, txt: str, font_size, color=Color.black(), bg_color=Color.white()) -> GCanvas:
+    def make_label(self, x: int, y: int, txt: str, font_size,
+                   **kwargs) -> GCanvas:
         w, h = self.brect_calc.string_brect(txt, font_size)[2:]
 
-        cnv = GCanvas(x, y, width=w + 10, height=h * 1.6, size=5, font_size=font_size, label_xoff=4,
-                      label_yoff=font_size - 4)
-        cnv.label = txt.replace(' ', '_')
-        cnv._label_color = color
-        cnv._bg_color = bg_color
+        cnv = GCanvas(x, y, width=kwargs.get('width', w + 10), height=kwargs.get('height', h * 1.6),
+                      size=kwargs.get('size', 5),
+                      font_size=font_size,
+                      label_xoff=kwargs.get('label_xoff', 4),
+                      label_yoff=kwargs.get('label_yoff', h - 4))
+
+        if kwargs.get('replace_ws', True):
+            cnv.label = txt.replace(' ', '_')
+        else:
+            cnv.label = txt.replace(' ', '\\ ')
+        cnv._label_color = kwargs.get('color', PdPageStyle.SECTION_FONT_COLOR)
+        cnv._bg_color = kwargs.get('bg_color', Color.white())
         return cnv
 
-    def make_header(self, title: str):
+    def make_header(self, title: str, replace_ws: bool = True):
         cnv = GCanvas(1, 1,
                       width=self._width - PdPageStyle.HEADER_RIGHT_MARGIN,
                       height=PdPageStyle.HEADER_HEIGHT,
@@ -103,7 +111,10 @@ class PdPage(object):
                       font_size=PdPageStyle.HEADER_FONT_SIZE,
                       label_xoff=PdPageStyle.HEADER_FONT_SIZE,
                       label_yoff=PdPageStyle.HEADER_FONT_SIZE)
-        cnv.label = title.replace(' ', '_')
+        if replace_ws:
+            cnv.label = title.replace(' ', '_')
+        else:
+            cnv.label = title.replace(' ', r'\ ')
         cnv._label_color = PdPageStyle.HEADER_FONT_COLOR
         cnv._bg_color = PdPageStyle.HEADER_BG_COLOR
         return cnv
@@ -118,11 +129,12 @@ class PdPage(object):
         cnv._bg_color = PdPageStyle.FOOTER_BG_COLOR
         return cnv
 
-    def make_section_label(self, y: int, txt: str, font_size: int = PdPageStyle.SECTION_FONT_SIZE):
-        return self.make_label(20, y, txt, font_size, PdPageStyle.SECTION_FONT_COLOR)
+    def make_section_label(self, y: int, txt: str, font_size: int = PdPageStyle.SECTION_FONT_SIZE,
+                           **kwargs):
+        return self.make_label(20, y, txt, font_size, **kwargs)
 
-    def make_section(self, y: int, txt: str):
-        label = self.make_section_label(y, txt)
+    def make_section(self, y: int, txt: str, **kwargs):
+        label = self.make_section_label(y, txt, **kwargs)
         r = self.make_styled_hrule(y + label.height + 10)
         return label, r, self.group_brect([label, r])
 
@@ -137,7 +149,7 @@ class PdPage(object):
         return lnk
 
     @staticmethod
-    def make_txt(txt: str, x: int, y: int):
+    def make_txt(txt: str, x: int, y: int, **kwargs):
         if txt:
             #  match only number with end dot: 1. - used for enums
             txt = re.sub(r'(\d+)\.(?!\d)', r'\1\.', txt)
@@ -146,7 +158,7 @@ class PdPage(object):
         else:
             txt = ""
 
-        return Comment(x, y, txt.split(' '))
+        return Comment(x, y, txt.split(' '), **kwargs)
 
     def make_subpatch(self, name: str, x: int, y: int, w: int, h: int):
         pd = Canvas(x, y, w, h, name=name)
@@ -154,8 +166,8 @@ class PdPage(object):
         self._pd[name] = pd
         return pd
 
-    def add_header(self, title: str):
-        h = self.make_header(title)
+    def add_header(self, title: str, replace_ws: bool = True):
+        h = self.make_header(title, replace_ws)
         h.calc_brect()
         self._canvas.append_object(h)
         return h
@@ -164,14 +176,14 @@ class PdPage(object):
         assert name in self._pd
         self._pd[name].append_object(obj)
 
-    def add_pd_txt(self, pd, txt: str, x: int, y: int):
-        t = self.make_txt(txt, x, y)
+    def add_pd_txt(self, pd, txt: str, x: int, y: int, **kwargs):
+        t = self.make_txt(txt, x, y, **kwargs)
         pd.append_object(t)
         t.calc_brect()
         return t
 
-    def add_txt(self, txt: str, x: int, y: int):
-        return self.add_pd_txt(self._canvas, txt, x, y)
+    def add_txt(self, txt: str, x: int, y: int, **kwargs):
+        return self.add_pd_txt(self._canvas, txt, x, y, **kwargs)
 
     def add_link(self, txt: str, url: str, x: int, y: int):
         lnk = self.make_link(x, y, url, txt)

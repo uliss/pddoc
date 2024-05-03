@@ -4,10 +4,17 @@ import logging
 import os
 import os.path
 import urllib.parse as ul
+from xml.etree.ElementTree import Element
 
 from lxml import etree
 
+import pddoc.txt
 from .parser import get_schema
+from .pd.canvas import Canvas
+from .pd.coregui import Color
+from .pd.obj import PdObject
+from .pd.pdexporter import PdExporter
+from .pdpage import PdPage, PdPageStyle
 
 
 #   Copyright (C) 2016 by Serge Poltavski                                 #
@@ -25,6 +32,11 @@ from .parser import get_schema
 #                                                                         #
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
+
+def pages_schema():
+    etree.register_namespace("xi", "http://www.w3.org/2001/XInclude")
+    xml = etree.parse(os.path.join(os.path.dirname(__file__), 'share', 'pddoc_pages.xsd'))
+    return etree.XMLSchema(xml.getroot())
 
 
 class LibraryMaker(object):
@@ -76,6 +88,7 @@ class LibraryMaker(object):
             self.process_object_file(f)
 
         self.fill_library_meta()
+        self.fill_library_info_pages()
 
     def process_object_file(self, f):
         try:
@@ -128,6 +141,150 @@ class LibraryMaker(object):
             meta.append(xi)
 
         self._lib.append(meta)
+
+    def fill_library_info_pages(self):
+        info_pages = self.find_in_path("{0}_pages.xml".format(self._name))
+        if info_pages:
+            try:
+                xml = etree.parse(info_pages)
+                xml.xinclude()
+
+                schema = pages_schema()
+                schema.assertValid(xml)
+
+                root = xml.getroot()
+                for page in root.findall("page"):
+                    self.process_info_page(page)
+            except etree.XMLSyntaxError as e:
+                logging.error("XML syntax error:\n \"%s\"\n\twhile parsing file: \"%s\"", e, info_pages)
+                return
+
+    def process_info_page(self, page: Element):
+        for path in self._search_paths:
+            db = os.path.join(path, 'ceammc.db')
+            if os.path.exists(db):
+                PdObject.xlet_calculator.add_db(db)
+
+        title = page.find("title").text.strip()
+        pd_page = PdPage("")
+        y_pos = pd_page.add_header("CEAMMC documentation", False).bottom
+        y_pos += 20
+
+        # title
+        lbl, hr, bbox = pd_page.make_section(y_pos, txt=title, replace_ws=False, color=PdPageStyle.HEADER_BG_COLOR,
+                                             height=32,
+                                             width=450)
+        pd_page.append_list([hr, lbl])
+        y_pos = hr.bottom + 20
+
+        # sections
+        for part in page.find('sections'):
+            if part.tag == 'section':
+                title = part.text.strip()
+                lbl, hr, bbox = pd_page.make_section(y_pos, txt=title, replace_ws=False, font_size=18, height=24,
+                                                     width=200)
+                pd_page.append_list([hr, lbl])
+                y_pos = hr.bottom + 20
+            elif part.tag == 'h1':
+                title = part.text.strip()
+                lbl = pd_page.make_label(20, y_pos, txt=title, replace_ws=False, font_size=18, height=34, label_yoff=17,
+                                         width=400, color=Color.white(), bg_color=Color(30, 30, 30))
+                pd_page.append_object(lbl)
+                y_pos += lbl.height + 20
+            elif part.tag == 'h2':
+                title = part.text.strip()
+                lbl = pd_page.make_label(20, y_pos, txt=title, replace_ws=False, font_size=16, height=28, label_yoff=14,
+                                         width=400, color=Color.white(), bg_color=Color(70, 70, 70))
+                pd_page.append_object(lbl)
+                y_pos += lbl.height + 20
+            elif part.tag == 'par':
+                x_margin = 40
+                y_pad = 15
+                width = 80
+                indent = int(part.get("indent", 0))
+                y_pos += pd_page.add_txt(part.text, x_margin + (10 * indent), y_pos, width=(width - indent)).height
+                y_pos += y_pad
+            elif part.tag == 'pdascii':
+                y_pad = 15
+                x_margin = 40
+                indent = int(part.get("indent", 0))
+                data = part.text.strip()
+                p = pddoc.txt.Parser()
+                p.X_PAD = int(part.get("x-pad", 0))
+                p.Y_PAD = int(part.get("y-pad", 0))
+                p.X_SPACE *= float(part.get("x-space", 1))
+                p.Y_SPACE *= float(part.get("y-space", 1))
+                if not p.parse(data):
+                    logging.info(f"<pdascii> parse failed: {data}")
+                    continue
+
+                cnv = Canvas(0, 0, 300, 500)
+                cnv.type = Canvas.TYPE_WINDOW
+                p.export(cnv)
+
+                # save as pd
+                br_calc = cnv.brect_calc()
+                cnv.traverse(br_calc)
+                bbox = br_calc.brect()
+                wd = bbox[2] + p.X_PAD * 4
+                ht = bbox[3] + p.Y_PAD * 4
+                cnv.height = ht
+                cnv.width = wd
+                pd_exporter = PdExporter()
+                cnv.traverse(pd_exporter)
+
+                for obj in cnv.objects:
+                    obj.y += y_pos
+                    obj.x += (x_margin + (10 * indent))
+                    pd_page.append_object(obj)
+
+                for conn in cnv.connections.values():
+                    pd_page.canvas.add_connection(conn[0].id, conn[1], conn[2].id, conn[3])
+
+                y_pos += cnv.height
+                y_pos += y_pad
+
+            elif part.tag == 'a':
+                x_margin = 40
+                indent = int(part.get("indent", 0))
+                y_pos += pd_page.add_link(part.text, part.get("href"), x_margin + (10 * indent), y_pos).height + 20
+            elif part.tag == 'ul':
+                x_margin = 40
+                y_pad = 5
+                width = 70
+                indent = int(part.get("indent", 0))
+
+                for item in part.findall('item'):
+                    txt = item.text.strip()
+                    y_pos += pd_page.add_txt(f"◦ {txt}", x_margin + (10 * indent), y_pos, width=(width - indent)).height
+                    y_pos += y_pad
+            elif part.tag == 'li':
+                x_margin = 40
+                y_pad = 5
+                width = 70
+                indent = int(part.get("indent", 0))
+
+                i = 1
+                for item in part.findall('item'):
+                    txt = item.text.strip()
+                    y_pos += pd_page.add_txt(f"{i}. {txt}", x_margin + (10 * indent), y_pos,
+                                             width=(width - indent)).height
+                    i += 1
+                    y_pos += y_pad
+            elif part.tag == 'wiki':
+                pass
+                # y_pos += pd_page.add_w(part.text, part.get("url"), 40, y_pos).height + 20
+            else:
+                pass
+                # logging.error("tag name: {}", part.tag)
+
+        footer = pd_page.make_footer(y_pos + 20)
+        pd_page.append_object(footer)
+
+        output_name = page.get("output")
+        with open(output_name, "w") as f:
+            logging.error(f"{output_name} created")
+            f.write(pd_page.to_string())
 
     def __str__(self):
         xml = '<?xml version="1.0" encoding="UTF-8"?>\n'

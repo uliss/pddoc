@@ -42,21 +42,21 @@ class Canvas(PdObject):
         if 'name' in kwargs:
             self._name = kwargs['name']
 
-        self._font_size = kwargs.get('font_size', 12)
-        self._open_on_load = kwargs.get('open_on_load', 0)
+        self._font_size = int(kwargs.get('font_size', 12))
+        self._open_on_load = int(kwargs.get('open_on_load', 0))
 
         self._graph_on_parent = False
         self._gop = {}
 
     @classmethod
-    def subpatch(cls, name, x=0, y=0, w=200, h=100):
+    def subpatch(cls, name: str, x: int = 0, y: int = 0, w: int = 200, h: int = 100):
         c = Canvas(x, y, w, h, open_on_load=0, name=name)
         c.type = cls.TYPE_SUBPATCH
         c._graph_on_parent = False
         return c
 
     @classmethod
-    def graph(cls, name, x=0, y=0, w=200, h=100):
+    def graph(cls, name: str, x: int = 0, y: int = 0, w: int = 200, h: int = 100):
         c = Canvas(x, y, w, h, open_on_load=0, name=name)
         c.type = cls.TYPE_GRAPH
         return c
@@ -234,7 +234,7 @@ class Canvas(PdObject):
         return res
 
     def gop_rect(self):
-        return self._gop['xoff'], self._gop['yoff'], self._gop['width'], self._gop['height']
+        return int(self._gop['xoff']), int(self._gop['yoff']), self._gop['width'], self._gop['height']
 
     def gop_hide_args(self):
         return self._gop['hide_args']

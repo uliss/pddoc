@@ -19,10 +19,11 @@
 
 __author__ = 'Serge Poltavski'
 
-from unittest import TestCase, expectedFailure
-from pddoc.pd.pdexporter import *
-from pddoc.pd.parser import *
 import difflib
+from unittest import TestCase, expectedFailure
+
+from pddoc.pd.parser import *
+from pddoc.pd.pdexporter import *
 
 
 class TestPdExporter(TestCase):
@@ -70,7 +71,7 @@ class TestPdExporter(TestCase):
         self.assertEqual("\n".join(self._exp.result), "#X text 0 0 a b c;")
 
     def test_export_comments3(self):
-        comm = Comment(0, 0, ['Comment', 'with', 'symbols:', '$"!@#$%^&*()[]', '\\,',  'new line'])
+        comm = Comment(0, 0, ['Comment', 'with', 'symbols:', '$"!@#$%^&*()[]', '\\,', 'new line'])
         self.assertEqual(comm.text(), 'Comment with symbols: $"!@#$%^&*()[], new line')
         self._parser.canvas.append_object(comm)
         self._parser.canvas.traverse(self._exp)
@@ -149,3 +150,52 @@ class TestPdExporter(TestCase):
         res = self._exp.result
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0], '#X msg 10 20 1 \\, 2;')
+
+    def test_export_array2(self):
+        arr = Array('hist', 64, 0)
+        self._parser.canvas.append_object(arr)
+        self._parser.canvas.traverse(self._exp)
+        self.assertEqual("\n".join(self._exp.result),
+                         '#N canvas 0 22 450 300 (subpatch) 0;\n'
+                         '#X array hist 64 float 1;\n'
+                         '#X coords 0 1 64 -1 200 140 1;\n'
+                         '#X restore 0 0 graph;')
+
+    def test_export_array3(self):
+        arr = Array('hist', 10, 0)
+        arr.set_yrange(1.5, 3.5)
+        self._parser.canvas.append_object(arr)
+        self._parser.canvas.traverse(self._exp)
+        self.assertEqual("\n".join(self._exp.result),
+                         '#N canvas 0 22 450 300 (subpatch) 0;\n'
+                         '#X array hist 10 float 1;\n'
+                         '#X coords 0 3.5 10 1.5 200 140 1;\n'
+                         '#X restore 0 0 graph;')
+
+    def test_export_array4(self):
+        arr = Array('hist', 4, 1)
+        arr.set_yrange(-2, 2)
+        arr.set_data([1, 2, 3, -1])
+        self._parser.canvas.append_object(arr)
+        self._parser.canvas.traverse(self._exp)
+        self.assertEqual("\n".join(self._exp.result),
+                         '#N canvas 0 22 450 300 (subpatch) 0;\n'
+                         '#X array hist 4 float 1;\n'
+                         '#A 0 1 2 3 -1;\n'
+                         '#X coords 0 2 4 -2 200 140 1;\n'
+                         '#X restore 0 0 graph;')
+
+    def test_export_array5(self):
+        arr = Array('hist', 4, 1)
+        arr.set_yrange(-2, 2)
+        arr.set_data([1, 2, 3, -1])
+        arr.width = 125
+        arr.height = 160
+        self._parser.canvas.append_object(arr)
+        self._parser.canvas.traverse(self._exp)
+        self.assertEqual("\n".join(self._exp.result),
+                         '#N canvas 0 22 450 300 (subpatch) 0;\n'
+                         '#X array hist 4 float 1;\n'
+                         '#A 0 1 2 3 -1;\n'
+                         '#X coords 0 2 4 -2 125 160 1;\n'
+                         '#X restore 0 0 graph;')

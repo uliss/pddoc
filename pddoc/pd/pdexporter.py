@@ -106,9 +106,10 @@ class PdExporter(AbstractVisitor):
             line = "#X array {0:s} {1:d} float {2:d};".format(obj.name, obj.size(), obj.flags())
             self.result.append(line)
 
-            line = "#A 0 " + " ".join(map(lambda x: "{0:g}".format(x), obj.data())) + ";"
-            for l in textwrap.wrap(line, 70):
-                self.result.append(l)
+            if obj.save_flag():
+                line = "#A 0 " + " ".join(map(lambda x: "{0:g}".format(x), obj.data())) + ";"
+                for x in textwrap.wrap(line, 70):
+                    self.result.append(x)
 
             # X coords [x_from]? [y_to]? [x_to]? [y_from]? [width]? [heigth]? [graph_on_parent]?;\r\n
             line = "#X coords {0:g} {1:g} {2:g} {3:g} {4:g} {5:d} {6:d};".format(

@@ -153,11 +153,13 @@ class TestPdExporter(TestCase):
 
     def test_export_array2(self):
         arr = Array('hist', 64, 0)
+        self.assertEqual(arr.save_flag(), 0)
+        self.assertEqual(arr.flags(), 0)
         self._parser.canvas.append_object(arr)
         self._parser.canvas.traverse(self._exp)
         self.assertEqual("\n".join(self._exp.result),
                          '#N canvas 0 22 450 300 (subpatch) 0;\n'
-                         '#X array hist 64 float 1;\n'
+                         '#X array hist 64 float 0;\n'
                          '#X coords 0 1 64 -1 200 140 1;\n'
                          '#X restore 0 0 graph;')
 
@@ -168,7 +170,7 @@ class TestPdExporter(TestCase):
         self._parser.canvas.traverse(self._exp)
         self.assertEqual("\n".join(self._exp.result),
                          '#N canvas 0 22 450 300 (subpatch) 0;\n'
-                         '#X array hist 10 float 1;\n'
+                         '#X array hist 10 float 0;\n'
                          '#X coords 0 3.5 10 1.5 200 140 1;\n'
                          '#X restore 0 0 graph;')
 
@@ -198,4 +200,30 @@ class TestPdExporter(TestCase):
                          '#X array hist 4 float 1;\n'
                          '#A 0 1 2 3 -1;\n'
                          '#X coords 0 2 4 -2 125 160 1;\n'
+                         '#X restore 0 0 graph;')
+
+    def test_export_array6(self):
+        arr = Array('hist', 64, 0)
+        arr.set_style(Array.STYLE_POINTS)
+        self.assertEqual(arr.save_flag(), 0)
+        self.assertEqual(arr.flags(), 2)
+        self._parser.canvas.append_object(arr)
+        self._parser.canvas.traverse(self._exp)
+        self.assertEqual("\n".join(self._exp.result),
+                         '#N canvas 0 22 450 300 (subpatch) 0;\n'
+                         '#X array hist 64 float 2;\n'
+                         '#X coords 0 1 64 -1 200 140 1;\n'
+                         '#X restore 0 0 graph;')
+
+    def test_export_array7(self):
+        arr = Array('hist', 64, 0)
+        arr.set_style(Array.STYLE_CURVE)
+        self.assertEqual(arr.save_flag(), 0)
+        self.assertEqual(arr.flags(), 4)
+        self._parser.canvas.append_object(arr)
+        self._parser.canvas.traverse(self._exp)
+        self.assertEqual("\n".join(self._exp.result),
+                         '#N canvas 0 22 450 300 (subpatch) 0;\n'
+                         '#X array hist 64 float 4;\n'
+                         '#X coords 0 1 64 -1 200 140 1;\n'
                          '#X restore 0 0 graph;')

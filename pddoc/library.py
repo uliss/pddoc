@@ -179,6 +179,8 @@ class LibraryMaker(object):
 
         # sections
         for part in page.find('sections'):
+            content = part.text.strip()
+
             if part.tag == 'section':
                 title = part.text.strip()
                 lbl, hr, bbox = pd_page.make_section(y_pos, txt=title, replace_ws=False, font_size=18, height=24,
@@ -205,20 +207,20 @@ class LibraryMaker(object):
                 y_pos += pd_page.add_txt(part.text, x_margin + (10 * indent), y_pos, width=(width - indent)).height
                 y_pos += y_pad
             elif part.tag == 'pdascii':
-                y_pad = 15
+                y_pad = 20
                 x_margin = 40
                 indent = int(part.get("indent", 0))
                 data = part.text.strip()
                 p = pddoc.txt.Parser()
                 p.X_PAD = int(part.get("x-pad", 0))
                 p.Y_PAD = int(part.get("y-pad", 0))
-                p.X_SPACE *= float(part.get("x-space", 1))
-                p.Y_SPACE *= float(part.get("y-space", 1))
+                p.X_SPACE *= float(part.get("x-space", 1.1))
+                p.Y_SPACE *= float(part.get("y-space", 1.1))
                 if not p.parse(data):
                     logging.info(f"<pdascii> parse failed: {data}")
                     continue
 
-                cnv = Canvas(0, 0, 300, 500)
+                cnv = Canvas(0, 0, 300, 100)
                 cnv.type = Canvas.TYPE_WINDOW
                 p.export(cnv)
 
@@ -246,8 +248,10 @@ class LibraryMaker(object):
 
             elif part.tag == 'a':
                 x_margin = 40
+                y_pad = 10
                 indent = int(part.get("indent", 0))
-                y_pos += pd_page.add_link(part.text, part.get("href"), x_margin + (10 * indent), y_pos).height + 20
+                y_pos += pd_page.add_link(part.text, part.get("href"), x_margin + (10 * indent), y_pos).height
+                y_pos += y_pad
             elif part.tag == 'ul':
                 x_margin = 40
                 y_pad = 5

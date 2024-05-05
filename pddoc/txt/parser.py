@@ -20,7 +20,6 @@
 from __future__ import print_function
 
 import copy
-import logging
 from typing import Optional
 
 from ply.lex import LexToken
@@ -93,7 +92,7 @@ class Node(object):
 
     def is_connection(self) -> bool:
         return self.tok.type in (
-        'CONNECTION', 'CONNECTION_LEFT', 'CONNECTION_RIGHT', 'CONNECTION_X', 'CONNECTION_MANUAL')
+            'CONNECTION', 'CONNECTION_LEFT', 'CONNECTION_RIGHT', 'CONNECTION_X', 'CONNECTION_MANUAL')
 
     def is_all_in_connection(self) -> bool:
         return self.multi_connect == 'all_in'
@@ -143,11 +142,6 @@ class Node(object):
 
 
 class Parser(object):
-    X_PAD = 20
-    Y_PAD = 20
-    X_SPACE = 8
-    Y_SPACE = 12
-
     ALIASES = {
         '_': 'tgl',
         'T': 'tgl',
@@ -168,6 +162,10 @@ class Parser(object):
     }
 
     def __init__(self):
+        self.X_PAD = 20
+        self.Y_PAD = 20
+        self.X_SPACE = 8
+        self.Y_SPACE = 12
         self.lines = []
         self.lines_len = []
         self.tokens = []
@@ -349,11 +347,13 @@ class Parser(object):
                     if args[0] in ("set", "get", "define", "sum", "size", "random", "min", "max"):
                         n.pd_object = factory.make_by_name(name + " " + args[0], args[1:], **kwargs)
                     else:
-                        n.pd_object = Array(args[0], kwargs.get('size', 100), kwargs.get('save', 0))
-                        n.pd_object.width = kwargs.get('w', 200)
-                        n.pd_object.height = kwargs.get('h', 140)
+                        # print("ARRAY args", kwargs)
+                        n.pd_object = Array(args[0], int(kwargs.get('size', 100)), int(kwargs.get('save', 0)))
+                        n.pd_object.width = int(kwargs.get('w', 200))
+                        n.pd_object.height = int(kwargs.get('h', 140))
                         yr = list(map(lambda x: float(x), kwargs.get('yr', "-1..1").split('..')))
                         n.pd_object.set_yrange(yr[0], yr[1])
+                        # print(n.pd_object)
                         if 'style' in kwargs:
                             values = ('line', 'point', 'curve')
                             st = kwargs['style']

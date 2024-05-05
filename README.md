@@ -1,16 +1,14 @@
 # PDDOC
+
 PureData documentation generator
 
- 
-This is a generator that creates *-help.pd files from single **pddoc**-formatted files and another .pd file from 
+This is a generator that creates *-help.pd files from single **pddoc**-formatted files and another .pd file from
 XML that contains objects, short descriptions and links to help files.
 
 ---
 
 Requires: pycairo
-  
 
-  
 | _                  | _                                                                        |
 |--------------------|--------------------------------------------------------------------------|
 | **pd_doc2pd**      | Converts pddoc file to PureData help patch                               |
@@ -21,44 +19,52 @@ Requires: pycairo
 | **pd_cat2pd**      | Converts XML file with category info to separate patch with object links |
 
 ---
+
 ## 1. XML file
 
 ```xml
+
 <library xmlns:xi="http://www.w3.org/2001/XInclude" name="--your-library-name--" version="1.0">
-  <category name="--category--">
-    <entry descr="Object description" name="the_object" ref_view="object">
-      <xi:include href="the_object.pddoc" parse="xml"/>
-    </entry>
-  </category>
- <meta>
-    <version> % </version>
-    <authors>
-      <author> % </author>
-    </authors>
-  </meta>
- </library>
+    <category name="--category--">
+        <entry descr="Object description" name="the_object" ref_view="object">
+            <xi:include href="the_object.pddoc" parse="xml"/>
+        </entry>
+    </category>
+    <meta>
+        <version>%</version>
+        <authors>
+            <author>%</author>
+        </authors>
+    </meta>
+</library>
 ```
+
 ### library
+
 - **name** (required)
 
 ### category
+
 - **name** (required)
 
 ### entry
+
 - **name** (required)
 - **ref_view** (required):
     - object
     - link      (for UI objects)
 
 XML file for category:
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <category-info version="1.0">
-description
+    description
 </category-info>
 ```
 
 ---
+
 ## 2. pddoc file
 
 ```xml
@@ -68,17 +74,17 @@ description
         <title>the_object</title>
         <meta>
             <authors>
-                <author> % </author>
+                <author>%</author>
             </authors>
-            <description>% </description>
-            <license> % </license>
-            <library> % </library>
-            <category> % </category>
-            <keywords> % </keywords>
-            <since> % </since>
+            <description>%</description>
+            <license>%</license>
+            <library>%</library>
+            <category>%</category>
+            <keywords>%</keywords>
+            <since>%</since>
         </meta>
         <info>
-            <par> Paragraph text </par>
+            <par>Paragraph text</par>
         </info>
         <arguments>
             <argument name="ARG_NAME" type="symbol">argument name</argument>
@@ -99,7 +105,7 @@ description
         </mouse>
         <example>
             <pdascii>
-<![CDATA[
+                <![CDATA[
 
 [message_box(                                 
 |
@@ -111,7 +117,9 @@ description
     </object>
 </pddoc>
 ```
+
 ### header:
+
 - `<pddoc>`
     - **version** (required)
 - `<object>`
@@ -125,15 +133,19 @@ description
     - `<category>`
     - `<keywords>`
     - `<since>`
-   
+
 ### info
+
 ```xml
+
 <info>
-    <par> Paragraph text </par>
+    <par>Paragraph text</par>
     <wiki name="Arithmetic_mean">Arithmetic mean</wiki>
 </info>
 ```
+
 ### arguments
+
 - **name** (required)
 - **type** (required):
     - int
@@ -141,10 +153,11 @@ description
     - symbol
     - atom - int, float or symbol
     - list - list of atoms
-    
+
 ### properties
 
 ```xml
+
 <properties>
     <property name="PROP" type="TYPE">description</property>
 </properties>
@@ -191,9 +204,11 @@ description
     ```xml 
     <property enum="A B C"/>
     ```
-    
+
 ### methods
+
 ```xml
+
 <methods>
     <method name="NAME">
         description
@@ -203,12 +218,15 @@ description
     ...
 </methods>
 ```
+
 - **method name** method name
 - **type** value type
 - **required** true if the parameter is required
 
 ### inlets
+
 ```xml
+
 <inlets dynamic="true">
     <inlet type="TYPE" number="XXX">
         <xinfo on="symbol">description</xinfo>
@@ -235,9 +253,11 @@ description
     - data:mlist
     - data:string
     - data:fifo
-    
+
 ### outlets
+
 ```xml
+
 <outlets>
     <outlet>
         description
@@ -246,7 +266,9 @@ description
 ```
 
 ### mouse
+
 ```xml
+
 <mouse>
     <event type="drag" keys="Shift" editmode="false">description</event>
 </mouse>
@@ -262,6 +284,7 @@ description
 - **editmode** - edit mode on/off
 
 ### example
+
 ```
 <example>
     <pdascii>
@@ -293,17 +316,21 @@ description
 - [X a:1->b:0] - connect second outlet of object #a to first inlet of object #b
 
 #### connections
+
 - | - simple connection
+
 ```
 [mtof]
 |
 |
 [F]
 ```
+
 ![example01](pddoc/doc/img/example04.png)
 
 - ^|. - specified connection. Number of **"^"** specifies outlet index.
-Number of **"."** specifies inlet index
+  Number of **"."** specifies inlet index
+
 ```
 [unpack f f f] /*connect second outlet to third inlet*/
 ^|
@@ -311,33 +338,40 @@ Number of **"."** specifies inlet index
  |..
 [pack f f f]
 ```
+
 ![example01](pddoc/doc/img/example03.png)
 
 - \*| - all to one connection. Note: no simple cord continuation.
+
 ```
 [unpack f f f] 
 *|
 *|
 [flow.count]
 ```
+
 ![example01](pddoc/doc/img/example01.png)
 
 - |\* - one to all connection. Note: no simple cord continuation.
+
 ```
 [F]
 |*
 |*
 [pack f f f]
 ```   
+
 ![example01](pddoc/doc/img/example02.png)
 
 - \*|\* - parallel connection. Note: no simple cord continuation.
+
 ```
 [unpack f f f f f f f f f f f] 
 *|*
 *|*
 [pack f f f f f f f f]
 ```   
+
 ![example01](pddoc/doc/img/example05.png)
 
 #### options
@@ -359,8 +393,8 @@ Number of **"."** specifies inlet index
 
 [mtof {w=40}]
 ```
-![example01](pddoc/doc/img/example06.png)
 
+![example01](pddoc/doc/img/example06.png)
 
 ##### object inlets
 
@@ -373,6 +407,7 @@ Number of **"."** specifies inlet index
 
 [uknown object {i=6~4,w=30}] /*6 sound inlets, 4 control inlets*/
 ```
+
 ![example01](pddoc/doc/img/example07.png)
 
 ##### object outlets
@@ -386,6 +421,21 @@ Number of **"."** specifies inlet index
 
 [uknown object {o=6~4,w=30}] /*6 sound outlets, 4 control outlets*/
 ```
+
+![example01](pddoc/doc/img/example08.png)
+
+##### array params
+
+```
+[array size=400 save=1]        /*400 elements, save-in-patch flag: 1*/
+
+[array w=400 h=200]            /*width: 400, height: 200*/
+
+[array yr=-20..300]            /*y-value range: from -20 to 300*/
+
+[array style=line|point|curve] /*array draw style*/
+```
+
 ![example01](pddoc/doc/img/example08.png)
 
 ##### object aliases
@@ -394,5 +444,6 @@ Number of **"."** specifies inlet index
 [unknown object #a]
 #a arg0 arg1 arg2 etc...
 ```
+
 ![example01](pddoc/doc/img/example09.png)
 

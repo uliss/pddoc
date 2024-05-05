@@ -436,8 +436,6 @@ XML file for category:
 [array style=line|point|curve] /*array draw style*/
 ```
 
-![example01](pddoc/doc/img/example08.png)
-
 ##### object aliases
 
 ```

@@ -37,7 +37,7 @@ class BaseObject(object):
     def brect(self):
         return self.x, self.y, self.width, self.height
 
-    def move_by(self, x, y):
+    def move_by(self, x: int, y: int):
         self.x += x
         self.y += y
 
@@ -102,6 +102,10 @@ class BaseObject(object):
         return self._height
 
     def set_height(self, h: float):
+        from pddoc.pd.array import Array
+        if isinstance(self, Array):
+            print("[{}] set height: {}".format(self.__class__, h))
+
         self._height = int(h)
 
     def get_width(self) -> int:
@@ -136,3 +140,6 @@ class BaseObject(object):
     @id.setter
     def id(self, oid):
         self._id = int(oid)
+
+    def is_fixed_size(self):
+        return False

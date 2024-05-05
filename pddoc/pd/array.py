@@ -24,6 +24,8 @@ from .obj import PdObject
 
 __author__ = 'Serge Poltavski'
 
+from ..pdpainter import PdPainter
+
 
 class Array(PdObject):
     STYLE_POINTS, STYLE_LINES, STYLE_CURVE = (1, 0, 2)
@@ -90,7 +92,7 @@ class Array(PdObject):
         assert len(atoms) == 4 or len(atoms) == 6
         return Array(atoms[0], int(atoms[1]), int(atoms[3]))
 
-    def draw(self, painter):
+    def draw(self, painter: PdPainter):
         painter.draw_rect(*self.brect())
         painter.draw_text(self.x, self.y - 5, self.name)
 
@@ -115,3 +117,6 @@ class Array(PdObject):
 
     def outlets(self):
         return []
+
+    def is_fixed_size(self):
+        return True

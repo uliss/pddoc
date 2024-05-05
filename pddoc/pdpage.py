@@ -49,9 +49,8 @@ class PdPageStyle(object):
 
 
 class PdPage(object):
-    brect_calc = BRectCalculator()
-
     def __init__(self, title: str, width: int = 700, height: int = 500):
+        self._brect_calc = BRectCalculator()
         self._title = title.replace(' ', '_')
         self._width = int(width)
         self._height = int(height)
@@ -85,9 +84,18 @@ class PdPage(object):
                                width=self._width - (PdPageStyle.HRULE_LEFT_MARGIN + PdPageStyle.HRULE_RIGHT_MARGIN),
                                color=PdPageStyle.HRULE_COLOR)
 
+    def brect_string(self, txt: str, font_size: int):
+        return self._brect_calc.string_brect(txt, font_size)
+
+    def brect_box(self, txt: str):
+        return self._brect_calc.box_brect(txt)
+
+    def brect_obj(self, obj: PdObject):
+        return self._brect_calc.object_brect(obj)
+
     def make_label(self, x: int, y: int, txt: str, font_size,
                    **kwargs) -> GCanvas:
-        w, h = self.brect_calc.string_brect(txt, font_size)[2:]
+        w, h = self.brect_string(txt, font_size)[2:]
 
         cnv = GCanvas(x, y, width=kwargs.get('width', w + 10), height=kwargs.get('height', h * 1.6),
                       size=kwargs.get('size', 5),

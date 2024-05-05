@@ -35,7 +35,6 @@ class Array(PdObject):
         PdObject.__init__(self, name)
         self.width = 200
         self.height = 140
-        self._fixed_size = True
         self._size = size
         self._save = save
         self._data = [0] * self._size

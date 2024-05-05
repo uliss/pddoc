@@ -102,10 +102,6 @@ class BaseObject(object):
         return self._height
 
     def set_height(self, h: float):
-        from pddoc.pd.array import Array
-        if isinstance(self, Array):
-            print("[{}] set height: {}".format(self.__class__, h))
-
         self._height = int(h)
 
     def get_width(self) -> int:

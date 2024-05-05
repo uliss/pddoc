@@ -18,14 +18,14 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 from __future__ import print_function
-from pddoc.pd.obj import PdObject
+
 from pddoc.cairopainter import CairoPainter
+from pddoc.pd.obj import PdObject
 
 
 class UIBase(PdObject):
-    def __init__(self, name, x, y, **kwargs):
+    def __init__(self, name: str, x: int, y: int, **kwargs):
         PdObject.__init__(self, name, x, y, 100, 25, [])
-        self._fixed_size = True
         self._properties = kwargs
         self.parse_props()
 
@@ -70,6 +70,8 @@ class UIBase(PdObject):
         assert isinstance(painter, CairoPainter)
         pass
 
+    def is_fixed_size(self):
+        return True
+
     def set_bg_color(self, color):
         self.set_property('@background_color', ' '.join(map(lambda c: str(c), color.rgb_float())))
-

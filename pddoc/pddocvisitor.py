@@ -504,14 +504,14 @@ class PdDocVisitor(DocObjectVisitor):
             else:
                 mobj = make_by_name(title)
 
-            _, _, w, h = self._pp.brect_calc.object_brect(mobj)
+            _, _, w, h = self._pp.brect_obj(mobj)
             x = (lbl.width - w) - 20
             y = int(round((lbl.height - h) / 2))
             mobj.x = x
             mobj.y = y
             self._pp.append_object(mobj)
 
-            _, _, w, _ = self._pp.brect_calc.box_brect("pd aliases")
+            _, _, w, _ = self._pp.brect_box("pd aliases")
             pd.x = (x - (w + 20))
             pd.y = y
         else:

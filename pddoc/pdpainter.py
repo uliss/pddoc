@@ -59,14 +59,14 @@ class PdPainter(object):
     def draw_outlets(self, outlets, x: int, y: int, width: int):
         print("Draw outlets:", outlets)
 
-    def draw_circle(self, x: int, y: int, width, **kwargs):
+    def draw_circle(self, x: float, y: float, width: float, **kwargs):
         print("Draw circle")
 
-    def draw_arc(self, x, y, radius, start_angle, end_angle, **kwargs):
+    def draw_arc(self, x: float, y: float, radius: float, start_angle: float, end_angle: float, **kwargs):
         print("Draw arc")
 
-    def draw_line(self, x0, y0, x1, y1, **kwargs):
+    def draw_line(self, x0: float, y0: float, x1: float, y1: float, **kwargs):
         print("Draw line")
 
-    def draw_rect(self, x, y, w, h, **kwargs):
+    def draw_rect(self, x: float, y: float, w: float, h: float, **kwargs):
         print("Draw rect")

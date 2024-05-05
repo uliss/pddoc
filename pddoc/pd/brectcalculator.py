@@ -52,8 +52,8 @@ class BRectCalculator(AbstractVisitor):
         return left, top, right - left, bottom - top
 
     def object_brect(self, obj: PdObject):
-        # if obj.fixed_size:
-        #     return int(obj.x), obj.y, obj.width, obj.height
+        if obj.is_fixed_size():
+            return obj.x, obj.y, obj.width, obj.height
 
         if obj.fixed_width:
             lines = textwrap.wrap(obj.to_string().ljust(obj.fixed_width, "."), obj.fixed_width)

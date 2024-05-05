@@ -22,6 +22,7 @@ __author__ = 'Serge Poltavski'
 from unittest import TestCase
 
 from pddoc.cairopainter import CairoPainter
+from pddoc.pd.array import Array
 from pddoc.pd.obj import PdObject
 from pddoc.pd.objetcbrectvisitor import ObjectBRectVisitor
 from pddoc.pd.parser import Parser
@@ -40,6 +41,14 @@ class TestObjectBRectVisitor(TestCase):
         ov.visit_object(pdo)
         self.assertEqual(ov.brect(), (0, 0, 36, 18))
         self.assertFalse(pdo.is_null())
+
+    def test_visit_array(self):
+        ov = ObjectBRectVisitor()
+        arr = Array("array", 100, 0)
+        arr.width = 1000
+        arr.height = 2
+        ov.visit_object(arr)
+        self.assertEqual(ov.brect(), (0, 0, 1000, 2))
 
     def test_visit_canvas(self):
         p = Parser()

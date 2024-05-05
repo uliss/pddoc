@@ -25,6 +25,7 @@ from pddoc.pd import factory
 from pddoc.pd.pdexporter import PdExporter
 from pddoc.txt import Parser, Node
 from .nologging import NoLogging
+from ..pd.array import Array
 from ..pd.canvas import Canvas
 from ..pd.obj import PdObject
 
@@ -44,6 +45,25 @@ class TestTxtParser(TestCase):
 
         self.p.parse('[dac~ 1 2 3]')
         self.assertEqual(self.p.tokens[1].type, 'OBJECT')
+
+    def test_parse_array(self):
+        self.p.parse('[array NAME]')
+        self.assertEqual(self.p.tokens[0].type, 'OBJECT')
+        self.assertEqual(len(self.p.nodes), 1)
+        self.assertTrue(isinstance(self.p.nodes[0].pd_object, Array))
+        self.assertEqual(self.p.nodes[0].pd_object.x, 20)
+        self.assertEqual(self.p.nodes[0].pd_object.size(), 100)
+        self.assertEqual(self.p.nodes[0].pd_object.width, 200)
+        self.assertEqual(self.p.nodes[0].pd_object.height, 140)
+
+        self.p.nodes.clear()
+        self.p.parse('[array NAME w=300 h=20]')
+        self.assertEqual(self.p.tokens[0].type, 'OBJECT')
+        self.assertEqual(len(self.p.nodes), 1)
+        self.assertTrue(isinstance(self.p.nodes[0].pd_object, Array))
+        self.assertEqual(self.p.nodes[0].pd_object.x, 20)
+        self.assertEqual(self.p.nodes[0].pd_object.width, 300)
+        self.assertEqual(self.p.nodes[0].pd_object.height, 20)
 
     def test_parse_obj_id(self):
         self.p.parse('#a 1 2 3 @p 123')

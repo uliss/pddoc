@@ -20,6 +20,8 @@
 
 __author__ = 'Serge Poltavski'
 
+from typing import Optional
+
 from .abstractvisitor import AbstractVisitor
 from .brectcalculator import BRectCalculator
 from .canvas import Canvas
@@ -29,7 +31,7 @@ from .obj import PdObject
 
 
 class ObjectBRectVisitor(AbstractVisitor):
-    brect_calc = BRectCalculator()
+    _brect_calc = BRectCalculator()
 
     def __init__(self):
         self._left = None
@@ -37,8 +39,12 @@ class ObjectBRectVisitor(AbstractVisitor):
         self._top = None
         self._bottom = None
 
-    def add_brect(self, brect):
-        assert isinstance(brect, tuple)
+    @property
+    def brect_calc(self):
+        ObjectBRectVisitor._brect_calc.clear()
+        return ObjectBRectVisitor._brect_calc
+
+    def add_brect(self, brect: tuple[float, float, float, float]):
         x, y, w, h = brect
         if self._left:
             self._left = min(self._left, x)
@@ -66,7 +72,7 @@ class ObjectBRectVisitor(AbstractVisitor):
         self._top = None
         self._bottom = None
 
-    def brect(self):
+    def brect(self) -> Optional[tuple[float, float, float, float]]:
         if self._left is None \
                 or self._right is None \
                 or self._top is None \
@@ -78,57 +84,51 @@ class ObjectBRectVisitor(AbstractVisitor):
     def visit_connection(self, conn):
         pass
 
-    def visit_comment(self, comment):
-        assert isinstance(comment, Comment)
+    def visit_comment(self, comment: Comment):
         if not comment.width or not comment.height:
-            br = ObjectBRectVisitor.brect_calc.comment_brect(comment)
+            br = self.brect_calc.comment_brect(comment)
             comment.set_width(br[2])
             comment.set_height(br[3])
 
         self.add_brect(comment.brect())
 
-    def visit_object(self, obj):
-        assert isinstance(obj, PdObject)
+    def visit_object(self, obj: PdObject):
         if not obj.width or not obj.height:
-            br = ObjectBRectVisitor.brect_calc.object_brect(obj)
+            br = self.brect_calc.object_brect(obj)
             obj.set_width(br[2])
             obj.set_height(br[3])
 
         self.add_brect(obj.brect())
 
-    def visit_message(self, msg):
-        assert isinstance(msg, Message)
+    def visit_message(self, msg: Message):
         if not msg.width or not msg.height:
-            br = ObjectBRectVisitor.brect_calc.message_brect(msg)
+            br = self.brect_calc.message_brect(msg)
             msg.set_width(br[2])
             msg.set_height(br[3])
 
         self.add_brect(msg.brect())
 
-    def skip_children(self, cnv):
-        assert isinstance(cnv, Canvas)
-
+    def skip_children(self, cnv: Canvas):
         if cnv.type != Canvas.TYPE_WINDOW:
             return True
 
     def skip_connection(self, conn):
         return True
 
-    def visit_canvas_begin(self, canvas):
-        assert isinstance(canvas, Canvas)
+    def visit_canvas_begin(self, canvas: Canvas):
         if canvas.type != Canvas.TYPE_SUBPATCH:
             return
 
         # subpatch only
         # if not canvas.width or not canvas.height:
-        br = ObjectBRectVisitor.brect_calc.subpatch_brect(canvas)
+        br = self.brect_calc.subpatch_brect(canvas)
         canvas.set_width(br[2])
         canvas.set_height(br[3])
 
         self.add_brect(canvas.brect())
 
-    def visit_canvas_end(self, canvas):
-        assert isinstance(canvas, Canvas)
+    def visit_canvas_end(self, canvas: Canvas):
+        pass
 
     def visit_core_gui(self, gui):
         self.add_brect(gui.brect())

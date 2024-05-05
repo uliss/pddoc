@@ -113,9 +113,10 @@ class PdObject(BaseObject):
     def brect_calc():
         from .brectcalculator import BRectCalculator
 
-        if not PdObject._brect_calc:
+        if PdObject._brect_calc is None:
             PdObject._brect_calc = BRectCalculator()
 
+        PdObject._brect_calc.clear()
         return PdObject._brect_calc
 
     @classmethod

@@ -202,15 +202,15 @@ class DocObjectVisitor(IDocObjectVisitor):
         br_calc = cnv.brect_calc()
         cnv.traverse(br_calc)
         bbox = br_calc.brect()
-        wd = bbox[2] + Parser.X_PAD * 4
-        ht = bbox[3] + Parser.Y_PAD * 4
+        wd = bbox[2] + p.X_PAD * 4
+        ht = bbox[3] + p.Y_PAD * 4
         cnv.height = ht
         cnv.width = wd
         pd_exporter = PdExporter()
         cnv.traverse(pd_exporter)
 
         if pdascii.id() != 'main':
-            pd_name_template = "{0}.{1}.pd".format(self.name, pdascii.id())
+            pd_name_template = "{0}-{1}.pd".format(self.name, pdascii.id())
             pd_exporter.save(pd_name_template)
 
         return cnv

@@ -90,14 +90,17 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="MouseEventClickType">
+    <xs:simpleType name="MouseEventInfo">
         <xs:restriction base="xs:string">
             <xs:enumeration value="left-click"/>
             <xs:enumeration value="right-click"/>
             <xs:enumeration value="middle-click"/>
             <xs:enumeration value="double-click"/>
             <xs:enumeration value="drag"/>
+            <xs:enumeration value="move"/>
             <xs:enumeration value="wheel"/>
+            <xs:enumeration value="drop-file"/>
+            <xs:enumeration value="drop-text"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -244,14 +247,15 @@
 
     <xs:complexType name="AliasesElementType">
         <xs:sequence>
-            <xs:element name="alias" minOccurs="1" maxOccurs="unbounded" type="AliasElementType"/>
+            <xs:element name="alias" maxOccurs="unbounded" type="AliasElementType"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="AliasElementType">
          <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="view" type="ObjectCategoryView" use="optional" default="object"/>
+                <xs:attribute name="view" type="ObjectCategoryView" default="object"/>
+                <xs:attribute name="deprecated" type="xs:boolean" default="false"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -265,7 +269,7 @@
     <xs:complexType name="SeeElementType">
          <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="view" type="ObjectCategoryView" use="optional" default="object"/>
+                <xs:attribute name="view" type="ObjectCategoryView" default="object"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -276,7 +280,7 @@
             <xs:element name="pdinclude" type="PdIncludeType" minOccurs="0"/>
             <xs:element name="pdascii" type="PdAsciiType" minOccurs="0"/>
         </xs:sequence>
-        <xs:attribute name="name" use="optional" type="xs:string" default="main"/>
+        <xs:attribute name="name" type="xs:string" default="main"/>
     </xs:complexType>
 
     <xs:simpleType name="PdAttrSize">
@@ -293,11 +297,11 @@
     <xs:complexType name="PdAsciiType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="x-pad" use="optional" type="xs:unsignedShort" default="20"/>
-                <xs:attribute name="y-pad" use="optional" type="xs:unsignedShort" default="20"/>
-                <xs:attribute name="x-space" use="optional" type="xs:float" default="1.2"/>
-                <xs:attribute name="y-space" use="optional" type="xs:float" default="1.2"/>
-                <xs:attribute name="id" use="optional" type="xs:string" default="main"/>
+                <xs:attribute name="x-pad" type="xs:unsignedShort" default="20"/>
+                <xs:attribute name="y-pad" type="xs:unsignedShort" default="20"/>
+                <xs:attribute name="x-space" type="xs:float" default="1.2"/>
+                <xs:attribute name="y-space" type="xs:float" default="1.2"/>
+                <xs:attribute name="id" type="xs:string" default="main"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -305,15 +309,15 @@
     <xs:complexType name="PdExampleType">
         <xs:sequence>
             <xs:choice>
-                <xs:element name="col" minOccurs="0" maxOccurs="1" type="LayoutCol"/>
-                <xs:element name="row" minOccurs="0" maxOccurs="1" type="LayoutRow"/>
+                <xs:element name="col" minOccurs="0" type="LayoutCol"/>
+                <xs:element name="row" minOccurs="0" type="LayoutRow"/>
             </xs:choice>
             <xs:element name="pdconnect" type="PdConnectType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="title" type="xs:string" use="optional"/>
+        <xs:attribute name="title" type="xs:string"/>
         <xs:attribute name="width" type="xs:unsignedShort"/>
-        <xs:attribute name="height" use="optional" type="xs:unsignedShort"/>
-        <xs:attribute name="size" use="optional" type="PdAttrSize"/>
+        <xs:attribute name="height" type="xs:unsignedShort"/>
+        <xs:attribute name="size" type="PdAttrSize"/>
     </xs:complexType>
 
     <xs:complexType name="LayoutCol">
@@ -349,30 +353,30 @@
         <xs:sequence>
             <xs:element name="inlet" minOccurs="0" maxOccurs="unbounded" type="InletElementType"/>
         </xs:sequence>
-        <xs:attribute name="dynamic" use="optional" type="xs:boolean" default="false"/>
+        <xs:attribute name="dynamic" type="xs:boolean" default="false"/>
     </xs:complexType>
 
     <xs:complexType name="OutletsElementType">
         <xs:sequence>
             <xs:element name="outlet" minOccurs="0" maxOccurs="unbounded" type="OutletElementType"/>
         </xs:sequence>
-        <xs:attribute name="dynamic" use="optional" type="xs:boolean" default="false"/>
+        <xs:attribute name="dynamic" type="xs:boolean" default="false"/>
     </xs:complexType>
 
     <xs:complexType name="InletElementType">
         <xs:sequence>
             <xs:element name="xinfo" type="InletInfoType" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
-        <xs:attribute name="type" use="optional" type="XletType" default="control"/>
-        <xs:attribute name="number" use="optional" type="XletNumber" default=""/>
+        <xs:attribute name="type" type="XletType" default="control"/>
+        <xs:attribute name="number" type="XletNumber" default=""/>
     </xs:complexType>
 
     <xs:complexType name="InletInfoType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="on" use="optional" type="ControlDataType"/>
-                <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
-                <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
+                <xs:attribute name="on" type="ControlDataType"/>
+                <xs:attribute name="minvalue" type="FloatNumberExt"/>
+                <xs:attribute name="maxvalue" type="FloatNumberExt"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -380,10 +384,10 @@
     <xs:complexType name="OutletElementType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="type" use="optional" type="XletType" default="control"/>
-                <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
-                <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
-                <xs:attribute name="number" use="optional" type="XletNumber" default=""/>
+                <xs:attribute name="type" type="XletType" default="control"/>
+                <xs:attribute name="minvalue" type="FloatNumberExt"/>
+                <xs:attribute name="maxvalue" type="FloatNumberExt"/>
+                <xs:attribute name="number" type="XletNumber" default=""/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -398,7 +402,7 @@
         <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attribute name="editmode" use="required" type="xs:boolean"/>
-                <xs:attribute name="type" use="required" type="MouseEventClickType"/>
+                <xs:attribute name="type" use="required" type="MouseEventInfo"/>
                 <xs:attribute name="keys" type="xs:string"/>
             </xs:extension>
         </xs:simpleContent>
@@ -428,11 +432,11 @@
             <xs:extension base="xs:string">
                 <xs:attribute name="name" use="required" type="xs:string"/>
                 <xs:attribute name="type" use="required" type="ArgumentDataType"/>
-                <xs:attribute name="units" use="optional" type="UnitDataTypeEnum"/>
-                <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
-                <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
-                <xs:attribute name="enum" use="optional" type="xs:string"/>
-                <xs:attribute name="required" use="optional" type="xs:boolean"/>
+                <xs:attribute name="units" type="UnitDataTypeEnum"/>
+                <xs:attribute name="minvalue" type="FloatNumberExt"/>
+                <xs:attribute name="maxvalue" type="FloatNumberExt"/>
+                <xs:attribute name="enum" type="xs:string"/>
+                <xs:attribute name="required" type="xs:boolean"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -440,14 +444,14 @@
     <xs:complexType name="MethodArgumentElementType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="name" use="optional" type="xs:string"/>
+                <xs:attribute name="name" type="xs:string"/>
                 <xs:attribute name="type" use="required" type="ArgumentDataType"/>
-                <xs:attribute name="units" use="optional" type="UnitDataTypeEnum"/>
-                <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
-                <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
-                <xs:attribute name="default" use="optional" type="xs:string"/>
-                <xs:attribute name="enum" use="optional" type="xs:string"/>
-                <xs:attribute name="required" use="optional" type="xs:boolean"/>
+                <xs:attribute name="units" type="UnitDataTypeEnum"/>
+                <xs:attribute name="minvalue" type="FloatNumberExt"/>
+                <xs:attribute name="maxvalue" type="FloatNumberExt"/>
+                <xs:attribute name="default" type="xs:string"/>
+                <xs:attribute name="enum" type="xs:string"/>
+                <xs:attribute name="required" type="xs:boolean"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -457,26 +461,26 @@
             <xs:element name="param" type="MethodArgumentElementType"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string"/>
-        <xs:attribute name="internal" use="optional" type="xs:boolean"/>
-        <xs:attribute name="example" use="optional" type="xs:boolean"/>
-        <xs:attribute name="category" use="optional" type="CategoryType"/>
+        <xs:attribute name="internal" type="xs:boolean"/>
+        <xs:attribute name="example" type="xs:boolean"/>
+        <xs:attribute name="category" type="CategoryType"/>
     </xs:complexType>
 
     <xs:complexType name="PropertyElementType" mixed="true">
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="type" type="PropertyDataType" use="required"/>
-        <xs:attribute name="access" type="PropAccessType" use="optional"  default="readwrite"/>
-        <xs:attribute name="units" use="optional" type="UnitDataTypeEnum"/>
-        <xs:attribute name="minvalue" use="optional" type="FloatNumberExt"/>
-        <xs:attribute name="maxvalue" use="optional" type="FloatNumberExt"/>
-        <xs:attribute name="default" use="optional" type="xs:string"/>
-        <xs:attribute name="enum" use="optional" type="xs:string"/>
-        <xs:attribute name="category" use="optional" type="CategoryType"/>
+        <xs:attribute name="access" type="PropAccessType" default="readwrite"/>
+        <xs:attribute name="units" type="UnitDataTypeEnum"/>
+        <xs:attribute name="minvalue" type="FloatNumberExt"/>
+        <xs:attribute name="maxvalue" type="FloatNumberExt"/>
+        <xs:attribute name="default" type="xs:string"/>
+        <xs:attribute name="enum" type="xs:string"/>
+        <xs:attribute name="category" type="CategoryType"/>
     </xs:complexType>
 
     <xs:complexType name="PropertyRefElementType" mixed="true">
         <xs:attribute name="name" type="xs:string" use="required"/>
-        <xs:attribute name="data" type="xs:string" use="optional"/>
+        <xs:attribute name="data" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="InfoElementType">
@@ -492,14 +496,14 @@
 
     <xs:complexType name="MarkupItemize">
         <xs:sequence>
-            <xs:element name="item" minOccurs="1" maxOccurs="unbounded" type="MarkupItem"/>
+            <xs:element name="item" maxOccurs="unbounded" type="MarkupItem"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="MarkupText">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                 <xs:attribute name="indent" type="xs:integer" use="optional"/>
+                 <xs:attribute name="indent" type="xs:integer"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -533,15 +537,15 @@
         </xs:sequence>
         <xs:attribute name="id" type="xs:ID" use="required"/>
         <xs:attribute name="name" type="ObjectNameType" use="required"/>
-        <xs:attribute name="args" type="xs:string" use="optional"/>
-        <xs:attribute name="comment" type="xs:string" use="optional"/>
-        <xs:attribute name="highlight" type="xs:boolean" use="optional"/>
-        <xs:attribute name="bg_color" type="HexColor" use="optional"/>
-        <xs:attribute name="offset" type="xs:decimal" use="optional"/>
-        <xs:attribute name="value" type="xs:string" use="optional"/>
-        <xs:attribute name="digits" type="xs:unsignedByte" use="optional"/>
-        <xs:attribute name="label" type="xs:string" use="optional"/>
-        <xs:attribute name="label_pos" type="LabelPos" use="optional"/>
+        <xs:attribute name="args" type="xs:string"/>
+        <xs:attribute name="comment" type="xs:string"/>
+        <xs:attribute name="highlight" type="xs:boolean"/>
+        <xs:attribute name="bg_color" type="HexColor"/>
+        <xs:attribute name="offset" type="xs:decimal"/>
+        <xs:attribute name="value" type="xs:string"/>
+        <xs:attribute name="digits" type="xs:unsignedByte"/>
+        <xs:attribute name="label" type="xs:string"/>
+        <xs:attribute name="label_pos" type="LabelPos"/>
     </xs:complexType>
 
     <xs:complexType name="PdXletElementType">

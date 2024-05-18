@@ -19,7 +19,7 @@
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.docobject import DocPar, DocA, DocWiki, DocArgument, DocArguments, DocProperties, DocOutlet
+from pddoc.docobject import DocPar, DocA, DocWiki, DocArgument, DocArguments, DocProperties, DocOutlet, DocProperty
 from pddoc.pdpage import PdPage
 from pddoc.pdpage import PdPageStyle
 from .docobjectvisitor import DocObjectVisitor
@@ -141,7 +141,10 @@ class PdDocVisitor(DocObjectVisitor):
             'middle-click': 'Middle-click',
             'double-click': 'Double-click',
             'drag': 'Mouse-drag',
-            'wheel': 'Mouse-wheel'
+            'move': 'Mouse-move',
+            'wheel': 'Mouse-wheel',
+            'drop-file': 'Drop-file',
+            'drop-text': 'Drop-text',
         }
 
         ct = e.type()
@@ -322,7 +325,7 @@ class PdDocVisitor(DocObjectVisitor):
         if p.is_empty():
             self.current_yoff += 10
 
-    def property_begin(self, m):
+    def property_begin(self, m: DocProperty):
         props = list()
 
         # add message with property name
@@ -346,7 +349,11 @@ class PdDocVisitor(DocObjectVisitor):
             else:
                 prop_descr += "(readonly) Get "
 
-        prop_descr += m.text()
+        if m.is_alias():
+            txt = m.text()
+            prop_descr += txt[0].upper() + txt[1:]
+        else:
+            prop_descr += m.text()
 
         if m.type() and not (m.is_alias() or m.is_flag()):
             prop_descr = "{0} Type: {1}. ".format(add_text_dot(prop_descr), m.type())

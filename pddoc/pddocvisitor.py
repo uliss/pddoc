@@ -19,7 +19,8 @@
 
 __author__ = 'Serge Poltavski'
 
-from pddoc.docobject import DocPar, DocA, DocWiki, DocArgument, DocArguments, DocProperties, DocOutlet, DocProperty
+from pddoc.docobject import DocPar, DocA, DocWiki, DocArgument, DocArguments, DocProperties, DocOutlet, DocProperty, \
+    DocMethod
 from pddoc.pdpage import PdPage
 from pddoc.pdpage import PdPageStyle
 from .docobjectvisitor import DocObjectVisitor
@@ -179,7 +180,7 @@ class PdDocVisitor(DocObjectVisitor):
         if m.is_empty():
             self.current_yoff += 10
 
-    def method_begin(self, m):
+    def method_begin(self, m: DocMethod):
         msg_atoms = [m.name()]
         # for i in m.items():
         # msg_atoms.append(i.param_name())
@@ -194,7 +195,12 @@ class PdDocVisitor(DocObjectVisitor):
         if len(m.items()) > 0:
             info_text += " Arguments are: "
 
-        info = [self._pp.add_txt(info_text, self.PD_XLET_INFO_XPOS, self.current_yoff)]
+        x = self.PD_XLET_INFO_XPOS
+        # fix x-offset for long method names
+        if len(m.name()) > 18:
+            x += (len(m.name()) - 18) * 10
+
+        info = [self._pp.add_txt(info_text, x, self.current_yoff)]
 
         # add method arguments
         for i in m.items():

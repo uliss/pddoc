@@ -20,10 +20,23 @@
 
 __author__ = 'Serge Poltavski'
 
-import imp
+import importlib
+import importlib.machinery
+import importlib.util
 import logging
 
 from .xletdatabase import XletDatabase
+
+
+def load_source(modname, filename):
+    loader = importlib.machinery.SourceFileLoader(modname, filename)
+    spec = importlib.util.spec_from_file_location(modname, filename, loader=loader)
+    module = importlib.util.module_from_spec(spec)
+    # The module is always executed and not cached in sys.modules.
+    # Uncomment the following line to cache the module.
+    # sys.modules[module.__name__] = module
+    loader.exec_module(module)
+    return module
 
 
 class XletCalcDatabase(XletDatabase):
@@ -36,7 +49,7 @@ class XletCalcDatabase(XletDatabase):
         self._module = None
 
         try:
-            self._module = imp.load_source("plugin{0:d}".format(XletCalcDatabase._counter), path)
+            self._module = load_source("plugin{0:d}".format(XletCalcDatabase._counter), path)
         except IOError as e:
             logging.error("Plugin not found: {0:s}".format(path))
             raise e

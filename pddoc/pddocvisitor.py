@@ -490,7 +490,7 @@ class PdDocVisitor(DocObjectVisitor):
 
     def add_header_example_object(self, lbl: GCanvas, title: str):
         seq = []
-        alias_objects = list(filter(lambda n: n["name"] != title, self._aliases))
+        alias_objects = list(filter(lambda n: n["name"] != title and not n.get("deprecated", False), self._aliases))
 
         for a in alias_objects:
             if 'is_link' in a and a['is_link'] is True:
@@ -498,8 +498,11 @@ class PdDocVisitor(DocObjectVisitor):
             else:
                 seq.append(make_by_name(a['name']))
 
+        # calc total aliases name length to prevent overflow
+        total_alias_strlen = sum([len(a['name']) for a in alias_objects])
+
         # too many aliases - show them in subpatch
-        if len(alias_objects) > 3:
+        if len(alias_objects) > 3 or total_alias_strlen > 32:
             pd = self._pp.make_subpatch('aliases', 0, 0, 250, 400)
 
             self._pp.place_in_col(seq, 40, 20)

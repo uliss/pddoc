@@ -87,8 +87,8 @@ def main():
             br_calc = cnv.brect_calc()
             cnv.traverse(br_calc)
             bbox = br_calc.brect()
-            wd = bbox[2] + Parser.X_PAD * 2
-            ht = bbox[3] + Parser.Y_PAD * 2
+            wd = bbox[2] + p.X_PAD * 2
+            ht = bbox[3] + p.Y_PAD * 2
 
         painter = CairoPainter(wd, ht, output, fmt)
         cnv.draw(painter)
@@ -97,8 +97,8 @@ def main():
             br_calc = cnv.brect_calc()
             cnv.traverse(br_calc)
             bbox = br_calc.brect()
-            cnv.width = bbox[0] + bbox[2] + Parser.X_PAD * 2
-            cnv.height = bbox[1] + bbox[3] + Parser.Y_PAD
+            cnv.width = bbox[0] + bbox[2] + p.X_PAD * 2
+            cnv.height = bbox[1] + bbox[3] + p.Y_PAD
 
         pd_exporter = PdExporter()
         cnv.traverse(pd_exporter)

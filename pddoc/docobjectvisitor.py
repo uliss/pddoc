@@ -47,7 +47,7 @@ class DocObjectVisitor(IDocObjectVisitor):
         self._category = ""
         self._version = ""
         self._license = {}
-        self._aliases = []
+        self._aliases: list[dict] = []
         self._see_also = []
         self._examples = []
         self._authors = []
@@ -80,7 +80,8 @@ class DocObjectVisitor(IDocObjectVisitor):
         element = {
             'name': a.text(),
             'image': self.image_pdobject_fname(a.text()),
-            'is_link': a.is_link()
+            'is_link': a.is_link(),
+            'deprecated': a.deprecated(),
         }
 
         self._aliases.append(element)
@@ -89,7 +90,8 @@ class DocObjectVisitor(IDocObjectVisitor):
         element = {
             'name': alias,
             'image': self.image_pdobject_fname(alias),
-            'is_link': False
+            'is_link': False,
+            'deprecated': False,
         }
         self._aliases.append(element)
 

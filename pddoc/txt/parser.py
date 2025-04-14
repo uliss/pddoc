@@ -47,6 +47,8 @@ class Node(object):
         self.multi_connect = None
         self.conn_multi = {}
         self.obj_line_index = -1
+        self.obj_ax = None
+        self.obj_ay = None;
 
         if self.tok and self.is_connection():
             # calc connection source outlet
@@ -140,6 +142,9 @@ class Node(object):
     def contains(self, char_pos: int) -> bool:
         return self.char_pos <= char_pos <= (self.char_pos + self.width)
 
+    def has_abs_pos(self):
+        return (self.obj_ax is not None) and (self.obj_ay is not None)
+
 
 class Parser(object):
     ALIASES = {
@@ -166,10 +171,10 @@ class Parser(object):
         self.Y_PAD = 20
         self.X_SPACE = 8
         self.Y_SPACE = 12
-        self.lines = []
-        self.lines_len = []
+        self.lines: list[str] = []
+        self.lines_len: list[int] = []
         self.tokens = []
-        self.nodes = []
+        self.nodes: list[Node] = []
         self.lexer = lexer()
 
     def clear(self):
@@ -384,6 +389,14 @@ class Parser(object):
                 all_atoms = txt.split(' ')
                 args = list(filter(lambda a: len(a) > 0 and (not a.startswith('#')), all_atoms))
 
+                # check options
+                opts = {}
+                for arg in args[:]:
+                    # no spaces allowed: {x=1,y=1,etc=...}
+                    if arg[0] == '{' and arg[-1] == '}':
+                        args.remove(arg)
+                        opts.update(parse_object_options(arg.replace('\\,', ',')))
+
                 # adding id arguments defined with '#id arg1 arg2...'
                 all_id = list(filter(lambda b: b.startswith("#"), all_atoms))
                 if len(all_id) > 0 and all_id[0][1:] in obj_args:
@@ -391,6 +404,7 @@ class Parser(object):
                     args += obj_args[all_id[0][1:]]
 
                 n.pd_object = Message(0, 0, args)
+                process_object_options(n, opts)
             elif n.type == 'COMMENT':
                 m = re.match(r_COMMENT, n.value)
                 txt = m.group(1).replace(';', ' \\;').replace(',', ' \\,')
@@ -500,8 +514,12 @@ class Parser(object):
     def layout_nodes(self):
         obj = filter(lambda x: x.is_object() and x.pd_object is not None, self.nodes)
         for n in obj:
-            n.pd_object.x = n.char_pos * self.X_SPACE + self.X_PAD
-            n.pd_object.y = n.line_pos * self.Y_SPACE + self.Y_PAD
+            if n.has_abs_pos():
+                n.pd_object.x = n.obj_ax
+                n.pd_object.y = n.obj_ay
+            else:
+                n.pd_object.x = n.char_pos * self.X_SPACE + self.X_PAD
+                n.pd_object.y = n.line_pos * self.Y_SPACE + self.Y_PAD
 
     def num_lines(self):
         return len(self.lines)
@@ -591,18 +609,22 @@ def parse_object_option(name: str, txt: str):
             res["out_ctl"] = int(opt_res.group(3))
 
         return res
+    elif name == 'ax':
+        return {'ax': int(txt)}
+    elif name == 'ay':
+        return {'ay': int(txt)}
     else:
         logging.warning(f"invalid object option: {txt}")
         return {}
 
 
-def parse_object_options(arg: list):
+def parse_object_options(arg: str) -> dict:
     res = {}
     arg_str = arg[1:-1]
     if len(arg_str) < 1:
         return res
 
-    re_opt = re.compile(r"(\w)=(.+)")
+    re_opt = re.compile(r"(\w{1,2})=(.+)")
 
     for opt in arg_str.split(","):
         res_opt = re.match(re_opt, opt)
@@ -628,3 +650,9 @@ def process_object_options(node: Node, opts: dict):
     if 'o' in opts:
         xout = opts.get('out_sig', 0) * [XLET_SOUND] + opts.get('out_ctl', 0) * [XLET_MESSAGE]
         node.pd_object.set_outlets(xout)
+
+    if 'ax' in opts:
+        node.obj_ax = int(opts['ax'])
+
+    if 'ay' in opts:
+        node.obj_ay = int(opts['ay'])

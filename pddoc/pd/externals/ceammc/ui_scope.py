@@ -17,8 +17,8 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-from pddoc.pd.externals.ceammc.ui_base import UIBase
 from pddoc.pd.constants import XLET_SOUND
+from pddoc.pd.externals.ceammc.ui_base import UIBase
 
 
 def create_by_name(name, args=None, **kwargs):
@@ -29,23 +29,23 @@ class UIScope(UIBase):
     @staticmethod
     def from_atoms(atoms):
         return UIScope(0, 0,
-                    size=atoms[1],
-                    min=atoms[3],
-                    max=atoms[4],
-                    log=atoms[5],
-                    init=atoms[6],
-                    send=atoms[7],
-                    receive=atoms[8],
-                    label=atoms[9],
-                    label_xoff=atoms[10],
-                    label_yoff=atoms[11],
-                    font_type=atoms[12],
-                    font_size=atoms[13],
-                    bg_color=atoms[14],
-                    fg_color=atoms[15],
-                    label_color=atoms[16],
-                    init_value=atoms[17],
-                    steady=atoms[18])
+                       size=atoms[1],
+                       min=atoms[3],
+                       max=atoms[4],
+                       log=atoms[5],
+                       init=atoms[6],
+                       send=atoms[7],
+                       receive=atoms[8],
+                       label=atoms[9],
+                       label_xoff=atoms[10],
+                       label_yoff=atoms[11],
+                       font_type=atoms[12],
+                       font_size=atoms[13],
+                       bg_color=atoms[14],
+                       fg_color=atoms[15],
+                       label_color=atoms[16],
+                       init_value=atoms[17],
+                       steady=atoms[18])
 
     def __init__(self, x, y, **kwargs):
         if '@size' not in kwargs:

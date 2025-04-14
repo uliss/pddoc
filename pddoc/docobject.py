@@ -494,13 +494,18 @@ class DocAlias(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
         self._ref_view = "object"
+        self._deprecated = False
 
     def from_xml(self, xmlobj):
         DocItem.from_xml(self, xmlobj)
         self._ref_view = xmlobj.get("view", "object")
+        self._deprecated = xmlobj.get("deprecated", False)
 
     def is_link(self):
         return self._ref_view == "link"
+    
+    def deprecated(self):
+        return self._deprecated
 
 
 class DocXlets(DocItem):

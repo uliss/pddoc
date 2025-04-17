@@ -19,18 +19,32 @@
 
 __author__ = 'Serge Poltavski'
 
+import logging
+
 
 class IDocObjectVisitor(object):
     def __init__(self):
         self._name = ""
+        self._lang: str = "en"
 
     @property
     def name(self):
         return self._name
 
+    @property
+    def lang(self):
+        return self._lang
+
     @name.setter
     def name(self, n: str):
         self._name = n
+
+    @lang.setter
+    def lang(self, lang: str):
+        if lang in ("en", "ru"):
+            self._lang = lang
+        else:
+            logging.error("Language is not supported: \"%s\"", lang)
 
     def a_begin(self, a):
         pass

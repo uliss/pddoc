@@ -199,10 +199,31 @@
         <xs:attribute name="type" type="ObjectTypeType" default="box"/>
     </xs:complexType>
 
+    <xs:simpleType name="TranslationLangAttr">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="en"/>
+            <xs:enumeration value="ru"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="TranslationType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="lang" type="TranslationLangAttr" default="en"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="DescriptionType">
+        <xs:sequence>
+            <xs:element name="tr" type="TranslationType" minOccurs="1" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="MetaElementType">
         <xs:all>
             <xs:element name="authors" type="AuthorsElementType"/>
-            <xs:element name="description"/>
+            <xs:element name="description" type="DescriptionType"/>
             <xs:element name="license" type="LicenseElementType"/>
             <xs:element name="library" type="xs:string"/>
             <xs:element name="contacts" type="xs:string" minOccurs="0"/>

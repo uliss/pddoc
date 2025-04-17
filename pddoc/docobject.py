@@ -77,7 +77,7 @@ class DocItem(object):
     def is_empty(self):
         return len(self._elements) == 0
 
-    def traverse(self, visitor):
+    def traverse(self, visitor: IDocObjectVisitor):
         assert isinstance(visitor, IDocObjectVisitor)
 
         try:
@@ -148,6 +148,21 @@ class DocMeta(DocItem):
 class DocDescription(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
+        self._tr: dict[str, str] = {}
+
+    def tr_value(self, lang: str):
+        if lang in self._tr:
+            return self._tr.get(lang)
+        else:
+            return self._text
+
+    def from_xml(self, xmlobj):
+        self.read_xml_data(xmlobj)
+        for tr in xmlobj.getchildren():
+            if tr.get("lang", "en") == "en":
+                self._text = tr.text
+
+            self._tr[tr.get("lang")] = tr.text
 
 
 class DocAuthors(DocItem):
@@ -503,7 +518,7 @@ class DocAlias(DocItem):
 
     def is_link(self):
         return self._ref_view == "link"
-    
+
     def deprecated(self):
         return self._deprecated
 

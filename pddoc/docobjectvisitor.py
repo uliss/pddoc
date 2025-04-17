@@ -105,7 +105,7 @@ class DocObjectVisitor(IDocObjectVisitor):
         self._keywords = k.keywords()
 
     def description_begin(self, d):
-        self._description = d.text()
+        self._description = d.tr_value(self.lang)
 
     def license_begin(self, l):
         self._license['url'] = l.url()
@@ -247,7 +247,7 @@ class DocObjectVisitor(IDocObjectVisitor):
 
         self._see_also.append(element)
 
-    def set_image_prefix(self, prefix):
+    def set_image_prefix(self, prefix: str):
         self._image_prefix = re.sub('[^a-zA-Z0-9~]', '', prefix)
 
     def image_prefix(self):
@@ -268,7 +268,7 @@ class DocObjectVisitor(IDocObjectVisitor):
     def set_search_dir(self, path):
         self._search_dir = path
 
-    def image_pdobject_fname(self, name):
+    def image_pdobject_fname(self, name: str):
         return os.path.join(self._image_output_dir,
                             "object_{0:s}.{1:s}".format(name, self._image_extension))
 
@@ -291,10 +291,10 @@ class DocObjectVisitor(IDocObjectVisitor):
                                                               self._image_extension))
         return cnt, path
 
-    def make_image_painter(self, w, h, fname):
+    def make_image_painter(self, w: int, h: int, fname: str):
         return None
 
-    def _pd_draw(self, w, h, fname):
+    def _pd_draw(self, w: int, h: int, fname: str):
         self.create_image_output_dir()
 
         painter = self.make_image_painter(w, h, fname)

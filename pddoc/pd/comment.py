@@ -20,8 +20,6 @@
 
 __author__ = 'Serge Poltavski'
 
-from typing import List
-
 from .abstractvisitor import AbstractVisitor
 from .baseobject import *
 from .obj import PdObject
@@ -29,7 +27,7 @@ from ..pdpainter import PdPainter
 
 
 class Comment(BaseObject):
-    def __init__(self, x: int, y: int, args: List[str], width: int = 0):
+    def __init__(self, x: int, y: int, args: list[str], width: int = 0):
         super(Comment, self).__init__("", x, y, 0, 0)
         self.args = []
         self._line_width = width

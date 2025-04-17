@@ -34,7 +34,7 @@ class BaseObject(object):
     def is_null(self):
         return not self.x and not self.y and not self.width and not self.height
 
-    def brect(self):
+    def brect(self) -> tuple[int, int, int, int]:
         return self.x, self.y, self.width, self.height
 
     def move_by(self, x: int, y: int):

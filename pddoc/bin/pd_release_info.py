@@ -34,12 +34,15 @@ from pddoc.pdpage import PdPage
 CLEAR_SPACES_RE = re.compile(r"\s+")
 
 TR_MAP = {
-    "New objects:": {
-        "ru": "Новые объекты:"
+    "New objects ({}):": {
+        "ru": "Новые объекты ({}):"
     },
     "Date: {}": {
         "ru": "Дата: {}"
-    }
+    },
+    "CEAMMC release: v{}": {
+        "ru": "CEAMMC версия: v{}"
+    },
 }
 
 
@@ -61,24 +64,25 @@ def tr(key: str, lang: str) -> str:
 
 def main():
     arg_parser = argparse.ArgumentParser(description='Create release info')
-    arg_parser.add_argument('--version', '-v', metavar='version', default='0.0', help='release version')
+    arg_parser.add_argument('--release', '-r', metavar='release', default='0.0', help='release version')
     arg_parser.add_argument('--lang', '-l', metavar='lang', default='en', choices=['en', 'ru'], help='output language')
     arg_parser.add_argument('--force', '-f', action='store_true', help='force to overwrite existing file')
     arg_parser.add_argument('libname', metavar='XMLFILE', help="library xml file")
-    arg_parser.add_argument('output', metavar='FNAME', help="Pd output patch file name")
+    arg_parser.add_argument('output', metavar='FNAME', help="Pd output name (without extension)")
 
     args = vars(arg_parser.parse_args())
-    output = args['output']
+    output_pd = args['output'] + ".pd"
+    output_txt = args['output'] + ".txt"
     libname = args['libname']
-    version = args['version']
+    version = args['release']
     lang = args['lang']
 
     if not os.path.isfile(libname) or not os.path.exists(libname):
         print(f"Error: pddoc library is not found: '{libname}'")
         exit(1)
 
-    if os.path.exists(output) and not args['force']:
-        print("Error: file already exists: '{0}'. Use --force flag to overwrite.".format(output))
+    if os.path.exists(output_pd) and not args['force']:
+        print("Error: file already exists: '{0}'. Use --force flag to overwrite.".format(output_pd))
         exit(1)
 
     xml = etree.parse(libname)
@@ -90,13 +94,16 @@ def main():
 
     left_margin = 20
     page = PdPage("obj", 600, 600)
-    title = PdObject(f"ui.label CEAMMC release: {version} @size 450 50", x=left_margin, y=20)
+    title = PdObject("ui.label {} @size 450 50".format(tr("CEAMMC release: v{}", lang).format(version)), x=left_margin,
+                     y=20)
     page.append_object(title)
     left_margin += 10
-    page.add_txt(tr("New objects:", lang), left_margin, 80)
     yoff = 120
     left_margin += 10
     descr_x = left_margin + 190
+    obj_count = 0
+
+    txt_content = ""
 
     for meta in pddoc.findall(".//object/meta"):
         since = meta.find("since")
@@ -122,12 +129,22 @@ def main():
         comment = page.add_txt(f"– {obj_descr}", descr_x, yoff, width=46)
         comment.calc_brect()
         yoff += comment.brect()[3] + 20
+        obj_count += 1
 
+        txt_content += f"[{obj}] – {obj_descr}\n"
+
+    txt_content = tr("New objects ({}):", lang).format(obj_count) + "\n" + txt_content
+    txt_content = tr("CEAMMC release: v{}", lang).format(version) + "\n" + txt_content
+
+    page.add_txt(tr("New objects ({}):", lang).format(obj_count), left_margin, 80)
     date = datetime.today().strftime('%Y-%m-%d')
     page.add_txt(tr("Date: {}", lang).format(date), left_margin, yoff, width=46)
 
-    with open(output, 'w') as f:
+    with open(output_pd, 'w') as f:
         f.write(page.to_string())
+
+    with open(output_txt, 'w') as f:
+        f.write(txt_content)
 
 
 if __name__ == '__main__':

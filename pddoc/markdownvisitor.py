@@ -18,7 +18,7 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 __author__ = 'Serge Poltavski'
- 
+
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 from .cairopainter import CairoPainter
@@ -39,10 +39,13 @@ class MarkdownVisitor(DocObjectVisitor):
         # template config
         if "EN" in locale:
             tmpl_path = "md_object.tmpl.md"
+            self.lang = locale.lower()
         elif "RU" in locale:
             tmpl_path = "md_object_ru.tmpl.md"
+            self.lang = locale.lower()
         else:
             tmpl_path = "md_object.tmpl.md"
+            self.lang = 'en'
 
         def ws(txt):
             if isinstance(txt, str):

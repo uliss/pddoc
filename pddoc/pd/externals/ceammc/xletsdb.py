@@ -21,7 +21,6 @@
 __author__ = 'Serge Poltavski'
 
 from pddoc.pd.constants import XLET_MESSAGE, XLET_SOUND
-from functools import reduce
 
 
 def find_prop_idx(args):
@@ -85,10 +84,6 @@ _objects = {
     "flow.sync": (
         lambda args: 2 if len(args) < 1 else int(args[0]) * [XLET_MESSAGE],
         lambda args: 2 if len(args) < 1 else int(args[0]) * [XLET_MESSAGE]
-    ),
-    "xdac~": (
-        lambda args: 2 if len(args) < 1 else reduce(lambda a, b: int(b) - int(a), args[0].split(':')) * [XLET_SOUND],
-        lambda args: []
     ),
     "hoa.2d.encoder~": (
         lambda args: 2 * [XLET_SOUND],

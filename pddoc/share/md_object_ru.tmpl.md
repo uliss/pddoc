@@ -1,3 +1,6 @@
+---
+layout: default_ru
+---
 [index](index.html) :: [{{category}}](category_{{category|urlencode}}.html)
 ---
 

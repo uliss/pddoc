@@ -59,19 +59,39 @@ def main():
             elem.text = elem.text.strip()
 
         if elem.tag == "pdascii":
-            elem.text = etree.CDATA("\n" + elem.text.strip() + "\n")
+            txt = elem.text.rstrip().lstrip("\n")
+            elem.text = etree.CDATA("\n" + txt + "\n")
 
-    # remove old comments
+    # remove old method comments
     for comment in obj.xpath('//object/methods/comment()'):
         comment.getparent().remove(comment)
 
+    # sort methods ny name
     for m in obj.iter("methods"):
         m[:] = sorted(m, key=lambda x: x.attrib["name"])
 
     # add new comments
     for m in obj.xpath('//object/methods/*'):
+        if m.attrib["name"].find("--") > 0 or m.attrib["name"].endswith('-'):
+            continue
+
         c = etree.Comment(' ' + m.attrib["name"] + ' ')
         m.addprevious(c)
+
+    # remove old property comments
+    for comment in obj.xpath('//object/properties/comment()'):
+        comment.getparent().remove(comment)
+
+    # sort properties by name
+    for prop in obj.iter("properties"):
+        prop[:] = sorted(prop, key=lambda x: x.get("name", ""))
+
+    # add new property comments
+    for m in obj.xpath('//object/properties/*'):
+        name = m.attrib.get("name")
+        if name is not None:
+            c = etree.Comment(f" {name} ")
+            m.addprevious(c)
 
     pddoc = etree.Element(pddoc.tag, version="1.0", nsmap={"xi": "http://www.w3.org/2001/XInclude"})
     pddoc.insert(0, obj)
@@ -79,7 +99,12 @@ def main():
     etree.indent(pddoc, space=" ", level=2)
 
     if args["in_place"]:
-        etree.ElementTree(pddoc).write(in_file, pretty_print=True, encoding="UTF-8", xml_declaration=True, method="xml")
+        etree.ElementTree(pddoc).write(in_file,
+                                       pretty_print=True,
+                                       encoding="UTF-8",
+                                       xml_declaration=False,
+                                       method="xml",
+                                       doctype='<?xml version="1.0" encoding="utf-8"?>')
     else:
         print(etree.tostring(pddoc, pretty_print=True, encoding="UTF-8", xml_declaration=True, method="xml").decode())
 

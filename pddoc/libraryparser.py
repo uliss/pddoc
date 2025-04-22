@@ -16,12 +16,32 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
+import logging
+import re
+
 import pkg_resources
 from lxml import etree
 
 from .pd.factory import make_by_name
 from .pd.obj import PdObject
 from .pdpage import PdPage
+
+
+def clear_spaces(txt: str) -> str:
+    return re.sub(r"\s+", " ", txt.replace("\n", " "))
+
+
+def find_translation(node, path: str, lang: str, default: str) -> str:
+    tr = node.find(f"{path}/tr[@lang='{lang}']")
+    if tr is None:
+        tr = node.find(f"{path}/tr[@lang='en']")
+        if tr is None:
+            tr = node.find(f"{path}")
+
+    if tr is not None:
+        return clear_spaces(tr.text)
+    else:
+        return default
 
 
 class LibraryParser(object):
@@ -42,9 +62,21 @@ class LibraryParser(object):
         self._lib_website = ""
         self._lib_contacts = ""
         self._lib_info = ""
+        self._lang = 'en'
         self._current_y = self.HEADER_HEIGHT + 10
         self._pd_cats = {}
         self._pp = PdPage("lib", self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
+
+    @property
+    def lang(self):
+        return self._lang
+
+    @lang.setter
+    def lang(self, lang: str):
+        if lang in ("en", "ru"):
+            self._lang = lang
+        else:
+            logging.error("Language is not supported: \"%s\"", lang)
 
     def lib_name(self):
         return self._lib_name
@@ -79,7 +111,7 @@ class LibraryParser(object):
         self.process_xml_category_entries(c)
 
     def process_xml_category_entries(self, c):
-        cat_name = c.get('name')
+        cat_name: str = c.get('name')
         for e in c.findall('entry'):
             self.add_object_description(e, cat_name)
 
@@ -107,12 +139,13 @@ class LibraryParser(object):
             self._lib_license = el.text
 
     def add_lib_description(self):
-        lib_descr = self._root.find("meta/library-info/description")
-        if lib_descr is not None:
-            descr = self._pp.add_txt(lib_descr.text, self.OBJECT_OFFSET, self._current_y)
+        lib_descr = find_translation(self._root, "meta/library-info/description", self.lang, "")
+
+        if len(lib_descr) > 0:
+            descr = self._pp.add_txt(lib_descr, self.OBJECT_OFFSET, self._current_y)
             self._current_y += descr.height + 10
 
-    def add_object_description(self, obj, cat_name):
+    def add_object_description(self, obj, cat_name: str):
         pdobj = make_by_name(obj.get('name'))
         pdobj.x = self.OBJECT_OFFSET
         pdobj.y = self._current_y
@@ -170,7 +203,7 @@ class LibraryParser(object):
 
         return f
 
-    def add_category_section(self, y, txt):
+    def add_category_section(self, y, txt: str):
         l, r, brect = self._pp.add_section(txt, y)
         self._current_y = brect[1] + brect[3] + 10
         self._pd_cats[txt] = []

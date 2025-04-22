@@ -5,6 +5,7 @@ from __future__ import print_function
 import argparse
 import logging
 import os
+import re
 
 from lxml import etree
 
@@ -34,12 +35,31 @@ def print_entry(file, name, desc):
         file.write(f"{name}\t{desc}\n")
 
 
+def clear_spaces(txt: str) -> str:
+    return re.sub(r"\s+", " ", txt.replace("\n", " "))
+
+
+def find_translation(node, path: str, lang: str, default: str) -> str:
+    tr = node.find(f"{path}/tr[@lang='{lang}']")
+    if tr is None:
+        tr = node.find(f"{path}/tr[@lang='en']")
+        if tr is None:
+            tr = node.find(f"{path}")
+
+    if tr is not None:
+        return clear_spaces(tr.text)
+    else:
+        return default
+
+
 def main():
     arg_parser = argparse.ArgumentParser(description='Converts XML library to deken object list')
     arg_parser.add_argument('input', metavar='LIB_FILE', help="Library description file in XML format")
     arg_parser.add_argument('--aliases', '-a', action='store_true', help='output object aliases')
     arg_parser.add_argument('--force', '-f', action='store_true', help='force to overwrite existing file')
     arg_parser.add_argument('--output', '-o', metavar='OUTPUT', help="output file name")
+    arg_parser.add_argument('--locale', '-l', metavar='NAME', choices=("EN", "RU"), default='EN',
+                            help='locale (currently EN or RU)')
     args = vars(arg_parser.parse_args())
 
     if not os.path.exists(args['input']):
@@ -47,6 +67,7 @@ def main():
         exit(1)
 
     doc = etree.parse(args['input'])
+    lang = args['locale'].lower()
     doc.xinclude()
     root = doc.getroot()
 
@@ -60,10 +81,17 @@ def main():
 
     for c in root.findall("category"):
         for obj in c.findall('entry'):
-            print_entry(f, obj.get("name"), obj.get("descr"))
+            descr_en = find_translation(obj, "pddoc/object/meta/description", "en", "")
+            descr_ru = find_translation(obj, "pddoc/object/meta/description", "ru", "")
+
+            descr = descr_en
+            if descr_ru != descr_en:
+                descr += " / " + descr_ru
+                
+            print_entry(f, obj.get("name"), descr)
             if args['aliases']:
                 for a in obj.xpath("pddoc/object/meta/aliases/alias"):
-                    print_entry(f, a.text, obj.get("descr"))
+                    print_entry(f, a.text, descr)
 
     if f:
         f.close()

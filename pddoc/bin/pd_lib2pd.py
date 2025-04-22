@@ -29,13 +29,18 @@ from pddoc.libraryparser import LibraryParser
 def main():
     arg_parser = argparse.ArgumentParser(description='Converts XML library to Pd patch')
     arg_parser.add_argument('input', metavar='INPUT', help="Library description file in XML format")
+    arg_parser.add_argument('--locale', '-l', metavar='NAME', choices=("EN", "RU"), default='EN',
+                            help='locale (currently EN or RU)')
     args = vars(arg_parser.parse_args())
+
+    lang = args['locale'].lower()
 
     if not os.path.exists(args['input']):
         logging.error('no such file: "%s"', args['input'])
         exit(-1)
 
     lp = LibraryParser(args['input'])
+    lp.lang = lang
     lp.process()
     # lp.process_categories()
     with open(lp.lib_name() + "-help.pd", "w") as f:

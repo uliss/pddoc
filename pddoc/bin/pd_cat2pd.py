@@ -27,6 +27,8 @@ from pddoc.categoryparser import CategoryParser
 def main():
     arg_parser = argparse.ArgumentParser(description='Converts XML library to Pd category patches')
     arg_parser.add_argument('input', metavar='INPUT', help="Library description file in XML format")
+    arg_parser.add_argument('--locale', '-l', metavar='NAME', choices=("EN", "RU"), default='EN',
+                            help='locale (currently EN or RU)')
     args = vars(arg_parser.parse_args())
 
     if not os.path.exists(args['input']):
@@ -34,6 +36,7 @@ def main():
         exit(-1)
 
     cp = CategoryParser(args['input'])
+    cp.lang = args['locale'].lower()
     cp.process()
 
 

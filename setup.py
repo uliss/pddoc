@@ -17,7 +17,7 @@ setup(name='pddoc',
           'Development Status :: 4 - Beta',
           'Topic :: Software Development :: Documentation',
           'Topic :: Multimedia :: Sound/Audio',
-          'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3.10',
           'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)'
       ],
       url='https://github.com/uliss/pddoc',
@@ -27,7 +27,7 @@ setup(name='pddoc',
       license='GPLv3',
       packages=['pddoc', 'pddoc.bin', 'pddoc.pd', 'pddoc.txt'],
       install_requires=[
-          'termcolor', 'colorama', 'mako', 'argparse', 'lxml', 'ply', 'docutils', 'sphinx', 'jinja2'
+          'termcolor', 'colorama', 'mako', 'argparse', 'lxml', 'ply', 'docutils', 'jinja2'
       ],
       test_suite='nose.collector',
       tests_require=['nose'],

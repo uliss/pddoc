@@ -17,10 +17,10 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
+from unittest import TestCase
+
 import lxml.etree as ET
 
-from unittest import TestCase, expectedFailure
-from pddoc.htmldocvisitor import *
 from pddoc.docobject import DocObject
 from pddoc.parser import parse_xml
 

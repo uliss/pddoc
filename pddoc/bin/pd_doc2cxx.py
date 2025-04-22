@@ -3,6 +3,7 @@
 import argparse
 import logging
 import os
+import re
 
 from pddoc.parser import parse_xml
 from pddoc.pd import factory
@@ -26,12 +27,32 @@ from pddoc.pd import factory
 __author__ = 'Serge Poltavski'
 
 
+def clear_spaces(txt: str) -> str:
+    return re.sub(r"\s+", " ", txt.replace("\n", " "))
+
+
+def find_translation(node, path: str, lang: str, default: str) -> str:
+    tr = node.find(f"{path}/tr[@lang='{lang}']")
+    if tr is None:
+        tr = node.find(f"{path}/tr[@lang='en']")
+        if tr is None:
+            tr = node.find(f"{path}")
+
+    if tr is not None:
+        return clear_spaces(tr.text)
+    else:
+        return default
+
+
 def main():
     arg_parser = argparse.ArgumentParser(description='PureData pddoc C++ source generator')
     arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC format")
+    arg_parser.add_argument('--locale', '-l', metavar='NAME', choices=("EN", "RU"), default='EN',
+                            help='locale (currently EN or RU)')
 
     args = vars(arg_parser.parse_args())
     in_file = args['name']
+    lang = args['locale'].lower()
 
     if not os.path.exists(in_file):
         logging.error("File not exists: \"%s\"", in_file)
@@ -44,9 +65,10 @@ def main():
     factory.add_import('ceammc')
 
     pddoc = xml.getroot()
-    v = pddoc.xpath("//object/meta/description")
-    if v is not None:
-        print("obj.setDescription(\"{}\");".format(v[0].text))
+    tr_en = find_translation(pddoc, "object/meta/description", "en", "")
+    tr_ru = find_translation(pddoc, "object/meta/description", "ru", "")
+    print(f"obj.setDescription(\"en\", \"{tr_en}\");")
+    print(f"obj.setDescription(\"ru\", \"{tr_ru}\");")
 
     authors = pddoc.xpath("//object/meta/authors/author")
     if authors is not None:

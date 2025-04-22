@@ -51,6 +51,8 @@ def main():
     arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC(XML) format")
     arg_parser.add_argument('output', metavar='OUTNAME', nargs='?', default='',
                             help="Pd output patch file name")
+    arg_parser.add_argument('--locale', '-l', metavar='NAME', choices=("EN", "RU"), default='EN',
+                            help='locale (currently EN or RU)')
 
     args = vars(arg_parser.parse_args())
     in_file = args['name']

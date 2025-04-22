@@ -17,6 +17,7 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 import logging
+import re
 from typing import Optional
 from xml.etree import ElementTree
 
@@ -24,6 +25,23 @@ from lxml import etree
 
 from .pd.factory import make_by_name
 from .pdpage import PdPage
+
+
+def clear_spaces(txt: str) -> str:
+    return re.sub(r"\s+", " ", txt.replace("\n", " "))
+
+
+def find_translation(node, path: str, lang: str, default: str) -> str:
+    tr = node.find(f"{path}/tr[@lang='{lang}']")
+    if tr is None:
+        tr = node.find(f"{path}/tr[@lang='en']")
+        if tr is None:
+            tr = node.find(f"{path}")
+
+    if tr is not None:
+        return clear_spaces(tr.text)
+    else:
+        return default
 
 
 class CategoryParser(object):
@@ -42,6 +60,18 @@ class CategoryParser(object):
         self._lib_name = ""
         self._current_y = 0
         self._pp = None
+        self._lang = 'en'
+
+    @property
+    def lang(self):
+        return self._lang
+
+    @lang.setter
+    def lang(self, lang: str):
+        if lang in ("en", "ru"):
+            self._lang = lang
+        else:
+            logging.error("Language is not supported: \"%s\"", lang)
 
     def process(self):
         self._xml = etree.parse(self._fname)
@@ -69,9 +99,9 @@ class CategoryParser(object):
         self._pp = None
 
     def add_info(self):
-        info = self._cat.find("category-info")
-        if info is not None:
-            self._pp.add_description(info.text, self.HEADER_HEIGHT + 10)
+        info = find_translation(self._cat, "category-info", self.lang, "")
+        if len(info) > 0:
+            self._pp.add_description(info, self.HEADER_HEIGHT + 10)
 
     def add_menubar(self):
         l1 = self._pp.make_link(0, self._current_y, "../index-help.pd", "index")

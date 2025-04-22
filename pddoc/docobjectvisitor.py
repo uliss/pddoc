@@ -22,9 +22,11 @@ __author__ = 'Serge Poltavski'
 import logging
 import os
 import re
+from typing import Union
 
 import pddoc.pd.parser
 from pddoc.docobject import DocPar
+from pddoc.pdpainter import PdPainter
 from .idocobjectvisitor import IDocObjectVisitor
 from .pd.canvas import Canvas
 from .pd.pdexporter import PdExporter
@@ -140,7 +142,7 @@ class DocObjectVisitor(IDocObjectVisitor):
     def pdexample_end(self, tag):
         img_id, img_path = self.make_image_id_name()
         # append data to template renderer
-        self._pd_append_example(img_id, img_path, None, tag.title())
+        self._pd_append_example(img_id, img_path, "", tag.title())
         # update layout - place all objects
         self._layout.update()
         # draw image
@@ -291,15 +293,16 @@ class DocObjectVisitor(IDocObjectVisitor):
                                                               self._image_extension))
         return cnt, path
 
-    def make_image_painter(self, w: int, h: int, fname: str):
+    def make_image_painter(self, w: int, h: int, fname: str) -> Union[None, PdPainter]:
         return None
 
     def _pd_draw(self, w: int, h: int, fname: str):
         self.create_image_output_dir()
 
         painter = self.make_image_painter(w, h, fname)
-        self._layout.canvas.draw(painter)
-        logging.info("image [{0:d}x{1:d}] saved to: \"{2:s}\"".format(w, h, fname))
+        if painter:
+            self._layout.canvas.draw(painter)
+            logging.info("image [{0:d}x{1:d}] saved to: \"{2:s}\"".format(w, h, fname))
 
     def _pd_layout_size(self, tag):
         w = tag.width()

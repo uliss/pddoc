@@ -1,8 +1,12 @@
-[index](index.html) 
+---
+layout: default_ru
+---
+[index](index.html)
 ---
 
-# Категория: {{cat["name"]|striptags}}
+## Категория: {{cat["name"]|striptags}}
 
+---
 {{cat["descr"]}}
 
 {% for obj in cat["objects"] %}

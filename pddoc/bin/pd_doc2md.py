@@ -44,6 +44,8 @@ def main():
     arg_parser.add_argument('output', metavar='OUTNAME', nargs='?', default='',
                             help="Markdown output file name")
     arg_parser.add_argument('--stdout', action='store_true', default=False, help='output to stdout')
+    arg_parser.add_argument('--example-img', metavar='PATH', type=str, default='example/',
+                            help="relative path to example folder with example image files")
     arg_parser.add_argument('--example-pd', metavar='PATH', type=str, default='',
                             help="relative path to example folder with example Pd files")
     arg_parser.add_argument('--xlet-db', metavar='PATH', action='append',

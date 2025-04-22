@@ -19,21 +19,20 @@
 
 __author__ = 'Serge Poltavski'
 
-import six
+from typing import Union
+
 from termcolor import colored
 
+from pddoc.pdpainter import PdPainter
 from .constants import XLET_GUI
 from .obj import *
 
 
 class Color:
-    def __init__(self, r=0, g=0, b=0):
-        assert isinstance(r, float) or isinstance(r, int)
-        assert isinstance(g, float) or isinstance(g, int)
-        assert isinstance(b, float) or isinstance(b, int)
-        self._r = r
-        self._g = g
-        self._b = b
+    def __init__(self, r: float = 0, g: float = 0, b: float = 0):
+        self._r = int(r)
+        self._g = int(g)
+        self._b = int(b)
 
     @staticmethod
     def black():
@@ -51,7 +50,7 @@ class Color:
         self._g = rgb[1]
         self._b = rgb[2]
 
-    def from_pd(self, value):
+    def from_pd(self, value: float):
         v = abs(int(value) + 1)
         r = v // 4096
         g = (v % 4096) // 64
@@ -93,7 +92,7 @@ class Color:
     def is_black(self):
         return self.compare((0, 0, 0))
 
-    def rgb_float(self):
+    def rgb_float(self) -> tuple[float, float, float]:
         return round(self._r / 255.0, 5), round(self._g / 255.0, 5), round(self._b / 255.0, 5)
 
     def to_pd(self):
@@ -105,23 +104,22 @@ class Color:
         return "#{0:02X}{1:02X}{2:02X}".format(self._r, self._g, self._b)
 
     def __str__(self):
-        res = colored("RGB[%i,%i,%i]" % (self._r, self._g, self._b), "green")
-        return res
+        return colored("RGB[%i,%i,%i]" % (self._r, self._g, self._b), "green")
 
     def __eq__(self, other):
         return self.compare(other)
 
 
-def color_from_str(value):
+def color_from_str(value: Union[float, str]) -> Color:
     c = Color()
 
     if isinstance(value, int):
         c.from_pd(value)
-    elif isinstance(value, six.string_types):
+    elif isinstance(value, str):
         if value[0] == '#':
             return Color.from_hex(value)
         else:
-            c.from_pd(value)
+            c.from_pd(int(value))
     else:
         assert False
 
@@ -155,7 +153,7 @@ class CoreGui(PdObject):
         return self._label
 
     @label.setter
-    def label(self, v):
+    def label(self, v: str):
         self._label = v
 
     @property
@@ -163,7 +161,7 @@ class CoreGui(PdObject):
         return self._send
 
     @send.setter
-    def send(self, v):
+    def send(self, v: str):
         self._send = v
 
     def no_label(self):
@@ -174,7 +172,7 @@ class CoreGui(PdObject):
         return self._receive
 
     @receive.setter
-    def receive(self, v):
+    def receive(self, v: str):
         self._receive = v
 
     def __str__(self):
@@ -195,21 +193,19 @@ class CoreGui(PdObject):
     def outlets(self):
         return [XLET_GUI]
 
-    def traverse(self, visitor):
-        assert isinstance(visitor, AbstractVisitor)
-
+    def traverse(self, visitor: AbstractVisitor):
         if visitor.skip_core_gui(self):
             return
 
         visitor.visit_core_gui(self)
 
-    def draw_bbox(self, painter, **kwargs):
-        vertexes = (
+    def draw_bbox(self, painter: PdPainter, **kwargs):
+        vertexes = [
             (self.x, self.y),
             (0, self.height),
             (self.width, 0),
             (0, -self.height)
-        )
+        ]
 
         painter.draw_poly(vertexes, fill=self.bgcolor(), outline=(0, 0, 0), **kwargs)
 
@@ -219,13 +215,13 @@ class CoreGui(PdObject):
     def show_outlets(self):
         return not self.send or self.send == "empty"
 
-    def draw_xlets(self, painter):
+    def draw_xlets(self, painter: PdPainter):
         if self.show_inlets():
             painter.draw_inlets(self.inlets(), self.x, self.y, self.width)
         if self.show_outlets():
             painter.draw_outlets(self.outlets(), self.x, self.bottom, self.width)
 
-    def draw_label(self, painter):
+    def draw_label(self, painter: PdPainter):
         if not self.no_label():
             lx, ly = self._get_label_xy()
             ly += self._font_size / 2  # TODO hardcoded
@@ -240,14 +236,14 @@ class CoreGui(PdObject):
     def _get_label_xy(self):
         return self.x + self._label_xoff, self.y + self._label_yoff  # font height correction
 
-    def _get_label_pos(self, pos):
+    def _get_label_pos(self, pos: Union[int, str]):
         if isinstance(pos, int):
             if pos not in (self.POS_LEFT, self.POS_TOP, self.POS_BOTTOM, self.POS_RIGHT):
                 logging.warning("invalid label position: {0:d}".format(pos))
                 return None
 
             return pos
-        elif isinstance(pos, six.string_types):
+        elif isinstance(pos, str):
             lmap = {"left": self.POS_LEFT,
                     "right": self.POS_RIGHT,
                     "top": self.POS_TOP,
@@ -258,9 +254,6 @@ class CoreGui(PdObject):
             else:
                 logging.warning("invalid label position: {0:s}".format(pos))
                 return None
-        else:
-            logging.warning("invalid label position: {0:s}".format(str(pos)))
-            return None
 
     def to_atoms(self):
         return {}

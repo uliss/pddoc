@@ -47,16 +47,16 @@ class PdPainter(object):
     def draw_connections(self, canvas):
         print("Draw connections ")
 
-    def draw_poly(self, vertexes, **kwargs):
+    def draw_poly(self, vertexes: list[tuple[float, float]], **kwargs):
         print("Draw poly:", vertexes)
 
-    def draw_text(self, x: int, y: int, text, **kwargs):
+    def draw_text(self, x: int, y: int, text: str, **kwargs):
         print("Draw text:", text)
 
-    def draw_inlets(self, inlets, x: int, y: int, width: int):
+    def draw_inlets(self, inlets: list[int], x: int, y: int, width: int):
         print("Draw inlets:", inlets)
 
-    def draw_outlets(self, outlets, x: int, y: int, width: int):
+    def draw_outlets(self, outlets: list[int], x: int, y: int, width: int):
         print("Draw outlets:", outlets)
 
     def draw_circle(self, x: float, y: float, width: float, **kwargs):

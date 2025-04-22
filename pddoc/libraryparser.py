@@ -159,11 +159,13 @@ class LibraryParser(object):
             link_text = '[{0}]'.format(name)
             self._pp.add_link(link_text, help_file, self.OBJECT_OFFSET, self._current_y)
 
-        info = self._pp.add_txt(obj.get('descr'), self.DESCRIPTION_OFFSET, self._current_y)
-        self._current_y += max(info.height, pdobj.height) + 10
-
         self._pd_cats[cat_name].append(pdobj)
-        self._pd_cats[cat_name].append(info)
+
+        descr = find_translation(obj, "pddoc/object/meta/description", self.lang, "")
+        if len(descr) > 0:
+            info = self._pp.add_txt(descr, self.DESCRIPTION_OFFSET, self._current_y)
+            self._current_y += max(info.height, pdobj.height) + 10
+            self._pd_cats[cat_name].append(info)
 
     def __str__(self):
         return self._pp.to_string()

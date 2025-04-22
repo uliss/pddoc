@@ -133,8 +133,10 @@ class CategoryParser(object):
             link_text = '[{0}]'.format(name)
             self._pp.add_link(link_text, help_file, self.OBJECT_OFFSET, self._current_y)
 
-        info = self._pp.add_txt(obj.get('descr'), self.DESCRIPTION_OFFSET, self._current_y)
-        self._current_y += max(info.height, pdobj.height) + 10
+        descr = find_translation(obj, "pddoc/object/meta/description", self.lang, "")
+        if len(descr) > 0:
+            info = self._pp.add_txt(descr, self.DESCRIPTION_OFFSET, self._current_y)
+            self._current_y += max(info.height, pdobj.height) + 10
 
     def save(self):
         fname = "{0}.{1}-help.pd".format(self._lib_name, self._cat_name)

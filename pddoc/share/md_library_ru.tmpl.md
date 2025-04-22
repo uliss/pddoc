@@ -19,6 +19,7 @@ layout: default_ru
 {% for cat in data %}
 ### <a id="cat_{{cat["name"]}}" href="category_{{cat["name"]|urlencode}}.html">{{cat["name"]}}</a>
 {% if cat["info"] %}{{cat["info"]|trim}}{% endif %}
+
 ---
 
 {% for obj in cat["objects"] %}

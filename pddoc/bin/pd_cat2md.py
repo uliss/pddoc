@@ -5,6 +5,7 @@ from __future__ import print_function
 import argparse
 import logging
 import os
+import re
 
 from jinja2 import Environment, PackageLoader, select_autoescape
 from lxml import etree
@@ -25,6 +26,22 @@ from lxml import etree
 #                                                                         #
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
+
+def clear_spaces(txt: str) -> str:
+    return re.sub(r"\s+", " ", txt.replace("\n", " "))
+
+
+def find_translation(node, path: str, lang: str, default: str) -> str:
+    tr = node.find(f"{path}/tr[@lang='{lang}']")
+    if tr is None:
+        tr = node.find(f"{path}/tr[@lang='en']")
+        if tr is None:
+            tr = node.find(f"{path}")
+
+    if tr is not None:
+        return clear_spaces(tr.text)
+    else:
+        return default
 
 
 def main():
@@ -48,7 +65,7 @@ def main():
     xml.xinclude()
     root = xml.getroot()
 
-    locale = args["locale"]
+    locale: str = args["locale"]
 
     # template config
     if "EN" in locale:
@@ -77,6 +94,7 @@ def main():
 
     base_dir = args['base_dir']
     prefix = args["prefix"]
+    lang = locale.lower()
 
     for c in root.findall("category"):
         name = c.get("name")
@@ -86,14 +104,13 @@ def main():
             logging.error(f"Error: file already exists: '{md_name}'. Use --force flag to overwrite.")
             exit(2)
 
-        category = {"name": name, "info": "", "objects": []}
-        cat_info = c.findall("category-info")
-        if len(cat_info) > 0:
-            category["info"] = cat_info[0].text
+        cat_info_txt = find_translation(c, "category-info", lang, "")
+        category = {"name": name, "descr": cat_info_txt, "objects": []}
 
         # iterate category objects
         for obj in c.findall('entry'):
-            item = {"name": obj.get("name"), "descr": obj.get("descr"), "aliases": []}
+            descr = find_translation(obj, "pddoc/object/meta/description", lang, "")
+            item = {"name": obj.get("name"), "descr": descr, "aliases": []}
             category["objects"].append(item)
 
             if args['aliases']:

@@ -161,8 +161,9 @@ class DocDescription(DocItem):
         for tr in xmlobj.getchildren():
             if tr.get("lang", "en") == "en":
                 self._text = tr.text
-
-            self._tr[tr.get("lang")] = tr.text
+                
+            if tr.get("finished", "true") == "true":
+                self._tr[tr.get("lang")] = tr.text
 
 
 class DocAuthors(DocItem):

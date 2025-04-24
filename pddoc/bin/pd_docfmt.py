@@ -53,6 +53,10 @@ def main():
     for r in obj.iter("object"):
         r[:] = sorted(r, key=lambda x: tag_index(x.tag))
 
+    # strip @lang finished=true
+    for tr in pddoc.findall("**/description/tr[@finished='true']"):
+        tr.attrib.pop("finished")
+
     # strip blanks
     for elem in obj.iter('*'):
         if elem.tag not in ("method", "property", "pdascii") and elem.text is not None:

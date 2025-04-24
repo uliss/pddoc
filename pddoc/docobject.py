@@ -19,10 +19,13 @@
 
 __author__ = 'Serge Poltavski'
 
+import gettext
 import logging
 import re
 
 from .idocobjectvisitor import IDocObjectVisitor
+
+gettext.install("pddoc")
 
 
 def make_class_name(tag_name):
@@ -161,7 +164,7 @@ class DocDescription(DocItem):
         for tr in xmlobj.getchildren():
             if tr.get("lang", "en") == "en":
                 self._text = tr.text
-                
+
             if tr.get("finished", "true") == "true":
                 self._tr[tr.get("lang")] = tr.text
 
@@ -773,10 +776,10 @@ class DocArgument(DocItem):
         res = self.main_info_prefix()
         res += self.text()
         if res and len(self._enum) > 0:
-            res = self.append_after_dot(res, "Allowed values: {}".format(", ".join(self._enum)))
+            res = self.append_after_dot(res, _("Allowed values: {}").format(", ".join(self._enum)))
 
         if res and self._type:
-            res = self.append_after_dot(res, "Type: {}".format(self._type))
+            res = self.append_after_dot(res, _("Type: {}").format(self._type))
 
         return res.strip()
 

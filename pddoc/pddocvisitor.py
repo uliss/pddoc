@@ -34,7 +34,7 @@ from .pd.message import Message
 from .pd.obj import PdObject
 from .pd.parser import Parser
 
-_ = gettext.gettext
+gettext.install("pddoc")
 
 
 def add_text_dot(txt) -> str:
@@ -131,7 +131,7 @@ class PdDocVisitor(DocObjectVisitor):
         self.current_yoff += cnv.height
 
     def mouse_begin(self, m):
-        self.add_section("mouse events:", self.PD_SECTION_YMARGIN)
+        self.add_section(_("mouse events:"), self.PD_SECTION_YMARGIN)
         m.sort_by(lambda e: e.edit_mode())
 
     def mouse_end(self, m):
@@ -166,11 +166,11 @@ class PdDocVisitor(DocObjectVisitor):
         items.append(t1)
         items.append(t2)
 
-        _, _, _, h = self._pp.group_brect(items)
+        __, __, __, h = self._pp.group_brect(items)
 
         if e.edit_mode():
-            lbl = self._pp.add_txt("[Edit]", 0, self.current_yoff)
-            _, _, w, _ = self._pp.group_brect([lbl])
+            lbl = self._pp.add_txt(_("[Edit]"), 0, self.current_yoff)
+            __, __, w, __ = self._pp.group_brect([lbl])
             lbl.x = (self.PD_XLET_INDX_XPOS - w - 10)
 
         self.current_yoff += h + 5
@@ -197,7 +197,7 @@ class PdDocVisitor(DocObjectVisitor):
         info_text = add_text_dot(info_text)
 
         if len(m.items()) > 0:
-            info_text += " Arguments are: "
+            info_text += _(" Arguments are: ")
 
         x = self.PD_XLET_INFO_XPOS
         # fix x-offset for long method names
@@ -215,7 +215,7 @@ class PdDocVisitor(DocObjectVisitor):
                 arg_descr += ": " + i.text().strip()
 
             if i.type():
-                arg_descr = "{0} Type: {1}. ".format(add_text_dot(arg_descr), i.type())
+                arg_descr = _("{0} Type: {1}. ").format(add_text_dot(arg_descr), i.type())
 
             value_range = self.format_range(i)
             if len(value_range) > 0:
@@ -225,10 +225,10 @@ class PdDocVisitor(DocObjectVisitor):
                 arg_descr += " " + add_text_dot(value_range)
 
             if len(i.enum()) > 0:
-                arg_descr = "{0} Allowed values: {1}. ".format(add_text_dot(arg_descr), ', '.join(i.enum()))
+                arg_descr = _("{0} Allowed values: {1}. ").format(add_text_dot(arg_descr), ', '.join(i.enum()))
 
             if i.units() and len(i.units()) > 0:
-                arg_descr = "{0} Units: {1}. ".format(add_text_dot(arg_descr), units_str(i.units()))
+                arg_descr = _("{0} Units: {1}. ").format(add_text_dot(arg_descr), units_str(i.units()))
 
             # param name highlight with background canvas
             hl_text = self._pp.make_txt(param_name, 0, 0)
@@ -351,13 +351,13 @@ class PdDocVisitor(DocObjectVisitor):
         if not (m.is_alias() or m.is_flag()):
             if m.access() == "readwrite":
                 if m.text().startswith("on/off"):
-                    prop_descr += "Turn "
+                    prop_descr += _("Turn ")
                 else:
-                    prop_descr += "Get/Set "
+                    prop_descr += _("Get/Set ")
             elif m.access() == "initonly":
-                prop_descr += "(initonly) Get/Set "
+                prop_descr += _("(initonly) Get/Set ")
             else:
-                prop_descr += "(readonly) Get "
+                prop_descr += _("(readonly) Get ")
 
         if m.is_alias():
             txt = m.text()
@@ -366,23 +366,23 @@ class PdDocVisitor(DocObjectVisitor):
             prop_descr += m.text()
 
         if m.type() and not (m.is_alias() or m.is_flag()):
-            prop_descr = "{0} Type: {1}. ".format(add_text_dot(prop_descr), m.type())
+            prop_descr = _("{0} Type: {1}. ").format(add_text_dot(prop_descr), m.type())
 
         if m.units() and len(m.units()) > 0:
-            prop_descr = "{0} Units: {1}. ".format(add_text_dot(prop_descr), units_str(m.units()))
+            prop_descr = _("{0} Units: {1}. ").format(add_text_dot(prop_descr), units_str(m.units()))
 
         if m.default():
-            prop_descr = "{0} Default value: {1}. ".format(add_text_dot(prop_descr), m.default())
+            prop_descr = _("{0} Default value: {1}. ").format(add_text_dot(prop_descr), m.default())
 
         if m.min() and m.max():
-            prop_descr = "{0} Range: {1}...{2}. ".format(add_text_dot(prop_descr), m.min(), m.max())
+            prop_descr = _("{0} Range: {1}...{2}. ").format(add_text_dot(prop_descr), m.min(), m.max())
         elif m.min():
-            prop_descr = "{0} Min value: {1}. ".format(add_text_dot(prop_descr), m.min())
+            prop_descr = _("{0} Min value: {1}. ").format(add_text_dot(prop_descr), m.min())
         elif m.max():
-            prop_descr = "{0} Max value: {1}. ".format(add_text_dot(prop_descr), m.max())
+            prop_descr = _("{0} Max value: {1}. ").format(add_text_dot(prop_descr), m.max())
 
         if len(m.enum()) > 0:
-            prop_descr = "{0} Allowed values: {1}.".format(add_text_dot(prop_descr), ', '.join(m.enum()))
+            prop_descr = _("{0} Allowed values: {1}.").format(add_text_dot(prop_descr), ', '.join(m.enum()))
 
         info = list()
         info.append(self._pp.add_txt(add_text_dot(prop_descr), self.PD_XLET_INFO_XPOS, self.current_yoff))
@@ -472,11 +472,11 @@ class PdDocVisitor(DocObjectVisitor):
         r = obj.range()
         if len(r) == 2:
             if not r[0]:
-                return "Max value: {0}".format(r[1])
+                return _("Max value: {0}").format(r[1])
             if not r[1]:
-                return "Min value: {0}".format(r[0])
+                return _("Min value: {0}").format(r[0])
 
-            return "Range: {0}...{1}".format(r[0], r[1])
+            return _("Range: {0}...{1}").format(r[0], r[1])
         else:
             return ""
 
@@ -531,7 +531,7 @@ class PdDocVisitor(DocObjectVisitor):
             mobj.y = y
             self._pp.append_object(mobj)
 
-            _, _, w, _ = self._pp.brect_box("pd aliases")
+            __, __, w, __ = self._pp.brect_box("pd aliases")
             pd.x = (x - (w + 20))
             pd.y = y
         else:
@@ -543,7 +543,7 @@ class PdDocVisitor(DocObjectVisitor):
                 seq.append(make_by_name(title))
 
             self._pp.place_in_row(seq, 0, 20)
-            _, _, w, h = self._pp.group_brect(seq)
+            __, __, w, h = self._pp.group_brect(seq)
             y = (lbl.height - h) / 2
             x = (lbl.width - w) - 20
             self._pp.move_to_x(seq, x)
@@ -580,7 +580,7 @@ class PdDocVisitor(DocObjectVisitor):
         add_subpatch_text(xc1, yrows[row], _("version:"))
         add_subpatch_text(xc2, yrows[row], self._version)
         row += 1
-        add_subpatch_text(xc1, yrows[row], "object:")
+        add_subpatch_text(xc1, yrows[row], _("object:"))
         add_subpatch_text(xc2, yrows[row], self._title)
         row += 1
         add_subpatch_text(xc1, yrows[row], _("category:"))
@@ -626,7 +626,7 @@ class PdDocVisitor(DocObjectVisitor):
 
     def add_footer_library(self, y: int):
         # library:
-        self._pp.add_txt("library: {0} v{1}".format(self._library, self._version), 10, y + 3)
+        self._pp.add_txt(_("library: {0} v{1}").format(self._library, self._version), 10, y + 3)
 
     def add_background_for_txt(self, txt: str, x: int, y: int, color: Color, **kwargs):
         if len(txt) < 1:
@@ -645,7 +645,7 @@ class PdDocVisitor(DocObjectVisitor):
             return
 
         # see also:
-        label = self._pp.make_txt("see also:", 0, 0)
+        label = self._pp.make_txt(_("see also:"), 0, 0)
         also_objects = [label]
         for see in self._see_also:
             if 'is_link' in see and see['is_link'] == True:
@@ -658,7 +658,7 @@ class PdDocVisitor(DocObjectVisitor):
                 also_objects.append(make_by_name(see['name']))
 
         self._pp.place_in_row(also_objects, 0, 10)
-        _, _, w, h = self._pp.group_brect(also_objects)
+        __, __, w, h = self._pp.group_brect(also_objects)
         self._pp.move_to_y(also_objects, y)
         self._pp.move_to_x(also_objects, (self._pp.width - w) - 40)
         self._pp.append_list(also_objects)

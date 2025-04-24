@@ -3,6 +3,7 @@
 from __future__ import print_function
 
 import argparse
+import gettext
 import logging
 import os
 
@@ -57,6 +58,11 @@ def main():
     args = vars(arg_parser.parse_args())
     in_file = args['name']
     output = args['output']
+    lang = args['locale'].lower()
+
+    locale_dir = os.path.join(os.path.dirname(__file__), '..', 'share', 'locales')
+    el = gettext.translation("pddoc", localedir=locale_dir, languages=[lang])
+    el.install()
 
     # add input pddoc file dir to search path for abstractions
     PdObject.xlet_patch_finder.add_search_dir(os.path.dirname(in_file))
@@ -87,6 +93,7 @@ def main():
             dobj.traverse(x)
 
             v = PdDocVisitor()
+            v.lang = lang
 
             if 'version' in args:
                 v._version = args['version']

@@ -141,6 +141,7 @@ class PdPage(object):
                            **kwargs):
         return self.make_label(20, y, txt, font_size, **kwargs)
 
+    # returns label object, hrule object and their bbox
     def make_section(self, y: int, txt: str, **kwargs):
         label = self.make_section_label(y, txt, **kwargs)
         r = self.make_styled_hrule(y + label.height + 10)
@@ -211,6 +212,7 @@ class PdPage(object):
         br = self.group_brect(list(d))
         self.move_to_x(d, self._width - br[2] - 20)
 
+    # return label object, hrule and their bbox
     def add_section(self, title: str, y: int):
         l, r, brect = self.make_section(y, title)
         self._canvas.append_object(l)

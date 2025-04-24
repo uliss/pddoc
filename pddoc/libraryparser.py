@@ -22,6 +22,7 @@ import re
 import pkg_resources
 from lxml import etree
 
+from . import Point
 from .pd.factory import make_by_name
 from .pd.obj import PdObject
 from .pdpage import PdPage
@@ -107,8 +108,12 @@ class LibraryParser(object):
             self.process_xml_category(c)
 
     def process_xml_category(self, c):
-        self.add_category_section(self._current_y, c.get('name'))
+        pos = self.add_category_section(self._current_y, c.get('name'))
         self.process_xml_category_entries(c)
+
+        info = find_translation(c, "category-info", self.lang, "")
+        if len(info) > 0:
+            self._pp.add_description(info, pos.y + 10)
 
     def process_xml_category_entries(self, c):
         cat_name: str = c.get('name')
@@ -205,7 +210,8 @@ class LibraryParser(object):
 
         return f
 
-    def add_category_section(self, y, txt: str):
-        l, r, brect = self._pp.add_section(txt, y)
+    def add_category_section(self, y: int, txt: str) -> Point:
+        _, _, brect = self._pp.add_section(txt, y)
         self._current_y = brect[1] + brect[3] + 10
         self._pd_cats[txt] = []
+        return Point(brect[0], brect[1])

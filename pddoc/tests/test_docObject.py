@@ -19,8 +19,6 @@
 
 from unittest import TestCase
 
-import lxml.etree as ET
-
 from pddoc.docobject import DocObject
 from pddoc.parser import parse_xml
 
@@ -28,25 +26,6 @@ __author__ = 'Serge Poltavski'
 
 
 class TestDocObject(TestCase):
-    def test_float_export(self):
-        dobj = DocObject()
-
-        xml = ET.parse("float.pddoc")
-        pddoc = xml.getroot()
-        for child in pddoc:
-            if child.tag == "object":
-                dobj.from_xml(child)
-
-                v = HtmlDocVisitor()
-                dobj.traverse(v)
-                v.generate_images()
-
-                s = v.render()
-                f = open("out/float.html", "w")
-                f.write(s)
-                f.close()
-                break
-
     def test_parse(self):
         xml = parse_xml("sample.pddoc")
 

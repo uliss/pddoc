@@ -41,7 +41,7 @@ def clear_spaces(txt: str) -> str:
 
 def find_translation(node, path: str, lang: str, default: str) -> str:
     tr = node.find(f"{path}/tr[@lang='{lang}']")
-    if tr is None:
+    if tr is None or tr.get("finished", "true") == "false":
         tr = node.find(f"{path}/tr[@lang='en']")
         if tr is None:
             tr = node.find(f"{path}")
@@ -67,7 +67,6 @@ def main():
         exit(1)
 
     doc = etree.parse(args['input'])
-    lang = args['locale'].lower()
     doc.xinclude()
     root = doc.getroot()
 
@@ -87,7 +86,7 @@ def main():
             descr = descr_en
             if descr_ru != descr_en:
                 descr += " / " + descr_ru
-                
+
             print_entry(f, obj.get("name"), descr)
             if args['aliases']:
                 for a in obj.xpath("pddoc/object/meta/aliases/alias"):

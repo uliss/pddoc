@@ -210,6 +210,7 @@
         <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attribute name="lang" type="TranslationLangAttr" default="en"/>
+                <xs:attribute name="finished" type="xs:boolean" default="false"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>

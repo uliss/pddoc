@@ -108,8 +108,14 @@ class LibraryMaker(object):
 
     def process_object_doc(self, doc_fname, xml_obj):
         name = xml_obj.get('name')
-        descr = ' '.join(xml_obj.find('meta/description').text.split())
-        # logging.info("[%s] doc found: %s", name, descr.text)
+        descr_tr = xml_obj.find('meta/description/tr[@lang="en"]')
+        if descr_tr is None:
+            descr_tr = xml_obj.find('meta/description/tr')
+            if descr_tr is None:
+                logging.warning(f"object description is not found in '{doc_fname}'")
+                return
+
+        descr = ' '.join(descr_tr.text.split())
         categ = xml_obj.find('meta/category')
         if categ is None:
             self.add_to_others(doc_fname, name=name, descr=descr)

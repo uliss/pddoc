@@ -17,7 +17,7 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
- 
+
 __author__ = 'Serge Poltavski'
 
 from typing import Optional
@@ -37,13 +37,9 @@ class XletDatabase(object):
         return False
 
     def inlets(self, name: str, args=None):
-        if args is None:
-            args = []
         return []
 
     def outlets(self, name: str, args=None):
-        if args is None:
-            args = []
         return []
 
     @property
@@ -61,16 +57,12 @@ class XletMemoryDatabase(XletDatabase):
         return objname in self._objects
 
     def inlets(self, objname: str, args=None):
-        if args is None:
-            args = []
         if not self.has_object(objname):
             return []
 
         return self._objects[objname][0]
 
     def outlets(self, objname: str, args=None):
-        if args is None:
-            args = []
         if not self.has_object(objname):
             return []
 

@@ -47,6 +47,8 @@ def main():
     arg_parser.add_argument('--license', '-l', metavar='license', help='library license')
     arg_parser.add_argument('--version', '-v', metavar='version', default='0.0', help='library version')
     arg_parser.add_argument('--force', '-f', action='store_true', help='force to overwrite existing file')
+    arg_parser.add_argument('--write-xlets-db', metavar='VALUE', default=True,
+                            help='write xlet_db txt file for the object')
     arg_parser.add_argument('--xlet-db', metavar='PATH', action='append',
                             help='inlet/outlet database file paths', default=[])
     arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC(XML) format")
@@ -59,9 +61,10 @@ def main():
     in_file = args['name']
     output = args['output']
     lang = args['locale'].lower()
+    write_xlets = args['write_xlets_db']
 
     locale_dir = os.path.join(os.path.dirname(__file__), '..', 'share', 'locales')
-    el = gettext.translation("pddoc", localedir=locale_dir, languages=[lang])
+    el = gettext.translation("pddoc", localedir=locale_dir, languages=[lang], fallback=True)
     el.install()
 
     # add input pddoc file dir to search path for abstractions
@@ -89,8 +92,9 @@ def main():
             dobj = DocObject()
             dobj.from_xml(child_tag)
 
-            x = XletDocVisitor()
-            dobj.traverse(x)
+            if write_xlets:
+                x = XletDocVisitor()
+                dobj.traverse(x)
 
             v = PdDocVisitor()
             v.lang = lang

@@ -99,8 +99,6 @@ class XletPatchLookup(XletDatabase):
         return False
 
     def inlets(self, name: str, args=None):
-        if args is None:
-            args = []
         cname = self.clean_name(name)
         if cname not in self._cache:
             return []
@@ -111,8 +109,6 @@ class XletPatchLookup(XletDatabase):
         return self._cache[cname].inlets
 
     def outlets(self, name: str, args=None):
-        if args is None:
-            args = []
         cname = self.clean_name(name)
         if cname not in self._cache:
             return []

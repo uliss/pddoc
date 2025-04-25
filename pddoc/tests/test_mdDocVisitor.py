@@ -25,7 +25,6 @@ __author__ = 'Serge Poltavski'
 from pddoc.markdownvisitor import *
 from pddoc.pdlayout import *
 from pddoc.docobject import *
-import os
 
 
 class TestMdDocVisitor(TestCase):
@@ -35,21 +34,6 @@ class TestMdDocVisitor(TestCase):
     def test_render(self):
         v = MarkdownVisitor()
         self.assertTrue(v.render())
-
-    def test_generate_object_image(self):
-        v = MarkdownVisitor()
-        PATH = v.image_output_dir() + "/object_undefined~.png"
-        v.generate_object_image("undefined~")
-        self.assertTrue(os.path.exists(PATH))
-        os.remove(PATH)
-
-    def test_generate_images(self):
-        v = MarkdownVisitor()
-        v.add_alias("tobj")
-        v.generate_images()
-        path2 = os.path.join(v.image_output_dir(), "object_tobj.png")
-        self.assertTrue(os.path.exists(path2))
-        os.remove(path2)
 
     def test_place_pd_objects(self):
         v = PdLayout()

@@ -40,16 +40,14 @@ class TestPdExporter(TestCase):
         c.type = Canvas.TYPE_WINDOW
         c.traverse(exp)
 
-    def diff(self, fname1, fname2):
-        file1 = open(fname1, 'r')
-        file2 = open(fname2, 'r')
-        diff = difflib.unified_diff(file1.readlines(), file2.readlines())
-        lines = list(diff)
-        ln = len(lines)
-        # if ln:
-        # print "".join(lines)
-
-        return ln != 0
+    @staticmethod
+    def diff(fname1, fname2):
+        with open(fname1, 'r') as file1:
+            with open(fname2, 'r') as file2:
+                diff = difflib.unified_diff(file1.readlines(), file2.readlines())
+                lines = list(diff)
+                ln = len(lines)
+                return ln != 0
 
     def reexport(self, fname1, fname2):
         parser = Parser()

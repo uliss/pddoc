@@ -157,9 +157,8 @@ class PdExporter(AbstractVisitor):
         self.result.append(line)
 
     def save(self, filename: str):
-        f = open(filename, 'w')
-        f.write("\n".join(self.result))
-        f.close()
+        with open(filename, 'w') as f:
+            f.write("\n".join(self.result))
 
     @staticmethod
     def escape_tokens(s: str) -> str:

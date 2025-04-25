@@ -248,9 +248,9 @@ class Parser:
             return False
 
         self._fname = file_name
-        f = open(file_name, "r")
-        lines = f.read()
-        f.close()
+        with open(file_name, "r") as f:
+            lines = f.read()
+            f.close()
 
         self.parse_imports(lines)
 

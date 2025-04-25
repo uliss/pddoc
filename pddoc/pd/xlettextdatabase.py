@@ -42,10 +42,10 @@ class XletTextDatabase(XletDatabase):
     def load(self, fname):
         self._fname = fname
         try:
-            f = open(fname, "r")
-            lines = f.readlines()
-            for line in lines:
-                self.parse(line)
+            with open(fname, "r") as f:
+                lines = f.readlines()
+                for line in lines:
+                    self.parse(line)
 
         except IOError as e:
             logging.error("Load failed: {0:s}".format(fname))

@@ -29,10 +29,10 @@ from .obj import *
 
 
 class Color:
-    def __init__(self, r: float = 0, g: float = 0, b: float = 0):
-        self._r = int(r)
-        self._g = int(g)
-        self._b = int(b)
+    def __init__(self, r: int = 0, g: int = 0, b: int = 0):
+        self._r = r
+        self._g = g
+        self._b = b
 
     @staticmethod
     def black():
@@ -84,7 +84,7 @@ class Color:
     def compare(self, rgb):
         if isinstance(rgb, list) or isinstance(rgb, tuple):
             return self._r == rgb[0] and self._g == rgb[1] and self._b == rgb[2]
-        elif isinstance(rgb, self.__class__):
+        elif isinstance(rgb, Color):
             return self._r == rgb._r and self._g == rgb._g and self._b == rgb._b
         else:
             return False
@@ -97,8 +97,8 @@ class Color:
 
     def to_pd(self):
         return -4096 * int(round(self._r * (63 / 255.0))) \
-               - 64 * int(round(self._g * (63 / 255.0))) \
-               - 1 * int(round(self._b * (63 / 255.0))) - 1
+            - 64 * int(round(self._g * (63 / 255.0))) \
+            - 1 * int(round(self._b * (63 / 255.0))) - 1
 
     def to_hex_str(self):
         return "#{0:02X}{1:02X}{2:02X}".format(self._r, self._g, self._b)

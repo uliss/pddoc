@@ -36,8 +36,8 @@ class TestPdColor(unittest.TestCase):
         self.assertEqual(Color.white().rgb_float(), (1, 1, 1))
 
     def test_rgb(self):
-        c = Color(0.1, 0.2, 0.3)
-        self.assertEqual(c.rgb(), (0.1, 0.2, 0.3))
+        c = Color(1, 2, 3)
+        self.assertEqual(c.rgb(), (1, 2, 3))
 
     def test_from_pd(self):
         c = Color(0, 0, 0)
@@ -67,8 +67,9 @@ class TestPdColor(unittest.TestCase):
             self.assertEqual(c.to_pd(), -v)
 
     def test_compare(self):
-        c = Color(0.1, 0, 0)
-        self.assertEqual(self.c.compare(c), False)
+        self.assertEqual(self.c.compare(Color(0, 0, 0)), True)
+        self.assertEqual(self.c.compare(Color.black()), True)
+        self.assertEqual(self.c.compare(Color(1, 0, 0)), False)
 
     def test_is_black(self):
         self.assertEqual(self.c.is_black(), True)

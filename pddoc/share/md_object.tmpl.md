@@ -121,7 +121,7 @@ _type:_ {{x.type()}}
 
 {% if version %}**Version:** {{version}}{% endif %}
 
-{% if authors %}**Authors:** {{authors|join(', ')}}{% endif %}
+{% if authors %}**Authors:** {{authors|join(", ")}}{% endif %}
 
 {% if license and license['url'] %}
 **License:** 

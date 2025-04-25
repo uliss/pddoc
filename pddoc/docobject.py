@@ -884,12 +884,10 @@ class DocMethod(DocItem):
 
 class DocParam(DocArgument):
     def param_name(self):
-        name = ""
-
         if self._name:
             name = self.name()
-        elif self._units:
-            name = self.units().upper()
+        elif len(self._units) > 0:
+            name = ' '.join(self.units()).upper()
         else:
             name = "X"
 
@@ -970,10 +968,10 @@ class DocObject(DocItem):
         return tag_name in ("title", "meta", "inlets", "outlets",
                             "arguments", "properties", "info", "example", "methods", "mouse")
 
-    def from_xml(self, xobj):
-        self._name = xobj.attrib["name"]
-        self._type = xobj.attrib.get("type", "box")
-        DocItem.from_xml(self, xobj)
+    def from_xml(self, obj):
+        self._name = obj.attrib["name"]
+        self._type = obj.attrib.get("type", "box")
+        DocItem.from_xml(self, obj)
 
     def name(self):
         return self._name

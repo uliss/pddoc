@@ -16,10 +16,10 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
+import importlib.metadata as imp
 import logging
 import re
 
-import pkg_resources
 from lxml import etree
 
 from . import Point
@@ -194,10 +194,9 @@ class LibraryParser(object):
             self._pp.append_object(lnk)
             self._current_y += lnk.height + 10
 
-        vers = pkg_resources.require("pddoc")[0].version
-
+        vers = imp.version("pddoc")
         pddoc_lnk = self._pp.make_link(20, self._current_y,
-                                       "http://github.com/uliss/pddoc",
+                                       "https://github.com/uliss/pddoc",
                                        f"Generated with pddoc v{vers}")
         self._pp.append_object(pddoc_lnk)
 

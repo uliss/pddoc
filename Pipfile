@@ -10,7 +10,7 @@ lxml = "~=5.2.1"
 mako = "~=1.2.2"
 ply = "~=3.11"
 docutils = "~=0.16"
-jinja2 = "~=3.1.4"
+jinja2 = "~=3.1.6"
 pycairo = "~=1.26.0"
 
 [dev-packages]

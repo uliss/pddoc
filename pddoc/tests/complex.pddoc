@@ -3,7 +3,9 @@
     <object name="complex" type="box">
         <title>osc~</title>
         <meta>
-            <description>Documentation system for PureData</description>
+            <description>
+                <tr lang="en">Documentation system for PureData</tr>
+            </description>
             <authors>
                 <author>Serge Poltavski</author>
                  <author>Alex Nadzharov</author>

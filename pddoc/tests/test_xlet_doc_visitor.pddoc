@@ -4,7 +4,7 @@
         <title>simple</title>
         <meta>
             <authors><author>unknown</author></authors>
-            <description>empty</description>
+            <description><tr>empty</tr></description>
             <license>GPL3</license>
             <library>test</library>
         </meta>

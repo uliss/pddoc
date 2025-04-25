@@ -3,7 +3,7 @@
     <object name="float">
         <title>float</title>
         <meta>
-            <description>store a number</description>
+            <description><tr lang="en">store a number</tr></description>
             <!-- list of authors -->
             <authors>
                 <author>Miller Puckette</author>

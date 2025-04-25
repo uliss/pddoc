@@ -138,7 +138,7 @@ class PdLayout(object):
             dest_in = c._dest_in
 
             self._canvas.add_connection(src_id, src_out, dest_id, dest_in)
-        except KeyError as e:
+        except KeyError:
             logging.warning("connection not found: {0:s}:{1:s} => {2:s}:{3:s}".
                             format(c.src_id(), src_out, c.dest_id(), dest_in))
 

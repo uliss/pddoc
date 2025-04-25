@@ -253,7 +253,7 @@ class PdDocVisitor(DocObjectVisitor):
                 bg.y = obj.y
 
         info.append(msg)
-        _, _, _, h = self._pp.group_brect(info)
+        __, __, __, h = self._pp.group_brect(info)
         self.current_yoff += h + 10
 
     def inlets_begin(self, inlets):
@@ -284,7 +284,7 @@ class PdDocVisitor(DocObjectVisitor):
         t2 = self._pp.add_txt(add_text_dot(txt), self.PD_XLET_INFO_XPOS, self.current_yoff)
         tlist.append(t2)
 
-        _, _, _, h = self._pp.group_brect(tlist)
+        __, __, __, h = self._pp.group_brect(tlist)
         self.current_yoff += h + 5
 
     def outlets_begin(self, outlets):
@@ -303,7 +303,7 @@ class PdDocVisitor(DocObjectVisitor):
         t1 = self._pp.add_txt("{0}.".format(outlet.number()), self.PD_XLET_INDX_XPOS, y)
         t2 = self._pp.add_txt(add_text_dot(outlet.text()), self.PD_XLET_INFO_XPOS, y)
 
-        _, _, _, h = self._pp.group_brect([t1, t2])
+        __, __, __, h = self._pp.group_brect([t1, t2])
         self.current_yoff += h + 5
 
     def add_section_help(self, txt: str, url: str, y: int):
@@ -442,7 +442,7 @@ class PdDocVisitor(DocObjectVisitor):
 
         rng = self.format_range(arg)
         t3 = self._pp.add_txt("{0}. {1}".format(remove_text_dot(arg.main_info()), rng), self.PD_XLET_INFO_XPOS, y)
-        _, _, _, h = self._pp.group_brect([t1, t2, t3])
+        __, __, __, h = self._pp.group_brect([t1, t2, t3])
         self.current_yoff += h + 5
 
     def object_end(self, obj):
@@ -524,7 +524,7 @@ class PdDocVisitor(DocObjectVisitor):
             else:
                 mobj = make_by_name(title)
 
-            _, _, w, h = self._pp.brect_obj(mobj)
+            __, __, w, h = self._pp.brect_obj(mobj)
             x = (lbl.width - w) - 20
             y = int(round((lbl.height - h) / 2))
             mobj.x = x

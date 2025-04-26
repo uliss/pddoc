@@ -20,7 +20,7 @@
 ---
 
 {% for obj in cat["objects"] %}
-[**{{obj["name"]|replace('~','\~')}}**]({{obj["name"]|urlencode}}.html): {{obj["descr"]}} 
+[**{{obj["name"]|replace('~','\\~')}}**]({{obj["name"]|urlencode}}.html): {{obj["descr"]|replace('[','\\[')|replace(']','\\]')}} 
 {% endfor %}
 {% endfor %}
 

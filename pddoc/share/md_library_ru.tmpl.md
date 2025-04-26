@@ -23,7 +23,7 @@ layout: default_ru
 ---
 
 {% for obj in cat["objects"] %}
-[**{{obj["name"]}}**]({{obj["name"]|urlencode}}.html): {{obj["descr"]}} 
+[**{{obj["name"]}}**]({{obj["name"]|urlencode}}.html): {{obj["descr"]|replace('[','\\[')|replace(']','\\]')}}
 {% endfor %}
 {% endfor %}
 

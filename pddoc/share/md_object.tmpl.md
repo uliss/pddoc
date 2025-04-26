@@ -4,10 +4,10 @@
 # {{title|ws}}
 
 {%- if aliases %}
-**aliases:** {{aliases|join(", ")|ws|replace('~','\~')}}
+**aliases:** {{aliases|join(", ")|ws|replace('~','\\~')}}
 {% endif %}
 
-###### {{description|ws}}
+###### {{description|ws|replace('[','\\[')|replace(']','\\]')}}
 
 {% if since %}*available since version:* {{since}}{% endif %}
 

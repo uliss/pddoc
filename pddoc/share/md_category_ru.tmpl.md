@@ -10,7 +10,7 @@ layout: default_ru
 {{cat["descr"]}}
 
 {% for obj in cat["objects"] %}
-[**{{obj["name"]}}**]({{obj["name"]|urlencode}}.html): {{obj["descr"]}} {% if obj["aliases"] %}<br>
+[**{{obj["name"]}}**]({{obj["name"]|urlencode}}.html): {{obj["descr"]|replace('[','\\[')|replace(']','\\]')}} {% if obj["aliases"] %}<br>
 _псевдонимы:_ {{obj["aliases"]|join(", ")}}
 {% endif %}
 {% endfor %}

@@ -6,7 +6,7 @@ layout: default_ru
 
 # {{title|ws}}
 
-###### {{description|ws}}
+###### {{description|ws|replace('[','\\[')|replace(']','\\]')}}
 
 {% if since %}*доступно с версии:* {{since}}{% endif %}
 

@@ -16,13 +16,13 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
-import importlib.metadata as imp
 import logging
 import re
 
 from lxml import etree
 
 from . import Point
+from . import __version__ as pddoc_version
 from .pd.factory import make_by_name
 from .pd.obj import PdObject
 from .pdpage import PdPage
@@ -194,7 +194,8 @@ class LibraryParser(object):
             self._pp.append_object(lnk)
             self._current_y += lnk.height + 10
 
-        vers = imp.version("pddoc")
+        logging.error("{}", pddoc_version)
+        vers = ""  # imp.distribution("pddoc").version
         pddoc_lnk = self._pp.make_link(20, self._current_y,
                                        "https://github.com/uliss/pddoc",
                                        f"Generated with pddoc v{vers}")

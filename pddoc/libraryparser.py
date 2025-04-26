@@ -194,11 +194,9 @@ class LibraryParser(object):
             self._pp.append_object(lnk)
             self._current_y += lnk.height + 10
 
-        logging.error("{}", pddoc_version)
-        vers = ""  # imp.distribution("pddoc").version
         pddoc_lnk = self._pp.make_link(20, self._current_y,
                                        "https://github.com/uliss/pddoc",
-                                       f"Generated with pddoc v{vers}")
+                                       f"Generated with pddoc v{pddoc_version}")
         self._pp.append_object(pddoc_lnk)
 
         rpos = f.width - 70

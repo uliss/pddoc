@@ -84,16 +84,18 @@ def check_translations(xml, lang: str):
     xml.xinclude()
     root = xml.getroot()
     num_obj = len(root.xpath(f"//*/object"))
-    num_tr = len(root.xpath(f"//*/description/tr[@lang='{lang}']"))
-    logging.info(f"translated objects: {num_tr: 8}\n"
-                 f"total objects:      {num_obj: 8}\n"
-                 f"progress:           {int(num_tr / num_obj * 100): 7}%")
+    num_tr = len(root.xpath(f"//*/description/tr[@lang='{lang}' and (not(@finished) or @finished!='false')]"))
+    num_unfinished = len(root.xpath(f"//*/description/tr[@lang='{lang}' and @finished='false']"))
+    logging.info(f"translated objects:      {num_tr: 8}\n"
+                 f"unfinished translations: {num_unfinished: 8}\n"
+                 f"total objects:           {num_obj: 8}\n"
+                 f"progress:                {int(num_tr / num_obj * 100): 7}%")
 
 
 def main():
     arg_parser = argparse.ArgumentParser(description='update translations in the object pddoc file')
     arg_parser.add_argument('name', metavar='PDDOC', help="pddoc file")
-    arg_parser.add_argument('--lang', '-l', metavar='LANG', choices="ru", default='ru',
+    arg_parser.add_argument('--lang', '-l', metavar='LANG', choices=("ru",), default='ru',
                             help='language (currently "ru")')
     arg_parser.add_argument('--check', '-c', action='store_true', help='checks translations')
     arg_parser.add_argument('--in-place', '-i', action='store_true', help='format in place (overwrite source file)')

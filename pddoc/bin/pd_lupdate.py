@@ -100,16 +100,16 @@ def main():
 
     find_no_tr(in_file, "object/meta/description/tr", lang, root)
 
-    # for c in root.findall("pddoc/object/meta"):
-    #     cat_tr(in_file, c)
-    #     for obj in c.findall("entry"):
-    #         name = obj.get("name")
-    #         find_tr(f"{name}.pddoc", "pddoc/object/meta/description", obj)
-    #
-    #         find_no_tr(f"{name}.pddoc", "pddoc/object/info/par", obj)
-    #         find_no_tr(f"{name}.pddoc", "pddoc/object/arguments/argument", obj)
-    #         find_no_tr(f"{name}.pddoc", "pddoc/object/properties/property", obj)
-    #         find_no_tr(f"{name}.pddoc", "pddoc/object/methods/method/param", obj)
+    # add method translations
+    # for m in root.findall("object/methods/method"):
+    #     if m.find("tr") is None:
+    #         tr = etree.Element('tr', lang='en')
+    #         tr.text = m.text
+    #         m.text = ""
+    #         m.append(tr)
+    #         logging.info(f"adding translation for method '{m.get('name')}'")
+    #     else:
+    #         find_no_tr(in_file, "tr", lang, m)
 
     etree.indent(xml, space=" ", level=4)
 

@@ -80,16 +80,45 @@ def find_no_tr(file: str, path: str, lang: str, root):
             tr.set("finished", "false")
 
 
-def check_translations(xml, lang: str):
+def check_translations(xml, lang: str, verbose: bool):
     xml.xinclude()
     root = xml.getroot()
+    check_description_tr(lang, root, verbose)
+    check_categories_tr(lang, root, verbose)
+
+
+def check_categories_tr(lang, root, verbose):
+    all_cats = root.xpath(f"//*/category[@name]")
+    info_cats = root.xpath(f"//*/category-info")
+    tr_cats = root.xpath(f"//*/category-info/tr[@lang='{lang}']")
+    all_cats_set = set(map(lambda x: x.get("name"), all_cats))
+    info_cats_set = set(map(lambda x: x.getparent().get("name"), info_cats))
+    no_info_cats_set = all_cats_set - info_cats_set
+    logging.info(f"info categories:        {len(info_cats):8}\n"
+                 f"translated categories:  {len(tr_cats):8}\n"
+                 f"total categories:       {len(all_cats):8}")
+    if verbose and len(no_info_cats_set) > 0:
+        logging.warning(
+            f"categories without info ({len(no_info_cats_set)}):\n\t{'\n\t'.join(sorted(list(no_info_cats_set)))}")
+    tr_cats_set = set(map(lambda x: x.getparent().getparent().get("name"), tr_cats))
+    no_tr_cats_set = all_cats_set - tr_cats_set
+    if verbose and len(no_tr_cats_set) > 0:
+        logging.warning(
+            f"categories without '{lang}' tr ({len(no_tr_cats_set)}):\n\t{'\n\t'.join(sorted(list(no_tr_cats_set)))}")
+
+
+def check_description_tr(lang, root, verbose):
     num_obj = len(root.xpath(f"//*/object"))
     num_tr = len(root.xpath(f"//*/description/tr[@lang='{lang}' and (not(@finished) or @finished!='false')]"))
-    num_unfinished = len(root.xpath(f"//*/description/tr[@lang='{lang}' and @finished='false']"))
+    unfinished = root.xpath(f"//*/description/tr[@lang='{lang}' and @finished='false']")
     logging.info(f"translated objects:      {num_tr: 8}\n"
-                 f"unfinished translations: {num_unfinished: 8}\n"
+                 f"unfinished translations: {len(unfinished): 8}\n"
                  f"total objects:           {num_obj: 8}\n"
                  f"progress:                {int(num_tr / num_obj * 100): 7}%")
+    if verbose and len(unfinished) > 0:
+        # object/meta/description/tr
+        obj_lst = list(map(lambda x: "[" + x.getparent().getparent().getparent().get("name") + "]", unfinished))
+        logging.warning(f"unfinished translations for '{lang}':\n\t{'\n\t'.join(obj_lst)}")
 
 
 def main():
@@ -98,18 +127,20 @@ def main():
     arg_parser.add_argument('--lang', '-l', metavar='LANG', choices=("ru",), default='ru',
                             help='language (currently "ru")')
     arg_parser.add_argument('--check', '-c', action='store_true', help='checks translations')
+    arg_parser.add_argument('--verbose', '-v', action='store_true', help='verbose output')
     arg_parser.add_argument('--in-place', '-i', action='store_true', help='format in place (overwrite source file)')
 
     args = vars(arg_parser.parse_args())
     in_file = args['name']
     lang = args['lang']
+    verbose = args['verbose']
 
     xml = etree.parse(in_file)
     if not xml:
         exit(-1)
 
     if args['check']:
-        return check_translations(xml, lang)
+        return check_translations(xml, lang, verbose)
 
     # xml.xinclude()
     root = xml.getroot()
@@ -139,6 +170,8 @@ def main():
     else:
         print(etree.tostring(xml, pretty_print=True, encoding="UTF-8", xml_declaration=True,
                              method="xml").decode())
+
+    return 0
 
 
 if __name__ == '__main__':

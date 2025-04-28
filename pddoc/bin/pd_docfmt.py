@@ -110,7 +110,12 @@ def main():
                                        method="xml",
                                        doctype='<?xml version="1.0" encoding="utf-8"?>')
     else:
-        print(etree.tostring(pddoc, pretty_print=True, encoding="UTF-8", xml_declaration=True, method="xml").decode())
+        print(etree.tostring(pddoc,
+                             pretty_print=True,
+                             encoding="UTF-8",
+                             xml_declaration=False,
+                             method="xml",
+                             doctype='<?xml version="1.0" encoding="utf-8"?>').decode())
 
 
 if __name__ == '__main__':

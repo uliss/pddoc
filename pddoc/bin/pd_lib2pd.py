@@ -31,6 +31,8 @@ def main():
     arg_parser.add_argument('input', metavar='INPUT', help="Library description file in XML format")
     arg_parser.add_argument('--locale', '-l', metavar='NAME', choices=("EN", "RU"), default='EN',
                             help='locale (currently EN or RU)')
+    arg_parser.add_argument('--xlet-db-dir', metavar='PATH', action='append',
+                            help='inlet/outlet database file directory', default=[])
     args = vars(arg_parser.parse_args())
 
     lang = args['locale'].lower()
@@ -41,6 +43,9 @@ def main():
 
     lp = LibraryParser(args['input'])
     lp.lang = lang
+    for db in args['xlet_db_dir']:
+        lp.add_xlet_db_dir(db)
+
     lp.process()
     # lp.process_categories()
     with open(lp.lib_name() + "-help.pd", "w") as f:

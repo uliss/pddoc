@@ -17,6 +17,7 @@
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
 import logging
+import os.path
 import re
 
 from lxml import etree
@@ -67,6 +68,10 @@ class LibraryParser(object):
         self._current_y = self.HEADER_HEIGHT + 10
         self._pd_cats = {}
         self._pp = PdPage("lib", self.WINDOW_WIDTH, self.WINDOW_HEIGHT)
+        self._xlet_db: list[str] = []
+
+    def add_xlet_db_dir(self, path):
+        self._xlet_db.append(path)
 
     @property
     def lang(self):
@@ -121,7 +126,10 @@ class LibraryParser(object):
             self.add_object_description(e, cat_name)
 
     def add_xlet_db(self):
-        PdObject.xlet_calculator.add_db(self._lib_name + ".db")
+        for db in self._xlet_db:
+            path = os.path.join(db, self._lib_name + ".db")
+            if os.path.exists(path):
+                PdObject.xlet_calculator.add_db(path)
 
     def get_lib_name(self):
         self._lib_name = self._root.get("name")

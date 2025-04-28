@@ -29,10 +29,12 @@ from lxml import etree
 def check_description_tr(tool, lang: str, root, verbose: bool):
     descriptions = root.xpath(f"//*/description/tr[@lang='{lang}' and (not(@finished) or @finished!='false')]")
     for d in descriptions:
-        # tool.check(d.text)
-        correct = tool.correct(d.text)
-        if correct != d.text:
-            logging.warning(f"source: {d.text}\n"
+        src_text = ' '.join(d.text.split())
+        correct = tool.correct(src_text)
+        if correct != src_text:
+            objname = d.getparent().getparent().getparent().get("name")
+            logging.debug(f"[{objname}]")
+            logging.warning(f"source: {src_text}\n"
                             f"update: {correct}\n")
 
 
@@ -56,7 +58,8 @@ def main():
     xml.xinclude()
     root = xml.getroot()
 
-    tool = language_tool_python.LanguageTool('en-US')
+    tool = language_tool_python.LanguageTool('en-US',
+                                             config={'rulesFile': '.languagetool.cfg'})
 
     check_description_tr(tool, lang, root, verbose)
 

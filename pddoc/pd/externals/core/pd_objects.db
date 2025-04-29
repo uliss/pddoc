@@ -20,6 +20,7 @@ catch~          -       ~
 change          .       .
 clip            ...     .
 clip~           ~..     ~
+clone           ..      .
 comport         .       ..
 cos             .       .
 cos~            ~       ~
@@ -53,6 +54,7 @@ freeverb~       ~~      ~~
 ftom            .       .
 ftom~           ~       ~
 getsize         .       .
+hilbert~        .       ..
 hip~            ~.      ~
 ifft~           ~~      ~~
 import          .       ..
@@ -86,6 +88,7 @@ noise~          .       ~
 noteout         ...     -
 openpanel       .       .
 osc~            ~.      ~
+oscformat       .       .
 outlet          .       -
 outlet~         ~       -
 pgmout          ..      -
@@ -166,3 +169,4 @@ wrap~           ~       ~
 +,-,*,/,%,!-,!/ ..      .
 ==,!=,<,>,>=,<= ..      .
 &,&&,|,||       ..      .
+<<,>>           ..      .

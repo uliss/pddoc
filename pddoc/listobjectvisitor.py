@@ -21,7 +21,7 @@ __author__ = 'Serge Poltavski'
 
 import logging
 
-from .docobject import DocPdascii, DocAlias, DocSee, DocMethod, DocProperty
+from .docobject import DocPdascii, DocAlias, DocSee, DocMethod, DocProperty, DocKeywords
 from .idocobjectvisitor import IDocObjectVisitor
 from .txt.parser import Parser
 
@@ -34,7 +34,8 @@ class ListObjectVisitor(IDocObjectVisitor):
                  show_objects: bool = False,
                  show_aliases: bool = False,
                  show_methods: bool = False,
-                 show_properties: bool = False):
+                 show_properties: bool = False,
+                 show_keywords: bool = False):
 
         IDocObjectVisitor.__init__(self)
 
@@ -43,10 +44,12 @@ class ListObjectVisitor(IDocObjectVisitor):
         self._show_aliases = show_aliases
         self._show_properties = show_properties
         self._show_methods = show_methods
+        self._show_keywords = show_keywords
 
         self._objects: set[str] = set()
         self._methods: set[str] = set()
         self._properties: set[str] = set()
+        self._keywords: set[str] = set()
 
     def __str__(self):
         if self._show_objects or self._show_aliases:
@@ -58,6 +61,9 @@ class ListObjectVisitor(IDocObjectVisitor):
         if self._show_properties:
             return '\n'.join(sorted(self._properties))
 
+        if self._show_keywords:
+            return '\n'.join(sorted(self._keywords))
+
         return ''
 
     def alias_begin(self, a: DocAlias):
@@ -67,6 +73,10 @@ class ListObjectVisitor(IDocObjectVisitor):
     def method_begin(self, m: DocMethod):
         if self._show_methods:
             self._methods.add(m.name())
+
+    def keywords_begin(self, kw: DocKeywords):
+        if self._show_keywords:
+            self._keywords |= set(kw.keywords())
 
     def property_begin(self, p: DocProperty):
         if self._show_properties:

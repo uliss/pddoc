@@ -33,6 +33,7 @@ def main():
     arg_parser.add_argument('--objects', '-o', action='store_true', help='list objects')
     arg_parser.add_argument('--aliases', '-a', action='store_true', help='list object aliases')
     arg_parser.add_argument('--methods', '-m', action='store_true', help='list methods')
+    arg_parser.add_argument('--keywords', '-k', action='store_true', help='list keywords')
     arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC(XML) format")
 
     args = vars(arg_parser.parse_args())
@@ -41,6 +42,7 @@ def main():
     show_methods = args['methods']
     show_objects = args['objects']
     show_aliases = args['aliases']
+    show_keywords = args['keywords']
 
     xml = parse_xml(in_file)
 
@@ -55,7 +57,8 @@ def main():
             visitor = ListObjectVisitor(show_objects=show_objects,
                                         show_aliases=show_aliases,
                                         show_methods=show_methods,
-                                        show_properties=show_properties)
+                                        show_properties=show_properties,
+                                        show_keywords=show_keywords)
             obj.traverse(visitor)
             print(visitor)
 

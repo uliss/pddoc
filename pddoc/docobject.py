@@ -491,7 +491,7 @@ class DocWebsite(DocItem):
 class DocKeywords(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
-        self._keywords = []
+        self._keywords: list[str] = []
 
     def from_xml(self, xmlobj):
         self._keywords = xmlobj.text.split(" ")

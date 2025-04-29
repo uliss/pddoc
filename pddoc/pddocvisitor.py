@@ -73,7 +73,6 @@ class PdDocVisitor(DocObjectVisitor):
     PD_HEADER_FONT_SIZE = 20
     PD_HEADER_COLOR = Color(0, 255, 255)
     PD_HEADER_BG_COLOR = Color(100, 100, 100)
-    PD_EXAMPLE_YOFFSET = 30
     PD_FOOTER_HEIGHT = 48
     PD_FOOTER_COLOR = Color(180, 180, 180)
     PD_INFO_WINDOW_WIDTH = 400
@@ -87,6 +86,10 @@ class PdDocVisitor(DocObjectVisitor):
 
     def __init__(self):
         DocObjectVisitor.__init__(self)
+        # object constants
+        self.PD_EXAMPLE_X_OFFSET = 30
+        self.DESCRIPTION_HEIGHT = 10
+
         self.current_yoff = 0
         self._pp = PdPage("obj", self.PD_WINDOW_WIDTH, self.PD_WINDOW_HEIGHT)
 
@@ -95,28 +98,31 @@ class PdDocVisitor(DocObjectVisitor):
         self.current_yoff += self.PD_HEADER_HEIGHT
         self.current_yoff += 30
 
+    def abs_description_y_pos(self) -> int:
+        return self.PD_HEADER_HEIGHT + 10
+
     def description_begin(self, d):
         super(self.__class__, self).description_begin(d)
-        self._pp.add_description(self._description, self.PD_HEADER_HEIGHT + 10)
+        bbox = self._pp.add_description(self._description, self.abs_description_y_pos())
+        self.DESCRIPTION_HEIGHT = bbox.height
 
     def pdascii_begin(self, t):
         cnv = super(self.__class__, self).pdascii_begin(t)
         # insert only first example
         if t.id() == 'main':
-            self.copy_canvas_objects(cnv)
+            self.copy_canvas_objects(cnv, self.PD_EXAMPLE_X_OFFSET, self.current_yoff)
             self.copy_canvas_connections(cnv)
-
+            # update page y-offset
             self.current_yoff += cnv.height
-            # self.current_yoff += self.PD_EXAMPLE_YOFFSET
 
     def copy_canvas_connections(self, cnv):
         for conn in cnv.connections.values():
             self._pp.canvas.add_connection(conn[0].id, conn[1], conn[2].id, conn[3])
 
-    def copy_canvas_objects(self, cnv):
+    def copy_canvas_objects(self, cnv, xoff: int, yoff: int):
         for obj in cnv.objects:
-            obj.y += self.current_yoff
-            obj.x += self.PD_EXAMPLE_YOFFSET
+            obj.x += xoff
+            obj.y += yoff
             self._pp.append_object(obj)
 
     def pdinclude_begin(self, t):
@@ -126,7 +132,7 @@ class PdDocVisitor(DocObjectVisitor):
         pd_parser = Parser()
         pd_parser.parse(t.file())
         cnv = pd_parser.canvas
-        self.copy_canvas_objects(cnv)
+        self.copy_canvas_objects(cnv, self.PD_EXAMPLE_X_OFFSET, self.current_yoff)
         self.copy_canvas_connections(cnv)
         self.current_yoff += cnv.height
 
@@ -391,6 +397,12 @@ class PdDocVisitor(DocObjectVisitor):
         br = self._pp.group_brect(info + props)
         self.current_yoff += br[3] + 12
 
+    def abs_info_y_pos(self) -> int:
+        return self.abs_description_y_pos() + self.DESCRIPTION_HEIGHT + 10
+
+    def info_background_width(self) -> int:
+        return (self._pp.width - self.PD_XLET_INFO_XPOS) + 10
+
     def info_begin(self, info):
         lst = []
         XPOS = self.PD_XLET_INFO_XPOS - 30
@@ -409,12 +421,11 @@ class PdDocVisitor(DocObjectVisitor):
                 lst.append(a)
                 setattr(a, 'wiki_txt', True)
 
-        self._pp.place_in_col(lst, self.PD_HEADER_HEIGHT + 40, 10)
-
-        brect = self._pp.group_brect(lst)
-        bg = self._pp.make_background(brect[0] - 5, brect[1],
-                                      self._pp.width - self.PD_XLET_INFO_XPOS + 15,
-                                      brect[3] + 20, PdPageStyle.MAIN_BG_COLOR)
+        brect = self._pp.place_in_col(lst, self.abs_info_y_pos(), 10)
+        brect.width = self.info_background_width()
+        brect.expand(10, 0, 5, 15)
+        bg = self._pp.make_background(brect.x, brect.y, brect.width, brect.height,
+                                      PdPageStyle.MAIN_BG_COLOR)
         self._pp.append_object(bg)
 
         # place "Wiki:" before wiki link
@@ -427,7 +438,7 @@ class PdDocVisitor(DocObjectVisitor):
                 obj.y += 2
 
         self._pp.append_list(lst)
-        self.current_yoff = brect[1] + brect[3]
+        self.current_yoff = brect.bottom()
 
     def argument_begin(self, arg: DocArgument):
         y = self.current_yoff

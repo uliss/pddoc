@@ -3,7 +3,7 @@
 import re
 from typing import List
 
-from . import Rectangle
+from . import Rectangle, Point
 from .pd.baseobject import BaseObject
 from .pd.brectcalculator import BRectCalculator
 from .pd.canvas import Canvas
@@ -200,7 +200,7 @@ class PdPage(object):
         self._canvas.append_object(lnk)
         return lnk
 
-    def add_bg_txt(self, txt: str, color: Color, x: int, y: int):
+    def add_bg_txt(self, txt: str, color: Color, x: int, y: int) -> tuple[Comment, GCanvas]:
         t = self.make_txt(txt, x, y)
         t.calc_brect()
         bg = self.make_background(x, y, t.width + 8, t.height + 8, color=color)
@@ -209,10 +209,10 @@ class PdPage(object):
         return t, bg
 
     def add_description(self, txt: str, y: int) -> Rectangle:
-        d = self.add_bg_txt(txt, PdPageStyle.INFO_BG_COLOR, 0, y)
-        br = self.group_brect(list(d))
-        self.move_to_x(d, self._width - br[2] - 20)
-        return Rectangle.from_tuple(br)
+        (comm, bg) = self.add_bg_txt(txt, PdPageStyle.INFO_BG_COLOR, 0, y)
+        bg.x = self._width - (bg.width + PdPageStyle.HEADER_RIGHT_MARGIN)
+        comm.x = bg.x + 5  # comment x-padding from background rect
+        return bg.bounding_rect()
 
     # return label object, hrule and their bbox
     def add_section(self, title: str, y: int):
@@ -331,13 +331,18 @@ class PdPage(object):
             x += o.width + x_pad
 
     @staticmethod
-    def place_in_col(seq: List[PdObject], y: int, y_pad: int = 0):
+    def place_in_col(seq: List[PdObject], y: int, y_pad: int = 0) -> Rectangle:
         for o in seq:
             o.calc_brect()
 
         for o in seq:
             o.y = y
             y += o.height + y_pad
+
+        if len(seq) > 0:
+            return Rectangle.from_points(Point(seq[0].x, seq[0].y), Point(seq[-1].right, seq[-1].bottom))
+        else:
+            return Rectangle(Point(0, y), 0, 0)
 
     def to_string(self):
         pd_exporter = PdExporter()

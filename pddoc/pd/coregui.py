@@ -132,7 +132,7 @@ class CoreGui(PdObject):
 
     @classmethod
     def is_coregui(cls, name):
-        return name in ("bng", "tgl", "floatatom", "symbolatom",
+        return name in ("bng", "tgl", "floatatom", "symbolatom", "listbox",
                         "nbx", "hslider", "vslider", "vsl", "hsl", "vu",
                         "hrd", "vrd", "hradio", "vradio")
 

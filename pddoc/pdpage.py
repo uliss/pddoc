@@ -3,6 +3,7 @@
 import re
 from typing import List
 
+from . import Rectangle
 from .pd.baseobject import BaseObject
 from .pd.brectcalculator import BRectCalculator
 from .pd.canvas import Canvas
@@ -207,10 +208,11 @@ class PdPage(object):
         self._canvas.append_object(t)
         return t, bg
 
-    def add_description(self, txt: str, y: int):
+    def add_description(self, txt: str, y: int) -> Rectangle:
         d = self.add_bg_txt(txt, PdPageStyle.INFO_BG_COLOR, 0, y)
         br = self.group_brect(list(d))
         self.move_to_x(d, self._width - br[2] - 20)
+        return Rectangle.from_tuple(br)
 
     # return label object, hrule and their bbox
     def add_section(self, title: str, y: int):

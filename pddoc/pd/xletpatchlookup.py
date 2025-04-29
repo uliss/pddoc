@@ -62,14 +62,14 @@ class ObjectRecord(object):
 
 
 class XletPatchLookup(XletDatabase):
-    lines_re = re.compile("(#(.*?)[^\\\])\r?\n?;\r?\n", re.MULTILINE | re.DOTALL)
-    split_re = re.compile(" |\r\n?|\n", re.MULTILINE)
+    lines_re = re.compile("(#(.*?)[^\\\\])\r?\n?;\r?\n", re.MULTILINE | re.DOTALL)
+    split_re = re.compile(r" |\r\n?|\n", re.MULTILINE)
 
     def __init__(self, dirs=None):
         XletDatabase.__init__(self, "pdpatch")
         if dirs is None:
             dirs = []
-        self._dirs = dirs
+        self._dirs: list[str] = dirs
         self._dirs.append(os.getcwd())
         self._cache = {}
 

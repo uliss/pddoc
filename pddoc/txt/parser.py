@@ -446,11 +446,11 @@ class Parser(object):
 
         if src and dest:
             if len(src.pd_object.outlets()) == 0:
-                logging.error(f"no outlets in source object: {src.id}")
+                logging.error(f"no outlets in source object: [{src.pd_object.name}] id={src.id}")
                 return
 
             if len(src.pd_object.inlets()) == 0:
-                logging.error(f"no inlets in source object: {src.id}")
+                logging.error(f"no inlets in source object: [{src.pd_object.name}] id={src.id}")
                 return
 
             c1 = copy.deepcopy(conn)

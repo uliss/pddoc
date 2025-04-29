@@ -11,6 +11,9 @@ class Point:
         self._x = x
         self._y = y
 
+    def __str__(self):
+        return "Point({x}, {y})".format(x=self._x, y=self._y)
+
     @property
     def x(self):
         return self._x
@@ -33,6 +36,9 @@ class Rectangle:
         self._pos = pos
         self._width = width
         self._height = height
+
+    def __str__(self):
+        return f"Rectangle({self.x}, {self.y} {self.width}x{self.height})"
 
     @staticmethod
     def from_points(p0: Point, p1: Point):
@@ -90,3 +96,9 @@ class Rectangle:
 
     def bottom(self):
         return self.y + self.height
+
+    def expand(self, left: int, right: int, top: int, bottom: int):
+        self.x -= left
+        self.y -= top
+        self.width += left + right
+        self.height += top + bottom

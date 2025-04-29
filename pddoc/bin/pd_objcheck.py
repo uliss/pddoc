@@ -26,7 +26,7 @@ from pddoc.pd import factory
 from pddoc.pd.obj import PdObject
 from pddoc.pd.xletcalculator import XletCalculator
 
-xcalc = XletCalculator()
+xcalc = XletCalculator(load_externals=False)
 
 
 def add_xlet_db(path_list):
@@ -41,22 +41,31 @@ def main():
     arg_parser = argparse.ArgumentParser(description='PureData object checker')
     arg_parser.add_argument('name', metavar='OBJECT_NAME', help="PureData object name, for ex.: osc~")
     arg_parser.add_argument('args', metavar='OBJECT_ARGS', nargs='*', help="PureData object arguments")
+    arg_parser.add_argument('--search-paths', '-p', metavar='PATH', default=[], nargs='+', help="adds search paths")
     arg_parser.add_argument('--xlet-db', '-x', metavar='PATH', action='append',
                             help='inlet/outlet database file path', default=[])
+    arg_parser.add_argument("--debug", action="store_true", help="enable debug mode")
 
     args = vars(arg_parser.parse_args())
+    if args['debug']:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
+
     add_xlet_db(args['xlet_db'])
 
-    obj = factory.make_by_name(args['name'], args['args'])
+    for path in args['search_paths']:
+        xcalc.add_patch_search_path(path)
 
+    obj = factory.make_by_name(args['name'], args['args'])
     if type(obj) != PdObject:
         print('core:', obj.name)
-        return
+        return 0
 
     found = False
     db_name = ""
 
-    for db in xcalc.databases:
+    for db in reversed(xcalc.databases):
         if db.has_object(obj.name):
             found = True
             db_name = db.extname

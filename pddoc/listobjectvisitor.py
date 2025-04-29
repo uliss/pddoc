@@ -21,7 +21,7 @@ __author__ = 'Serge Poltavski'
 
 import logging
 
-from .docobject import DocPdascii
+from .docobject import DocPdascii, DocAlias, DocSee, DocMethod, DocProperty
 from .idocobjectvisitor import IDocObjectVisitor
 from .txt.parser import Parser
 
@@ -30,14 +30,52 @@ class ListObjectVisitor(IDocObjectVisitor):
     def render(self):
         pass
 
-    def __init__(self):
-        IDocObjectVisitor.__init__(self)
-        self._pdascii = None
+    def __init__(self,
+                 show_objects: bool = False,
+                 show_aliases: bool = False,
+                 show_methods: bool = False,
+                 show_properties: bool = False):
 
-    def alias_begin(self, a):
-        print(a.text())
+        IDocObjectVisitor.__init__(self)
+
+        self._pdascii = None
+        self._show_objects = show_objects
+        self._show_aliases = show_aliases
+        self._show_properties = show_properties
+        self._show_methods = show_methods
+
+        self._objects: set[str] = set()
+        self._methods: set[str] = set()
+        self._properties: set[str] = set()
+
+    def __str__(self):
+        if self._show_objects or self._show_aliases:
+            return '\n'.join(sorted(self._objects))
+
+        if self._show_methods:
+            return '\n'.join(sorted(self._methods))
+
+        if self._show_properties:
+            return '\n'.join(sorted(self._properties))
+
+        return ''
+
+    def alias_begin(self, a: DocAlias):
+        if self._show_objects or self._show_aliases:
+            self._objects.add(a.text())
+
+    def method_begin(self, m: DocMethod):
+        if self._show_methods:
+            self._methods.add(m.name())
+
+    def property_begin(self, p: DocProperty):
+        if self._show_properties:
+            self._properties.add(p.name())
 
     def pdascii_begin(self, pdascii: DocPdascii):
+        if not self._show_objects:
+            return
+
         self._pdascii = pdascii.text()
 
         p = Parser()
@@ -45,7 +83,8 @@ class ListObjectVisitor(IDocObjectVisitor):
             logging.info("<pdascii> parse failed: {0}".format(self._pdascii))
 
         for n in filter(lambda x: x.is_object() and x.pd_object is not None and x.type == 'OBJECT', p.nodes):
-            print(n.pd_object.to_string())
+            self._objects.add(n.pd_object.to_string())
 
-    def see_begin(self, see):
-        print(see.text())
+    def see_begin(self, see: DocSee):
+        if self._show_objects:
+            self._objects.add(see.text())

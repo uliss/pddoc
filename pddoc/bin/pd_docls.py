@@ -31,11 +31,16 @@ def main():
     arg_parser = argparse.ArgumentParser(description='list PureData objects in pddoc')
     arg_parser.add_argument('--properties', '-p', action='store_true', help='list properties')
     arg_parser.add_argument('--objects', '-o', action='store_true', help='list objects')
+    arg_parser.add_argument('--aliases', '-a', action='store_true', help='list object aliases')
     arg_parser.add_argument('--methods', '-m', action='store_true', help='list methods')
     arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC(XML) format")
 
     args = vars(arg_parser.parse_args())
     in_file = args['name']
+    show_properties = args['properties']
+    show_methods = args['methods']
+    show_objects = args['objects']
+    show_aliases = args['aliases']
 
     xml = parse_xml(in_file)
 
@@ -45,9 +50,14 @@ def main():
     pddoc = xml.getroot()
     for child_tag in pddoc:
         if child_tag.tag == "object":
-            dobj = DocObject()
-            dobj.from_xml(child_tag)
-            dobj.traverse(ListObjectVisitor())
+            obj = DocObject()
+            obj.from_xml(child_tag)
+            visitor = ListObjectVisitor(show_objects=show_objects,
+                                        show_aliases=show_aliases,
+                                        show_methods=show_methods,
+                                        show_properties=show_properties)
+            obj.traverse(visitor)
+            print(visitor)
 
 
 if __name__ == '__main__':

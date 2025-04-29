@@ -41,6 +41,8 @@ def parse_xml(path):
 
     try:
         dirname = os.path.dirname(path)
+        if len(dirname) == 0:
+            dirname = os.getcwd()
 
         etree.register_namespace("xi", "http://www.w3.org/2001/XInclude")
         xml = etree.parse(path)
@@ -50,8 +52,7 @@ def parse_xml(path):
             if ref.attrib.get("subst", "true") != "false":
                 tmpl = Template(prop_xml.getroot().text)
                 obj_name = os.path.basename(path)[:-6]  # strip .pddoc extension
-                obj_name = obj_name.replace("~", "")
-                obj_name = obj_name.replace(".", "_")
+                obj_name = obj_name.replace("~", "").replace(".", "_")
                 txt = tmpl.substitute(obj=obj_name)
                 prop_xml.getroot().text = txt
 

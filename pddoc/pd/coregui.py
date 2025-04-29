@@ -26,6 +26,7 @@ from termcolor import colored
 from pddoc.pdpainter import PdPainter
 from .constants import XLET_GUI
 from .obj import *
+from .. import Rectangle, Point
 
 
 class Color:
@@ -254,6 +255,11 @@ class CoreGui(PdObject):
             else:
                 logging.warning("invalid label position: {0:s}".format(pos))
                 return None
+        else:
+            return None
 
     def to_atoms(self):
         return {}
+
+    def bounding_rect(self) -> Rectangle:
+        return Rectangle(Point(self.x, self.y), self.width, self.height)

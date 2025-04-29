@@ -93,7 +93,7 @@ class ListObjectVisitor(IDocObjectVisitor):
             logging.info("<pdascii> parse failed: {0}".format(self._pdascii))
 
         for n in filter(lambda x: x.is_object() and x.pd_object is not None and x.type == 'OBJECT', p.nodes):
-            self._objects.add(n.pd_object.to_string())
+            self._objects.add(n.pd_object.to_string().split()[0])
 
     def see_begin(self, see: DocSee):
         if self._show_objects:

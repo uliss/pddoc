@@ -30,8 +30,8 @@ from .message import Message
 
 
 class Parser:
-    lines_re = re.compile("^(#(.*?)[^\\\])\r?\n?;\r?\n", re.MULTILINE | re.DOTALL)
-    split_re = re.compile(" |\r\n?|\n", re.MULTILINE)
+    lines_re = re.compile("^(#(.*?)[^\\\\])\r?\n?;\r?\n", re.MULTILINE | re.DOTALL)
+    split_re = re.compile(r" |\r\n?|\n", re.MULTILINE)
 
     def __init__(self):
         self.canvas: Canvas = None
@@ -210,7 +210,7 @@ class Parser:
         elif name == "restore":
             # end canvas definition
             self.parse_restore(atoms[1:])
-        elif name in ("floatatom", "symbolatom"):
+        elif name in ("floatatom", "symbolatom", "listbox"):
             obj = make(atoms)
             self.current_canvas().append_object(obj)
         elif name == "array":

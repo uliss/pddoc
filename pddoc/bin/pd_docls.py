@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # coding=utf-8
-from __future__ import print_function
 
 import argparse
+import logging
+
+from lxml import etree
 
 from pddoc.docobject import DocObject
 from pddoc.listobjectvisitor import ListObjectVisitor
@@ -27,13 +29,41 @@ from pddoc.parser import parse_xml
 __author__ = 'Serge Poltavski'
 
 
+def list_objects_in_category(path: str, name: str):
+    xml = etree.parse(path)
+    xml.xinclude()
+    root = xml.getroot()
+
+    objects: list[str] = []
+    for obj in root.xpath(f"//library/category[@name='{name}']/entry"):
+        objects.append(obj.get("name"))
+
+    print('\n'.join(sorted(objects)))
+
+
+def list_library_categories(path: str):
+    xml = etree.parse(path)
+    xml.xinclude()
+    root = xml.getroot()
+
+    cats: list[str] = []
+
+    for cat in root.xpath("//library/category[@name]"):
+        cats.append(cat.get("name"))
+
+    print('\n'.join(sorted(cats)))
+
+
 def main():
-    arg_parser = argparse.ArgumentParser(description='list PureData objects in pddoc')
+    arg_parser = argparse.ArgumentParser(description='list pddoc file or library information')
     arg_parser.add_argument('--properties', '-p', action='store_true', help='list properties')
     arg_parser.add_argument('--objects', '-o', action='store_true', help='list objects')
     arg_parser.add_argument('--aliases', '-a', action='store_true', help='list object aliases')
     arg_parser.add_argument('--methods', '-m', action='store_true', help='list methods')
     arg_parser.add_argument('--keywords', '-k', action='store_true', help='list keywords')
+    arg_parser.add_argument('--categories', '-c', action='store_true', help='list library categories')
+    arg_parser.add_argument('--categories-objects', '-co', metavar='CAT_NAME',
+                            type=str, help='list objects in category')
     arg_parser.add_argument('name', metavar='PDDOC', help="Documentation file in PDDOC(XML) format")
 
     args = vars(arg_parser.parse_args())
@@ -43,6 +73,17 @@ def main():
     show_objects = args['objects']
     show_aliases = args['aliases']
     show_keywords = args['keywords']
+    show_categories = args['categories']
+    cat_name = args['categories_objects']
+
+    if in_file.endswith('.xml'):
+        if show_categories:
+            return list_library_categories(in_file)
+        elif len(cat_name) > 0:
+            return list_objects_in_category(in_file, cat_name)
+        else:
+            logging.error(f"no valid options for PDDOC library file")
+            exit(1)
 
     xml = parse_xml(in_file)
 
@@ -61,6 +102,8 @@ def main():
                                         show_keywords=show_keywords)
             obj.traverse(visitor)
             print(visitor)
+
+    return 0
 
 
 if __name__ == '__main__':

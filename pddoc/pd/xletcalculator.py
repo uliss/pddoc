@@ -24,41 +24,49 @@ import os
 from .baseobject import BaseObject
 from .constants import EXTERNALS_DIR
 from .xletcalcdatabase import XletCalcDatabase
-from .xletdatabase import XletMemoryDatabase
+from .xletdatabase import XletMemoryDatabase, XletDatabase
 from .xletpatchlookup import XletPatchLookup
 from .xlettextdatabase import XletTextDatabase
 
 
 class XletCalculator(object):
-    def __init__(self, dbname=None):
+    def __init__(self, dbname=None, load_externals=True):
         ext_dir = EXTERNALS_DIR
 
         self.mem_db = XletMemoryDatabase("default_memory")
 
-        self._dbs = [self.mem_db]
+        self._dbs: list[XletDatabase] = [self.mem_db]
         self._dbs.append(XletTextDatabase(os.path.join(ext_dir, 'core/pd_objects.db'), "core"))
         self._dbs.append(XletCalcDatabase(os.path.join(ext_dir, 'core/xletsdb_core.py'), "core"))
         self._dbs.append(XletCalcDatabase(os.path.join(ext_dir, 'ceammc/xletsdb.py'), "ceammc"))
 
-        for paths in os.walk(ext_dir):
-            for text_db in [f for f in paths[2] if f.endswith(".db")]:
-                extname = os.path.basename(paths[0])
-                txt_db = XletTextDatabase(os.path.join(paths[0], text_db), extname)
-                self._dbs.append(txt_db)
+        if load_externals:
+            for paths in os.walk(ext_dir):
+                for text_db in [f for f in paths[2] if f.endswith(".db")]:
+                    extname = os.path.basename(paths[0])
+                    txt_db = XletTextDatabase(os.path.join(paths[0], text_db), extname)
+                    self._dbs.append(txt_db)
 
-            for calc_db in [f for f in paths[2] if f == "xletsdb.py"]:
-                extname = os.path.basename(paths[0])
-                calc_db = XletCalcDatabase(os.path.join(paths[0], calc_db), extname)
-                self._dbs.append(calc_db)
+                for calc_db in [f for f in paths[2] if f == "xletsdb.py"]:
+                    extname = os.path.basename(paths[0])
+                    calc_db = XletCalcDatabase(os.path.join(paths[0], calc_db), extname)
+                    self._dbs.append(calc_db)
 
-        self._dbs.append(XletPatchLookup())
+        self._patch_lookup = XletPatchLookup()
+        self._dbs.append(self._patch_lookup)
 
     @property
     def databases(self):
         return self._dbs
 
+    def add_to_memory(self, name: str):
+        self.mem_db.add_object(name, [], [])
+
     def add_db(self, path, name='user'):
         self._dbs.append(XletTextDatabase(path, name))
+
+    def add_patch_search_path(self, path: str):
+        self._patch_lookup.add_search_dir(path)
 
     @staticmethod
     def has_ext_prefix(obj: BaseObject):

@@ -53,31 +53,37 @@ def translate(txt: str, lang_from: str, lang_to: str):
 
 
 def find_no_tr(file: str, path: str, lang: str, root):
-    src_tr = root.find(f"{path}[@lang='en']")
-    if src_tr is None:  # no translation source found
+    tr_tags = root.findall(f"{path}[@lang='en']")
+    if len(tr_tags) == 0:  # no translation source found
         logging.warning(f"no translation source found for: {path} at '{file};")
         return
 
-    src_txt = clear_spaces(src_tr.text)
-    logging.debug(f"source: {src_txt}")
+    for tag in tr_tags:
+        src_txt = clear_spaces(tag.text)
+        logging.debug(f"source: {src_txt}")
 
-    tr = root.find(f"{path}[@lang='{lang}']")
-    if tr is None:  # no translation found
-        tr = copy.deepcopy(src_tr)
-        tr.text = translate(src_txt, 'en', lang)
-        tr.set("lang", lang)
-        tr.set("finished", "false")
-        src_tr.addnext(tr)
-    elif tr.get("finished", "true") == "true":  # skip finished translation
-        logging.info(f"skipping finished translation {path} at '{file}'")
-        return
-    else:
-        tr_txt = translate(src_txt, 'en', lang)
-        if tr.text != tr_txt:
-            c = etree.Comment(f" old: {tr.text} ")
-            tr.addprevious(c)
-            tr.text = tr_txt
+        tr = None
+        for x in tag.getparent():
+            if x.get("lang") == lang:
+                tr = x
+                break
+
+        if tr is None:  # no translation found
+            tr = copy.deepcopy(tag)
+            tr.text = translate(src_txt, 'en', lang)
+            tr.set("lang", lang)
             tr.set("finished", "false")
+            tag.addnext(tr)
+        elif tr.get("finished", "true") == "true":  # skip finished translation
+            logging.info(f"skipping finished translation {path} at '{file}'")
+            return
+        else:
+            tr_txt = translate(src_txt, 'en', lang)
+            if tr.text != tr_txt:
+                c = etree.Comment(f" old: {tr.text} ")
+                tr.addprevious(c)
+                tr.text = tr_txt
+                tr.set("finished", "false")
 
 
 def check_translations(xml, lang: str, verbose: bool):
@@ -157,21 +163,22 @@ def main():
 
     if args['translate']:
         find_no_tr(in_file, "object/meta/description/tr", lang, root)
+        find_no_tr(in_file, "object/arguments/argument/tr", lang, root)
 
     if args['update']:
         obj = root.find("object")
         if obj is not None:
             logging.debug(f"update object: [{obj.get('name')}]")
-        # add arguments translations
-        for arg in root.findall("object/arguments/argument"):
+        # add property translations
+        for arg in root.findall("object/properties/property"):
             if arg.find("tr") is None:
                 tr = etree.Element('tr', lang='en')
                 tr.text = clear_spaces(arg.text)
                 arg.text = ""
                 arg.append(tr)
-                logging.info(f"adding translation for argument '{arg.get('name')}'")
+                logging.info(f"adding translation for property '{arg.get('name')}'")
             else:
-                logging.debug(f"skipping translated argument: '{arg.get('name')}'")
+                logging.debug(f"skipping translated property: '{arg.get('name')}'")
 
     etree.indent(xml, space=" ", level=4)
 

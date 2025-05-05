@@ -35,7 +35,8 @@ def clear_spaces(txt: str) -> str:
 
 def find_translation(node, path: str, lang: str, default: str) -> str:
     tr = node.find(f"{path}/tr[@lang='{lang}']")
-    if tr is None:
+    # accept only finished translations
+    if tr is None or tr.attrib.get("finished", "true") == "false":
         tr = node.find(f"{path}/tr[@lang='en']")
         if tr is None:
             tr = node.find(f"{path}")

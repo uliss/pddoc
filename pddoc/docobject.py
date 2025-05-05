@@ -659,6 +659,11 @@ class DocOutlet(DocXlet):
         DocXlet.__init__(self, args)
 
 
+class DocTr(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, args)
+
+
 class DocArgument(DocItem):
     UNIT_MAP = {
         'hertz': 'Hz',
@@ -689,6 +694,7 @@ class DocArgument(DocItem):
         self._default = ""
         self._required = False
         self._enum = []
+        self._translations: dict[str, str] = {}
 
     def from_xml(self, xmlobj):
         self._name = xmlobj.attrib.get("name", "anonym")
@@ -709,7 +715,15 @@ class DocArgument(DocItem):
         if len(enum_str) > 1:
             self._enum = re.split("[ \n\t]+", enum_str)
 
+        for tr in xmlobj.findall("tr"):
+            lang = tr.attrib.get("lang", "en")
+            if tr.attrib.get("finished", "true") == "true":
+                self._translations[lang] = tr.text
+
         DocItem.from_xml(self, xmlobj)
+
+    def is_valid_tag(self, tag_name: str):
+        return tag_name == "tr"
 
     def type(self):
         return self._type
@@ -772,9 +786,15 @@ class DocArgument(DocItem):
         txt = cls.remove_end_dot(txt)
         return f"{txt}. {suffix}"
 
-    def main_info(self) -> str:
+    def translation(self, lang: str) -> str:
+        if lang != "en" and not lang is self._translations:
+            return self._translations.get("en", "")
+        else:
+            return self._translations.get(lang, "")
+
+    def main_info(self, lang: str) -> str:
         res = self.main_info_prefix()
-        res += self.text()
+        res += self.translation(lang)
         if res and len(self._enum) > 0:
             res = self.append_after_dot(res, _("Allowed values: {}").format(", ".join(self._enum)))
 

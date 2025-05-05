@@ -37,7 +37,7 @@ ${example}
             % for a in inlets:
                 <inlet>${i}</inlet>
             % endfor
-        <inlets>
+        </inlets>
         % endif
     </object>
 </pddoc>

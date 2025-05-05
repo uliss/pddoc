@@ -105,8 +105,9 @@
         </outlets>
         <!-- arguments documentation -->
         <arguments>
-            <argument type="float" name="first"> [float] accepts a single number as a creation
-                argument which sets the value that is stored.
+            <argument type="float" name="first">
+                <tr>[float] accepts a single number as a creation
+                argument which sets the value that is stored.</tr>
             </argument>
         </arguments>
         <!-- additional info -->

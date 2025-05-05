@@ -83,6 +83,7 @@ def find_no_tr(file: str, path: str, lang: str, root):
 def check_translations(xml, lang: str, verbose: bool):
     xml.xinclude()
     root = xml.getroot()
+
     check_description_tr(lang, root, verbose)
     check_categories_tr(lang, root, verbose)
 
@@ -108,17 +109,24 @@ def check_categories_tr(lang, root, verbose):
 
 
 def check_description_tr(lang, root, verbose):
-    num_obj = len(root.xpath(f"//*/object"))
-    num_tr = len(root.xpath(f"//*/description/tr[@lang='{lang}' and (not(@finished) or @finished!='false')]"))
+    num_obj = root.xpath(f"//*/object")
+    num_tr = root.xpath(f"//*/description/tr[@lang='{lang}' and (not(@finished) or @finished!='false')]")
     unfinished = root.xpath(f"//*/description/tr[@lang='{lang}' and @finished='false']")
-    logging.info(f"translated objects:      {num_tr: 8}\n"
+    logging.info(f"translated objects:      {len(num_tr): 8}\n"
                  f"unfinished translations: {len(unfinished): 8}\n"
-                 f"total objects:           {num_obj: 8}\n"
-                 f"progress:                {int(num_tr / num_obj * 100): 7}%")
+                 f"total objects:           {len(num_obj): 8}\n"
+                 f"progress:                {int(len(num_tr) / len(num_obj) * 100): 7}%")
+
     if verbose and len(unfinished) > 0:
         # object/meta/description/tr
         obj_lst = list(map(lambda x: "[" + x.getparent().getparent().getparent().get("name") + "]", unfinished))
         logging.warning(f"unfinished translations for '{lang}':\n\t{'\n\t'.join(obj_lst)}")
+
+        all_obj = set(map(lambda x: x.getparent().getparent().get("name"), num_obj))
+        all_tr = set(map(lambda x: x.getparent().getparent().getparent().get("name"), num_tr))
+        non_tr = all_obj - all_tr
+        logging.warning(f"non translated objects:")
+        logging.info(f"\t{'\n\t-> '.join(sorted(non_tr))}")
 
 
 def main():
@@ -126,6 +134,8 @@ def main():
     arg_parser.add_argument('name', metavar='PDDOC', help="pddoc file")
     arg_parser.add_argument('--lang', '-l', metavar='LANG', choices=("ru",), default='ru',
                             help='language (currently "ru")')
+    arg_parser.add_argument('--translate', '-t', action='store_true', help='translate pddoc')
+    arg_parser.add_argument('--update', '-u', action='store_true', help='update pddoc xml')
     arg_parser.add_argument('--check', '-c', action='store_true', help='checks translations')
     arg_parser.add_argument('--verbose', '-v', action='store_true', help='verbose output')
     arg_parser.add_argument('--in-place', '-i', action='store_true', help='format in place (overwrite source file)')
@@ -145,18 +155,23 @@ def main():
     # xml.xinclude()
     root = xml.getroot()
 
-    find_no_tr(in_file, "object/meta/description/tr", lang, root)
+    if args['translate']:
+        find_no_tr(in_file, "object/meta/description/tr", lang, root)
 
-    # add method translations
-    # for m in root.findall("object/methods/method"):
-    #     if m.find("tr") is None:
-    #         tr = etree.Element('tr', lang='en')
-    #         tr.text = m.text
-    #         m.text = ""
-    #         m.append(tr)
-    #         logging.info(f"adding translation for method '{m.get('name')}'")
-    #     else:
-    #         find_no_tr(in_file, "tr", lang, m)
+    if args['update']:
+        obj = root.find("object")
+        if obj is not None:
+            logging.debug(f"update object: [{obj.get('name')}]")
+        # add arguments translations
+        for arg in root.findall("object/arguments/argument"):
+            if arg.find("tr") is None:
+                tr = etree.Element('tr', lang='en')
+                tr.text = clear_spaces(arg.text)
+                arg.text = ""
+                arg.append(tr)
+                logging.info(f"adding translation for argument '{arg.get('name')}'")
+            else:
+                logging.debug(f"skipping translated argument: '{arg.get('name')}'")
 
     etree.indent(xml, space=" ", level=4)
 

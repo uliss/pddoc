@@ -169,7 +169,7 @@
         <xs:attribute name="version" use="required">
             <xs:simpleType>
                 <xs:restriction base="xs:string">
-                    <xs:pattern value="[0-9]+\.[0-9]+"/>
+                    <xs:pattern value="[1-9]+\.[0-9]+"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
@@ -450,17 +450,16 @@
     </xs:complexType>
 
     <xs:complexType name="ArgumentElementType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute name="name" use="required" type="xs:string"/>
-                <xs:attribute name="type" use="required" type="ArgumentDataType"/>
-                <xs:attribute name="units" type="UnitDataTypeEnum"/>
-                <xs:attribute name="minvalue" type="FloatNumberExt"/>
-                <xs:attribute name="maxvalue" type="FloatNumberExt"/>
-                <xs:attribute name="enum" type="xs:string"/>
-                <xs:attribute name="required" type="xs:boolean"/>
-            </xs:extension>
-        </xs:simpleContent>
+        <xs:sequence>
+            <xs:element name="tr" type="TranslationType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" use="required" type="xs:string"/>
+        <xs:attribute name="type" use="required" type="ArgumentDataType"/>
+        <xs:attribute name="units" type="UnitDataTypeEnum"/>
+        <xs:attribute name="minvalue" type="FloatNumberExt"/>
+        <xs:attribute name="maxvalue" type="FloatNumberExt"/>
+        <xs:attribute name="enum" type="xs:string"/>
+        <xs:attribute name="required" type="xs:boolean"/>
     </xs:complexType>
 
     <xs:complexType name="MethodArgumentElementType">

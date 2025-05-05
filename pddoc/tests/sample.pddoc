@@ -40,7 +40,7 @@
             <outlet>outputs bang all the time</outlet>
         </outlets>
         <arguments>
-            <argument name="FREQ" type="float">test</argument>
+            <argument name="FREQ" type="float"><tr>test</tr></argument>
         </arguments>
         <info>
             <par>sample text</par>

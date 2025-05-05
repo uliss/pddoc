@@ -256,6 +256,12 @@ class IDocObjectVisitor(object):
     def title_end(self, t):
         pass
 
+    def tr_begin(self, tr):
+        pass
+
+    def tr_end(self, tr):
+        pass
+
     def version_begin(self, v):
         pass
 

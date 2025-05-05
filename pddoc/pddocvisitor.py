@@ -55,10 +55,7 @@ def remove_text_dot(txt: str) -> str:
     if len(txt) == 0:
         return txt
 
-    if txt[-1] == '.':
-        return txt[0:-1]
-    else:
-        return txt
+    return txt.strip('.')
 
 
 def units_str(units) -> str:
@@ -452,7 +449,8 @@ class PdDocVisitor(DocObjectVisitor):
                                     self.PD_ARG_NAME_COLOR)
 
         rng = self.format_range(arg)
-        t3 = self._pp.add_txt("{0}. {1}".format(remove_text_dot(arg.main_info()), rng), self.PD_XLET_INFO_XPOS, y)
+        info = arg.main_info(self.lang)
+        t3 = self._pp.add_txt(f"{remove_text_dot(info)}. {rng}", self.PD_XLET_INFO_XPOS, y)
         __, __, __, h = self._pp.group_brect([t1, t2, t3])
         self.current_yoff += h + 5
 
@@ -479,7 +477,7 @@ class PdDocVisitor(DocObjectVisitor):
         return self._pp.to_string()
 
     @classmethod
-    def format_range(cls, obj):
+    def format_range(cls, obj) -> str:
         r = obj.range()
         if len(r) == 2:
             if not r[0]:

@@ -25,7 +25,9 @@
             </aliases>
         </meta>
         <properties>
-            <property name="@test" type="int" access="readonly" units="hertz" minvalue="0" maxvalue="1">test property</property>
+            <property name="@test" type="int" access="readonly" units="hertz" minvalue="0" maxvalue="1">
+                <tr>test property</tr>
+            </property>
         </properties>
         <inlets>
             <inlet type="control">

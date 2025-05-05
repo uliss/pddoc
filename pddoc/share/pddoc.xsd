@@ -488,6 +488,9 @@
     </xs:complexType>
 
     <xs:complexType name="PropertyElementType" mixed="true">
+         <xs:sequence>
+            <xs:element name="tr" type="TranslationType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="type" type="PropertyDataType" use="required"/>
         <xs:attribute name="access" type="PropAccessType" default="readwrite"/>

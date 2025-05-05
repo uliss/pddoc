@@ -26,11 +26,11 @@
         </meta>
         <properties>
             <property name="@int_prop" type="int" access="readwrite" units="hertz" minvalue="0" maxvalue="1">
-                test property</property>
-            <property name="@float_prop" type="float" access="readonly"  units="radian" minvalue="0">float
-                property</property>
-            <property name="@fmax" type="float" maxvalue="100" default="33">fmax value</property>
-            <property name="@sym_prop" type="symbol" enum="A B C" default="C">enum symbol property</property>
+                <tr>test property</tr></property>
+            <property name="@float_prop" type="float" access="readonly"  units="radian" minvalue="0">
+                <tr>float property</tr></property>
+            <property name="@fmax" type="float" maxvalue="100" default="33"><tr>fmax value</tr></property>
+            <property name="@sym_prop" type="symbol" enum="A B C" default="C"><tr>enum symbol property</tr></property>
         </properties>
         <inlets>
             <inlet type="control">

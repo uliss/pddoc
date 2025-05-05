@@ -49,6 +49,7 @@ def main():
             name)
 
     pddoc = xml.getroot()
+    pddoc_version = pddoc.get("version", "1.0")
     obj = pddoc.getchildren()[0]
     for r in obj.iter("object"):
         r[:] = sorted(r, key=lambda x: tag_index(x.tag))
@@ -97,7 +98,7 @@ def main():
             c = etree.Comment(f" {name} ")
             m.addprevious(c)
 
-    pddoc = etree.Element(pddoc.tag, version="1.0", nsmap={"xi": "http://www.w3.org/2001/XInclude"})
+    pddoc = etree.Element(pddoc.tag, version=pddoc_version, nsmap={"xi": "http://www.w3.org/2001/XInclude"})
     pddoc.insert(0, obj)
 
     etree.indent(pddoc, space=" ", level=2)

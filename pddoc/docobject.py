@@ -787,7 +787,7 @@ class DocArgument(DocItem):
         return f"{txt}. {suffix}"
 
     def translation(self, lang: str) -> str:
-        if lang != "en" and not lang is self._translations:
+        if not lang in self._translations:
             return self._translations.get("en", "")
         else:
             return self._translations.get(lang, "")

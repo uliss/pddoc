@@ -16,6 +16,7 @@
 #   You should have received a copy of the GNU General Public License     #
 #   along with this program. If not, see <http://www.gnu.org/licenses/>   #
 
+import gettext
 import logging
 import os.path
 import re
@@ -27,6 +28,8 @@ from . import __version__ as pddoc_version
 from .pd.factory import make_by_name
 from .pd.obj import PdObject
 from .pdpage import PdPage
+
+gettext.install("pddoc")
 
 
 def clear_spaces(txt: str) -> str:
@@ -193,7 +196,7 @@ class LibraryParser(object):
         f = self._pp.make_footer(self._current_y, height=80)
         self._pp.append_object(f)
 
-        info = self._pp.make_txt("version: v{0}, license: {1}".format(
+        info = self._pp.make_txt(_("version: v{0}, license: {1}").format(
             self._lib_version, self._lib_license), 20, f.top)
         self._pp.append_object(info)
         self._current_y += info.height + 10
@@ -205,7 +208,7 @@ class LibraryParser(object):
 
         pddoc_lnk = self._pp.make_link(20, self._current_y,
                                        "https://github.com/uliss/pddoc",
-                                       f"Generated with pddoc v{pddoc_version}")
+                                       _(f"Generated with pddoc v{pddoc_version}"))
         self._pp.append_object(pddoc_lnk)
 
         rpos = f.width - 70

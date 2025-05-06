@@ -89,7 +89,7 @@ class Comment(BaseObject):
 
         visitor.visit_comment(self)
 
-    def calc_brect(self):
+    def calc_brect(self, use_cached=True):
         brect = PdObject.brect_calc().comment_brect(self)
         self._width = brect[2]
         self._height = brect[3]

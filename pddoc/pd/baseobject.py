@@ -139,3 +139,6 @@ class BaseObject(object):
 
     def is_fixed_size(self):
         return False
+
+    def calc_brect(self, use_cached=True):
+        pass

@@ -70,7 +70,7 @@ class Canvas(PdObject):
         return self._font_size
 
     @property
-    def objects(self):
+    def objects(self) -> list[BaseObject]:
         return self._objects
 
     @property

@@ -60,7 +60,8 @@ class BRectCalculator(AbstractVisitor):
             obj_str = "\n".join(lines)
             w, h = self._cairo.box_size(obj_str)
         else:
-            w, h = self._cairo.box_size(obj.to_string())
+            txt = obj.to_string()
+            w, h = self._cairo.box_size(txt)
 
         return int(round(obj.x)), int(round(obj.y)), int(round(w)), int(round(h))
 
@@ -85,7 +86,11 @@ class BRectCalculator(AbstractVisitor):
             max_w = max(max_w, w)
             max_h = max(max_h, h)
 
-        return 0, 0, int(round(max_w * 1.06)), int(round(len(lines) * max_h * 1.08))
+        nlines = len(lines)
+        if nlines > 3:
+            nlines += 1
+            
+        return 0, 0, int(round(max_w * 1.06)), int(round(nlines * max_h * 1.08))
 
     def comment_brect(self, comment: Comment):
         wd = 61

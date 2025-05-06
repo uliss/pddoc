@@ -338,12 +338,12 @@ class PdDocVisitor(DocObjectVisitor):
         if p.is_empty():
             self.current_yoff += 10
 
-    def property_begin(self, m: DocProperty):
+    def property_begin(self, p: DocProperty):
         props = list()
 
         # add message with property name
-        prop_get_name = "{0}".format(m.name())
-        if m.access() == "readonly":
+        prop_get_name = "{0}".format(p.name())
+        if p.access() == "readonly":
             prop_get_name += '?'
 
         props.append(Message(self.PD_XLET_INDX_XPOS, self.current_yoff, [prop_get_name]))
@@ -351,47 +351,47 @@ class PdDocVisitor(DocObjectVisitor):
 
         # props description
         prop_descr = ""
-        if not (m.is_alias() or m.is_flag()):
-            if m.access() == "readwrite":
-                if m.text().startswith("on/off"):
+        if not (p.is_alias() or p.is_flag()):
+            if p.access() == "readwrite":
+                txt_en = p.translation('en')
+                if txt_en.startswith("on/off"):
                     prop_descr += _("Turn ")
                 else:
                     prop_descr += _("Get/Set ")
-            elif m.access() == "initonly":
+            elif p.access() == "initonly":
                 prop_descr += _("(initonly) Get/Set ")
             else:
                 prop_descr += _("(readonly) Get ")
 
-        if m.is_alias():
-            txt = m.text()
+        if p.is_alias():
+            txt = p.translation(self.lang)
             prop_descr += txt[0].upper() + txt[1:]
         else:
-            prop_descr += m.text()
+            prop_descr += p.translation(self.lang)
 
-        if m.type() and not (m.is_alias() or m.is_flag()):
-            prop_descr = _("{0} Type: {1}. ").format(add_text_dot(prop_descr), m.type())
+        if p.type() and not (p.is_alias() or p.is_flag()):
+            prop_descr = _("{0} Type: {1}. ").format(add_text_dot(prop_descr), p.type())
 
-        if m.units() and len(m.units()) > 0:
-            prop_descr = _("{0} Units: {1}. ").format(add_text_dot(prop_descr), units_str(m.units()))
+        if p.units() and len(p.units()) > 0:
+            prop_descr = _("{0} Units: {1}. ").format(add_text_dot(prop_descr), units_str(p.units()))
 
-        if m.default():
-            prop_descr = _("{0} Default value: {1}. ").format(add_text_dot(prop_descr), m.default())
+        if p.default():
+            prop_descr = _("{0} Default value: {1}. ").format(add_text_dot(prop_descr), p.default())
 
-        if m.min() and m.max():
-            prop_descr = _("{0} Range: {1}...{2}. ").format(add_text_dot(prop_descr), m.min(), m.max())
-        elif m.min():
-            prop_descr = _("{0} Min value: {1}. ").format(add_text_dot(prop_descr), m.min())
-        elif m.max():
-            prop_descr = _("{0} Max value: {1}. ").format(add_text_dot(prop_descr), m.max())
+        if p.min() and p.max():
+            prop_descr = _("{0} Range: {1}...{2}. ").format(add_text_dot(prop_descr), p.min(), p.max())
+        elif p.min():
+            prop_descr = _("{0} Min value: {1}. ").format(add_text_dot(prop_descr), p.min())
+        elif p.max():
+            prop_descr = _("{0} Max value: {1}. ").format(add_text_dot(prop_descr), p.max())
 
-        if len(m.enum()) > 0:
-            prop_descr = _("{0} Allowed values: {1}.").format(add_text_dot(prop_descr), ', '.join(m.enum()))
+        if len(p.enum()) > 0:
+            prop_descr = _("{0} Allowed values: {1}.").format(add_text_dot(prop_descr), ', '.join(p.enum()))
 
-        info = list()
-        info.append(self._pp.add_txt(add_text_dot(prop_descr), self.PD_XLET_INFO_XPOS, self.current_yoff))
+        info = self._pp.add_txt(add_text_dot(prop_descr), self.PD_XLET_INFO_XPOS, self.current_yoff)
+        bbox = self._pp.place_in_col([info], self.current_yoff, 15)
+        br = self._pp.group_brect([info] + props)
 
-        self._pp.place_in_col(info, self.current_yoff, 15)
-        br = self._pp.group_brect(info + props)
         self.current_yoff += br[3] + 12
 
     def abs_info_y_pos(self) -> int:

@@ -250,7 +250,7 @@ class PdPage(object):
         return left, top, right - left, bottom - top
 
     @staticmethod
-    def move_to_x(seq, x: float):
+    def move_to_x(seq: list, x: float):
         if len(seq) < 1:
             return
 
@@ -260,7 +260,7 @@ class PdPage(object):
             o.x += x_off
 
     @staticmethod
-    def move_to_y(seq, y: float):
+    def move_to_y(seq: list, y: float):
         if len(seq) < 1:
             return
 
@@ -269,24 +269,24 @@ class PdPage(object):
             o.y += y_off
 
     @staticmethod
-    def move_to(seq, x: float, y: float):
+    def move_to(seq: list, x: float, y: float):
         for o in seq:
             o.x = x
             o.y = y
 
     @staticmethod
-    def move_by(seq, x: float, y: float):
+    def move_by(seq: list, x: float, y: float):
         for o in seq:
             o.x += x
             o.y += y
 
     @staticmethod
-    def move_by_x(seq, x: float):
+    def move_by_x(seq: list, x: float):
         for o in seq:
             o.x += x
 
     @staticmethod
-    def move_by_y(seq, y: float):
+    def move_by_y(seq: list, y: float):
         for o in seq:
             o.x += y
 

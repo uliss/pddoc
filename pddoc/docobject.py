@@ -1048,6 +1048,11 @@ class DocProperty(DocArgument):
             else:
                 self._cat = 0  # main
 
+        for tr in xmlobj.findall("tr"):
+            lang = tr.attrib.get("lang", "en")
+            if tr.attrib.get("finished", "true") == "true":
+                self._translations[lang] = tr.text
+
     def sort_name(self):
         acc = 1  # rw
         if self._access == "readonly":

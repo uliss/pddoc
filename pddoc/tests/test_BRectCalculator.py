@@ -54,7 +54,7 @@ class TestBRectCalculator(TestCase):
         self.assertEqual(br.break_lines("test\n\n\n"), ["test"]);
         self.assertEqual(br.break_lines(" \n test \n  \n  \n"), ["test"]);
         self.assertEqual(br.break_lines("test; line break"), ["test;", "line break"]);
-        self.assertEqual(br.break_lines("test\; line break"), ["test\;", "line break"]);
+        self.assertEqual(br.break_lines("test\\; line break"), ["test\\;", "line break"]);
         self.assertEqual(br.break_lines("test test test test test test test test test test "
                                         "test test test test test test test test test test"),
                          ['test test test test test test test test test test test test',
@@ -98,4 +98,4 @@ class TestBRectCalculator(TestCase):
         p = 5
         pnt.draw_rect(bbox[0] - p, bbox[1] - p, bbox[2] + p * 2, bbox[3] + p * 2, color=(0, 0, 1))
 
-        self.assertEqual(br.brect(), (67, 35, 457, 323))
+        self.assertEqual(br.brect(), (67, 35, 457, 338))

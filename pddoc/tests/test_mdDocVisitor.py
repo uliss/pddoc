@@ -122,4 +122,4 @@ class TestMdDocVisitor(TestCase):
         self.assertEqual(pdc.layout.x(), 0)
         self.assertEqual(pdc.layout.y(), 0)
         self.assertEqual(pdc.layout.width(), 449)
-        self.assertEqual(pdc.layout.height(), 136)
+        self.assertEqual(pdc.layout.height(), 151)

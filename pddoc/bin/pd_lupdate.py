@@ -165,6 +165,7 @@ def main():
         find_no_tr(in_file, "object/meta/description/tr", lang, root)
         find_no_tr(in_file, "object/arguments/argument/tr", lang, root)
         find_no_tr(in_file, "object/properties/property/tr", lang, root)
+        find_no_tr(in_file, "object/methods/method/param/tr", lang, root)
 
     if args['update']:
         obj = root.find("object")

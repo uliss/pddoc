@@ -164,21 +164,22 @@ def main():
     if args['translate']:
         find_no_tr(in_file, "object/meta/description/tr", lang, root)
         find_no_tr(in_file, "object/arguments/argument/tr", lang, root)
+        find_no_tr(in_file, "object/properties/property/tr", lang, root)
 
     if args['update']:
         obj = root.find("object")
         if obj is not None:
             logging.debug(f"update object: [{obj.get('name')}]")
         # add property translations
-        for arg in root.findall("object/properties/property"):
+        for arg in root.findall("object/methods/method/param"):
             if arg.find("tr") is None:
                 tr = etree.Element('tr', lang='en')
                 tr.text = clear_spaces(arg.text)
                 arg.text = ""
                 arg.append(tr)
-                logging.info(f"adding translation for property '{arg.get('name')}'")
+                logging.info(f"adding translation for param '{arg.get('name')}'")
             else:
-                logging.debug(f"skipping translated property: '{arg.get('name')}'")
+                logging.debug(f"skipping translated param: '{arg.get('name')}'")
 
     etree.indent(xml, space=" ", level=4)
 

@@ -3,7 +3,7 @@
 from .cairopainter import CairoPainter
 from .colorformatter import ColorizingStreamHandler
 
-__version__ = "0.11.0"
+__version__ = "0.12.0"
 
 
 class Point:

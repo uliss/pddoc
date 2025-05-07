@@ -22,7 +22,7 @@ __author__ = 'Serge Poltavski'
 import gettext
 
 from pddoc.docobject import DocPar, DocA, DocWiki, DocArgument, DocArguments, DocProperties, DocOutlet, DocProperty, \
-    DocMethod
+    DocMethod, DocEvent
 from pddoc.pdpage import PdPage
 from pddoc.pdpage import PdPageStyle
 from .docobjectvisitor import DocObjectVisitor
@@ -142,7 +142,10 @@ class PdDocVisitor(DocObjectVisitor):
         if m.is_empty():
             self.current_yoff += 10
 
-    def event_begin(self, e):
+    def event_begin(self, e: DocEvent):
+        if e.ignore:
+            return
+
         click_map = {
             'left-click': 'Left-click',
             'right-click': 'Right-click',
@@ -210,28 +213,28 @@ class PdDocVisitor(DocObjectVisitor):
         info = [self._pp.add_txt(info_text, x, self.current_yoff)]
 
         # add method arguments
-        for i in m.items():
-            param_name = i.param_name()
+        for p in m.params():
+            param_name = p.param_name()
             arg_descr = param_name
 
-            if i.text() is not None:
-                arg_descr += ": " + i.text().strip()
+            if p.text() is not None:
+                arg_descr += ": " + p.translation(self.lang)
 
-            if i.type():
-                arg_descr = _("{0} Type: {1}. ").format(add_text_dot(arg_descr), i.type())
+            if p.type():
+                arg_descr = _("{0} Type: {1}. ").format(add_text_dot(arg_descr), p.type())
 
-            value_range = self.format_range(i)
+            value_range = self.format_range(p)
             if len(value_range) > 0:
                 # add dot after description
                 arg_descr = add_text_dot(arg_descr)
                 # add dot after the range
                 arg_descr += " " + add_text_dot(value_range)
 
-            if len(i.enum()) > 0:
-                arg_descr = _("{0} Allowed values: {1}. ").format(add_text_dot(arg_descr), ', '.join(i.enum()))
+            if len(p.enum()) > 0:
+                arg_descr = _("{0} Allowed values: {1}. ").format(add_text_dot(arg_descr), ', '.join(p.enum()))
 
-            if i.units() and len(i.units()) > 0:
-                arg_descr = _("{0} Units: {1}. ").format(add_text_dot(arg_descr), units_str(i.units()))
+            if p.units() and len(p.units()) > 0:
+                arg_descr = _("{0} Units: {1}. ").format(add_text_dot(arg_descr), units_str(p.units()))
 
             # param name highlight with background canvas
             hl_text = self._pp.make_txt(param_name, 0, 0)

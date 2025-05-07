@@ -54,8 +54,8 @@
             <method name="set">sets parameters</method>
             <method name="test">check
                 object
-                <param name="P0" type="int" required="true">PARAM0</param>
-                <param name="P1" type="symbol">PARAM1</param>
+                <param name="P0" type="int" required="true"><tr>PARAM0</tr></param>
+                <param name="P1" type="symbol"><tr>PARAM1</tr></param>
             </method>
         </methods>
         <mouse>

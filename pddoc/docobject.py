@@ -825,11 +825,13 @@ class DocEvent(DocItem):
         self._editmode = ""
         self._type = ""
         self._keys = ""
+        self._empty = False
 
     def from_xml(self, xmlobj):
         self._editmode = xmlobj.attrib.get("editmode", "false")
         self._type = xmlobj.attrib.get("type", "")
         self._keys = ""
+        self._empty = xmlobj.attrib.get("empty", "false") == "true"
 
         kmap = {"alt": "\u2325", "shift": "\u21E7", "cmd": "\u2318"}
         keys = []
@@ -852,6 +854,10 @@ class DocEvent(DocItem):
     def keys(self):
         return self._keys
 
+    @property
+    def ignore(self):
+        return self._empty
+
 
 class DocArguments(DocXlets):
     def __init__(self, *args):
@@ -867,6 +873,24 @@ class DocMethods(DocXlets):
 
     def is_valid_tag(self, tag_name):
         return tag_name == "method"
+
+
+class DocParam(DocArgument):
+    def param_name(self):
+        if self._name:
+            name = self.name()
+        elif len(self._units) > 0:
+            name = ' '.join(self.units()).upper()
+        else:
+            name = "X"
+
+        if self.default():
+            name += '=' + self.default()
+
+        if self.optional():
+            name = "[{0}]".format(name)
+
+        return name
 
 
 class DocMethod(DocItem):
@@ -901,23 +925,8 @@ class DocMethod(DocItem):
         else:
             return "{0}_{1}".format(self._cat, self.name())
 
-
-class DocParam(DocArgument):
-    def param_name(self):
-        if self._name:
-            name = self.name()
-        elif len(self._units) > 0:
-            name = ' '.join(self.units()).upper()
-        else:
-            name = "X"
-
-        if self.default():
-            name += '=' + self.default()
-
-        if self.optional():
-            name = "[{0}]".format(name)
-
-        return name
+    def params(self) -> list[DocParam]:
+        return self.items()
 
 
 class DocInfo(DocItem):

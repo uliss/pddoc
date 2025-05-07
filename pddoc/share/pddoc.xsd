@@ -426,6 +426,7 @@
                 <xs:attribute name="editmode" use="required" type="xs:boolean"/>
                 <xs:attribute name="type" use="required" type="MouseEventInfo"/>
                 <xs:attribute name="keys" type="xs:string"/>
+                <xs:attribute name="empty" use="optional" type="xs:boolean" default="false"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -463,18 +464,17 @@
     </xs:complexType>
 
     <xs:complexType name="MethodArgumentElementType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute name="name" type="xs:string"/>
-                <xs:attribute name="type" use="required" type="ArgumentDataType"/>
-                <xs:attribute name="units" type="UnitDataTypeEnum"/>
-                <xs:attribute name="minvalue" type="FloatNumberExt"/>
-                <xs:attribute name="maxvalue" type="FloatNumberExt"/>
-                <xs:attribute name="default" type="xs:string"/>
-                <xs:attribute name="enum" type="xs:string"/>
-                <xs:attribute name="required" type="xs:boolean"/>
-            </xs:extension>
-        </xs:simpleContent>
+         <xs:sequence>
+            <xs:element name="tr" type="TranslationType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="type" use="required" type="ArgumentDataType"/>
+        <xs:attribute name="units" type="UnitDataTypeEnum"/>
+        <xs:attribute name="minvalue" type="FloatNumberExt"/>
+        <xs:attribute name="maxvalue" type="FloatNumberExt"/>
+        <xs:attribute name="default" type="xs:string"/>
+        <xs:attribute name="enum" type="xs:string"/>
+        <xs:attribute name="required" type="xs:boolean"/>
     </xs:complexType>
 
     <xs:complexType name="MethodElementType" mixed="true">

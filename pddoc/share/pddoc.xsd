@@ -525,11 +525,10 @@
     </xs:complexType>
 
     <xs:complexType name="MarkupText">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                 <xs:attribute name="indent" type="xs:integer"/>
-            </xs:extension>
-        </xs:simpleContent>
+         <xs:sequence>
+            <xs:element name="tr" type="TranslationType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="indent" type="xs:integer"/>
     </xs:complexType>
 
     <xs:complexType name="MarkupItem" mixed="true">

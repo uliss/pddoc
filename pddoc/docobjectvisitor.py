@@ -25,7 +25,7 @@ import re
 from typing import Union
 
 import pddoc.pd.parser
-from pddoc.docobject import DocPar
+from pddoc.docobject import DocInfo, DocPar
 from pddoc.pdpainter import PdPainter
 from .idocobjectvisitor import IDocObjectVisitor
 from .pd.canvas import Canvas
@@ -129,9 +129,11 @@ class DocObjectVisitor(IDocObjectVisitor):
         self._contacts = cnt.text()
 
     ###
-    def info_begin(self, info):
+    def info_begin(self, info: DocInfo):
         for p in info.items():
             if isinstance(p, DocPar):
+                self._info += p.translation(self.lang) + "\n"
+            else:
                 self._info += p.text() + "\n"
 
     ###

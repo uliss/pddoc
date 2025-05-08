@@ -409,7 +409,7 @@ class PdDocVisitor(DocObjectVisitor):
         for p in info.items():
             if isinstance(p, DocPar):
                 ind = p.indent * self.PD_PAR_INDENT
-                t = self._pp.make_txt(p.text(), XPOS + ind, 0)
+                t = self._pp.make_txt(p.translation(self.lang), XPOS + ind, 0)
                 lst.append(t)
             elif isinstance(p, DocA):
                 a = self._pp.make_link(XPOS, 0, p.url, p.text())

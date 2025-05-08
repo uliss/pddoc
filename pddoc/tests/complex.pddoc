@@ -48,7 +48,7 @@
             <argument name="FREQ" type="float"><tr>test</tr></argument>
         </arguments>
         <info>
-            <par>sample text</par>
+            <par><tr>sample text</tr></par>
         </info>
         <methods>
             <method name="set">sets parameters</method>

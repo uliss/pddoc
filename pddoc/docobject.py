@@ -941,14 +941,30 @@ class DocPar(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
         self._indent = 0
+        self._translations: dict[str, str] = {}
 
     def from_xml(self, xmlobj):
         self._indent = int(xmlobj.attrib.get("indent", "0"))
+
+        for tr in xmlobj.findall("tr"):
+            lang = tr.attrib.get("lang", "en")
+            if tr.attrib.get("finished", "true") == "true":
+                self._translations[lang] = tr.text
+
         DocItem.from_xml(self, xmlobj)
 
     @property
     def indent(self):
         return self._indent
+
+    def is_valid_tag(self, tag_name):
+        return tag_name == "tr"
+
+    def translation(self, lang: str):
+        if not lang in self._translations:
+            return self._translations.get("en", "")
+        else:
+            return self._translations.get(lang, "")
 
 
 class DocA(DocItem):

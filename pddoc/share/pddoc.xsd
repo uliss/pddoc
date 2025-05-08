@@ -477,17 +477,18 @@
         <xs:attribute name="required" type="xs:boolean"/>
     </xs:complexType>
 
-    <xs:complexType name="MethodElementType" mixed="true">
-        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+    <xs:complexType name="MethodElementType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:element name="param" type="MethodArgumentElementType"/>
-        </xs:sequence>
+            <xs:element name="info" type="MarkupText"/>
+        </xs:choice>
         <xs:attribute name="name" type="xs:string"/>
         <xs:attribute name="internal" type="xs:boolean"/>
         <xs:attribute name="example" type="xs:boolean"/>
         <xs:attribute name="category" type="CategoryType"/>
     </xs:complexType>
 
-    <xs:complexType name="PropertyElementType" mixed="true">
+    <xs:complexType name="PropertyElementType">
          <xs:sequence>
             <xs:element name="tr" type="TranslationType" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>

@@ -192,14 +192,11 @@ class PdDocVisitor(DocObjectVisitor):
 
     def method_begin(self, m: DocMethod):
         msg_atoms = [m.name()]
-        # for i in m.items():
-        # msg_atoms.append(i.param_name())
-
         msg = Message(self.PD_XLET_INDX_XPOS, self.current_yoff, msg_atoms)
         msg.calc_brect()
         self._pp.append_object(msg)
 
-        info_text = m.text().strip()
+        info_text = m.info(self.lang)
         info_text = add_text_dot(info_text)
 
         if len(m.items()) > 0:

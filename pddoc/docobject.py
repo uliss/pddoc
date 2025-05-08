@@ -65,7 +65,10 @@ class DocItem(object):
     def text(self) -> str:
         return self._text
 
-    def is_valid_tag(self, tag_name):
+    def is_valid_tag(self, tag_name: str):
+        return False
+
+    def skip_tag(self, tag_name: str):
         return False
 
     def add_child(self, element):
@@ -111,16 +114,16 @@ class DocItem(object):
         self.read_xml_data(xmlobj)
 
         for child in xmlobj:
+            tag = child.tag
             # skip XML comments
-            if callable(child.tag):
+            if callable(tag) or self.skip_tag(tag):
                 continue
 
-            if not self.is_valid_tag(child.tag):
-                logging.warning("tag <%s> not allowed in <%s>" % (child.tag, xmlobj.tag))
+            if not self.is_valid_tag(tag):
+                logging.warning("tag <%s> not allowed in <%s>" % (tag, xmlobj.tag))
                 continue
-                # break
 
-            obj = create_instance(child.tag)
+            obj = create_instance(tag)
             obj.from_xml(child)
             self.add_child(obj)
 
@@ -897,13 +900,24 @@ class DocMethod(DocItem):
     def __init__(self, *args):
         self._name = ""
         self._cat = 0
+        self._info: dict[str, str] = {}
+
         DocItem.__init__(self, args)
 
     def name(self):
         return self._name
 
+    def info(self, lang: str):
+        if not lang in self._info:
+            return self._info.get("en", "")
+        else:
+            return self._info.get(lang, "")
+
     def is_valid_tag(self, tag_name):
-        return tag_name == "param"
+        return tag_name in ("info", "param")
+
+    def skip_tag(self, tag_name: str):
+        return tag_name == "info"
 
     def from_xml(self, xmlobj):
         self._name = xmlobj.attrib.get("name", "")
@@ -917,6 +931,12 @@ class DocMethod(DocItem):
             else:
                 self._cat = 0  # main
 
+        for info in xmlobj.findall("info"):
+            for tr in info.findall("tr"):
+                lang = tr.attrib.get("lang", "en")
+                if tr.attrib.get("finished", "true") == "true":
+                    self._info[lang] = ' '.join(tr.text.split())
+
         DocItem.from_xml(self, xmlobj)
 
     def sort_name(self):
@@ -926,7 +946,7 @@ class DocMethod(DocItem):
             return "{0}_{1}".format(self._cat, self.name())
 
     def params(self) -> list[DocParam]:
-        return self.items()
+        return list(filter(lambda x: isinstance(x, DocParam), self.items()))
 
 
 class DocInfo(DocItem):

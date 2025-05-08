@@ -51,10 +51,10 @@
             <par><tr>sample text</tr></par>
         </info>
         <methods>
-            <method name="set">sets parameters</method>
-            <method name="test">check
-                object
-                <param name="P0" type="int" required="true"><tr>PARAM0</tr></param>
+            <method name="set"><info><tr>sets parameters</tr></info></method>
+            <method name="test"><info><tr>check
+                object</tr>
+            </info><param name="P0" type="int" required="true"><tr>PARAM0</tr></param>
                 <param name="P1" type="symbol"><tr>PARAM1</tr></param>
             </method>
         </methods>

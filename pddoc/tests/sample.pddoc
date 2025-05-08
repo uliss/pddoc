@@ -48,7 +48,7 @@
             <par><tr>sample text</tr></par>
         </info>
         <methods>
-            <method name="set">sets parameters</method>
+            <method name="set"><info><tr>sets parameters</tr></info></method>
         </methods>
         <mouse>
             <event editmode="true" type="double-click" keys="Ctrl"/>

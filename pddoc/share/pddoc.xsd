@@ -158,13 +158,13 @@
 
     <xs:simpleType name="FloatNumberExt">
         <xs:restriction base="xs:string">
-            <xs:pattern value="((\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?(π|e)?|(\+|-)?INF|NaN)"/>
+            <xs:pattern value="(([+\-])?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee]([+\-])?[0-9]+)?([πe])?|([+\-])?INF|NaN)"/>
         </xs:restriction>
     </xs:simpleType>
 
     <xs:complexType name="RootElementType">
         <xs:sequence>
-            <xs:element name="object" type="ObjectType" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="object" type="ObjectType" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="version" use="required">
             <xs:simpleType>
@@ -217,7 +217,7 @@
 
     <xs:complexType name="DescriptionType">
         <xs:sequence>
-            <xs:element name="tr" type="TranslationType" minOccurs="1" maxOccurs="unbounded" />
+            <xs:element name="tr" type="TranslationType" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
@@ -426,7 +426,7 @@
                 <xs:attribute name="editmode" use="required" type="xs:boolean"/>
                 <xs:attribute name="type" use="required" type="MouseEventInfo"/>
                 <xs:attribute name="keys" type="xs:string"/>
-                <xs:attribute name="empty" use="optional" type="xs:boolean" default="false"/>
+                <xs:attribute name="empty" type="xs:boolean" default="false"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -490,7 +490,7 @@
 
     <xs:complexType name="PropertyElementType">
          <xs:sequence>
-            <xs:element name="tr" type="TranslationType" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="tr" type="TranslationType" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string" use="required"/>
         <xs:attribute name="type" type="PropertyDataType" use="required"/>
@@ -527,7 +527,7 @@
 
     <xs:complexType name="MarkupText">
          <xs:sequence>
-            <xs:element name="tr" type="TranslationType" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="tr" type="TranslationType" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="indent" type="xs:integer"/>
     </xs:complexType>

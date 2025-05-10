@@ -27,6 +27,24 @@ from .idocobjectvisitor import IDocObjectVisitor
 
 gettext.install("pddoc")
 
+UNIT_MAP = {
+    'hertz': 'Hz',
+    'kilohertz': 'KHz',
+    'millisecond': 'ms',
+    'second': 'sec',
+    'decibel': 'db',
+    'bpm': 'bpm',
+    'percent': '%',
+    'sample': 'samp',
+    'msec': 'ms',
+    'sec': 'sec',
+    'semitone': 'semitone',
+    'radian': 'rad',
+    'degree': 'deg',
+    'cent': 'cent',
+    'smpte': 'smpte'
+}
+
 
 def make_class_name(tag_name):
     return "Doc%s" % (tag_name.capitalize())
@@ -135,6 +153,27 @@ class DocItem(object):
             self._elements.append(el)
 
 
+class DocTranslation(DocItem):
+    def __init__(self, *args):
+        DocItem.__init__(self, *args)
+        self._translations: dict[str, str] = {}
+
+    def skip_tag(self, tag_name: str):
+        return tag_name == "tr"
+
+    def translation(self, lang: str):
+        if lang not in self._translations:
+            lang = "en"
+
+        return self._translations.get(lang, "???")
+
+    def update_translations(self, xmlobj, path: str = "tr"):
+        for tr in xmlobj.findall(path):
+            lang = tr.attrib.get("lang", "en")
+            if tr.attrib.get("finished", "true") == "true":
+                self._translations[lang] = tr.text
+
+
 class DocTitle(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
@@ -151,25 +190,13 @@ class DocMeta(DocItem):
                             "also", "category", "since")
 
 
-class DocDescription(DocItem):
+class DocDescription(DocTranslation):
     def __init__(self, *args):
-        DocItem.__init__(self, args)
-        self._tr: dict[str, str] = {}
-
-    def tr_value(self, lang: str):
-        if lang in self._tr:
-            return self._tr.get(lang)
-        else:
-            return self._text
+        DocTranslation.__init__(self, args)
 
     def from_xml(self, xmlobj):
         self.read_xml_data(xmlobj)
-        for tr in xmlobj.getchildren():
-            if tr.get("lang", "en") == "en":
-                self._text = tr.text
-
-            if tr.get("finished", "true") == "true":
-                self._tr[tr.get("lang")] = tr.text
+        self.update_translations(xmlobj)
 
 
 class DocAuthors(DocItem):
@@ -604,34 +631,28 @@ class DocXlet(DocTypeElement):
         DocTypeElement.from_xml(self, xmlobj)
         self._number = xmlobj.get("number", "")
 
-    def enumerate(self, n):
+    def enumerate(self, n: int):
         if self._number == "":
-            self._number = n
+            self._number = str(n)
 
     def number(self):
         return self._number
 
 
-class DocInlet(DocXlet):
+class DocIn(DocTranslation):
     def __init__(self, *args):
-        DocXlet.__init__(self, args)
-
-    def is_valid_tag(self, tag_name):
-        return tag_name == "xinfo"
-
-
-class DocXinfo(DocItem):
-    def __init__(self, *args):
-        DocItem.__init__(self, args)
+        DocTranslation.__init__(self, args)
         self._maxvalue = ""
         self._minvalue = ""
         self._on = ""
+        self._selector = ""
 
     def from_xml(self, xmlobj):
         self._maxvalue = xmlobj.attrib.get("maxvalue", "")
         self._minvalue = xmlobj.attrib.get("minvalue", "")
         self._on = xmlobj.attrib.get("on", "")
-        DocItem.from_xml(self, xmlobj)
+        self._selector = xmlobj.attrib.get("selector", "")
+        self.update_translations(xmlobj)
 
     def range(self):
         if not self._minvalue and not self._maxvalue:
@@ -648,6 +669,42 @@ class DocXinfo(DocItem):
     def max(self):
         return self._maxvalue
 
+    def selector(self):
+        return self._selector
+
+    def has_selector(self):
+        return self._selector != "" and self._on == "any"
+
+    def label(self, is_audio: bool):
+        if self._on == "" and is_audio:
+            return "~"
+        elif self._on != "":
+            return f"{self._on}:"
+        else:
+            return ""
+
+
+class DocInlet(DocXlet):
+    def __init__(self, *args):
+        DocXlet.__init__(self, args)
+        self._type = ""
+
+    def is_valid_tag(self, tag_name):
+        return tag_name == "in"
+
+    def in_info(self) -> list[DocIn]:
+        return list(filter(lambda x: isinstance(x, DocIn), self.items()))
+
+    def from_xml(self, xmlobj):
+        DocXlet.from_xml(self, xmlobj)
+        self._type = xmlobj.get("type", "control")
+
+    def is_audio(self):
+        return self._type == "audio"
+
+    def is_control(self):
+        return self._type == "control"
+
 
 class DocOutlets(DocXlets):
     def __init__(self, *args):
@@ -657,37 +714,52 @@ class DocOutlets(DocXlets):
         return tag_name == "outlet"
 
 
+class DocOut(DocTranslation):
+    def __init__(self, *args):
+        DocTranslation.__init__(self, args)
+        self._type = ""
+        self._units = ""
+
+    def from_xml(self, xmlobj):
+        self.update_translations(xmlobj)
+        self._type = xmlobj.get("type", "any")
+        self._units = UNIT_MAP.get(xmlobj.attrib.get("units", "").strip(), "")
+
+    def type_label(self):
+        if self._type == "any":
+            return ""
+        else:
+            if len(self._units) == 0:
+                return f"{self._type}: "
+            else:
+                return f"{self._type}({self._units}): "
+
+
 class DocOutlet(DocXlet):
     def __init__(self, *args):
         DocXlet.__init__(self, args)
+        self._type = ""
+
+    def from_xml(self, xmlobj):
+        DocXlet.from_xml(self, xmlobj)
+        self._type = xmlobj.get("type", "control")
+
+    def is_valid_tag(self, tag_name):
+        return tag_name == "out"
+
+    def out_info(self) -> list[DocOut]:
+        return list(filter(lambda x: isinstance(x, DocOut), self.items()))
+
+    def is_audio(self):
+        return self._type == "audio"
+
+    def is_control(self):
+        return self._type == "control"
 
 
-class DocTr(DocItem):
+class DocArgument(DocTranslation):
     def __init__(self, *args):
-        DocItem.__init__(self, args)
-
-
-class DocArgument(DocItem):
-    UNIT_MAP = {
-        'hertz': 'Hz',
-        'kilohertz': 'KHz',
-        'millisecond': 'ms',
-        'second': 'sec',
-        'decibel': 'db',
-        'bpm': 'bpm',
-        'percent': '%',
-        'sample': 'samp',
-        'msec': 'ms',
-        'sec': 'sec',
-        'semitone': 'semitone',
-        'radian': 'rad',
-        'degree': 'deg',
-        'cent': 'cent',
-        'smpte': 'smpte'
-    }
-
-    def __init__(self, *args):
-        DocItem.__init__(self, args)
+        DocTranslation.__init__(self, args)
         self._number = ""
         self._type = ""
         self._units = []
@@ -697,7 +769,6 @@ class DocArgument(DocItem):
         self._default = ""
         self._required = False
         self._enum = []
-        self._translations: dict[str, str] = {}
 
     def from_xml(self, xmlobj):
         self._name = xmlobj.attrib.get("name", "anonym")
@@ -718,15 +789,8 @@ class DocArgument(DocItem):
         if len(enum_str) > 1:
             self._enum = re.split("[ \n\t]+", enum_str)
 
-        for tr in xmlobj.findall("tr"):
-            lang = tr.attrib.get("lang", "en")
-            if tr.attrib.get("finished", "true") == "true":
-                self._translations[lang] = tr.text
-
+        self.update_translations(xmlobj)
         DocItem.from_xml(self, xmlobj)
-
-    def is_valid_tag(self, tag_name: str):
-        return tag_name == "tr"
 
     def type(self):
         return self._type
@@ -735,7 +799,7 @@ class DocArgument(DocItem):
         if not self._units or len(self._units) == 0:
             return []
 
-        return list(map(lambda x: self.UNIT_MAP[x], self._units))
+        return list(map(lambda x: UNIT_MAP[x], self._units))
 
     def name(self):
         return self._name
@@ -788,12 +852,6 @@ class DocArgument(DocItem):
     def append_after_dot(cls, txt: str, suffix: str):
         txt = cls.remove_end_dot(txt)
         return f"{txt}. {suffix}"
-
-    def translation(self, lang: str) -> str:
-        if not lang in self._translations:
-            return self._translations.get("en", "")
-        else:
-            return self._translations.get(lang, "")
 
     def main_info(self, lang: str) -> str:
         res = self.main_info_prefix()
@@ -957,19 +1015,14 @@ class DocInfo(DocItem):
         return tag_name in ("itemize", "par", "a", "wiki")
 
 
-class DocPar(DocItem):
+class DocPar(DocTranslation):
     def __init__(self, *args):
-        DocItem.__init__(self, args)
+        DocTranslation.__init__(self, args)
         self._indent = 0
-        self._translations: dict[str, str] = {}
 
     def from_xml(self, xmlobj):
         self._indent = int(xmlobj.attrib.get("indent", "0"))
-
-        for tr in xmlobj.findall("tr"):
-            lang = tr.attrib.get("lang", "en")
-            if tr.attrib.get("finished", "true") == "true":
-                self._translations[lang] = tr.text
+        self.update_translations(xmlobj)
 
         DocItem.from_xml(self, xmlobj)
 
@@ -979,12 +1032,6 @@ class DocPar(DocItem):
 
     def is_valid_tag(self, tag_name):
         return tag_name == "tr"
-
-    def translation(self, lang: str):
-        if not lang in self._translations:
-            return self._translations.get("en", "")
-        else:
-            return self._translations.get(lang, "")
 
 
 class DocA(DocItem):
@@ -1093,10 +1140,7 @@ class DocProperty(DocArgument):
             else:
                 self._cat = 0  # main
 
-        for tr in xmlobj.findall("tr"):
-            lang = tr.attrib.get("lang", "en")
-            if tr.attrib.get("finished", "true") == "true":
-                self._translations[lang] = tr.text
+        self.update_translations(xmlobj, "tr")
 
     def sort_name(self):
         acc = 1  # rw

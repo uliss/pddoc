@@ -60,6 +60,19 @@ def parse_xml(path):
             new_tag = prop_xml.getroot()
             ref.getparent().replace(ref, new_tag)
 
+        for ref in xml.xpath('//pddoc/object/methods/*[local-name()="include"]'):
+            # manual XInclude implementation with template substitution
+            prop_xml = etree.parse(dirname + "/" + ref.attrib["href"])
+            # if ref.attrib.get("subst", "true") != "false":
+            #     for tr in prop_xml.getroot():
+            #         tmpl = Template(tr.text)
+            #         obj_name = os.path.basename(path)[:-6]  # strip .pddoc extension
+            #         obj_name = obj_name.replace("~", "").replace(".", "_")
+            #         txt = tmpl.substitute(obj=obj_name)
+            #         tr.text = txt
+            new_tag = prop_xml.getroot()
+            ref.getparent().replace(ref, new_tag)
+
         xml.xinclude()
         schema = get_schema()
         schema.assertValid(xml)

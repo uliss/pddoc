@@ -25,7 +25,7 @@ import re
 from typing import Union
 
 import pddoc.pd.parser
-from pddoc.docobject import DocInfo, DocPar
+from pddoc.docobject import DocInfo, DocPar, DocDescription
 from pddoc.pdpainter import PdPainter
 from .idocobjectvisitor import IDocObjectVisitor
 from .pd.canvas import Canvas
@@ -106,8 +106,8 @@ class DocObjectVisitor(IDocObjectVisitor):
     def keywords_begin(self, k):
         self._keywords = k.keywords()
 
-    def description_begin(self, d):
-        self._description = d.tr_value(self.lang)
+    def description_begin(self, d: DocDescription):
+        self._description = d.translation(self.lang)
 
     def license_begin(self, l):
         self._license['url'] = l.url()

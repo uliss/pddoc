@@ -196,6 +196,18 @@ class IDocObjectVisitor(object):
     def outlets_end(self, outlets):
         pass
 
+    def in_begin(self, inl):
+        pass
+
+    def in_end(self, inl):
+        pass
+
+    def out_begin(self, out):
+        pass
+
+    def out_end(self, out):
+        pass
+
     def pdascii_begin(self, pdascii):
         pass
 
@@ -272,12 +284,6 @@ class IDocObjectVisitor(object):
         pass
 
     def website_end(self, ws):
-        pass
-
-    def xinfo_begin(self, ws):
-        pass
-
-    def xinfo_end(self, ws):
         pass
 
     def since_begin(self, s):

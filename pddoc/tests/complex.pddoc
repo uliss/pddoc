@@ -34,15 +34,15 @@
         </properties>
         <inlets>
             <inlet type="control">
-                <xinfo minvalue="0.0" maxvalue="1.0">outputs the currently stored value</xinfo>
+                <in minvalue="0.0" maxvalue="1.0"><tr>outputs the currently stored value</tr></in>
             </inlet>
             <inlet type="audio">
-                <xinfo>outputs the currently stored value.</xinfo>
+                <in><tr>outputs the currently stored value.</tr></in>
             </inlet>
-            <inlet><xinfo>range parameter.</xinfo></inlet>
+            <inlet><in><tr>range parameter.</tr></in></inlet>
         </inlets>
         <outlets>
-            <outlet>outputs bang all the time</outlet>
+            <outlet><out><tr>outputs bang all the time</tr></out></outlet>
         </outlets>
         <arguments>
             <argument name="FREQ" type="float"><tr>test</tr></argument>

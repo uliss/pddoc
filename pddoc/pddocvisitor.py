@@ -21,8 +21,8 @@ __author__ = 'Serge Poltavski'
 
 import gettext
 
-from pddoc.docobject import DocPar, DocA, DocWiki, DocArgument, DocArguments, DocProperties, DocOutlet, DocProperty, \
-    DocMethod, DocEvent
+from pddoc.docobject import DocPar, DocA, DocWiki, DocArgument, DocArguments, DocProperties, DocProperty, \
+    DocMethod, DocEvent, DocInlet, DocInlets, DocMethods, DocMouse, DocOutlet
 from pddoc.pdpage import PdPage
 from pddoc.pdpage import PdPageStyle
 from .docobjectvisitor import DocObjectVisitor
@@ -74,9 +74,9 @@ class PdDocVisitor(DocObjectVisitor):
     PD_FOOTER_COLOR = Color(180, 180, 180)
     PD_INFO_WINDOW_WIDTH = 400
     PD_INFO_WINDOW_HEIGHT = 290
-    PD_XLET_INDX_XPOS = 110
-    PD_XLET_TYPE_XPOS = 150
-    PD_XLET_INFO_XPOS = 245
+    PD_XLET_INDX_XPOS = 130
+    PD_XLET_TYPE_XPOS = 170
+    PD_XLET_INFO_XPOS = 270
     PD_SECTION_YMARGIN = 40
     PD_PAR_INDENT = 10
     PD_ARG_NAME_COLOR = Color(240, 250, 250)
@@ -133,11 +133,11 @@ class PdDocVisitor(DocObjectVisitor):
         self.copy_canvas_connections(cnv)
         self.current_yoff += cnv.height
 
-    def mouse_begin(self, m):
+    def mouse_begin(self, m: DocMouse):
         self.add_section(_("mouse events:"), self.PD_SECTION_YMARGIN)
         m.sort_by(lambda e: e.edit_mode())
 
-    def mouse_end(self, m):
+    def mouse_end(self, m: DocMouse):
         self.current_yoff += 10
         if m.is_empty():
             self.current_yoff += 10
@@ -181,11 +181,11 @@ class PdDocVisitor(DocObjectVisitor):
 
         self.current_yoff += h + 5
 
-    def methods_begin(self, m):
-        self.add_section(_("methods:"), self.PD_SECTION_YMARGIN)
+    def methods_begin(self, m: DocMethods):
+        self.add_section(_("methods:"), 6)
         m.sort_by(lambda n: n.sort_name())
 
-    def methods_end(self, m):
+    def methods_end(self, m: DocMethods):
         self.current_yoff += 10
         if m.is_empty():
             self.current_yoff += 10
@@ -259,36 +259,44 @@ class PdDocVisitor(DocObjectVisitor):
         __, __, __, h = self._pp.group_brect(info)
         self.current_yoff += h + 10
 
-    def inlets_begin(self, inlets):
+    def inlets_begin(self, inlets: DocInlets):
         super(self.__class__, self).inlets_begin(inlets)
         self.add_section(_("inlets:"), 6)
         inlets.enumerate()
 
-    def inlets_end(self, inlets):
+    def inlets_end(self, inlets: DocInlets):
         self.current_yoff += 10
 
         if inlets.is_empty():
             self.current_yoff += 10
 
-    def inlet_begin(self, inlet):
-        self._pp.add_txt("{0}.".format(inlet.number()), self.PD_XLET_INDX_XPOS, self.current_yoff)
+    def inlet_begin(self, inlet: DocInlet):
+        y = self.current_yoff
+        t0 = self._pp.add_txt(add_text_dot(inlet.number()), self.PD_XLET_INDX_XPOS, y)
 
-    def xinfo_begin(self, xinfo):
-        tlist = []
-        if xinfo.on():
-            t1 = self._pp.add_txt("*{0}*".format(xinfo.on()), self.PD_XLET_TYPE_XPOS, self.current_yoff)
-            tlist.append(t1)
+        tlist = [t0]
+        for xinfo in inlet.in_info():
+            if xinfo.has_selector():
+                in_type = Message(self.PD_XLET_TYPE_XPOS, y, [xinfo.selector()])
+                self._pp.append_object(in_type)
+                tlist.append(in_type)
+            elif xinfo.label(inlet.is_audio()) != "":
+                in_type = self._pp.add_txt(xinfo.label(inlet.is_audio()), self.PD_XLET_TYPE_XPOS, y)
+                tlist.append(in_type)
 
-        txt = add_text_dot(xinfo.text())
-        rng = self.format_range(xinfo)
-        if rng != "":
-            txt += " " + rng
+            descr = add_text_dot(xinfo.translation(self.lang))
+            rng = self.format_range(xinfo)
+            if rng != "":
+                descr += " " + rng
 
-        t2 = self._pp.add_txt(add_text_dot(txt), self.PD_XLET_INFO_XPOS, self.current_yoff)
-        tlist.append(t2)
+            in_descr = self._pp.add_txt(add_text_dot(descr), self.PD_XLET_INFO_XPOS, y)
+            in_descr.calc_brect()
+            tlist.append(in_descr)
+
+            y = in_descr.bottom + 10
 
         __, __, __, h = self._pp.group_brect(tlist)
-        self.current_yoff += h + 5
+        self.current_yoff += h + 10
 
     def outlets_begin(self, outlets):
         super(self.__class__, self).outlets_begin(outlets)
@@ -303,10 +311,26 @@ class PdDocVisitor(DocObjectVisitor):
 
     def outlet_begin(self, outlet: DocOutlet):
         y = self.current_yoff
-        t1 = self._pp.add_txt("{0}.".format(outlet.number()), self.PD_XLET_INDX_XPOS, y)
-        t2 = self._pp.add_txt(add_text_dot(outlet.text()), self.PD_XLET_INFO_XPOS, y)
+        t1 = self._pp.add_txt(add_text_dot(outlet.number()), self.PD_XLET_INDX_XPOS, y)
 
-        __, __, __, h = self._pp.group_brect([t1, t2])
+        xinfo = [t1]
+        for out in outlet.out_info():
+            out_txt = out.type_label()
+            if out_txt == "" and outlet.is_audio():
+                out_txt = "~"
+
+            if out_txt != "":
+                out_type = self._pp.add_txt(out_txt, self.PD_XLET_TYPE_XPOS, y)
+                xinfo.append(out_type)
+
+            txt = out.translation(self.lang)
+            info = self._pp.add_txt(add_text_dot(txt), self.PD_XLET_INFO_XPOS, y)
+            xinfo.append(info)
+
+            info.calc_brect()
+            y = info.bottom + 10
+
+        __, __, __, h = self._pp.group_brect(xinfo)
         self.current_yoff += h + 5
 
     def add_section_help(self, txt: str, url: str, y: int):
@@ -317,7 +341,7 @@ class PdDocVisitor(DocObjectVisitor):
 
     def arguments_begin(self, args: DocArguments):
         super(self.__class__, self).arguments_begin(args)
-        lbl = self.add_section(_("arguments:"), self.PD_SECTION_YMARGIN)
+        lbl = self.add_section(_("arguments:"), 6)
         self.add_section_help("[?]", "ceammc.args-info.pd", lbl.top)
         args.enumerate()
 
@@ -328,7 +352,7 @@ class PdDocVisitor(DocObjectVisitor):
 
     def properties_begin(self, p: DocProperties):
         super(self.__class__, self).properties_begin(p)
-        lbl = self.add_section(_("properties:"), self.PD_SECTION_YMARGIN)
+        lbl = self.add_section(_("properties:"), 6)
         self.add_section_help("[?]", "ceammc.props-info.pd", lbl.top)
         # sort by names
         p.sort_by(lambda n: n.sort_name())

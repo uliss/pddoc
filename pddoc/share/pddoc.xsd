@@ -215,6 +215,14 @@
         </xs:simpleContent>
     </xs:complexType>
 
+    <xs:complexType name="OutputElementType">
+        <xs:sequence>
+            <xs:element name="tr" type="TranslationType" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="type" type="ControlDataType" default="any"/>
+        <xs:attribute name="units" type="UnitDataType"/>
+    </xs:complexType>
+
     <xs:complexType name="DescriptionType">
         <xs:sequence>
             <xs:element name="tr" type="TranslationType" maxOccurs="unbounded" />
@@ -387,31 +395,30 @@
 
     <xs:complexType name="InletElementType">
         <xs:sequence>
-            <xs:element name="xinfo" type="InletInfoType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="in" type="InletInfoType" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="type" type="XletType" default="control"/>
         <xs:attribute name="number" type="XletNumber" default=""/>
     </xs:complexType>
 
     <xs:complexType name="InletInfoType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute name="on" type="ControlDataType"/>
-                <xs:attribute name="minvalue" type="FloatNumberExt"/>
-                <xs:attribute name="maxvalue" type="FloatNumberExt"/>
-            </xs:extension>
-        </xs:simpleContent>
+        <xs:sequence>
+            <xs:element name="tr" type="TranslationType" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="on" type="ControlDataType"/>
+        <xs:attribute name="selector" type="xs:string"/>
+        <xs:attribute name="minvalue" type="FloatNumberExt"/>
+        <xs:attribute name="maxvalue" type="FloatNumberExt"/>
     </xs:complexType>
 
     <xs:complexType name="OutletElementType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute name="type" type="XletType" default="control"/>
-                <xs:attribute name="minvalue" type="FloatNumberExt"/>
-                <xs:attribute name="maxvalue" type="FloatNumberExt"/>
-                <xs:attribute name="number" type="XletNumber" default=""/>
-            </xs:extension>
-        </xs:simpleContent>
+        <xs:sequence>
+            <xs:element name="out" type="OutputElementType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="type" type="XletType" default="control"/>
+        <xs:attribute name="minvalue" type="FloatNumberExt"/>
+        <xs:attribute name="maxvalue" type="FloatNumberExt"/>
+        <xs:attribute name="number" type="XletNumber" default=""/>
     </xs:complexType>
 
     <xs:complexType name="ArgumentsElementType">

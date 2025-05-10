@@ -96,15 +96,15 @@
         <!-- inlets documentation -->
         <inlets>
             <inlet type="control">
-                <xinfo on="bang">outputs the currently stored value.</xinfo>
-                <xinfo on="float" minvalue="0" maxvalue="1">outputs the incoming number and stores it.</xinfo>
-                <xinfo on="list">truncates to the first element, outputs it, and stores it.</xinfo>
+                <in on="bang"><tr>outputs the currently stored value.</tr></in>
+                <in on="float" minvalue="0" maxvalue="1"><tr>outputs the incoming number and stores it.</tr></in>
+                <in on="list"><tr>truncates to the first element, outputs it, and stores it.</tr></in>
             </inlet>
-            <inlet><xinfo>a float received on the right inlet is stored.</xinfo></inlet>
+            <inlet><in><tr>a float received on the right inlet is stored.</tr></in></inlet>
         </inlets>
         <!-- outlets documentation -->
         <outlets>
-            <outlet>outputs the stored value as a float message.</outlet>
+            <outlet><out><tr>outputs the stored value as a float message.</tr></out></outlet>
         </outlets>
         <!-- arguments documentation -->
         <arguments>

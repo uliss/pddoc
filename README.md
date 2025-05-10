@@ -76,29 +76,45 @@ XML file for category:
             <authors>
                 <author>%</author>
             </authors>
-            <description>%</description>
+            <description>
+              <tr lang="en">%</tr>
+            </description>
             <license>%</license>
             <library>%</library>
             <category>%</category>
             <keywords>%</keywords>
             <since>%</since>
+            <aliases>
+              <alias>%</alias>
+            </aliases>
         </meta>
         <info>
-            <par>Paragraph text</par>
+          <par indent="1"><tr lang="ru">Paragraph text</tr></par>
+          <a href="url://">Title</a>
+          <wiki name="WIKI_NAME">Title</wiki>
+          <itemize>
+            <item><a href="">Item</a></item>
+          </itemize>
         </info>
         <arguments>
-            <argument name="ARG_NAME" type="symbol">argument name</argument>
+            <argument name="ARG_NAME" type="symbol" units="millisecond" minvalue="0" maxvalue="2" enum="0 1 2">
+              <tr lang="en">argument name</tr>
+            </argument>
         </arguments>
         <properties>
-            <property name="@property_name" type="symbol">property name</property>
+            <property name="@property_name" type="symbol" units="millisecond" minvalue="0" maxvalue="2" enum="0 1 2">
+              <tr lang="ru">property name</tr>
+            </property>
         </properties>
         <inlets>
             <inlet>
-                <xinfo on="bang">detailed description</xinfo>
+              <in on="bang"><tr lang="en">detailed description</tr></in>
             </inlet>
         </inlets>
         <outlets>
-            <outlet>description</outlet>
+          <outlet>
+            <out type="int"><tr lang="">description</tr></out>
+          </outlet>
         </outlets>
         <mouse>
             <event type="left-click" edit_mode="0" keys="Shift+Ctrl">Some info</event>
@@ -131,16 +147,25 @@ XML file for category:
     - `<license>`
     - `<library>`
     - `<category>`
+    - `<contacts>`
     - `<keywords>`
     - `<since>`
+    - `<version>`
+    - `<website>`
+    - `<aliases>`
+    - `<also>`
 
 ### info
 
 ```xml
 
 <info>
-    <par>Paragraph text</par>
+    <par>
+      <tr lang="en">Paragraph text</tr>
+      <tr lang="ru">Текст параграфа</tr>
+    </par>
     <wiki name="Arithmetic_mean">Arithmetic mean</wiki>
+    <a href="https://puredata.info">Pure Data home</a>
 </info>
 ```
 
@@ -153,13 +178,17 @@ XML file for category:
     - symbol
     - atom - int, float or symbol
     - list - list of atoms
+- **minvalue**
+- **maxvalue**
+- **units**
+- **enum**
 
 ### properties
 
 ```xml
 
 <properties>
-    <property name="PROP" type="TYPE">description</property>
+  <property name="PROP" type="TYPE"><tr lang="en">description</tr></property>
 </properties>
 ```
 
@@ -211,8 +240,8 @@ XML file for category:
 
 <methods>
     <method name="NAME">
-        description
-        <param type="TYPE" name="XXX" required="true">description</param>
+      <info><tr lang="en">description</tr></info>
+      <param type="TYPE" name="XXX" required="true"><tr lang="">description</tr></param>
         ...
     </method>
     ...
@@ -229,7 +258,7 @@ XML file for category:
 
 <inlets dynamic="true">
     <inlet type="TYPE" number="XXX">
-        <xinfo on="symbol">description</xinfo>
+      <in on="symbol"><tr lang="en">description</tr></in>
     </inlet>
 </inlets>
 ```
@@ -258,9 +287,9 @@ XML file for category:
 
 ```xml
 
-<outlets>
-    <outlet>
-        description
+<outlets dynamic="false">
+    <outlet type="audio">
+        <out type="int"><tr lang="en">description</tr></out>
     </outlet>
 </outlets>
 ```
@@ -310,6 +339,7 @@ XML file for category:
 - [HS] - horizontal slider
 - [VS] - vertical slider
 - [S digits=10] - symbol entry with width 10 chars
+- [L digits=20] - list entry with width 20 chars
 - [obj1] X [obj2] - cross connection
 - [obj1 #a] - object with id:a
 - [X a->b] - connect object #a to object with id:b

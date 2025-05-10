@@ -73,11 +73,13 @@ def main():
 
     # sort methods ny name
     for m in obj.iter("methods"):
-        m[:] = sorted(m, key=lambda x: x.attrib["name"])
+        m[:] = sorted(m, key=lambda x: x.get("name", ""))
 
     # add new comments
     for m in obj.xpath('//object/methods/*'):
-        if m.attrib["name"].find("--") > 0 or m.attrib["name"].endswith('-'):
+        name = m.get("name", "")
+        # skip comments ending with '-'
+        if name == "" or name.find("--") > 0 or name.endswith('-'):
             continue
 
         c = etree.Comment(' ' + m.attrib["name"] + ' ')

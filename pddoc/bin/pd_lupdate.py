@@ -168,25 +168,22 @@ def main():
         find_no_tr(in_file, "object/methods/method/param/tr", lang, root)
         find_no_tr(in_file, "object/methods/method/info/tr", lang, root)
         find_no_tr(in_file, "object/info/par/tr", lang, root)
+        find_no_tr(in_file, "object/inlets/inlet/xinfo/tr", lang, root)
+        find_no_tr(in_file, "object/outlets/outlet/out/tr", lang, root)
 
     if args['update']:
         obj = root.find("object")
         if obj is not None:
             logging.debug(f"processing object: [{obj.get('name')}]")
         # add property translations
-        for arg in root.findall("object/methods/method"):
-            m_info = clear_spaces(arg.text)
-            if len(m_info) == 0:
-                continue
-
-            m_el = etree.Element('info')
+        for outlet in root.findall("object/outlets/outlet"):
             tr = etree.Element('tr', lang='en')
-            tr.text = m_info
-            arg.text = ""
-            m_el.append(tr)
-            arg.insert(0, m_el)
-
-            logging.info(f"adding translation for <method>: {arg.get('name')}")
+            tr.text = outlet.text
+            outlet.text = ""
+            out = etree.Element('out', type="any")
+            out.append(tr)
+            outlet.append(out)
+            logging.info(f"adding translation for <outlet>")
 
     etree.indent(xml, space=" ", level=4)
 

@@ -90,6 +90,25 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="MethodParamType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="atom"/>
+            <xs:enumeration value="bool"/>
+            <xs:enumeration value="int"/>
+            <xs:enumeration value="float"/>
+            <xs:enumeration value="symbol"/>
+            <xs:enumeration value="list"/>
+            <xs:enumeration value="flag"/>
+            <xs:enumeration value="property"/>
+            <xs:enumeration value="data:set"/>
+            <xs:enumeration value="data:dict"/>
+            <xs:enumeration value="data:mlist"/>
+            <xs:enumeration value="data:string"/>
+            <xs:enumeration value="data:fifo"/>
+            <xs:enumeration value="data:color"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="MouseEventInfo">
         <xs:restriction base="xs:string">
             <xs:enumeration value="left-click"/>
@@ -475,7 +494,7 @@
             <xs:element name="tr" type="TranslationType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string"/>
-        <xs:attribute name="type" use="required" type="ArgumentDataType"/>
+        <xs:attribute name="type" use="required" type="MethodParamType"/>
         <xs:attribute name="units" type="UnitDataTypeEnum"/>
         <xs:attribute name="minvalue" type="FloatNumberExt"/>
         <xs:attribute name="maxvalue" type="FloatNumberExt"/>

@@ -231,3 +231,12 @@ class PddocFormatParser:
         with open(file, 'w') as f:
             f.write(self.to_string())
             return True
+
+    def set_tag_tr(self, tag: str, lang: str, text: str):
+        if self._pddoc is None:
+            return
+
+        obj = self.get_root()
+        if tag == "description":
+            for desc in obj.xpath(f"//object/meta/description/tr[@lang='{lang}']"):
+                desc.text = text

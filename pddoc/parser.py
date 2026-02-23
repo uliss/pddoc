@@ -19,6 +19,7 @@
 
 import logging
 import os
+import re
 from string import Template
 
 from lxml import etree
@@ -97,3 +98,136 @@ def fix_section_order(obj_tag):
 
     for child in reversed(sorted_children):
         obj_tag.insert(0, child)
+
+
+def tag_index(name):
+    return (
+        "title", "meta", "info", "mouse", "arguments", "properties", "methods", "inlets", "outlets",
+        "example").index(
+        name)
+
+
+class PddocFormatParser:
+    def __init__(self, xml_file: str):
+        parser = etree.XMLParser(resolve_entities=False,
+                                 strip_cdata=False,
+                                 remove_blank_text=False)
+        self._xml = etree.parse(xml_file, parser)
+        if not self._xml:
+            return
+
+        self._pddoc = self._xml.getroot()
+        pddoc_version = self._pddoc.get("version", "1.0")
+        obj = self._pddoc.getchildren()[0]
+
+        self._pddoc = etree.Element(self._pddoc.tag,
+                                    version=pddoc_version,
+                                    nsmap={"xi": "http://www.w3.org/2001/XInclude"})
+        self._pddoc.insert(0, obj)
+
+    def is_ok(self):
+        return self._pddoc is not None
+
+    def strip_finished_tr(self):
+        if self._pddoc is None:
+            return
+
+        # strip @lang finished=true
+        for tr in self._pddoc.findall("**/description/tr[@finished='true']"):
+            tr.attrib.pop("finished")
+
+    def get_root(self):
+        return self._pddoc.getchildren()[0]
+
+    def sort_sections(self):
+        if self._pddoc is None:
+            return
+
+        for r in self.get_root().iter("object"):
+            r[:] = sorted(r, key=lambda x: tag_index(x.tag))
+
+    def strip_blanks(self):
+        if self._pddoc is None:
+            return
+
+        for elem in self.get_root().iter('*'):
+            if elem.tag not in ("method", "property", "pdascii") and elem.text is not None:
+                elem.text = elem.text.strip()
+
+            if elem.tag == "pdascii":
+                txt = elem.text.rstrip().lstrip("\n")
+                elem.text = etree.CDATA("\n" + txt + "\n")
+
+    def sort_and_comment_methods(self):
+        if self._pddoc is None:
+            return
+
+        obj = self.get_root()
+        # remove old method comments
+        for comment in obj.xpath('//object/methods/comment()'):
+            comment.getparent().remove(comment)
+
+        # sort methods ny name
+        for m in obj.iter("methods"):
+            m[:] = sorted(m, key=lambda x: x.get("name", ""))
+
+        # add new comments
+        for m in obj.xpath('//object/methods/*'):
+            name = m.get("name", "")
+            # skip comments ending with '-'
+            if name == "" or name.find("--") > 0 or name.endswith('-'):
+                continue
+
+            c = etree.Comment(' ' + m.attrib["name"] + ' ')
+            m.addprevious(c)
+
+    def sort_and_comment_properties(self):
+        if self._pddoc is None:
+            return
+
+        obj = self.get_root()
+        # remove old property comments
+        for comment in obj.xpath('//object/properties/comment()'):
+            comment.getparent().remove(comment)
+
+        # sort properties by name
+        for prop in obj.iter("properties"):
+            prop[:] = sorted(prop, key=lambda x: x.get("name", ""))
+
+        # add new property comments
+        for m in obj.xpath('//object/properties/*'):
+            name = m.attrib.get("name")
+            if name is not None:
+                c = etree.Comment(f" {name} ")
+                m.addprevious(c)
+
+    def to_string(self) -> str:
+        if self._pddoc is None:
+            return ""
+
+        etree.indent(self._pddoc, space="  ", level=0)
+
+        xml_str = etree.tostring(self._pddoc,
+                                 pretty_print=True,
+                                 encoding="UTF-8",
+                                 xml_declaration=False,
+                                 method="xml",
+                                 doctype='<?xml version="1.0" encoding="utf-8"?>').decode()
+
+        pattern = r"(<pdascii id=[^>]+>)(<!\[CDATA\[)"
+
+        xml_str = xml_str \
+            .replace("<pdascii><![CDATA[", "<pdascii>\n<![CDATA[") \
+            .replace("]]></pdascii>",
+                     "]]>\n      </pdascii>")
+
+        xml_str = re.sub(pattern, r"\1\n<![CDATA[", xml_str)
+        return xml_str
+
+    def save_to(self, file) -> bool:
+        if self._pddoc is None:
+            return False
+
+        with open(file, 'w') as f:
+            f.write(self.to_string())
+            return True

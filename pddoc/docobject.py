@@ -22,6 +22,7 @@ __author__ = 'Serge Poltavski'
 import gettext
 import logging
 import re
+from gettext import gettext as _
 
 from .idocobjectvisitor import IDocObjectVisitor
 
@@ -1032,7 +1033,7 @@ class DocPar(DocTranslation):
         self.update_translations(xmlobj)
 
         DocItem.from_xml(self, xmlobj)
-        
+
     def style(self) -> str:
         return self._style
 

@@ -20,7 +20,9 @@
 __author__ = 'Serge Poltavski'
 
 import gettext
+from gettext import gettext as _
 
+import pddoc
 from pddoc.docobject import DocPar, DocA, DocWiki, DocArgument, DocArguments, DocProperties, DocProperty, \
     DocMethod, DocEvent, DocInlet, DocInlets, DocMethods, DocMouse, DocOutlet
 from pddoc.pdpage import PdPage
@@ -453,26 +455,52 @@ class PdDocVisitor(DocObjectVisitor):
 
     def info_begin(self, info):
         lst = []
-        XPOS = self.PD_XLET_INFO_XPOS - 30
+        xpos = self.PD_XLET_INFO_XPOS - 30
+        ypos = self.abs_info_y_pos()
+        ypad = 10
         for p in info.items():
             if isinstance(p, DocPar):
-                ind = p.indent * self.PD_PAR_INDENT
-                t = self._pp.make_txt(p.translation(self.lang), XPOS + ind, 0)
+                left_indent = p.indent * self.PD_PAR_INDENT
+                t = self._pp.make_txt(p.translation(self.lang), xpos + left_indent, ypos)
+                t.calc_brect()
+                height = t.brect()[3]
                 lst.append(t)
+
+                if not (len(p.style()) == 0 or p.style() == "common"):
+                    color = Color(100, 100, 100)
+                    if p.style() == "important":
+                        color = PdPageStyle.PAR_IMPORTANT_COLOR
+                    elif p.style() == "info":
+                        color = PdPageStyle.PAR_INFO_COLOR
+                    elif p.style() == "warning":
+                        color = PdPageStyle.PAR_WARNING_COLOR
+
+                    bg = self._pp.make_background(xpos - 10, ypos + 5, 2, height, color)
+                    lst.append(bg)
+
+                ypos += height
             elif isinstance(p, DocA):
-                a = self._pp.make_link(XPOS, 0, p.url, p.text())
+                a = self._pp.make_link(xpos, ypos, p.url, p.text())
                 a.set_bg_color(PdPageStyle.MAIN_BG_COLOR)
+                a.calc_brect()
+                ypos += a.brect()[3]
                 lst.append(a)
             elif isinstance(p, DocWiki):
-                a = self._pp.make_link(XPOS, 0, p.url, p.text())
+                a = self._pp.make_link(xpos, ypos, p.url, p.text())
                 a.set_bg_color(PdPageStyle.MAIN_BG_COLOR)
+                a.calc_brect()
+                ypos += a.brect()[3]
                 lst.append(a)
                 setattr(a, 'wiki_txt', True)
 
-        brect = self._pp.place_in_col(lst, self.abs_info_y_pos(), 10)
-        brect.width = self.info_background_width()
-        brect.expand(10, 0, 5, 15)
-        bg = self._pp.make_background(brect.x, brect.y, brect.width, brect.height,
+            ypos += ypad
+
+        bg_y = self.abs_info_y_pos()
+        bg_width = self.info_background_width()
+        bg_height = ypos - bg_y
+        rect = pddoc.Rectangle(pddoc.Point(xpos, bg_y), bg_width, bg_height)
+        rect.expand(10, 0, 5, 15)
+        bg = self._pp.make_background(rect.x, rect.y, rect.width, rect.height,
                                       PdPageStyle.MAIN_BG_COLOR)
         self._pp.append_object(bg)
 
@@ -486,7 +514,7 @@ class PdDocVisitor(DocObjectVisitor):
                 obj.y += 2
 
         self._pp.append_list(lst)
-        self.current_yoff = brect.bottom()
+        self.current_yoff = rect.bottom()
 
     def argument_begin(self, arg: DocArgument):
         y = self.current_yoff
@@ -708,7 +736,7 @@ class PdDocVisitor(DocObjectVisitor):
         label = self._pp.make_txt(_("see also:"), 0, 0)
         also_objects = [label]
         for see in self._see_also:
-            if 'is_link' in see and see['is_link'] == True:
+            if 'is_link' in see and see['is_link'] is True:
                 lnk = self._pp.make_link(0, 0,
                                          "{0}-help.pd".format(see['name']),
                                          "[{0}]".format(see['name']))

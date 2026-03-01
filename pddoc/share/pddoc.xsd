@@ -551,11 +551,23 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:simpleType name="TextParagraphStyle">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="important"/>
+            <xs:enumeration value="warning"/>
+            <xs:enumeration value="info"/>
+            <xs:enumeration value="common"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:complexType name="MarkupText">
          <xs:sequence>
             <xs:element name="tr" type="TranslationType" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="indent" type="xs:integer"/>
+        <xs:attribute name="space-top" type="xs:integer" default="0"/>
+        <xs:attribute name="space-bottom" type="xs:integer" default="0"/>
+        <xs:attribute name="style" type="TextParagraphStyle" default="common"/>
     </xs:complexType>
 
     <xs:complexType name="MarkupItem" mixed="true">

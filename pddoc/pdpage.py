@@ -33,7 +33,7 @@ from .pd.pdexporter import PdExporter
 
 
 class PdPageStyle(object):
-    HRULE_COLOR = Color(200, 200, 200)
+    HRULE_COLOR = Color(190, 220, 220)
     HRULE_LEFT_MARGIN = 20
     HRULE_RIGHT_MARGIN = 20
     SECTION_FONT_SIZE = 17
@@ -77,7 +77,8 @@ class PdPage(object):
         cnv._bg_color = color
         return cnv
 
-    def make_hrule(self, x: int, y: int, width: int, height: int = 1, color: Color = Color(200, 200, 200)) -> GCanvas:
+    def make_hrule(self, x: int, y: int, width: int, height: int = 1,
+                   color: Color = PdPageStyle.HRULE_COLOR) -> GCanvas:
         return self.make_background(x, y, width, height, color)
 
     def make_styled_hrule(self, y: int) -> GCanvas:

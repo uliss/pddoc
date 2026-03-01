@@ -78,6 +78,10 @@ class BRectCalculator(AbstractVisitor):
 
     def text_brect(self, text: str, line_width: int = 61):
         lines = self.break_lines(text, width=line_width)
+        if len(lines) > 1:
+            k = sum(map(lambda x: abs(line_width - len(x)), lines)) / len(lines)
+            if k < 7:
+                lines.append("M")
 
         max_w = 0
         max_h = 0
@@ -87,9 +91,7 @@ class BRectCalculator(AbstractVisitor):
             max_h = max(max_h, h)
 
         nlines = len(lines)
-        if nlines > 3:
-            nlines += 1
-            
+
         return 0, 0, int(round(max_w * 1.06)), int(round(nlines * max_h * 1.08))
 
     def comment_brect(self, comment: Comment):

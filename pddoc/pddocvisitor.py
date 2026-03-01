@@ -80,6 +80,7 @@ class PdDocVisitor(DocObjectVisitor):
     PD_SECTION_YMARGIN = 40
     PD_PAR_INDENT = 10
     PD_ARG_NAME_COLOR = Color(240, 250, 250)
+    PD_METHOD_RULE_COLOR = Color(210, 210, 210)
 
     def __init__(self):
         DocObjectVisitor.__init__(self)
@@ -89,6 +90,11 @@ class PdDocVisitor(DocObjectVisitor):
 
         self.current_yoff = 0
         self._pp = PdPage("obj", self.PD_WINDOW_WIDTH, self.PD_WINDOW_HEIGHT)
+
+        self._method_counter = 0
+        self._methods_total = 0
+        self._prop_counter = 0
+        self._props_total = 0
 
     def meta_end(self, meta):
         self.add_header()
@@ -182,6 +188,8 @@ class PdDocVisitor(DocObjectVisitor):
         self.current_yoff += h + 5
 
     def methods_begin(self, m: DocMethods):
+        self._method_counter = 0
+        self._methods_total = len(m.items())
         self.add_section(_("methods:"), 6)
         m.sort_by(lambda n: n.sort_name())
 
@@ -217,7 +225,7 @@ class PdDocVisitor(DocObjectVisitor):
             if p.text() is not None:
                 arg_descr += ": " + p.translation(self.lang)
 
-            if p.type():
+            if p.type() and p.type() != "flag":
                 arg_descr = _("{0} Type: {1}. ").format(add_text_dot(arg_descr), p.type())
 
             value_range = self.format_range(p)
@@ -258,6 +266,18 @@ class PdDocVisitor(DocObjectVisitor):
         info.append(msg)
         __, __, __, h = self._pp.group_brect(info)
         self.current_yoff += h + 10
+
+    def method_end(self, m):
+        self._method_counter += 1
+        if self._method_counter >= self._methods_total:
+            return
+
+        hr = self._pp.make_hrule(x=self.PD_XLET_INFO_XPOS - 20,
+                                 y=self.current_yoff,
+                                 width=self.PD_WINDOW_WIDTH - self.PD_XLET_INFO_XPOS,
+                                 color=self.PD_METHOD_RULE_COLOR,
+                                 height=1)
+        self._pp.append_object(hr)
 
     def inlets_begin(self, inlets: DocInlets):
         super(self.__class__, self).inlets_begin(inlets)
@@ -351,6 +371,8 @@ class PdDocVisitor(DocObjectVisitor):
             self.current_yoff += 10
 
     def properties_begin(self, p: DocProperties):
+        self._prop_counter = 0
+        self._props_total = len(p.items())
         super(self.__class__, self).properties_begin(p)
         lbl = self.add_section(_("properties:"), 6)
         self.add_section_help("[?]", "ceammc.props-info.pd", lbl.top)
@@ -376,22 +398,15 @@ class PdDocVisitor(DocObjectVisitor):
         # props description
         prop_descr = ""
         if not (p.is_alias() or p.is_flag()):
-            if p.access() == "readwrite":
-                txt_en = p.translation('en')
-                if txt_en.startswith("on/off"):
-                    prop_descr += _("Turn ")
-                else:
-                    prop_descr += _("Get/Set ")
-            elif p.access() == "initonly":
-                prop_descr += _("(initonly) Get/Set ")
-            else:
-                prop_descr += _("(readonly) Get ")
+            if p.access() == "initonly":
+                prop_descr += _(f"(initonly) ")
+            elif p.access() == "readonly":
+                prop_descr += _(f"(readonly) ")
 
-        if p.is_alias():
-            txt = p.translation(self.lang)
-            prop_descr += txt[0].upper() + txt[1:]
-        else:
-            prop_descr += p.translation(self.lang)
+        txt = p.translation(self.lang)
+        # if len(txt) > 2 and txt[0].isupper() and not txt[1].isupper():
+        txt = txt[0].upper() + txt[1:]
+        prop_descr += txt
 
         if p.type() and not (p.is_alias() or p.is_flag()):
             prop_descr = _("{0} Type: {1}. ").format(add_text_dot(prop_descr), p.type())
@@ -417,6 +432,18 @@ class PdDocVisitor(DocObjectVisitor):
         br = self._pp.group_brect([info] + props)
 
         self.current_yoff += br[3] + 12
+
+    def property_end(self, m):
+        self._prop_counter += 1
+        if self._prop_counter >= self._props_total:
+            return
+
+        hr = self._pp.make_hrule(x=self.PD_XLET_INFO_XPOS - 20,
+                                 y=self.current_yoff,
+                                 width=self.PD_WINDOW_WIDTH - self.PD_XLET_INFO_XPOS,
+                                 color=self.PD_METHOD_RULE_COLOR,
+                                 height=1)
+        self._pp.append_object(hr)
 
     def abs_info_y_pos(self) -> int:
         return self.abs_description_y_pos() + self.DESCRIPTION_HEIGHT + 10
@@ -468,7 +495,7 @@ class PdDocVisitor(DocObjectVisitor):
         t1 = self._pp.add_txt("{0}.".format(arg.number()), self.PD_XLET_INDX_XPOS, y)
         t2 = self._pp.add_txt(arg.type(), self.PD_XLET_TYPE_XPOS, y)
         self.add_background_for_txt(arg.main_info_prefix(),
-                                    self.PD_XLET_INFO_XPOS,
+                                    self.PD_XLET_INFO_XPOS - 3,
                                     y,
                                     self.PD_ARG_NAME_COLOR)
 
@@ -476,7 +503,7 @@ class PdDocVisitor(DocObjectVisitor):
         info = arg.main_info(self.lang)
         t3 = self._pp.add_txt(f"{remove_text_dot(info)}. {rng}", self.PD_XLET_INFO_XPOS, y)
         __, __, __, h = self._pp.group_brect([t1, t2, t3])
-        self.current_yoff += h + 5
+        self.current_yoff += h + 10
 
     def object_end(self, obj):
         LNK_Y = 45

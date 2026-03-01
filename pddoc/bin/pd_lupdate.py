@@ -90,7 +90,8 @@ def check_translations(xml, lang: str, verbose: bool):
     xml.xinclude()
     root = xml.getroot()
 
-    check_description_tr(lang, root, verbose)
+    check_total_tr(lang, root, verbose)
+    # check_description_tr(lang, root, verbose)
     check_categories_tr(lang, root, verbose)
 
 
@@ -112,6 +113,25 @@ def check_categories_tr(lang, root, verbose):
     if verbose and len(no_tr_cats_set) > 0:
         logging.warning(
             f"categories without '{lang}' tr ({len(no_tr_cats_set)}):\n\t{'\n\t'.join(sorted(list(no_tr_cats_set)))}")
+
+
+def check_total_tr(lang, root, verbose):
+    tr = root.xpath(f"//*/tr[@lang='{lang}' and (not(@finished) or @finished!='false')]")
+    unfinished = root.xpath(f"//*/tr[@lang='{lang}' and @finished='false']")
+    num_tr = len(tr)
+    num_unfinished = len(unfinished)
+    num_total = num_tr + num_unfinished + 0.0
+    logging.info(f"translated entries:      {num_tr: 8}\n"
+                 f"unfinished entries:      {num_unfinished: 8}\n"
+                 f"progress:                {int((num_tr / num_total) * 100): 7}%")
+
+    if verbose:
+        for obj in root.xpath(f"//*/object"):
+            tr = obj.xpath(f".//*/tr[@lang='{lang}']")
+            non_tr = sum(map(lambda x: int(x.get("finished", "true") == "false"), tr))
+            total = len(tr)
+            if non_tr > 0:
+                logging.error(f"[{obj.get("name", "")}]: {total - non_tr}/{total}")
 
 
 def check_description_tr(lang, root, verbose):
@@ -151,7 +171,11 @@ def main():
     lang = args['lang']
     verbose = args['verbose']
 
-    xml = etree.parse(in_file)
+    parser = etree.XMLParser(resolve_entities=False,
+                             strip_cdata=False,
+                             remove_blank_text=False)
+
+    xml = etree.parse(in_file, parser)
     if not xml:
         exit(-1)
 
@@ -185,7 +209,7 @@ def main():
             outlet.append(out)
             logging.info(f"adding translation for <outlet>")
 
-    etree.indent(xml, space=" ", level=4)
+    etree.indent(xml, space="  ", level=0)
 
     if args["in_place"]:
         etree.ElementTree(root).write(in_file,

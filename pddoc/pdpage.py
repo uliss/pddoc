@@ -50,6 +50,7 @@ class PdPageStyle(object):
     PAR_IMPORTANT_COLOR = Color(220, 20, 60)
     PAR_INFO_COLOR = Color(154, 205, 50)
     PAR_WARNING_COLOR = Color(255, 140, 0)
+    PAR_CRITICAL_COLOR = Color(255, 0, 0)
 
 
 class PdPage(object):

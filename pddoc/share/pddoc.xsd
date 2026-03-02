@@ -557,6 +557,7 @@
             <xs:enumeration value="warning"/>
             <xs:enumeration value="info"/>
             <xs:enumeration value="common"/>
+            <xs:enumeration value="critical"/>
         </xs:restriction>
     </xs:simpleType>
 

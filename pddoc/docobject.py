@@ -1020,14 +1020,14 @@ class DocPar(DocTranslation):
     def __init__(self, *args):
         DocTranslation.__init__(self, args)
         self._indent = 0
-        self._space_top = 0
-        self._space_bottom = 0
+        self._top_margin = 0
+        self._bottom_margin = 0
         self._style = ""
 
     def from_xml(self, xmlobj):
         self._indent = int(xmlobj.attrib.get("indent", "0"))
-        self._space_top = int(xmlobj.attrib.get("space-top", "0"))
-        self._space_bottom = int(xmlobj.attrib.get("space-bottom", "0"))
+        self._top_margin = int(xmlobj.attrib.get("space-top", "0"))
+        self._bottom_margin = int(xmlobj.attrib.get("space-bottom", "0"))
         self._style = xmlobj.attrib.get("style", "")
 
         self.update_translations(xmlobj)
@@ -1036,6 +1036,12 @@ class DocPar(DocTranslation):
 
     def style(self) -> str:
         return self._style
+
+    def top_margin(self):
+        return self._top_margin
+
+    def bottom_margin(self):
+        return self._bottom_margin
 
     @property
     def indent(self):

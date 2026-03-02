@@ -303,7 +303,7 @@ class LibraryMaker(object):
                 indent = int(part.get("indent", 0))
 
                 for item in part.findall('item'):
-                    txt = item.text.strip()
+                    txt = get_translation(item, self.locale)
                     y_pos += pd_page.add_txt(f"◦ {txt}", x_margin + (10 * indent), y_pos, width=(width - indent)).height
                     y_pos += y_pad
             elif part.tag == 'li':
@@ -314,7 +314,7 @@ class LibraryMaker(object):
 
                 i = 1
                 for item in part.findall('item'):
-                    txt = item.text.strip()
+                    txt = get_translation(item, self.locale)
                     y_pos += pd_page.add_txt(f"{i}. {txt}", x_margin + (10 * indent), y_pos,
                                              width=(width - indent)).height
                     i += 1

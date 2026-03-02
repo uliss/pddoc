@@ -22,9 +22,10 @@ __author__ = 'Serge Poltavski'
 import gettext
 import logging
 import re
-from gettext import gettext as _
 
 from .idocobjectvisitor import IDocObjectVisitor
+
+# from gettext import gettext as _
 
 gettext.install("pddoc")
 
@@ -769,6 +770,7 @@ class DocArgument(DocTranslation):
         self._maxvalue = ""
         self._default = ""
         self._required = False
+        self._verbose = False
         self._enum = []
 
     def from_xml(self, xmlobj):
@@ -786,6 +788,7 @@ class DocArgument(DocTranslation):
         self._maxvalue = xmlobj.attrib.get("maxvalue", "")
         self._default = xmlobj.attrib.get("default", "")
         self._required = xmlobj.attrib.get("required", False) == "true"
+        self._verbose = xmlobj.attrib.get("verbose", False) == "true"
         enum_str = xmlobj.attrib.get("enum", "").strip()
         if len(enum_str) > 1:
             self._enum = re.split("[ \n\t]+", enum_str)
@@ -807,6 +810,9 @@ class DocArgument(DocTranslation):
 
     def required(self):
         return self._required is True
+
+    def verbose(self):
+        return self._verbose
 
     def optional(self):
         return self._required is False

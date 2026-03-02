@@ -20,7 +20,6 @@
 __author__ = 'Serge Poltavski'
 
 import gettext
-from gettext import gettext as _
 
 import pddoc
 from pddoc.docobject import DocPar, DocA, DocWiki, DocArgument, DocArguments, DocProperties, DocProperty, \
@@ -86,6 +85,7 @@ class PdDocVisitor(DocObjectVisitor):
     PD_PAR_INDENT = 10
     PD_ARG_NAME_COLOR = Color(240, 250, 250)
     PD_METHOD_RULE_COLOR = Color(210, 210, 210)
+    PD_METHOD_ARG_LEFT_MARGIN = PD_XLET_INFO_XPOS + 30
 
     def __init__(self):
         DocObjectVisitor.__init__(self)
@@ -220,7 +220,12 @@ class PdDocVisitor(DocObjectVisitor):
         if len(m.name()) > 18:
             x += (len(m.name()) - 18) * 10
 
-        info = [self._pp.add_txt(info_text, x, self.current_yoff)]
+        method_info = self._pp.add_txt(info_text, x, self.current_yoff)
+        method_info.calc_brect()
+        self.current_yoff += method_info.height + 10
+
+        param_xpos = self.PD_METHOD_ARG_LEFT_MARGIN
+        param_ypos = self.current_yoff
 
         # add method arguments
         for p in m.params():
@@ -249,28 +254,34 @@ class PdDocVisitor(DocObjectVisitor):
             # param name highlight with background canvas
             hl_text = self._pp.make_txt(param_name, 0, 0)
             hl_text.calc_brect()
-            bg = self._pp.make_background(0, 0, hl_text.width + 8, hl_text.height + 8, color=self.PD_ARG_NAME_COLOR)
+            bg = self._pp.make_background(param_xpos, param_ypos, hl_text.width + 8, hl_text.height + 6,
+                                          color=self.PD_ARG_NAME_COLOR)
             self._pp.append_object(bg)
 
             # param description
-            txt_obj = self._pp.add_txt(add_text_dot(arg_descr), self.PD_XLET_INFO_XPOS + 10, self.current_yoff)
-            # bind background to object
-            setattr(txt_obj, 'background_obj', bg)
+            txt_obj = self._pp.add_txt(add_text_dot(arg_descr), param_xpos, param_ypos)
 
-            info.append(txt_obj)
+            # make verbose link
+            if p.verbose():
+                self._pp.add_link("[?]", "[?]", self.PD_METHOD_ARG_LEFT_MARGIN - 30, param_ypos)
 
-        self._pp.place_in_col(info, self.current_yoff, 8)
+            # info.append(txt_obj)
+            txt_obj.calc_brect()
+            param_ypos += 8
+            param_ypos += txt_obj.height
 
-        # set background positions
-        for obj in info:
-            if hasattr(obj, 'background_obj'):
-                bg = getattr(obj, 'background_obj')
-                bg.x = obj.x
-                bg.y = obj.y
+        # self._pp.place_in_col(info, self.current_yoff, 8)
 
-        info.append(msg)
-        __, __, __, h = self._pp.group_brect(info)
-        self.current_yoff += h + 10
+        # # set background positions
+        # for obj in info:
+        #     if hasattr(obj, 'background_obj'):
+        #         bg = getattr(obj, 'background_obj')
+        #         bg.x = obj.x
+        #         bg.y = obj.y
+
+        # info.append(msg)
+        # __, __, __, h = self._pp.group_brect(info)
+        self.current_yoff = param_ypos + 10
 
     def method_end(self, m):
         self._method_counter += 1

@@ -3,6 +3,7 @@
 import logging
 import os
 import os.path
+import re
 import urllib.parse as ul
 from xml.etree.ElementTree import Element
 
@@ -17,7 +18,7 @@ from .pd.pdexporter import PdExporter
 from .pdpage import PdPage, PdPageStyle
 
 
-#   Copyright (C) 2016 by Serge Poltavski                                 #
+#   Copyright (C) 2026 by Serge Poltavski                                 #
 #   serge.poltavski@gmail.com                                             #
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -36,13 +37,31 @@ from .pdpage import PdPage, PdPageStyle
 def pages_schema():
     etree.register_namespace("xi", "http://www.w3.org/2001/XInclude")
     xml = etree.parse(os.path.join(os.path.dirname(__file__), 'share', 'pddoc_pages.xsd'))
+    xml.xinclude()
     return etree.XMLSchema(xml.getroot())
+
+
+def clear_spaces(txt: str) -> str:
+    return re.sub(r"\s+", " ", txt.replace("\n", " "))
+
+
+def get_translation(node: Element, lang: str, default: str = "") -> str:
+    tr = node.find(f"tr[@lang='{lang}']")
+    if tr is None or tr.get("finished", "true") == "false":
+        tr = node.find(f"tr[@lang='en']")
+        if tr is None:
+            tr = node.find(f".")
+
+    if tr is not None:
+        return clear_spaces(tr.text)
+    else:
+        return default
 
 
 class LibraryMaker(object):
     NSMAP = {'xi': "http://www.w3.org/2001/XInclude"}
 
-    def __init__(self, name):
+    def __init__(self, name, locale: str = 'en'):
         etree.register_namespace("xi", "http://www.w3.org/2001/XInclude")
         self._name = name
         self._lib = etree.Element("library", version="1.0", name=name, nsmap=self.NSMAP)
@@ -50,6 +69,7 @@ class LibraryMaker(object):
         self._cat_entries = {}
         self._authors = {}
         self._version = ""
+        self._locale = locale.lower()
         self._search_paths = []
 
     @property
@@ -59,6 +79,10 @@ class LibraryMaker(object):
     @version.setter
     def version(self, v):
         self._version = v
+
+    @property
+    def locale(self):
+        return self._locale
 
     def add_search_path(self, path):
         if not os.path.exists(path) or not os.path.isdir(path):
@@ -87,7 +111,10 @@ class LibraryMaker(object):
         for f in files:
             self.process_object_file(f)
 
+    def process_library_meta(self):
         self.fill_library_meta()
+
+    def proces_library_pages(self):
         self.fill_library_info_pages()
 
     def process_object_file(self, f):
@@ -100,9 +127,9 @@ class LibraryMaker(object):
             logging.error("XML syntax error:\n \"%s\"\n\twhile parsing file: \"%s\"", e, f)
             return
 
-        pddoc = xml.getroot()
+        root = xml.getroot()
         # find all object tags, but normally it's only one per file
-        objects = filter(lambda x: x.tag == 'object', pddoc)
+        objects = filter(lambda x: x.tag == 'object', root)
         for obj in objects:
             self.process_object_doc(f, obj)
 
@@ -152,11 +179,20 @@ class LibraryMaker(object):
         info_pages = self.find_in_path("{0}_pages.xml".format(self._name))
         if info_pages:
             try:
-                xml = etree.parse(info_pages)
+                base_dir = os.path.dirname(os.path.normpath(info_pages))
+                # "/" is required!
+                if len(base_dir) > 0 and base_dir[-1] != '/':
+                    base_dir += '/'
+
+                xml = etree.parse(info_pages, base_url=base_dir)
                 xml.xinclude()
 
                 schema = pages_schema()
-                schema.assertValid(xml)
+                try:
+                    schema.assertValid(xml)
+                except etree.DocumentInvalid as e:
+                    logging.error(f"Scheme check error: \n\t\"{e}\"\n\twhile parsing file: \"{info_pages}\"")
+                    return
 
                 root = xml.getroot()
                 for page in root.findall("page"):
@@ -171,7 +207,7 @@ class LibraryMaker(object):
             if os.path.exists(db):
                 PdObject.xlet_calculator.add_db(db)
 
-        title = page.find("title").text.strip()
+        title = get_translation(page.find("title"), self.locale)
         pd_page = PdPage("")
         y_pos = pd_page.add_header("CEAMMC documentation", False).bottom
         y_pos += 20
@@ -185,32 +221,33 @@ class LibraryMaker(object):
 
         # sections
         for part in page.find('sections'):
-            content = part.text.strip()
+            # content = part.text.strip()
 
             if part.tag == 'section':
-                title = part.text.strip()
+                title = get_translation(part, self.locale)
                 lbl, hr, bbox = pd_page.make_section(y_pos, txt=title, replace_ws=False, font_size=18, height=24,
                                                      width=200)
                 pd_page.append_list([hr, lbl])
                 y_pos = hr.bottom + 20
             elif part.tag == 'h1':
-                title = part.text.strip()
+                title = get_translation(part, self.locale)
                 lbl = pd_page.make_label(20, y_pos, txt=title, replace_ws=False, font_size=18, height=34, label_yoff=17,
                                          width=400, color=Color.white(), bg_color=Color(30, 30, 30))
                 pd_page.append_object(lbl)
                 y_pos += lbl.height + 20
             elif part.tag == 'h2':
-                title = part.text.strip()
+                title = get_translation(part, self.locale)
                 lbl = pd_page.make_label(20, y_pos, txt=title, replace_ws=False, font_size=16, height=28, label_yoff=14,
                                          width=400, color=Color.white(), bg_color=Color(70, 70, 70))
                 pd_page.append_object(lbl)
                 y_pos += lbl.height + 20
             elif part.tag == 'par':
+                text = get_translation(part, self.locale)
                 x_margin = 40
                 y_pad = 15
                 width = 80
                 indent = int(part.get("indent", 0))
-                y_pos += pd_page.add_txt(part.text, x_margin + (10 * indent), y_pos, width=(width - indent)).height
+                y_pos += pd_page.add_txt(text, x_margin + (10 * indent), y_pos, width=(width - indent)).height
                 y_pos += y_pad
             elif part.tag == 'pdascii':
                 y_pad = 20
@@ -253,10 +290,11 @@ class LibraryMaker(object):
                 y_pos += y_pad
 
             elif part.tag == 'a':
+                text = get_translation(part, self.locale)
                 x_margin = 40
                 y_pad = 10
                 indent = int(part.get("indent", 0))
-                y_pos += pd_page.add_link(part.text, part.get("href"), x_margin + (10 * indent), y_pos).height
+                y_pos += pd_page.add_link(text, part.get("href"), x_margin + (10 * indent), y_pos).height
                 y_pos += y_pad
             elif part.tag == 'ul':
                 x_margin = 40

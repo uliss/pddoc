@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pddoc 0.9.1\n"
 "Report-Msgid-Bugs-To: serge.poltavski@gmail.com\n"
-"POT-Creation-Date: 2025-05-10 04:16+0300\n"
+"POT-Creation-Date: 2026-03-02 15:35+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: docobject.py:779 docobject.py:799 docobject.py:860
+#: docobject.py:779 docobject.py:799 docobject.py:860 docobject.py:861
 msgid "Allowed values: {}"
 msgstr ""
 
-#: docobject.py:782 docobject.py:802 docobject.py:863
+#: docobject.py:782 docobject.py:802 docobject.py:863 docobject.py:864
 msgid "Type: {}"
 msgstr ""
 
@@ -35,57 +35,61 @@ msgstr ""
 msgid "Generated with pddoc v{pddoc_version}"
 msgstr ""
 
-#: pddocvisitor.py:134 pddocvisitor.py:137
+#: pddocvisitor.py:134 pddocvisitor.py:137 pddocvisitor.py:148
 msgid "mouse events:"
 msgstr ""
 
 #: pddocvisitor.py:172 pddocvisitor.py:175 pddocvisitor.py:178
+#: pddocvisitor.py:189
 msgid "[Edit]"
 msgstr ""
 
 #: pddocvisitor.py:179 pddocvisitor.py:180 pddocvisitor.py:181
-#: pddocvisitor.py:182 pddocvisitor.py:185
+#: pddocvisitor.py:182 pddocvisitor.py:185 pddocvisitor.py:198
 msgid "methods:"
 msgstr ""
 
 #: pddocvisitor.py:200 pddocvisitor.py:202 pddocvisitor.py:203
+#: pddocvisitor.py:216
 msgid " Arguments are: "
 msgstr ""
 
-#: pddocvisitor.py:218 pddocvisitor.py:221 pddocvisitor.py:369
-#: pddocvisitor.py:372 pddocvisitor.py:390
+#: pddocvisitor.py:218 pddocvisitor.py:221 pddocvisitor.py:234
+#: pddocvisitor.py:369 pddocvisitor.py:372 pddocvisitor.py:390
+#: pddocvisitor.py:416
 #, python-brace-format
 msgid "{0} Type: {1}. "
 msgstr ""
 
-#: pddocvisitor.py:228 pddocvisitor.py:231
+#: pddocvisitor.py:228 pddocvisitor.py:231 pddocvisitor.py:244
 #, python-brace-format
 msgid "{0} Allowed values: {1}. "
 msgstr ""
 
-#: pddocvisitor.py:231 pddocvisitor.py:234 pddocvisitor.py:372
-#: pddocvisitor.py:375 pddocvisitor.py:393
+#: pddocvisitor.py:231 pddocvisitor.py:234 pddocvisitor.py:247
+#: pddocvisitor.py:372 pddocvisitor.py:375 pddocvisitor.py:393
+#: pddocvisitor.py:419
 #, python-brace-format
 msgid "{0} Units: {1}. "
 msgstr ""
 
 #: pddocvisitor.py:261 pddocvisitor.py:262 pddocvisitor.py:263
-#: pddocvisitor.py:264
+#: pddocvisitor.py:264 pddocvisitor.py:289
 msgid "inlets:"
 msgstr ""
 
 #: pddocvisitor.py:292 pddocvisitor.py:293 pddocvisitor.py:294
-#: pddocvisitor.py:295 pddocvisitor.py:303
+#: pddocvisitor.py:295 pddocvisitor.py:303 pddocvisitor.py:328
 msgid "outlets:"
 msgstr ""
 
 #: pddocvisitor.py:317 pddocvisitor.py:318 pddocvisitor.py:319
-#: pddocvisitor.py:320 pddocvisitor.py:344
+#: pddocvisitor.py:320 pddocvisitor.py:344 pddocvisitor.py:368
 msgid "arguments:"
 msgstr ""
 
 #: pddocvisitor.py:328 pddocvisitor.py:329 pddocvisitor.py:330
-#: pddocvisitor.py:331 pddocvisitor.py:355
+#: pddocvisitor.py:331 pddocvisitor.py:355 pddocvisitor.py:381
 msgid "properties:"
 msgstr ""
 
@@ -106,110 +110,118 @@ msgid "(readonly) Get "
 msgstr ""
 
 #: pddocvisitor.py:375 pddocvisitor.py:378 pddocvisitor.py:396
+#: pddocvisitor.py:422
 #, python-brace-format
 msgid "{0} Default value: {1}. "
 msgstr ""
 
 #: pddocvisitor.py:378 pddocvisitor.py:381 pddocvisitor.py:399
+#: pddocvisitor.py:425
 #, python-brace-format
 msgid "{0} Range: {1}...{2}. "
 msgstr ""
 
-#: pddocvisitor.py:380
+#: pddocvisitor.py:380 pddocvisitor.py:406
 msgid "(initonly) "
 msgstr ""
 
 #: pddocvisitor.py:380 pddocvisitor.py:383 pddocvisitor.py:401
+#: pddocvisitor.py:427
 #, python-brace-format
 msgid "{0} Min value: {1}. "
 msgstr ""
 
-#: pddocvisitor.py:382
+#: pddocvisitor.py:382 pddocvisitor.py:408
 msgid "(readonly) "
 msgstr ""
 
 #: pddocvisitor.py:382 pddocvisitor.py:385 pddocvisitor.py:403
+#: pddocvisitor.py:429
 #, python-brace-format
 msgid "{0} Max value: {1}. "
 msgstr ""
 
 #: pddocvisitor.py:385 pddocvisitor.py:388 pddocvisitor.py:406
+#: pddocvisitor.py:432
 #, python-brace-format
 msgid "{0} Allowed values: {1}."
 msgstr ""
 
 #: pddocvisitor.py:475 pddocvisitor.py:484 pddocvisitor.py:501
+#: pddocvisitor.py:571
 #, python-brace-format
 msgid "Max value: {0}"
 msgstr ""
 
 #: pddocvisitor.py:477 pddocvisitor.py:486 pddocvisitor.py:503
+#: pddocvisitor.py:573
 #, python-brace-format
 msgid "Min value: {0}"
 msgstr ""
 
 #: pddocvisitor.py:479 pddocvisitor.py:488 pddocvisitor.py:505
+#: pddocvisitor.py:575
 #, python-brace-format
 msgid "Range: {0}...{1}"
 msgstr ""
 
 #: pddocvisitor.py:577 pddocvisitor.py:578 pddocvisitor.py:579
-#: pddocvisitor.py:586 pddocvisitor.py:603
+#: pddocvisitor.py:586 pddocvisitor.py:603 pddocvisitor.py:673
 msgid "library:"
 msgstr ""
 
 #: pddocvisitor.py:580 pddocvisitor.py:581 pddocvisitor.py:582
-#: pddocvisitor.py:589 pddocvisitor.py:606
+#: pddocvisitor.py:589 pddocvisitor.py:606 pddocvisitor.py:676
 msgid "version:"
 msgstr ""
 
 #: pddocvisitor.py:583 pddocvisitor.py:584 pddocvisitor.py:592
-#: pddocvisitor.py:609
+#: pddocvisitor.py:609 pddocvisitor.py:679
 msgid "object:"
 msgstr ""
 
 #: pddocvisitor.py:586 pddocvisitor.py:587 pddocvisitor.py:588
-#: pddocvisitor.py:595 pddocvisitor.py:612
+#: pddocvisitor.py:595 pddocvisitor.py:612 pddocvisitor.py:682
 msgid "category:"
 msgstr ""
 
 #: pddocvisitor.py:591 pddocvisitor.py:592 pddocvisitor.py:593
-#: pddocvisitor.py:600 pddocvisitor.py:617
+#: pddocvisitor.py:600 pddocvisitor.py:617 pddocvisitor.py:687
 msgid "since:"
 msgstr ""
 
 #: pddocvisitor.py:595 pddocvisitor.py:596 pddocvisitor.py:597
-#: pddocvisitor.py:604 pddocvisitor.py:621
+#: pddocvisitor.py:604 pddocvisitor.py:621 pddocvisitor.py:691
 msgid "authors:"
 msgstr ""
 
 #: pddocvisitor.py:598 pddocvisitor.py:599 pddocvisitor.py:600
-#: pddocvisitor.py:607 pddocvisitor.py:624
+#: pddocvisitor.py:607 pddocvisitor.py:624 pddocvisitor.py:694
 msgid "license:"
 msgstr ""
 
 #: pddocvisitor.py:606 pddocvisitor.py:607 pddocvisitor.py:608
-#: pddocvisitor.py:615 pddocvisitor.py:632
+#: pddocvisitor.py:615 pddocvisitor.py:632 pddocvisitor.py:702
 msgid "keywords:"
 msgstr ""
 
 #: pddocvisitor.py:615 pddocvisitor.py:616 pddocvisitor.py:617
-#: pddocvisitor.py:624 pddocvisitor.py:641
+#: pddocvisitor.py:624 pddocvisitor.py:641 pddocvisitor.py:711
 msgid "contacts:"
 msgstr ""
 
 #: pddocvisitor.py:624 pddocvisitor.py:625 pddocvisitor.py:626
-#: pddocvisitor.py:633 pddocvisitor.py:650
+#: pddocvisitor.py:633 pddocvisitor.py:650 pddocvisitor.py:720
 msgid "generated by pddoc"
 msgstr ""
 
 #: pddocvisitor.py:629 pddocvisitor.py:630 pddocvisitor.py:638
-#: pddocvisitor.py:655
+#: pddocvisitor.py:655 pddocvisitor.py:725
 #, python-brace-format
 msgid "library: {0} v{1}"
 msgstr ""
 
 #: pddocvisitor.py:648 pddocvisitor.py:650 pddocvisitor.py:651
-#: pddocvisitor.py:657 pddocvisitor.py:674
+#: pddocvisitor.py:657 pddocvisitor.py:674 pddocvisitor.py:744
 msgid "see also:"
 msgstr ""

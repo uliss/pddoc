@@ -41,7 +41,9 @@ def main():
     arg_parser.add_argument('--search-path', '-p', metavar='search_path', help="Adds search path for XInclude files")
     arg_parser.add_argument('--output', '-o', metavar='OUTPUT', help="output xml file")
     arg_parser.add_argument('--version', '-v', metavar='version', default="0.0", help="library version")
-    arg_parser.add_argument('pddoc_files', metavar='FILE', nargs='+', help="pddoc files")
+    arg_parser.add_argument('--locale', metavar='NAME', choices=("EN", "RU"), default='EN',
+                            help='locale (currently EN or RU)')
+    arg_parser.add_argument('pddoc_files', metavar='FILE', nargs='*', help="pddoc files")
 
     args = vars(arg_parser.parse_args())
     files = filter(check_file, args['pddoc_files'])
@@ -50,13 +52,15 @@ def main():
         logging.error("no files exists...")
         exit(-1)
 
-    lib = LibraryMaker(args['library'])
+    lib = LibraryMaker(args['library'], locale=args['locale'])
     lib.version = args['version']
 
     if args['search_path']:
         lib.add_search_path(args['search_path'])
 
     lib.process_files(files)
+    lib.process_library_meta()
+    lib.proces_library_pages()
     lib.sort()
 
     xml_data = str(lib)

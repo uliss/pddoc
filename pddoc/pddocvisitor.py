@@ -80,6 +80,9 @@ class PdDocVisitor(DocObjectVisitor):
     PD_XLET_TYPE_XPOS = 170
     PD_XLET_INFO_XPOS = 270
     PD_SECTION_YMARGIN = 40
+    PD_SECTION_LEFT_MARGIN = 6
+    PD_SECTION_HELP_TOP_MARGIN = 0
+    PD_SECTION_HELP_LEFT_MARGIN = PD_WINDOW_WIDTH - 50
     PD_PAR_INDENT = 10
     PD_ARG_NAME_COLOR = Color(240, 250, 250)
     PD_METHOD_RULE_COLOR = Color(210, 210, 210)
@@ -192,7 +195,7 @@ class PdDocVisitor(DocObjectVisitor):
     def methods_begin(self, m: DocMethods):
         self._method_counter = 0
         self._methods_total = len(m.items())
-        self.add_section(_("methods:"), 6)
+        self.add_section(_("methods:"), self.PD_SECTION_LEFT_MARGIN)
         m.sort_by(lambda n: n.sort_name())
 
     def methods_end(self, m: DocMethods):
@@ -283,7 +286,7 @@ class PdDocVisitor(DocObjectVisitor):
 
     def inlets_begin(self, inlets: DocInlets):
         super(self.__class__, self).inlets_begin(inlets)
-        self.add_section(_("inlets:"), 6)
+        self.add_section(_("inlets:"), self.PD_SECTION_LEFT_MARGIN)
         inlets.enumerate()
 
     def inlets_end(self, inlets: DocInlets):
@@ -322,7 +325,7 @@ class PdDocVisitor(DocObjectVisitor):
 
     def outlets_begin(self, outlets):
         super(self.__class__, self).outlets_begin(outlets)
-        self.add_section(_("outlets:"), 6)
+        self.add_section(_("outlets:"), self.PD_SECTION_LEFT_MARGIN)
         outlets.enumerate()
 
     def outlets_end(self, outlets):
@@ -356,14 +359,13 @@ class PdDocVisitor(DocObjectVisitor):
         self.current_yoff += h + 5
 
     def add_section_help(self, txt: str, url: str, y: int):
-        a = self._pp.make_link(self.PD_WINDOW_WIDTH - 50, y, url, txt)
+        a = self._pp.make_link(self.PD_SECTION_HELP_LEFT_MARGIN, y + self.PD_SECTION_HELP_TOP_MARGIN, url, txt)
         a.set_bg_color(PdPageStyle.MAIN_BG_COLOR)
         self._pp.append_object(a)
-        pass
 
     def arguments_begin(self, args: DocArguments):
         super(self.__class__, self).arguments_begin(args)
-        lbl = self.add_section(_("arguments:"), 6)
+        lbl = self.add_section(_("arguments:"), self.PD_SECTION_LEFT_MARGIN)
         self.add_section_help("[?]", "ceammc.args-info.pd", lbl.top)
         args.enumerate()
 
@@ -376,7 +378,7 @@ class PdDocVisitor(DocObjectVisitor):
         self._prop_counter = 0
         self._props_total = len(p.items())
         super(self.__class__, self).properties_begin(p)
-        lbl = self.add_section(_("properties:"), 6)
+        lbl = self.add_section(_("properties:"), self.PD_SECTION_LEFT_MARGIN)
         self.add_section_help("[?]", "ceammc.props-info.pd", lbl.top)
         # sort by names
         p.sort_by(lambda n: n.sort_name())
@@ -461,11 +463,13 @@ class PdDocVisitor(DocObjectVisitor):
         for p in info.items():
             if isinstance(p, DocPar):
                 left_indent = p.indent * self.PD_PAR_INDENT
-                t = self._pp.make_txt(p.translation(self.lang), xpos + left_indent, ypos)
+                t = self._pp.make_txt(p.translation(self.lang), xpos + left_indent, ypos + p.top_margin())
                 t.calc_brect()
                 height = t.brect()[3]
+                width = 2
                 lst.append(t)
 
+                # adding color vertical bar indicating par importance
                 if not (len(p.style()) == 0 or p.style() == "common"):
                     color = Color(100, 100, 100)
                     if p.style() == "important":
@@ -474,11 +478,15 @@ class PdDocVisitor(DocObjectVisitor):
                         color = PdPageStyle.PAR_INFO_COLOR
                     elif p.style() == "warning":
                         color = PdPageStyle.PAR_WARNING_COLOR
+                    elif p.style() == "critical":
+                        color = PdPageStyle.PAR_CRITICAL_COLOR
+                        width = 3
 
-                    bg = self._pp.make_background(xpos - 10, ypos + 5, 2, height, color)
+                    bg = self._pp.make_background(xpos - 10, ypos + p.top_margin() + 5, width, height, color)
                     lst.append(bg)
 
                 ypos += height
+                ypos += p.top_margin() + p.bottom_margin()
             elif isinstance(p, DocA):
                 a = self._pp.make_link(xpos, ypos, p.url, p.text())
                 a.set_bg_color(PdPageStyle.MAIN_BG_COLOR)

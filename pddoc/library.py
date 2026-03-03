@@ -52,7 +52,7 @@ def get_translation(node: Element, lang: str, default: str = "") -> str:
         if tr is None:
             tr = node.find(f".")
 
-    if tr is not None:
+    if tr is not None and tr.text is not None:
         return clear_spaces(tr.text)
     else:
         return default
@@ -147,7 +147,7 @@ class LibraryMaker(object):
         if categ is None:
             self.add_to_others(doc_fname, name=name, descr=descr)
         else:
-            self.add_to_cat(categ.text, doc_fname, name=name, descr=descr, ref_view=categ.get('view', 'object'))
+            self.add_to_cat(categ.text, doc_fname, name=name, descr=descr, ref_view=categ.get('view', 'link'))
         lib = xml_obj.find('meta/library').text
         if lib != self._name:
             logging.warning("library differs in file: '%s': %s != %s", doc_fname, self._name, lib)
@@ -243,12 +243,35 @@ class LibraryMaker(object):
                 y_pos += lbl.height + 20
             elif part.tag == 'par':
                 text = get_translation(part, self.locale)
+                style = part.get("style", "common")
                 x_margin = 40
                 y_pad = 15
                 width = 80
                 indent = int(part.get("indent", 0))
-                y_pos += pd_page.add_txt(text, x_margin + (10 * indent), y_pos, width=(width - indent)).height
+                x_pos = x_margin + (10 * indent)
+                comment = pd_page.add_txt(text, x_pos, y_pos, width=(width - indent))
+                y_pos += comment.height
                 y_pos += y_pad
+
+                # create styled vertical bar
+                if style == "important":
+                    color = PdPageStyle.PAR_IMPORTANT_COLOR
+                    width = 2
+                elif style == "warning":
+                    color = PdPageStyle.PAR_WARNING_COLOR
+                    width = 2
+                elif style == "critical":
+                    color = PdPageStyle.PAR_CRITICAL_COLOR
+                    width = 3
+                elif style == "info":
+                    color = PdPageStyle.PAR_INFO_COLOR
+                    width = 2
+                else:
+                    width = 0
+
+                if width > 0:
+                    bg = pd_page.make_background(comment.left - 10, comment.top, width, comment.height + 10, color)
+                    pd_page.append_object(bg)
             elif part.tag == 'pdascii':
                 y_pad = 20
                 x_margin = 40
@@ -319,6 +342,21 @@ class LibraryMaker(object):
                                              width=(width - indent)).height
                     i += 1
                     y_pos += y_pad
+            elif part.tag == 'info':
+                x_margin = 40
+                info_margin = 190
+                name = part.get("object", "").strip()
+                if len(name) == 0:
+                    logging.error("object name is empty")
+                    continue
+
+                text = get_translation(part, self.locale)
+                indent = x_margin + 10 * int(part.get("indent", 0))
+                obj = pd_page.add_link(f"[{name}]", f"{name}-help.pd", indent, y_pos)
+                info = pd_page.add_txt(text, indent + info_margin, y_pos)
+
+                y_pos += max(obj.height, info.height)
+                y_pos += y_pad
             elif part.tag == 'wiki':
                 pass
                 # y_pos += pd_page.add_w(part.text, part.get("url"), 40, y_pos).height + 20

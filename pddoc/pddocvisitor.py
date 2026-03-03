@@ -356,8 +356,11 @@ class PdDocVisitor(DocObjectVisitor):
                 out_txt = "~"
 
             if out_txt != "":
-                out_type = self._pp.add_txt(out_txt, self.PD_XLET_TYPE_XPOS, y)
-                xinfo.append(out_type)
+                if out.is_any() and not outlet.is_audio():
+                    self._pp.add_message(out_txt, self.PD_XLET_TYPE_XPOS, y)
+                else:
+                    out_type = self._pp.add_txt(out_txt, self.PD_XLET_TYPE_XPOS, y)
+                    xinfo.append(out_type)
 
             txt = out.translation(self.lang)
             info = self._pp.add_txt(add_text_dot(txt), self.PD_XLET_INFO_XPOS, y)
@@ -432,12 +435,27 @@ class PdDocVisitor(DocObjectVisitor):
         if p.default():
             prop_descr = _("{0} Default value: {1}. ").format(add_text_dot(prop_descr), p.default())
 
-        if p.min() and p.max():
-            prop_descr = _("{0} Range: {1}...{2}. ").format(add_text_dot(prop_descr), p.min(), p.max())
-        elif p.min():
-            prop_descr = _("{0} Min value: {1}. ").format(add_text_dot(prop_descr), p.min())
-        elif p.max():
-            prop_descr = _("{0} Max value: {1}. ").format(add_text_dot(prop_descr), p.max())
+        item_count = p.item_count_fmt()
+        if item_count:
+            prop_descr = _("{0} Item count: {1}. ").format(add_text_dot(prop_descr), item_count)
+
+        if p.type() == "list":
+            if p.item_type():
+                prop_descr = _("{0} Item type: {1}. ").format(add_text_dot(prop_descr), p.item_type())
+
+            if p.min() and p.max():
+                prop_descr = _("{0} Item range: {1}. ").format(add_text_dot(prop_descr), p.value_range_fmt())
+            elif p.min():
+                prop_descr = _("{0} Item min value: {1}. ").format(add_text_dot(prop_descr), p.min())
+            elif p.max():
+                prop_descr = _("{0} Item max value: {1}. ").format(add_text_dot(prop_descr), p.max())
+        else:
+            if p.min() and p.max():
+                prop_descr = _("{0} Range: {1}. ").format(add_text_dot(prop_descr), p.value_range_fmt())
+            elif p.min():
+                prop_descr = _("{0} Min value: {1}. ").format(add_text_dot(prop_descr), p.min())
+            elif p.max():
+                prop_descr = _("{0} Max value: {1}. ").format(add_text_dot(prop_descr), p.max())
 
         if len(p.enum()) > 0:
             prop_descr = _("{0} Allowed values: {1}.").format(add_text_dot(prop_descr), ', '.join(p.enum()))

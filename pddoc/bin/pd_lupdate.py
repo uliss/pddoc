@@ -194,6 +194,14 @@ def main():
         find_no_tr(in_file, "object/info/par/tr", lang, root)
         find_no_tr(in_file, "object/inlets/inlet/xinfo/tr", lang, root)
         find_no_tr(in_file, "object/outlets/outlet/out/tr", lang, root)
+        find_no_tr(in_file, "title/tr", lang, root)
+        find_no_tr(in_file, "sections/par/tr", lang, root)
+        find_no_tr(in_file, "sections/ul/item/tr", lang, root)
+        find_no_tr(in_file, "sections/li/item/tr", lang, root)
+        find_no_tr(in_file, "sections/h1/tr", lang, root)
+        find_no_tr(in_file, "sections/h2/tr", lang, root)
+        find_no_tr(in_file, "sections/h3/tr", lang, root)
+        find_no_tr(in_file, "sections/a/tr", lang, root)
 
     if args['update']:
         obj = root.find("object")

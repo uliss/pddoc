@@ -45,9 +45,20 @@
         <xs:attribute name="output" use="required"/>
     </xs:complexType>
 
+    <xs:complexType name="ObjectInfo">
+         <xs:sequence>
+            <xs:element name="tr" type="TranslationType" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="object" use="required" type="xs:string"/>
+        <xs:attribute name="object-width" type="xs:int" default="0"/>
+        <xs:attribute name="info-width" type="xs:int" default="0"/>
+        <xs:attribute name="indent" type="xs:int" default="0"/>
+    </xs:complexType>
+
     <xs:complexType name="Sections">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:element name="a" type="MarkupA" minOccurs="0"/>
+            <xs:element name="info" type="ObjectInfo" minOccurs="0"/>
             <xs:element name="h1" type="Translation" minOccurs="0"/>
             <xs:element name="h2" type="Translation" minOccurs="0"/>
             <xs:element name="h3" type="Translation" minOccurs="0"/>
@@ -79,6 +90,16 @@
         <xs:attribute name="indent" type="xs:integer"/>
     </xs:complexType>
 
+    <xs:simpleType name="TextParagraphStyle">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="important"/>
+            <xs:enumeration value="warning"/>
+            <xs:enumeration value="info"/>
+            <xs:enumeration value="common"/>
+            <xs:enumeration value="critical"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:complexType name="MarkupText">
         <xs:sequence>
             <xs:element name="tr" type="TranslationType" maxOccurs="unbounded" />
@@ -86,6 +107,7 @@
         <xs:attribute name="indent" type="xs:integer"/>
         <!-- paragraph width in chars-->
         <xs:attribute name="width" type="xs:integer" default="80"/>
+        <xs:attribute name="style" type="TextParagraphStyle" default="common"/>
     </xs:complexType>
 
     <xs:complexType name="MarkupA">

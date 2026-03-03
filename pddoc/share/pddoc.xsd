@@ -240,6 +240,7 @@
         </xs:sequence>
         <xs:attribute name="type" type="ControlDataType" default="any"/>
         <xs:attribute name="units" type="UnitDataType"/>
+        <xs:attribute name="name" type="xs:string" default=""/>
     </xs:complexType>
 
     <xs:complexType name="DescriptionType">
@@ -275,7 +276,7 @@
     <xs:complexType name="ObjectCategory">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="view" type="ObjectCategoryView" default="object"/>
+                <xs:attribute name="view" type="ObjectCategoryView" default="link"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -303,7 +304,7 @@
     <xs:complexType name="AliasElementType">
          <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="view" type="ObjectCategoryView" default="object"/>
+                <xs:attribute name="view" type="ObjectCategoryView" default="link"/>
                 <xs:attribute name="deprecated" type="xs:boolean" default="false"/>
             </xs:extension>
         </xs:simpleContent>
@@ -318,7 +319,7 @@
     <xs:complexType name="SeeElementType">
          <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="view" type="ObjectCategoryView" default="object"/>
+                <xs:attribute name="view" type="ObjectCategoryView" default="link"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -480,27 +481,37 @@
         <xs:sequence>
             <xs:element name="tr" type="TranslationType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
+        <xs:attribute name="enum" type="xs:string"/>
+        <xs:attribute name="item-type" type="ListItemType"/>
+        <xs:attribute name="max-count" type="xs:int"/>
+        <xs:attribute name="maxvalue" type="FloatNumberExt"/>
+        <xs:attribute name="min-count" type="xs:int"/>
+        <xs:attribute name="minvalue" type="FloatNumberExt"/>
         <xs:attribute name="name" use="required" type="xs:string"/>
+        <xs:attribute name="num-items" type="xs:int"/>
+        <xs:attribute name="range-type" type="NumberRangeType"/>
+        <xs:attribute name="required" type="xs:boolean"/>
         <xs:attribute name="type" use="required" type="ArgumentDataType"/>
         <xs:attribute name="units" type="UnitDataTypeEnum"/>
-        <xs:attribute name="minvalue" type="FloatNumberExt"/>
-        <xs:attribute name="maxvalue" type="FloatNumberExt"/>
-        <xs:attribute name="enum" type="xs:string"/>
-        <xs:attribute name="required" type="xs:boolean"/>
     </xs:complexType>
 
     <xs:complexType name="MethodArgumentElementType">
          <xs:sequence>
             <xs:element name="tr" type="TranslationType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="name" type="xs:string"/>
-        <xs:attribute name="type" use="required" type="MethodParamType"/>
-        <xs:attribute name="units" type="UnitDataTypeEnum"/>
-        <xs:attribute name="minvalue" type="FloatNumberExt"/>
-        <xs:attribute name="maxvalue" type="FloatNumberExt"/>
         <xs:attribute name="default" type="xs:string"/>
         <xs:attribute name="enum" type="xs:string"/>
+        <xs:attribute name="item-type" type="ListItemType"/>
+        <xs:attribute name="max-count" type="xs:int"/>
+        <xs:attribute name="maxvalue" type="FloatNumberExt"/>
+        <xs:attribute name="min-count" type="xs:int"/>
+        <xs:attribute name="minvalue" type="FloatNumberExt"/>
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="num-items" type="xs:int"/>
+        <xs:attribute name="range-type" type="NumberRangeType"/>
         <xs:attribute name="required" type="xs:boolean"/>
+        <xs:attribute name="type" use="required" type="MethodParamType"/>
+        <xs:attribute name="units" type="UnitDataTypeEnum"/>
         <xs:attribute name="verbose" type="xs:boolean"/>
     </xs:complexType>
 
@@ -515,19 +526,45 @@
         <xs:attribute name="category" type="CategoryType"/>
     </xs:complexType>
 
+    <xs:simpleType name="ListItemType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="atom"/>
+            <xs:enumeration value="bool"/>
+            <xs:enumeration value="int"/>
+            <xs:enumeration value="float"/>
+            <xs:enumeration value="list"/>
+            <xs:enumeration value="symbol"/>
+            <xs:enumeration value="data"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="NumberRangeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="()"/>
+            <xs:enumeration value="[]"/>
+            <xs:enumeration value="[)"/>
+            <xs:enumeration value="(]"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:complexType name="PropertyElementType">
          <xs:sequence>
             <xs:element name="tr" type="TranslationType" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="name" type="xs:string" use="required"/>
-        <xs:attribute name="type" type="PropertyDataType" use="required"/>
         <xs:attribute name="access" type="PropAccessType" default="readwrite"/>
-        <xs:attribute name="units" type="UnitDataTypeEnum"/>
-        <xs:attribute name="minvalue" type="FloatNumberExt"/>
-        <xs:attribute name="maxvalue" type="FloatNumberExt"/>
+        <xs:attribute name="category" type="CategoryType"/>
         <xs:attribute name="default" type="xs:string"/>
         <xs:attribute name="enum" type="xs:string"/>
-        <xs:attribute name="category" type="CategoryType"/>
+        <xs:attribute name="item-type" type="ListItemType"/>
+        <xs:attribute name="max-count" type="xs:int"/>
+        <xs:attribute name="maxvalue" type="FloatNumberExt"/>
+        <xs:attribute name="min-count" type="xs:int"/>
+        <xs:attribute name="minvalue" type="FloatNumberExt"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="num-items" type="xs:int"/>
+        <xs:attribute name="range-type" type="NumberRangeType"/>
+        <xs:attribute name="type" type="PropertyDataType" use="required"/>
+        <xs:attribute name="units" type="UnitDataTypeEnum"/>
     </xs:complexType>
 
     <xs:complexType name="PropertyRefElementType" mixed="true">

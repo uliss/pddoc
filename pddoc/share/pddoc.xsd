@@ -429,6 +429,7 @@
         <xs:attribute name="selector" type="xs:string"/>
         <xs:attribute name="minvalue" type="FloatNumberExt"/>
         <xs:attribute name="maxvalue" type="FloatNumberExt"/>
+        <xs:attribute name="range-type" type="NumberRangeType"/>
     </xs:complexType>
 
     <xs:complexType name="OutletElementType">

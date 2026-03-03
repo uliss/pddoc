@@ -646,12 +646,14 @@ class DocIn(DocTranslation):
         DocTranslation.__init__(self, args)
         self._maxvalue = ""
         self._minvalue = ""
+        self._range_type = "[]"
         self._on = ""
         self._selector = ""
 
     def from_xml(self, xmlobj):
         self._maxvalue = xmlobj.attrib.get("maxvalue", "")
         self._minvalue = xmlobj.attrib.get("minvalue", "")
+        self._range_type = xmlobj.attrib.get("range-type", "[]")
         self._on = xmlobj.attrib.get("on", "")
         self._selector = xmlobj.attrib.get("selector", "")
         self.update_translations(xmlobj)
@@ -661,6 +663,13 @@ class DocIn(DocTranslation):
             return ()
 
         return self.min(), self.max()
+
+    def value_range_fmt(self, default: str = "") -> str:
+        if self._minvalue and self._maxvalue:
+            a, b = self._range_type[0:2]
+            return "{}{}..{}{}".format(a, self._minvalue, self._maxvalue, b)
+        else:
+            return default
 
     def on(self):
         return self._on
@@ -885,8 +894,10 @@ class DocArgument(DocTranslation):
         if res and self._type:
             res = self.append_after_dot(res, _("Type: {}").format(self._type))
 
-        if res:
-            res = self.append_after_dot(res, _("Item count: {}").format(self.item_count_fmt()))
+        if res and self._type == "list":
+            num = self.item_count_fmt()
+            if num:
+                res = self.append_after_dot(res, _("Item count: {}").format(num))
 
         return res.strip()
 

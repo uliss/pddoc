@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
+from __future__ import annotations
 
 # Copyright (C) 2016 by Serge Poltavski                                   #
 #   serge.poltavski@gmail.com                                             #
@@ -23,7 +24,7 @@ import gettext
 
 import pddoc
 from pddoc.docobject import DocPar, DocA, DocWiki, DocArgument, DocArguments, DocProperties, DocProperty, \
-    DocMethod, DocEvent, DocInlet, DocInlets, DocMethods, DocMouse, DocOutlet
+    DocMethod, DocEvent, DocInlet, DocInlets, DocMethods, DocMouse, DocOutlet, DocIn
 from pddoc.pdpage import PdPage
 from pddoc.pdpage import PdPageStyle
 from .docobjectvisitor import DocObjectVisitor
@@ -435,11 +436,11 @@ class PdDocVisitor(DocObjectVisitor):
         if p.default():
             prop_descr = _("{0} Default value: {1}. ").format(add_text_dot(prop_descr), p.default())
 
-        item_count = p.item_count_fmt()
-        if item_count:
-            prop_descr = _("{0} Item count: {1}. ").format(add_text_dot(prop_descr), item_count)
-
         if p.type() == "list":
+            item_count = p.item_count_fmt()
+            if item_count:
+                prop_descr = _("{0} Item count: {1}. ").format(add_text_dot(prop_descr), item_count)
+
             if p.item_type():
                 prop_descr = _("{0} Item type: {1}. ").format(add_text_dot(prop_descr), p.item_type())
 
@@ -593,7 +594,7 @@ class PdDocVisitor(DocObjectVisitor):
         return self._pp.to_string()
 
     @classmethod
-    def format_range(cls, obj) -> str:
+    def format_range(cls, obj: DocArgument | DocIn) -> str:
         r = obj.range()
         if len(r) == 2:
             if not r[0]:
@@ -601,7 +602,7 @@ class PdDocVisitor(DocObjectVisitor):
             if not r[1]:
                 return _("Min value: {0}").format(r[0])
 
-            return _("Range: {0}...{1}").format(r[0], r[1])
+            return _("Range: {}").format(obj.value_range_fmt())
         else:
             return ""
 

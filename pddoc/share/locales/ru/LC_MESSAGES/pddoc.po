@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pddoc 0.9.1\n"
 "Report-Msgid-Bugs-To: serge.poltavski@gmail.com\n"
-"POT-Creation-Date: 2026-03-03 16:09+0300\n"
-"PO-Revision-Date: 2026-03-03 16:14+0300\n"
+"POT-Creation-Date: 2026-03-03 16:40+0300\n"
+"PO-Revision-Date: 2026-03-03 16:42+0300\n"
 "Last-Translator: serge <serge@air.local>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
 "Language: ru\n"
@@ -21,16 +21,16 @@ msgstr ""
 "X-Generator: Poedit 3.6\n"
 
 #: docobject.py:779 docobject.py:799 docobject.py:860 docobject.py:861
-#: docobject.py:883
+#: docobject.py:883 docobject.py:892
 msgid "Allowed values: {}"
 msgstr "Разрешённые значения: {}"
 
 #: docobject.py:782 docobject.py:802 docobject.py:863 docobject.py:864
-#: docobject.py:886
+#: docobject.py:886 docobject.py:895
 msgid "Type: {}"
 msgstr "Тип: {}"
 
-#: docobject.py:889
+#: docobject.py:889 docobject.py:900
 msgid "Item count: {}"
 msgstr ""
 
@@ -45,64 +45,69 @@ msgid "Generated with pddoc v{pddoc_version}"
 msgstr "Сгенерировано при помощи pddoc v{pddoc_version}"
 
 #: pddocvisitor.py:134 pddocvisitor.py:137 pddocvisitor.py:148
+#: pddocvisitor.py:149
 msgid "mouse events:"
 msgstr "события мыши:"
 
 #: pddocvisitor.py:172 pddocvisitor.py:175 pddocvisitor.py:178
-#: pddocvisitor.py:189
+#: pddocvisitor.py:189 pddocvisitor.py:190
 msgid "[Edit]"
 msgstr "[Правка]"
 
 #: pddocvisitor.py:179 pddocvisitor.py:180 pddocvisitor.py:181
 #: pddocvisitor.py:182 pddocvisitor.py:185 pddocvisitor.py:198
+#: pddocvisitor.py:199
 msgid "methods:"
 msgstr "методы:"
 
 #: pddocvisitor.py:200 pddocvisitor.py:202 pddocvisitor.py:203
-#: pddocvisitor.py:216
+#: pddocvisitor.py:216 pddocvisitor.py:217
 msgid " Arguments are: "
 msgstr " Аргументы: "
 
 #: pddocvisitor.py:218 pddocvisitor.py:221 pddocvisitor.py:234
-#: pddocvisitor.py:239 pddocvisitor.py:369 pddocvisitor.py:372
-#: pddocvisitor.py:390 pddocvisitor.py:416 pddocvisitor.py:430
+#: pddocvisitor.py:239 pddocvisitor.py:240 pddocvisitor.py:369
+#: pddocvisitor.py:372 pddocvisitor.py:390 pddocvisitor.py:416
+#: pddocvisitor.py:430 pddocvisitor.py:431
 #, python-brace-format
 msgid "{0} Type: {1}. "
 msgstr "{0} Тип: {1}. "
 
 #: pddocvisitor.py:228 pddocvisitor.py:231 pddocvisitor.py:244
-#: pddocvisitor.py:249
+#: pddocvisitor.py:249 pddocvisitor.py:250
 #, python-brace-format
 msgid "{0} Allowed values: {1}. "
 msgstr "{0} Разрешённые значения: {1}. "
 
 #: pddocvisitor.py:231 pddocvisitor.py:234 pddocvisitor.py:247
-#: pddocvisitor.py:252 pddocvisitor.py:372 pddocvisitor.py:375
-#: pddocvisitor.py:393 pddocvisitor.py:419 pddocvisitor.py:433
+#: pddocvisitor.py:252 pddocvisitor.py:253 pddocvisitor.py:372
+#: pddocvisitor.py:375 pddocvisitor.py:393 pddocvisitor.py:419
+#: pddocvisitor.py:433 pddocvisitor.py:434
 #, python-brace-format
 msgid "{0} Units: {1}. "
 msgstr "{0} Единицы: {1}. "
 
 #: pddocvisitor.py:261 pddocvisitor.py:262 pddocvisitor.py:263
 #: pddocvisitor.py:264 pddocvisitor.py:289 pddocvisitor.py:300
+#: pddocvisitor.py:301
 msgid "inlets:"
 msgstr "входы:"
 
 #: pddocvisitor.py:292 pddocvisitor.py:293 pddocvisitor.py:294
 #: pddocvisitor.py:295 pddocvisitor.py:303 pddocvisitor.py:328
-#: pddocvisitor.py:339
+#: pddocvisitor.py:339 pddocvisitor.py:340
 msgid "outlets:"
 msgstr "выходы:"
 
 #: pddocvisitor.py:317 pddocvisitor.py:318 pddocvisitor.py:319
 #: pddocvisitor.py:320 pddocvisitor.py:344 pddocvisitor.py:368
-#: pddocvisitor.py:382
+#: pddocvisitor.py:382 pddocvisitor.py:383
 msgid "arguments:"
 msgstr "аргументы:"
 
 #: pddocvisitor.py:328 pddocvisitor.py:329 pddocvisitor.py:330
 #: pddocvisitor.py:331 pddocvisitor.py:355 pddocvisitor.py:381
-#: pddocvisitor.py:395
+#: pddocvisitor.py:395 pddocvisitor.py:396
 msgid "properties:"
 msgstr "свойства:"
 
@@ -123,7 +128,7 @@ msgid "(readonly) Get "
 msgstr "(только чтение) Получить "
 
 #: pddocvisitor.py:375 pddocvisitor.py:378 pddocvisitor.py:396
-#: pddocvisitor.py:422 pddocvisitor.py:436
+#: pddocvisitor.py:422 pddocvisitor.py:436 pddocvisitor.py:437
 #, python-brace-format
 msgid "{0} Default value: {1}. "
 msgstr "{0} Значение по умолчанию: {1}. "
@@ -135,69 +140,71 @@ msgid "{0} Range: {1}...{2}. "
 msgstr "{0} Диапазон: {1}...{2}. "
 
 #: pddocvisitor.py:380 pddocvisitor.py:406 pddocvisitor.py:420
+#: pddocvisitor.py:421
 msgid "(initonly) "
 msgstr "(при инициализации) "
 
 #: pddocvisitor.py:380 pddocvisitor.py:383 pddocvisitor.py:401
-#: pddocvisitor.py:427 pddocvisitor.py:456
+#: pddocvisitor.py:427 pddocvisitor.py:456 pddocvisitor.py:457
 #, python-brace-format
 msgid "{0} Min value: {1}. "
 msgstr "{0} Минимальное значение: {1}. "
 
 #: pddocvisitor.py:382 pddocvisitor.py:408 pddocvisitor.py:422
+#: pddocvisitor.py:423
 msgid "(readonly) "
 msgstr "(только чтение) "
 
 #: pddocvisitor.py:382 pddocvisitor.py:385 pddocvisitor.py:403
-#: pddocvisitor.py:429 pddocvisitor.py:458
+#: pddocvisitor.py:429 pddocvisitor.py:458 pddocvisitor.py:459
 #, python-brace-format
 msgid "{0} Max value: {1}. "
 msgstr "{0} Максимальное значение: {1}. "
 
 #: pddocvisitor.py:385 pddocvisitor.py:388 pddocvisitor.py:406
-#: pddocvisitor.py:432 pddocvisitor.py:461
+#: pddocvisitor.py:432 pddocvisitor.py:461 pddocvisitor.py:462
 #, python-brace-format
 msgid "{0} Allowed values: {1}."
 msgstr "{0} Разрешённые значения: {1}."
 
-#: pddocvisitor.py:440
+#: pddocvisitor.py:440 pddocvisitor.py:442
 #, python-brace-format
 msgid "{0} Item count: {1}. "
 msgstr "{0} Число элементов: {1}. "
 
-#: pddocvisitor.py:444
+#: pddocvisitor.py:444 pddocvisitor.py:445
 #, python-brace-format
 msgid "{0} Item type: {1}. "
 msgstr "{0} Тип элемента: {1}. "
 
-#: pddocvisitor.py:447
+#: pddocvisitor.py:447 pddocvisitor.py:448
 #, python-brace-format
 msgid "{0} Item range: {1}. "
 msgstr "{0} Диапазон элемента: {1}. "
 
-#: pddocvisitor.py:449
+#: pddocvisitor.py:449 pddocvisitor.py:450
 #, python-brace-format
 msgid "{0} Item min value: {1}. "
 msgstr "{0} Минимальное значение элемента: {1}. "
 
-#: pddocvisitor.py:451
+#: pddocvisitor.py:451 pddocvisitor.py:452
 #, python-brace-format
 msgid "{0} Item max value: {1}. "
 msgstr "{0} Максимальное значение элемента: {1}. "
 
-#: pddocvisitor.py:454
+#: pddocvisitor.py:454 pddocvisitor.py:455
 #, python-brace-format
 msgid "{0} Range: {1}. "
 msgstr "{0} Диапазон: {1}. "
 
 #: pddocvisitor.py:475 pddocvisitor.py:484 pddocvisitor.py:501
-#: pddocvisitor.py:571 pddocvisitor.py:600
+#: pddocvisitor.py:571 pddocvisitor.py:600 pddocvisitor.py:601
 #, python-brace-format
 msgid "Max value: {0}"
 msgstr "Максимальное значение: {0}."
 
 #: pddocvisitor.py:477 pddocvisitor.py:486 pddocvisitor.py:503
-#: pddocvisitor.py:573 pddocvisitor.py:602
+#: pddocvisitor.py:573 pddocvisitor.py:602 pddocvisitor.py:603
 #, python-brace-format
 msgid "Min value: {0}"
 msgstr "Минимальное значение: {0}."
@@ -210,71 +217,77 @@ msgstr "Диапазон: {0}…{1}"
 
 #: pddocvisitor.py:577 pddocvisitor.py:578 pddocvisitor.py:579
 #: pddocvisitor.py:586 pddocvisitor.py:603 pddocvisitor.py:673
-#: pddocvisitor.py:702
+#: pddocvisitor.py:702 pddocvisitor.py:703
 msgid "library:"
 msgstr "библиотека:"
 
 #: pddocvisitor.py:580 pddocvisitor.py:581 pddocvisitor.py:582
 #: pddocvisitor.py:589 pddocvisitor.py:606 pddocvisitor.py:676
-#: pddocvisitor.py:705
+#: pddocvisitor.py:705 pddocvisitor.py:706
 msgid "version:"
 msgstr "версия:"
 
 #: pddocvisitor.py:583 pddocvisitor.py:584 pddocvisitor.py:592
 #: pddocvisitor.py:609 pddocvisitor.py:679 pddocvisitor.py:708
+#: pddocvisitor.py:709
 msgid "object:"
 msgstr "объект:"
 
 #: pddocvisitor.py:586 pddocvisitor.py:587 pddocvisitor.py:588
 #: pddocvisitor.py:595 pddocvisitor.py:612 pddocvisitor.py:682
-#: pddocvisitor.py:711
+#: pddocvisitor.py:711 pddocvisitor.py:712
 msgid "category:"
 msgstr "категория:"
 
 #: pddocvisitor.py:591 pddocvisitor.py:592 pddocvisitor.py:593
 #: pddocvisitor.py:600 pddocvisitor.py:617 pddocvisitor.py:687
-#: pddocvisitor.py:716
+#: pddocvisitor.py:716 pddocvisitor.py:717
 msgid "since:"
 msgstr "с версии:"
 
 #: pddocvisitor.py:595 pddocvisitor.py:596 pddocvisitor.py:597
 #: pddocvisitor.py:604 pddocvisitor.py:621 pddocvisitor.py:691
-#: pddocvisitor.py:720
+#: pddocvisitor.py:720 pddocvisitor.py:721
 msgid "authors:"
 msgstr "авторы:"
 
 #: pddocvisitor.py:598 pddocvisitor.py:599 pddocvisitor.py:600
 #: pddocvisitor.py:607 pddocvisitor.py:624 pddocvisitor.py:694
-#: pddocvisitor.py:723
+#: pddocvisitor.py:723 pddocvisitor.py:724
 msgid "license:"
 msgstr "лицензия:"
 
+#: pddocvisitor.py:605
+msgid "Range: {}"
+msgstr "Диапазон: {}"
+
 #: pddocvisitor.py:606 pddocvisitor.py:607 pddocvisitor.py:608
 #: pddocvisitor.py:615 pddocvisitor.py:632 pddocvisitor.py:702
-#: pddocvisitor.py:731
+#: pddocvisitor.py:731 pddocvisitor.py:732
 msgid "keywords:"
 msgstr "ключевые слова:"
 
 #: pddocvisitor.py:615 pddocvisitor.py:616 pddocvisitor.py:617
 #: pddocvisitor.py:624 pddocvisitor.py:641 pddocvisitor.py:711
-#: pddocvisitor.py:740
+#: pddocvisitor.py:740 pddocvisitor.py:741
 msgid "contacts:"
 msgstr "контакты:"
 
 #: pddocvisitor.py:624 pddocvisitor.py:625 pddocvisitor.py:626
 #: pddocvisitor.py:633 pddocvisitor.py:650 pddocvisitor.py:720
-#: pddocvisitor.py:749
+#: pddocvisitor.py:749 pddocvisitor.py:750
 msgid "generated by pddoc"
 msgstr "сгенерировано при помощи pddoc"
 
 #: pddocvisitor.py:629 pddocvisitor.py:630 pddocvisitor.py:638
 #: pddocvisitor.py:655 pddocvisitor.py:725 pddocvisitor.py:754
+#: pddocvisitor.py:755
 #, python-brace-format
 msgid "library: {0} v{1}"
 msgstr "библиотека: {0} v{1}"
 
 #: pddocvisitor.py:648 pddocvisitor.py:650 pddocvisitor.py:651
 #: pddocvisitor.py:657 pddocvisitor.py:674 pddocvisitor.py:744
-#: pddocvisitor.py:773
+#: pddocvisitor.py:773 pddocvisitor.py:774
 msgid "see also:"
 msgstr "смотрите также:"

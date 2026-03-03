@@ -11,3 +11,6 @@ xgettext -L Python \
 	--copyright-holder='Serge Poltavski' \
 	--output=share/locales/pddoc.pot \
 	*.py
+
+cd share/locales/ru/LC_MESSAGES
+./update.sh

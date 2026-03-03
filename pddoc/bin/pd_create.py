@@ -58,19 +58,28 @@ def append_to_pages(page_path: str, library: str, output_dir: str):
             f.write(xml_str)
 
 
-def create_page_template(page_path: str):
+def create_page_template(library: str, page: str, page_path: str):
     with open(page_path, 'w') as f:
-        f.write('''
-<?xml version="1.0" encoding="utf-8"?>
-<page output="ceammc.props-info.pd">
+        f.write(
+            '''<?xml version="1.0" encoding="utf-8"?>
+<page output="%LIB%_%PAGE%-info.pd">
   <title>
     <tr lang="en">title</tr>
     <tr lang="ru">название</tr>
   </title>
   <sections>
-    <h2>Basic usage</h2>
-      <par indent="1">Some info</par>
-      <a href="ceammc.args-info.pd">More info about argument processing in ceammc</a>
+    <h2>
+        <tr lang="en">header</tr>
+        <tr lang="ru">заголовок</tr>
+    </h2>
+      <par indent="1">
+        <tr lang="en">Some info</tr>
+        <tr lang="ru">Что-то</tr>
+      </par>
+      <a href="ceammc.args-info.pd">
+        <tr lang="en">More info about argument processing in ceammc</tr>
+        <tr lang="ru">More info about argument processing in ceammc</tr>
+      </a>
       <pdascii indent="10">
 <![CDATA[
 /*Pd example*/
@@ -78,7 +87,7 @@ def create_page_template(page_path: str):
     </pdascii>
   </sections>
 </page> 
-''')
+'''.replace('%LIB%', library).replace('%PAGE%', page))
 
 
 def main():
@@ -102,15 +111,15 @@ def main():
             logging.error(f"invalid page name: {args['page']}")
             exit(2)
 
-        page_name = f'{args["library"]}_page_{page_name}.xml'
+        page_name2 = f'{args["library"]}_page_{page_name}.xml'
 
-        page_path = f"{output_dir}/{page_name}"
+        page_path = f"{output_dir}/{page_name2}"
         if os.path.exists(page_path):
             logging.error(f"page already exists: {page_path}")
             exit(3)
 
-        create_page_template(page_path)
-        append_to_pages(page_name, library=args['library'], output_dir=output_dir)
+        create_page_template(library=args['library'], page=page_name, page_path=page_path)
+        append_to_pages(page_name2, library=args['library'], output_dir=output_dir)
 
 
 if __name__ == '__main__':

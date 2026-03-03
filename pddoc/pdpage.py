@@ -11,6 +11,7 @@ from .pd.comment import Comment
 from .pd.coregui import Color
 from .pd.externals.ceammc.ui_link import UILink
 from .pd.gcanvas import GCanvas
+from .pd.message import Message
 from .pd.obj import PdObject
 from .pd.pdexporter import PdExporter
 
@@ -199,6 +200,11 @@ class PdPage(object):
 
     def add_txt(self, txt: str, x: int, y: int, **kwargs):
         return self.add_pd_txt(self._canvas, txt, x, y, **kwargs)
+
+    def add_message(self, txt: str, x: int, y: int, **kwargs) -> Message:
+        msg = Message(x, y, [txt])
+        self._canvas.append_object(msg)
+        return msg
 
     def add_link(self, txt: str, url: str, x: int, y: int):
         lnk = self.make_link(x, y, url, txt)

@@ -51,7 +51,7 @@ class CategoryParser(object):
     WINDOW_HEIGHT = 555
     HEADER_HEIGHT = 40
     OBJECT_OFFSET = 30
-    DESCRIPTION_OFFSET = 200
+    DESCRIPTION_OFFSET = 220
 
     def __init__(self, filename: str):
         self._fname = filename
@@ -126,7 +126,7 @@ class CategoryParser(object):
         pdobj.x = self.OBJECT_OFFSET
         pdobj.y = self._current_y
 
-        ref_view = obj.get('ref_view', 'object')
+        ref_view = obj.get('ref_view', 'link')
         if ref_view == 'object':
             self._pp.append_object(pdobj)
         elif ref_view == 'link':

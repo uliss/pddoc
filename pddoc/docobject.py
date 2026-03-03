@@ -225,11 +225,11 @@ class DocAlso(DocItem):
 class DocSee(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
-        self._ref_view = "object"
+        self._ref_view = "link"
 
     def from_xml(self, xmlobj):
         DocItem.from_xml(self, xmlobj)
-        self._ref_view = xmlobj.get("view", "object")
+        self._ref_view = xmlobj.get("view", "link")
 
     def is_link(self):
         return self._ref_view == "link"
@@ -253,11 +253,11 @@ class DocVersion(DocItem):
 class DocCategory(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
-        self._ref_view = "object"
+        self._ref_view = "link"
 
     def read_xml_data(self, xmlobj):
         DocItem.read_xml_data(self, xmlobj)
-        self._ref_view = xmlobj.attrib.get("view", "object")
+        self._ref_view = xmlobj.attrib.get("view", "link")
 
     def ref_view(self):
         return self._ref_view
@@ -544,12 +544,12 @@ class DocAliases(DocItem):
 class DocAlias(DocItem):
     def __init__(self, *args):
         DocItem.__init__(self, args)
-        self._ref_view = "object"
+        self._ref_view = "link"
         self._deprecated = False
 
     def from_xml(self, xmlobj):
         DocItem.from_xml(self, xmlobj)
-        self._ref_view = xmlobj.get("view", "object")
+        self._ref_view = xmlobj.get("view", "link")
         self._deprecated = xmlobj.get("deprecated", False)
 
     def is_link(self):
@@ -721,15 +721,20 @@ class DocOut(DocTranslation):
         DocTranslation.__init__(self, args)
         self._type = ""
         self._units = ""
+        self._name = ""
 
     def from_xml(self, xmlobj):
         self.update_translations(xmlobj)
         self._type = xmlobj.get("type", "any")
         self._units = UNIT_MAP.get(xmlobj.attrib.get("units", "").strip(), "")
+        self._name = xmlobj.get("name", "").strip()
+
+    def is_any(self):
+        return self._type == "any"
 
     def type_label(self):
         if self._type == "any":
-            return ""
+            return self._name
         else:
             if len(self._units) == 0:
                 return f"{self._type}: "
@@ -764,25 +769,36 @@ class DocArgument(DocTranslation):
         DocTranslation.__init__(self, args)
         self._number = ""
         self._type = ""
+        self._item_type = ""
+        self._range_type = "[]"
         self._units = []
         self._name = ""
         self._minvalue = ""
         self._maxvalue = ""
+        self._min_count = 0
+        self._max_count = 0
+        self._num_items = 0
         self._default = ""
         self._required = False
         self._verbose = False
-        self._enum = []
+        self._enum: list[str] = []
 
     def from_xml(self, xmlobj):
         self._name = xmlobj.attrib.get("name", "anonym")
         self._number = xmlobj.attrib.get("number", "")
         self._type = xmlobj.attrib.get("type", "")
+        self._item_type = xmlobj.attrib.get("item-type", "")
+        self._range_type = xmlobj.attrib.get("range-type", "[]")
         self._units = xmlobj.attrib.get("units", "").strip()
 
         if len(self._units) != 0:
             self._units = self._units.split(" ")
         else:
             self._units = []
+
+        self._min_count = int(xmlobj.attrib.get("min-count", "0"))
+        self._max_count = int(xmlobj.attrib.get("max-count", "0"))
+        self._num_items = int(xmlobj.attrib.get("num-items", "0"))
 
         self._minvalue = xmlobj.attrib.get("minvalue", "")
         self._maxvalue = xmlobj.attrib.get("maxvalue", "")
@@ -869,6 +885,9 @@ class DocArgument(DocTranslation):
         if res and self._type:
             res = self.append_after_dot(res, _("Type: {}").format(self._type))
 
+        if res:
+            res = self.append_after_dot(res, _("Item count: {}").format(self.item_count_fmt()))
+
         return res.strip()
 
     def range(self):
@@ -885,6 +904,38 @@ class DocArgument(DocTranslation):
 
     def enum(self):
         return self._enum
+
+    def min_count(self):
+        return self._min_count
+
+    def max_count(self):
+        return self._max_count
+
+    def num_items(self):
+        return self._num_items
+
+    def value_range_fmt(self, default: str = "") -> str:
+        if self._minvalue and self._maxvalue:
+            a, b = self._range_type[0:2]
+            return "{}{}..{}{}".format(a, self._minvalue, self._maxvalue, b)
+        else:
+            return default
+
+    def item_count_fmt(self, default: str = "") -> str:
+        if self._min_count > 0 and self._max_count > 0:
+            a, b = self._range_type[0:2]
+            return "{}{}..{}{}".format(a, self._min_count, self._max_count, b)
+        elif self._min_count > 0:
+            return ">={}".format(self._min_count)
+        elif self._max_count > 0:
+            return "<={}".format(self._max_count)
+        elif self._num_items > 0:
+            return "{}".format(self._num_items)
+        else:
+            return default
+
+    def item_type(self) -> str:
+        return self._item_type
 
 
 class DocEvent(DocItem):

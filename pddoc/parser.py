@@ -41,7 +41,7 @@ def parse_xml(path):
         return None
 
     try:
-        dirname = os.path.dirname(path)
+        dirname = os.path.normpath(os.path.dirname(path))
         if len(dirname) == 0:
             dirname = os.getcwd()
 
@@ -71,6 +71,12 @@ def parse_xml(path):
             #         obj_name = obj_name.replace("~", "").replace(".", "_")
             #         txt = tmpl.substitute(obj=obj_name)
             #         tr.text = txt
+            new_tag = prop_xml.getroot()
+            ref.getparent().replace(ref, new_tag)
+
+        for ref in xml.xpath('//pddoc/object/methods/method/param/*[local-name()="include"]'):
+            # manual XInclude implementation with template substitution
+            prop_xml = etree.parse(dirname + "/" + ref.attrib["href"], base_url=dirname)
             new_tag = prop_xml.getroot()
             ref.getparent().replace(ref, new_tag)
 

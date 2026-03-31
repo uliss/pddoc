@@ -790,6 +790,8 @@ class DocArgument(DocTranslation):
         self._default = ""
         self._required = False
         self._verbose = False
+        self._verbose_lines = []
+        self._verbose_lines_tr = []
         self._enum: list[str] = []
 
     def from_xml(self, xmlobj):
@@ -813,13 +815,37 @@ class DocArgument(DocTranslation):
         self._maxvalue = xmlobj.attrib.get("maxvalue", "")
         self._default = xmlobj.attrib.get("default", "")
         self._required = xmlobj.attrib.get("required", False) == "true"
-        self._verbose = xmlobj.attrib.get("verbose", False) == "true"
+        self._verbose_lines = xmlobj.findall("verbose")
+        self._verbose = len(self._verbose_lines) > 0
+
+        for verbose in self._verbose_lines:
+            for par in verbose:
+                par_translation = dict()
+                for tr in par:
+                    lang = tr.attrib.get("lang", "en")
+                    if tr.attrib.get("finished", "true") == "true":
+                        par_translation[lang] = re.sub(r'\s+', ' ', tr.text)
+
+                self._verbose_lines_tr.append(par_translation)
+
         enum_str = xmlobj.attrib.get("enum", "").strip()
         if len(enum_str) > 1:
             self._enum = re.split("[ \n\t]+", enum_str)
 
         self.update_translations(xmlobj)
         DocItem.from_xml(self, xmlobj)
+
+    def verbose_translation(self, lang: str) -> list[str]:
+        res = []
+        for tr in self._verbose_lines_tr:
+            if lang in tr:
+                res.append(tr[lang])
+            elif 'en' in tr:
+                res.append(tr['en'])
+            else:
+                pass
+            
+        return res
 
     def type(self):
         return self._type
@@ -1021,6 +1047,9 @@ class DocParam(DocArgument):
             name = "[{0}]".format(name)
 
         return name
+
+    def skip_tag(self, tag_name: str):
+        return tag_name in ('verbose', 'tr')
 
 
 class DocMethod(DocItem):

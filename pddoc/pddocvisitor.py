@@ -20,6 +20,7 @@ from __future__ import annotations
 
 __author__ = 'Serge Poltavski'
 
+import base64
 import gettext
 
 import pddoc
@@ -264,7 +265,14 @@ class PdDocVisitor(DocObjectVisitor):
 
             # make verbose link
             if p.verbose():
-                self._pp.add_link("[?]", "[?]", self.PD_METHOD_ARG_LEFT_MARGIN - 30, param_ypos)
+                x = self.PD_METHOD_ARG_LEFT_MARGIN - 30
+                y = param_ypos
+                args = ["@title", "?", "@direction_right", "0", "@text_width", "250", "@lines"]
+                for par in p.verbose_translation(self.lang):
+                    args.append('>' + base64.encodebytes(par.encode()).decode())
+
+                helpbox = PdObject("nui.helpbox", x, y, 100, 25, args)
+                self._pp.append_object(helpbox)
 
             # info.append(txt_obj)
             txt_obj.calc_brect()

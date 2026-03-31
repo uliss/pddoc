@@ -496,10 +496,17 @@
         <xs:attribute name="units" type="UnitDataTypeEnum"/>
     </xs:complexType>
 
-    <xs:complexType name="MethodArgumentElementType">
-         <xs:sequence>
-            <xs:element name="tr" type="TranslationType" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:complexType name="MethodArgumentVerbose">
+        <xs:sequence>
+            <xs:element name="par" type="MarkupText" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MethodArgumentElementType">
+       <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="tr" type="TranslationType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="verbose" type="MethodArgumentVerbose" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:choice>
         <xs:attribute name="default" type="xs:string"/>
         <xs:attribute name="enum" type="xs:string"/>
         <xs:attribute name="item-type" type="ListItemType"/>
@@ -513,7 +520,6 @@
         <xs:attribute name="required" type="xs:boolean"/>
         <xs:attribute name="type" use="required" type="MethodParamType"/>
         <xs:attribute name="units" type="UnitDataTypeEnum"/>
-        <xs:attribute name="verbose" type="xs:boolean"/>
     </xs:complexType>
 
     <xs:complexType name="MethodElementType">
